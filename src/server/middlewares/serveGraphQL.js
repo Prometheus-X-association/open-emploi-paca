@@ -16,15 +16,15 @@
  *
  */
 
-import {DataModel, ExpressApp, SSOApiClient} from '@mnemotix/synaptix.js';
-import {generateDatastoreAdapater} from "./generateDatastoreAdapter";
-import {generateDataModel} from "../datamodel/generateDataModel";
+import { DataModel, ExpressApp, SSOApiClient } from "@mnemotix/synaptix.js";
+import { generateDatastoreAdapater } from "./generateDatastoreAdapter";
+import { generateDataModel } from "../datamodel/generateDataModel";
 
 /**
  * @param {[DataModel]} extraDataModels
  * @param {object} environmentDefinition
  */
-export function serveGraphQL({extraDataModels, environmentDefinition}) {
+export function serveGraphQL({ extraDataModels, environmentDefinition }) {
   /**
    * A function to be passed to synaptix.js launchApplication's `serveGraphQL` parameter
    * Initialize some configuration for the graphQL engine (datastore, network layer, graphQL schema from the data model)
@@ -32,24 +32,29 @@ export function serveGraphQL({extraDataModels, environmentDefinition}) {
    * @param {ExpressApp} app - The synapix.js ExpressApp instance which will run the application server
    * @param {SSOApiClient} ssoApiClient
    */
-  return async ({app, ssoApiClient}) => {
-    const dataModel = generateDataModel({extraDataModels, environmentDefinition});
-    const {networkLayer, datastoreAdapter} = await generateDatastoreAdapater({ssoApiClient, dataModel});
+  return async ({ app, ssoApiClient }) => {
+    const dataModel = generateDataModel({
+      extraDataModels,
+      environmentDefinition
+    });
+    const { networkLayer, datastoreAdapter } = await generateDatastoreAdapater({
+      ssoApiClient,
+      dataModel
+    });
 
-    app.addNetworkLayer({networkLayer});
+    app.addNetworkLayer({ networkLayer });
 
     /**
      * Initializing GraphQL endpoints
      */
     return [
       {
-        endpointURI: '/graphql',
+        endpointURI: "/graphql",
         graphQLSchema: dataModel.generateExecutableSchema(),
         datastoreAdapter,
         datastoreAdapterKey: "default",
         acceptAnonymousRequest: true
       }
     ];
-  }
-
+  };
 }

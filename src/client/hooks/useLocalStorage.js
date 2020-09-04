@@ -24,6 +24,6 @@ export function useLocalStorage({user} = {}) {
     return localforage.createInstance({
       ...options,
       name: name || "anonymous"
-    })
+    });
   }
 }

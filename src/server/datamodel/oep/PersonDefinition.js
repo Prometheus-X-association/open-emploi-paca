@@ -39,7 +39,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
     return GraphQLTypeDefinition;
   }
 
-  static getLinks(){
+  static getLinks() {
     return [
       ...super.getLinks(),
       new LinkDefinition({
@@ -50,16 +50,14 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         graphQLPropertyName: "occupations",
         graphQLInputName: "occupationInputs"
       })
-    ]
+    ];
   }
 
-  static getLabels(){
-    return [
-      ...super.getLabels()
-    ]
+  static getLabels() {
+    return [...super.getLabels()];
   }
 
-  static getLiterals(){
+  static getLiterals() {
     return [
       ...super.getLiterals(),
       new LiteralDefinition({
@@ -67,6 +65,6 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         description: "Salaire actuel",
         rdfDataProperty: "oep:income"
       })
-    ]
+    ];
   }
 }

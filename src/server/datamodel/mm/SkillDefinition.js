@@ -19,7 +19,7 @@
 import {
   GraphQLTypeDefinition,
   LinkDefinition,
-  ModelDefinitionAbstract,
+  ModelDefinitionAbstract
 } from "@mnemotix/synaptix.js";
 import AptitudeDefinition from "../mm/AptitudeDefinition";
 import KnowledgeDefinition from "../oep/KnowledgeDefinition";
@@ -50,12 +50,14 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
   /**
    * @note skills are indexed in concept indexed, so we need filter them by type.
    */
-  static getIndexFilters(){
-    return [{
-      "term":  {
-        "types": "https://ontologies.mindmatcher.org/carto/Skill"
+  static getIndexFilters() {
+    return [
+      {
+        term: {
+          types: "https://ontologies.mindmatcher.org/carto/Skill"
+        }
       }
-    }]
+    ];
   }
 
   /**

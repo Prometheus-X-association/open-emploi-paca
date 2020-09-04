@@ -17,282 +17,282 @@
  */
 
 export const gqlFragments = {
-  "__schema": {
-    "types": [
+  __schema: {
+    types: [
       {
-        "kind": "INTERFACE",
-        "name": "EntityInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "EntityInterface",
+        possibleTypes: [
           {
-            "name": "AccessPolicy"
+            name: "AccessPolicy"
           },
           {
-            "name": "UserAccount"
+            name: "UserAccount"
           },
           {
-            "name": "Person"
+            name: "Person"
           },
           {
-            "name": "ExternalLink"
+            name: "ExternalLink"
           },
           {
-            "name": "Tagging"
+            name: "Tagging"
           },
           {
-            "name": "Comment"
+            name: "Comment"
           },
           {
-            "name": "Concept"
+            name: "Concept"
           },
           {
-            "name": "Scheme"
+            name: "Scheme"
           },
           {
-            "name": "Collection"
+            name: "Collection"
           },
           {
-            "name": "Vocabulary"
+            name: "Vocabulary"
           },
           {
-            "name": "EmailAccount"
+            name: "EmailAccount"
           },
           {
-            "name": "Phone"
+            name: "Phone"
           },
           {
-            "name": "Address"
+            name: "Address"
           },
           {
-            "name": "Affiliation"
+            name: "Affiliation"
           },
           {
-            "name": "Organization"
+            name: "Organization"
           },
           {
-            "name": "Involvement"
+            name: "Involvement"
           },
           {
-            "name": "ProjectContribution"
+            name: "ProjectContribution"
           },
           {
-            "name": "Project"
+            name: "Project"
           },
           {
-            "name": "UserGroup"
+            name: "UserGroup"
           },
           {
-            "name": "Attachment"
+            name: "Attachment"
           },
           {
-            "name": "Location"
+            name: "Location"
           },
           {
-            "name": "GroupMembership"
+            name: "GroupMembership"
           },
           {
-            "name": "Partnership"
+            name: "Partnership"
           },
           {
-            "name": "File"
+            name: "File"
           },
           {
-            "name": "Point"
+            name: "Point"
           },
           {
-            "name": "Creation"
+            name: "Creation"
           },
           {
-            "name": "Deletion"
+            name: "Deletion"
           },
           {
-            "name": "Update"
+            name: "Update"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "ActionInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "ActionInterface",
+        possibleTypes: [
           {
-            "name": "Creation"
+            name: "Creation"
           },
           {
-            "name": "Deletion"
+            name: "Deletion"
           },
           {
-            "name": "Update"
+            name: "Update"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "AccessPolicyTargetInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "AccessPolicyTargetInterface",
+        possibleTypes: [
           {
-            "name": "UserAccount"
+            name: "UserAccount"
           },
           {
-            "name": "UserGroup"
+            name: "UserGroup"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "AgentInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "AgentInterface",
+        possibleTypes: [
           {
-            "name": "Person"
+            name: "Person"
           },
           {
-            "name": "Organization"
+            name: "Organization"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "OnlineContributionInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "OnlineContributionInterface",
+        possibleTypes: [
           {
-            "name": "Tagging"
+            name: "Tagging"
           },
           {
-            "name": "Comment"
+            name: "Comment"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "InstantInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "InstantInterface",
+        possibleTypes: [
           {
-            "name": "Tagging"
+            name: "Tagging"
           },
           {
-            "name": "Comment"
+            name: "Comment"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "SKOSElementInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "SKOSElementInterface",
+        possibleTypes: [
           {
-            "name": "Concept"
+            name: "Concept"
           },
           {
-            "name": "Scheme"
+            name: "Scheme"
           },
           {
-            "name": "Collection"
+            name: "Collection"
           },
           {
-            "name": "Vocabulary"
+            name: "Vocabulary"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "LocationInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "LocationInterface",
+        possibleTypes: [
           {
-            "name": "Address"
+            name: "Address"
           },
           {
-            "name": "Location"
+            name: "Location"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "GeometryInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "GeometryInterface",
+        possibleTypes: [
           {
-            "name": "Point"
+            name: "Point"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "SpatialEntityInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "SpatialEntityInterface",
+        possibleTypes: [
           {
-            "name": "Address"
+            name: "Address"
           },
           {
-            "name": "Location"
+            name: "Location"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "DurationInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "DurationInterface",
+        possibleTypes: [
           {
-            "name": "Affiliation"
+            name: "Affiliation"
           },
           {
-            "name": "ProjectContribution"
+            name: "ProjectContribution"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "OrganizationInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "OrganizationInterface",
+        possibleTypes: [
           {
-            "name": "Organization"
+            name: "Organization"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "ResourceInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "ResourceInterface",
+        possibleTypes: [
           {
-            "name": "File"
+            name: "File"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "PersonInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "PersonInterface",
+        possibleTypes: [
           {
-            "name": "Person"
+            name: "Person"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "AccessPriviledgeInterface",
-        "possibleTypes": [
+        kind: "INTERFACE",
+        name: "AccessPriviledgeInterface",
+        possibleTypes: [
           {
-            "name": "ReadPriviledge"
+            name: "ReadPriviledge"
           },
           {
-            "name": "WritePriviledge"
+            name: "WritePriviledge"
           }
         ]
       },
       {
-        "kind": "INTERFACE",
-        "name": "GroupInterface",
-        "possibleTypes": []
+        kind: "INTERFACE",
+        name: "GroupInterface",
+        possibleTypes: []
       },
       {
-        "kind": "INTERFACE",
-        "name": "ProjectOutputInterface",
-        "possibleTypes": []
+        kind: "INTERFACE",
+        name: "ProjectOutputInterface",
+        possibleTypes: []
       },
       {
-        "kind": "INTERFACE",
-        "name": "TemporalEntityInterface",
-        "possibleTypes": []
+        kind: "INTERFACE",
+        name: "TemporalEntityInterface",
+        possibleTypes: []
       },
       {
-        "kind": "INTERFACE",
-        "name": "MaterialEntityInterface",
-        "possibleTypes": []
+        kind: "INTERFACE",
+        name: "MaterialEntityInterface",
+        possibleTypes: []
       }
     ]
   }

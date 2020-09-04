@@ -4,8 +4,7 @@ import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import {makeStyles} from "@material-ui/core/styles";
 import clsx from "clsx";
 
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   disabled: {
     boxShadow: "none"
   }
@@ -45,8 +44,13 @@ export default function SplitButton({disabled, variant, color, options = []} = {
 
   return (
     <>
-      <ButtonGroup variant={variant} color={color} disabled={disabled} ref={anchorRef} aria-label="split button"
-                   className={clsx({[classes.disabled]: disabled})}>
+      <ButtonGroup
+        variant={variant}
+        color={color}
+        disabled={disabled}
+        ref={anchorRef}
+        aria-label="split button"
+        className={clsx({[classes.disabled]: disabled})}>
         <Button onClick={() => options[selectedIndex].onClick()}>{options[selectedIndex].label}</Button>
         <Button
           size="small"
@@ -55,7 +59,7 @@ export default function SplitButton({disabled, variant, color, options = []} = {
           aria-label="select merge strategy"
           aria-haspopup="menu"
           onClick={handleToggle}>
-          <ArrowDropDownIcon/>
+          <ArrowDropDownIcon />
         </Button>
       </ButtonGroup>
       <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>

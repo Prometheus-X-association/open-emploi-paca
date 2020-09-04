@@ -8,7 +8,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {useTranslation} from "react-i18next";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   card: {
     maxWidth: 400,
     minWidth: 344
@@ -80,18 +80,16 @@ export const SnackErrorMessage = React.forwardRef(({id, message, error}, ref) =>
             aria-label="Show more"
             className={classnames(classes.expand, {[classes.expandOpen]: expanded})}
             onClick={handleExpandClick}>
-            <ExpandMoreIcon/>
+            <ExpandMoreIcon />
           </IconButton>
 
           <IconButton className={classes.expand} onClick={handleDismiss}>
-            <CloseIcon/>
+            <CloseIcon />
           </IconButton>
         </div>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <Paper className={classes.collapse}>
-          {error}
-        </Paper>
+        <Paper className={classes.collapse}>{error}</Paper>
       </Collapse>
     </Card>
   );

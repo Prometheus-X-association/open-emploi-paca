@@ -2,23 +2,25 @@ import {
   isAdminRule,
   isAuthenticatedRule,
   isCreatorRule,
-  replaceFieldValueIfRuleFailsMiddleware,
+  replaceFieldValueIfRuleFailsMiddleware
 } from "@mnemotix/synaptix.js";
-import {and, or, rule} from "graphql-shield";
+import { and, or, rule } from "graphql-shield";
 
 /**
  * @return {Rule}
  */
-export let isCreatorOrAdminRule = () => and(isAuthenticatedRule(), or(isCreatorRule(), isAdminRule()));
-
+export let isCreatorOrAdminRule = () =>
+  and(isAuthenticatedRule(), or(isCreatorRule(), isAdminRule()));
 
 /**
  * This middleware is used to set "false" value to a target type field if a shield rule fails.
  */
-export let falsifyFieldIfRuleFailsMiddleware = replaceFieldValueIfRuleFailsMiddleware({
-  rule: isCreatorOrAdminRule(),
-  replaceValue: false
-});
+export let falsifyFieldIfRuleFailsMiddleware = replaceFieldValueIfRuleFailsMiddleware(
+  {
+    rule: isCreatorOrAdminRule(),
+    replaceValue: false
+  }
+);
 
 /**
  * This middleware definition list apply the field falsification in order to be used in UI.
@@ -36,22 +38,25 @@ export let shieldRules = {
   Query: {},
   Mutation: {
     createUserGroup: isAdminRule(),
-    updateUserGroup: isAdminRule(),
+    updateUserGroup: isAdminRule()
   },
   // A non admin user can only query person nicknames. Nothing more.
   UserAccount: {
-    '*': or(isAdminRule(), rule()(
-      /**
-       * @param {Model} userAccount
-       * @param args
-       * @param {SynaptixDatastoreRdfSession} synaptixSession
-       * @param info
-       */
-      async (userAccount, args, synaptixSession, info) => {
-        let loggedUserAccount = await synaptixSession.getLoggedUserAccount();
+    "*": or(
+      isAdminRule(),
+      rule()(
+        /**
+         * @param {Model} userAccount
+         * @param args
+         * @param {SynaptixDatastoreRdfSession} synaptixSession
+         * @param info
+         */
+        async (userAccount, args, synaptixSession, info) => {
+          let loggedUserAccount = await synaptixSession.getLoggedUserAccount();
 
-        return loggedUserAccount && loggedUserAccount?.id === userAccount.id;
-      }
-    ))
-  },
+          return loggedUserAccount && loggedUserAccount?.id === userAccount.id;
+        }
+      )
+    )
+  }
 };

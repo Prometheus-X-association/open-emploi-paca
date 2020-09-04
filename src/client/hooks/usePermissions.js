@@ -9,13 +9,12 @@ export function usePermissions({} = {}) {
 
   function isWriteGrantedFor({key}) {
     if (permissions[key]) {
-
     } else {
-      console.warn(`Permission key ${key} is requested but not defined in PermissionContext`)
+      console.warn(`Permission key ${key} is requested but not defined in PermissionContext`);
     }
   }
 
   return {
     isWriteGranted
-  }
+  };
 }

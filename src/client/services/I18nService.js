@@ -14,17 +14,17 @@
  *
  */
 
-import i18n from 'i18next';
-import i18nextXhrBackend from 'i18next-xhr-backend';
-import {initReactI18next} from 'react-i18next';
-import 'dayjs/locale/fr';
-import 'dayjs/locale/en';
-import dayjs from 'dayjs';
-import LocalizedFormat from 'dayjs/plugin/localizedFormat';
-import RelativeTime from 'dayjs/plugin/relativeTime';
+import i18n from "i18next";
+import i18nextXhrBackend from "i18next-xhr-backend";
+import {initReactI18next} from "react-i18next";
+import "dayjs/locale/fr";
+import "dayjs/locale/en";
+import dayjs from "dayjs";
+import LocalizedFormat from "dayjs/plugin/localizedFormat";
+import RelativeTime from "dayjs/plugin/relativeTime";
 
 export async function I18nService() {
-  let lang = localStorage.getItem('lang') || 'fr';
+  let lang = localStorage.getItem("lang") || "fr";
 
   dayjs.extend(LocalizedFormat);
   dayjs.locale(lang);
@@ -36,24 +36,23 @@ export async function I18nService() {
     .init(
       {
         backend: {
-          loadPath: '/locales/{{lng}}',
+          loadPath: "/locales/{{lng}}"
         },
-        fallbackLng: 'fr',
+        fallbackLng: "fr",
         lng: lang,
-        ns: ['common'],
-        defaultNS: 'common',
+        ns: ["common"],
+        defaultNS: "common",
         debug: false,
         interpolation: {
-          escapeValue: false, // not needed for react!!
+          escapeValue: false // not needed for react!!
         },
-        keySeparator: '.',
+        keySeparator: ".",
         react: {
           useSuspense: true,
-          transSupportBasicHtmlNodes: true,
-        },
+          transSupportBasicHtmlNodes: true
+        }
       },
-      (err, t) => {
-      }
+      (err, t) => {}
     );
 
   return i18n;

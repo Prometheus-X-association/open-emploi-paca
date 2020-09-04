@@ -1,14 +1,23 @@
-import {generateDatastoreAdapater} from "../../../middlewares/generateDatastoreAdapter";
+import { generateDatastoreAdapater } from "../../../middlewares/generateDatastoreAdapter";
 import yargs from "yargs";
 import ora from "ora";
 import dotenv from "dotenv";
-import {GraphQLContext, initEnvironment, logDebug, logWarning, MnxOntologies} from "@mnemotix/synaptix.js";
-import dse, {ExecutionProfile} from "dse-driver";
+import {
+  GraphQLContext,
+  initEnvironment,
+  logDebug,
+  logWarning,
+  MnxOntologies
+} from "@mnemotix/synaptix.js";
+import dse, { ExecutionProfile } from "dse-driver";
 import camelCase from "lodash/camelCase";
-import {migrationMappers as defaultMappers, transformTimestampToDate} from "./migrationMappers";
-import {dseIdToURI} from "./helpers/dseIdToURI";
+import {
+  migrationMappers as defaultMappers,
+  transformTimestampToDate
+} from "./migrationMappers";
+import { dseIdToURI } from "./helpers/dseIdToURI";
 import path from "path";
-import {generateDataModel} from "../../../datamodel/generateDataModel";
+import { generateDataModel } from "../../../datamodel/generateDataModel";
 import fs from "fs";
 import merge from "lodash/merge";
 
@@ -40,7 +49,7 @@ export let migrateData = async () => {
     .usage("yarn data:migrate [options] -dse [DSE endpoints]")
     .option("defaultMappers", {
       alias: "defaultMappers",
-      describe: "Migration defaultMappers",
+      describe: "Migration defaultMappers"
     })
     .option("datamodel", {
       alias: "dataModelPath",
@@ -115,15 +124,22 @@ export let migrateData = async () => {
     .epilog("Copyright Mnemotix 2019")
     .help().argv;
 
-  const environmentDefinition = require(path.resolve(process.cwd(), environmentPath)).default;
+  const environmentDefinition = require(path.resolve(
+    process.cwd(),
+    environmentPath
+  )).default;
 
   let extraDataModels;
   let dataModelAbsolutePath = path.resolve(process.cwd(), dataModelPath);
 
   if (fs.existsSync(dataModelAbsolutePath)) {
-    extraDataModels = [require(path.resolve(process.cwd(), dataModelAbsolutePath)).dataModel];
+    extraDataModels = [
+      require(path.resolve(process.cwd(), dataModelAbsolutePath)).dataModel
+    ];
   } else {
-    spinner.warn("Caution specific dataModel not found. Using default one from weever-core");
+    spinner.warn(
+      "Caution specific dataModel not found. Using default one from weever-core"
+    );
   }
 
   initEnvironment(environmentDefinition);
@@ -134,7 +150,7 @@ export let migrateData = async () => {
   });
 
   /** @type {SynaptixDatastoreRdfAdapter} */
-  let {datastoreAdapter} = await generateDatastoreAdapater({
+  let { datastoreAdapter } = await generateDatastoreAdapater({
     graphMiddlewares: [],
     dataModel
   });
@@ -165,7 +181,7 @@ export let migrateData = async () => {
     },
     profiles: [
       new ExecutionProfile("default", {
-        graphOptions: {name: dseGraphName}
+        graphOptions: { name: dseGraphName }
       })
     ]
   });
@@ -181,7 +197,7 @@ export let migrateData = async () => {
       continue;
     }
 
-    let count = await countType({client, type});
+    let count = await countType({ client, type });
     let modelDefinition;
 
     try {
@@ -197,14 +213,19 @@ export let migrateData = async () => {
     spinner.start(`Processing ${count} "${type}" instances...`);
 
     for (let index = startAt; index < count; index++) {
-      let vertex = await getDseVertexAtIndex({client, type, index});
+      let vertex = await getDseVertexAtIndex({ client, type, index });
       let vertexId = getVertexId(vertex);
       let uri;
 
       if (mappers[type]?.generateURI) {
-        uri = mappers[type]?.generateURI({vertexId, modelDefinition, synaptixSession, dseIdToURI});
+        uri = mappers[type]?.generateURI({
+          vertexId,
+          modelDefinition,
+          synaptixSession,
+          dseIdToURI
+        });
       } else {
-        uri = dseIdToURI({id: vertexId, modelDefinition, synaptixSession})
+        uri = dseIdToURI({ id: vertexId, modelDefinition, synaptixSession });
       }
 
       let seeAlso = {
@@ -233,7 +254,7 @@ export let migrateData = async () => {
 
       let objectLinksInput = {};
       if (mappers[type]?.links) {
-        let {links, corruptedLinks} = await getLinksForVertex({
+        let { links, corruptedLinks } = await getLinksForVertex({
           client,
           vertex,
           type,
@@ -259,7 +280,7 @@ export let migrateData = async () => {
           let targetModelDefinition = linkDefinition.getRelatedModelDefinition();
 
           let targetInputs = targetIds.reduce(
-            (targetInputs, {targetId, generateInput}) => {
+            (targetInputs, { targetId, generateInput }) => {
               if (link.forceTargetModelDefinition) {
                 targetModelDefinition = link.forceTargetModelDefinition({
                   targetId
@@ -289,7 +310,7 @@ export let migrateData = async () => {
                   synaptixSession
                 });
 
-                targetInputs.push({id: targetUri});
+                targetInputs.push({ id: targetUri });
               }
 
               return targetInputs;
@@ -317,7 +338,7 @@ export let migrateData = async () => {
 
       for (let [
         propName,
-        {tranformToLabel: lang, transformName}
+        { tranformToLabel: lang, transformName }
       ] of transformToLabelPropEntries || []) {
         if (objectInput[transformName || propName]) {
           labels[lang][transformName || propName] =
@@ -336,7 +357,7 @@ export let migrateData = async () => {
       spinner.text = `Processing ${index}/${count} - ${uri}`;
 
       if (
-        mappers[type]?.migrateIf?.({objectInput, objectLinksInput}) === false
+        mappers[type]?.migrateIf?.({ objectInput, objectLinksInput }) === false
       ) {
         console.log("\n");
         logDebug(`${vertexId} (${uri}) discarded`);
@@ -354,7 +375,7 @@ export let migrateData = async () => {
       if (dry) {
         logDebug(JSON.stringify(createInput));
       } else if (!discardActions) {
-        let {id} = await synaptixSession.createObject(createInput);
+        let { id } = await synaptixSession.createObject(createInput);
 
         if (Object.values(labels.en).length > 0) {
           await synaptixSession.updateObject({
@@ -368,13 +389,13 @@ export let migrateData = async () => {
         let creationUri = dseIdToURI({
           id: getVertexId(vertex),
           modelDefinition:
-          MnxOntologies.mnxContribution.ModelDefinitions.CreationDefinition,
+            MnxOntologies.mnxContribution.ModelDefinitions.CreationDefinition,
           synaptixSession
         });
         let lastUpdateUri = dseIdToURI({
           id: getVertexId(vertex),
           modelDefinition:
-          MnxOntologies.mnxContribution.ModelDefinitions.UpdateDefinition,
+            MnxOntologies.mnxContribution.ModelDefinitions.UpdateDefinition,
           synaptixSession
         });
 
@@ -390,7 +411,7 @@ export let migrateData = async () => {
           creatorUri = dseIdToURI({
             id: getVertexId(creator),
             modelDefinition:
-            MnxOntologies.mnxAgent.ModelDefinitions.UserAccountDefinition,
+              MnxOntologies.mnxAgent.ModelDefinitions.UserAccountDefinition,
             synaptixSession
           });
         } else {
@@ -398,28 +419,28 @@ export let migrateData = async () => {
             "https://data.lafayetteanticipations.com/resource/user-account/955371520407";
         }
 
-        let {id: createId} = await synaptixSession.createObject({
+        let { id: createId } = await synaptixSession.createObject({
           modelDefinition:
-          MnxOntologies.mnxContribution.ModelDefinitions.CreationDefinition,
+            MnxOntologies.mnxContribution.ModelDefinitions.CreationDefinition,
           objectInput: {
             startedAtTime: transformTimestampToDate(creationDate),
             entityInput: {
               id: uri
             },
-            ...(creatorUri ? {userAccountInput: {id: creatorUri}} : {})
+            ...(creatorUri ? { userAccountInput: { id: creatorUri } } : {})
           },
           uri: creationUri
         });
 
-        let {id: lastUpdateId} = await synaptixSession.createObject({
+        let { id: lastUpdateId } = await synaptixSession.createObject({
           modelDefinition:
-          MnxOntologies.mnxContribution.ModelDefinitions.UpdateDefinition,
+            MnxOntologies.mnxContribution.ModelDefinitions.UpdateDefinition,
           objectInput: {
             startedAtTime: transformTimestampToDate(lastUpdate),
             entityInput: {
               id: uri
             },
-            ...(creatorUri ? {userAccountInput: {id: creatorUri}} : {})
+            ...(creatorUri ? { userAccountInput: { id: creatorUri } } : {})
           },
           uri: lastUpdateUri
         });
@@ -436,7 +457,7 @@ export let migrateData = async () => {
 export let enabledFilter = `has("_enabled", true)`;
 //export  let enabledFilter = `has("_enabled", true).has("lastUpdate", gt(${Date.parse("2020-05-13T14:17:02.941Z")}))`;
 
-let countType = async ({client, type}) => {
+let countType = async ({ client, type }) => {
   return (
     await client.executeGraph(
       `g.V().hasLabel("${type}").${enabledFilter}.count()`
@@ -444,7 +465,7 @@ let countType = async ({client, type}) => {
   ).first();
 };
 
-let getDseVertexAtIndex = async ({client, type, index}) => {
+let getDseVertexAtIndex = async ({ client, type, index }) => {
   return (
     await client.executeGraph(
       `g.V().hasLabel("${type}").range(${index}, ${index + 1})${enabledFilter}`
@@ -454,13 +475,13 @@ let getDseVertexAtIndex = async ({client, type, index}) => {
 
 let getVertexId = vertex => Object.values(vertex.id).join(":");
 
-let mapDseVertexPropertiesToObjectInput = ({vertex, mapper}) => {
+let mapDseVertexPropertiesToObjectInput = ({ vertex, mapper }) => {
   return Object.entries(vertex.properties).reduce(
     (acc, [propName, propValues]) => {
       let propValue = propValues[0].value;
 
       if (mapper?.[propName]) {
-        let {transformName, transformValue} = mapper?.[propName] || {};
+        let { transformName, transformValue } = mapper?.[propName] || {};
 
         if (transformName) {
           propName = transformName;
@@ -479,7 +500,7 @@ let mapDseVertexPropertiesToObjectInput = ({vertex, mapper}) => {
   );
 };
 
-let getLocalizedLabelsForVertex = async ({client, vertex, mapper}) => {
+let getLocalizedLabelsForVertex = async ({ client, vertex, mapper }) => {
   let labels = {
     fr: {},
     en: {}
@@ -487,7 +508,7 @@ let getLocalizedLabelsForVertex = async ({client, vertex, mapper}) => {
 
   let id = getVertexId(vertex);
 
-  let {vertices, edges} = (
+  let { vertices, edges } = (
     await client.executeGraph(
       `g.V("${id}").outE().where(inV().hasLabel("LocalizedLabel", "HTMLContent").${enabledFilter}).subgraph('sg').inV().cap('sg').next()`
     )
@@ -506,12 +527,12 @@ let getLocalizedLabelsForVertex = async ({client, vertex, mapper}) => {
       );
 
       if (labelVertex) {
-        let {lang, value} = mapDseVertexPropertiesToObjectInput({
+        let { lang, value } = mapDseVertexPropertiesToObjectInput({
           vertex: labelVertex
         });
 
         if (mapper?.[label]) {
-          let {transformName, transformValue} = mapper?.[label] || {};
+          let { transformName, transformValue } = mapper?.[label] || {};
 
           if (transformName) {
             label = transformName;
@@ -530,22 +551,24 @@ let getLocalizedLabelsForVertex = async ({client, vertex, mapper}) => {
   return labels;
 };
 
-let getLinksForVertex = async ({client, vertex, type, linksMapper}) => {
+let getLinksForVertex = async ({ client, vertex, type, linksMapper }) => {
   let links = {};
   let corruptedLinks = [];
 
   let id = getVertexId(vertex);
 
   let extraDseSubGraphs = Object.values(linksMapper)
-    .map(({extraDseSubgraph}) => extraDseSubgraph)
+    .map(({ extraDseSubgraph }) => extraDseSubgraph)
     .filter(Boolean);
   let dseRequest = `g.V("${id}").bothE(${Object.keys(linksMapper)
     .map(edgeName => `"${edgeName}"`)
-    .join(",")}).limit(2000).where(inV().${enabledFilter}).subgraph('sg').otherV()${
+    .join(
+      ","
+    )}).limit(2000).where(inV().${enabledFilter}).subgraph('sg').otherV()${
     extraDseSubGraphs.length > 0 ? `.${extraDseSubGraphs.join(".")}` : ""
   }.cap('sg').next()`;
 
-  let {vertices, edges} = (await client.executeGraph(dseRequest)).first();
+  let { vertices, edges } = (await client.executeGraph(dseRequest)).first();
 
   if (edges.length > 0) {
     for (let edge of edges) {
@@ -558,7 +581,7 @@ let getLinksForVertex = async ({client, vertex, type, linksMapper}) => {
       let link =
         linksMapper[edge.label] ||
         Object.values(linksMapper).find(
-          ({filterOnEdgeLabel}) => filterOnEdgeLabel === edge.label
+          ({ filterOnEdgeLabel }) => filterOnEdgeLabel === edge.label
         );
 
       if (link) {
@@ -581,7 +604,7 @@ let getLinksForVertex = async ({client, vertex, type, linksMapper}) => {
     }
   }
 
-  return {links, corruptedLinks};
+  return { links, corruptedLinks };
 };
 
 let getCreatorVertexForVertex = async ({

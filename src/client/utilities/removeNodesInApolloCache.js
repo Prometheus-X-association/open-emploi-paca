@@ -12,7 +12,15 @@ import set from "lodash/set";
  * @param {string} countPathInData
  * @param {string[]} deletedNodeIds
  */
-export function removeNodesInApolloCache({cache, query, variables, data, connectionPathInData, countPathInData, deletedNodeIds}) {
+export function removeNodesInApolloCache({
+  cache,
+  query,
+  variables,
+  data,
+  connectionPathInData,
+  countPathInData,
+  deletedNodeIds
+}) {
   let connectionData = get(data, connectionPathInData);
   let mutatedEdges = connectionData.edges.reduce((mutatedEdges, edge) => {
     if (!deletedNodeIds.includes(edge.node.id)) {

@@ -27,7 +27,7 @@ export const gqlRegisterUserAccountMutation = gql`
  * They are listed
  */
 export const gqlUserAccountGroupsFragment = gql`
-  fragment UserAccountGroupsFragment on UserAccount{
+  fragment UserAccountGroupsFragment on UserAccount {
     isAdmin: isInGroup(userGroupId: "user-group/AdministratorGroup")
     isEditor: isInGroup(userGroupId: "user-group/EditorGroup")
     isContributor: isInGroup(userGroupId: "user-group/ContributorGroup")

@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   dragIcon: {
     width: theme.spacing(2.5),
     height: theme.spacing(2.5),
-    color: theme.palette.text.mainBlue,
+    color: theme.palette.text.mainBlue
   }
 }));
 
@@ -37,7 +37,7 @@ export function BlockContainer({children, title, expandable} = {}) {
       <Grid container spacing={1} className={classes.heading} alignItems={"center"}>
         <If condition={expandable}>
           <Grid item>
-            <DragHandle className={classes.dragIcon}/>
+            <DragHandle className={classes.dragIcon} />
           </Grid>
         </If>
         <If condition={title}>

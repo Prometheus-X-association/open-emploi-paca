@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {Avatar, CardHeader, Grid, Menu, MenuItem} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
@@ -38,27 +38,30 @@ export function AppBar({} = {}) {
               avatar: classes.profileButtonAvatar,
               subheader: classes.profileButtonContent
             }}
-            avatar={<Avatar src={user?.avatar}>{user?.firstName[0]}{user?.lastName[0]}</Avatar>}
+            avatar={
+              <Avatar src={user?.avatar}>
+                {user?.firstName[0]}
+                {user?.lastName[0]}
+              </Avatar>
+            }
             title={`${user?.firstName} ${user?.lastName}`}
             subheader="Ingénieur"
-            onClick={(e) => setProfileMenuAnchorEl(e.currentTarget)}
+            onClick={e => setProfileMenuAnchorEl(e.currentTarget)}
           />
-          <Menu open={!!profileMenuAnchorEl}
-                anchorEl={profileMenuAnchorEl}
-                onClose={() => setProfileMenuAnchorEl(null)}
-                getContentAnchorEl={null}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
-                }}
-          >
-            <MenuItem onClick={() => logout()}>
-              {t("APP_BAR.MENU.SIGN_OUT")}
-            </MenuItem>
+          <Menu
+            open={!!profileMenuAnchorEl}
+            anchorEl={profileMenuAnchorEl}
+            onClose={() => setProfileMenuAnchorEl(null)}
+            getContentAnchorEl={null}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center"
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center"
+            }}>
+            <MenuItem onClick={() => logout()}>{t("APP_BAR.MENU.SIGN_OUT")}</MenuItem>
           </Menu>
         </Grid>
       </Grid>

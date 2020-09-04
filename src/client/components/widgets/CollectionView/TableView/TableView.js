@@ -26,10 +26,8 @@ function TableViewCode({
   className,
   gqlConnectionPath,
   selectedNodes,
-  onSelectNodes = () => {
-  },
-  onColumnSortChange = () => {
-  }
+  onSelectNodes = () => {},
+  onColumnSortChange = () => {}
 } = {}) {
   const {t} = useTranslation();
 
@@ -54,7 +52,7 @@ function TableViewCode({
    * @param selectedIndexes
    */
   function handleRowsIndexesSelected(selectedIndexes) {
-    onSelectNodes(selectedIndexes.map((dataIndex) => rows[dataIndex]));
+    onSelectNodes(selectedIndexes.map(dataIndex => rows[dataIndex]));
   }
 
   /**

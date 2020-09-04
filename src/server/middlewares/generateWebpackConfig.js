@@ -1,12 +1,12 @@
-const path = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require("path");
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const TerserPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const CompressionPlugin = require('compression-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 
-const env = require('env-var');
+const env = require("env-var");
 
 const aliases = [
   "@apollo",
@@ -25,41 +25,46 @@ const aliases = [
   "react-dom",
   "react-i18next",
   "react-router",
-  "react-router-dom",
+  "react-router-dom"
 ].reduce((acc, sharedLibrary) => {
   acc[sharedLibrary] = path.resolve(`./node_modules/${sharedLibrary}`);
   return acc;
 }, {});
-
 
 /**
  * @param {string} distPath
  * @param {string} htmlTemplatePath
  * @param {string} mainJsPath
  */
-export function generateWebpackConfig({distPath, htmlTemplatePath, mainJsPath}) {
-  let isDev = process.env.NODE_ENV !== 'production';
+export function generateWebpackConfig({
+  distPath,
+  htmlTemplatePath,
+  mainJsPath
+}) {
+  let isDev = process.env.NODE_ENV !== "production";
   let isProd = !isDev;
   let isCI = !!process.env.CI;
 
   /** mode **/
-  let mode = isDev ? 'development' : 'production';
+  let mode = isDev ? "development" : "production";
 
   /** devtool **/
-  let devtool = isDev ? 'cheap-module-source-map' : '';
+  let devtool = isDev ? "cheap-module-source-map" : "";
 
   /** entry **/
   let entry = [
-    ...(isDev && env.get("HOT_RELOAD_DISABLED").asBool() !== true ? ['webpack-hot-middleware/client?reload=true'] : []),
+    ...(isDev && env.get("HOT_RELOAD_DISABLED").asBool() !== true
+      ? ["webpack-hot-middleware/client?reload=true"]
+      : []),
     mainJsPath
   ];
 
   /** output **/
   let output = {
     path: distPath,
-    filename: isDev ? '[name].js' : '[name].[hash].js',
-    chunkFilename: isDev ? '[name].js' : '[name].[hash].js',
-    publicPath: '/'
+    filename: isDev ? "[name].js" : "[name].[hash].js",
+    chunkFilename: isDev ? "[name].js" : "[name].[hash].js",
+    publicPath: "/"
   };
 
   /** plugins **/
@@ -67,35 +72,45 @@ export function generateWebpackConfig({distPath, htmlTemplatePath, mainJsPath}) 
     ...(!isCI ? [new webpack.ProgressPlugin()] : []),
     new HtmlWebpackPlugin({
       template: htmlTemplatePath,
-      inject: 'body',
-      filename: 'index.html'
+      inject: "body",
+      filename: "index.html"
     }),
-    ...(isDev && env.get("HOT_RELOAD_DISABLED").asBool() !== true ? [new webpack.HotModuleReplacementPlugin()] : []),
-    ...(isProd ? [
-      new MiniCssExtractPlugin({
-        filename: '[name].[hash].css',
-        chunkFilename: '[id].[hash].css',
-      }),
-      new CompressionPlugin({
-        filename: '[path].gz',
-        algorithm: 'gzip',
-        test: /\.js$|\.css$|\.html$/,
-        threshold: 10240,
-        minRatio: 0.8,
-      }),
-      new CompressionPlugin({
-        filename: '[path].br',
-        algorithm: 'brotliCompress',
-        test: /\.(js|css|html|svg)$/,
-        compressionOptions: {
-          level: 11,
-        },
-        threshold: 10240,
-        minRatio: 0.8,
-      })
-    ] : []),
+    ...(isDev && env.get("HOT_RELOAD_DISABLED").asBool() !== true
+      ? [new webpack.HotModuleReplacementPlugin()]
+      : []),
+    ...(isProd
+      ? [
+          new MiniCssExtractPlugin({
+            filename: "[name].[hash].css",
+            chunkFilename: "[id].[hash].css"
+          }),
+          new CompressionPlugin({
+            filename: "[path].gz",
+            algorithm: "gzip",
+            test: /\.js$|\.css$|\.html$/,
+            threshold: 10240,
+            minRatio: 0.8
+          }),
+          new CompressionPlugin({
+            filename: "[path].br",
+            algorithm: "brotliCompress",
+            test: /\.(js|css|html|svg)$/,
+            compressionOptions: {
+              level: 11
+            },
+            threshold: 10240,
+            minRatio: 0.8
+          })
+        ]
+      : []),
     new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.EnvironmentPlugin(['FRONTEND_DEBUG', 'NODE_ENV', 'SYNAPTIX_USER_SESSION_COOKIE_NAME', 'TUSD_ENDPOINT', 'THUMBOR_BASE_URL'])
+    new webpack.EnvironmentPlugin([
+      "FRONTEND_DEBUG",
+      "NODE_ENV",
+      "SYNAPTIX_USER_SESSION_COOKIE_NAME",
+      "TUSD_ENDPOINT",
+      "THUMBOR_BASE_URL"
+    ])
   ];
 
   /** optimization **/
@@ -104,9 +119,9 @@ export function generateWebpackConfig({distPath, htmlTemplatePath, mainJsPath}) 
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all'
-        },
+          name: "vendors",
+          chunks: "all"
+        }
       }
     }
   };
@@ -118,7 +133,7 @@ export function generateWebpackConfig({distPath, htmlTemplatePath, mainJsPath}) 
         sourceMap: true
       }),
       new OptimizeCSSAssetsPlugin({})
-    ]
+    ];
   }
 
   /** modules **/
@@ -127,12 +142,14 @@ export function generateWebpackConfig({distPath, htmlTemplatePath, mainJsPath}) 
       {
         test: /\.m?js$/,
         exclude: /node_modules/,
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            rootMode: 'upward'
+        use: [
+          {
+            loader: "babel-loader",
+            options: {
+              rootMode: "upward"
+            }
           }
-        }]
+        ]
       },
       {
         /*
@@ -141,31 +158,33 @@ export function generateWebpackConfig({distPath, htmlTemplatePath, mainJsPath}) 
          */
         test: /\.css$/i,
         include: /node_modules/,
-        use: ['style-loader', 'css-loader']
+        use: ["style-loader", "css-loader"]
       },
       {
         test: /\.(woff|woff2|eot|ttf)$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 4096
+        use: [
+          {
+            loader: "url-loader",
+            options: {
+              limit: 4096
+            }
           }
-        }]
+        ]
       },
       {
         test: /\.(jpe?g|png|gif|svg|ico)$/i,
         use: {
-          loader: 'file-loader',
+          loader: "file-loader",
           options: {
-            name: '[path][name].[hash].[ext]'
+            name: "[path][name].[hash].[ext]"
           }
         }
       },
       {
         test: /\.md/,
-        use: 'raw-loader'
+        use: "raw-loader"
       }
-    ],
+    ]
   };
 
   return {
@@ -178,9 +197,9 @@ export function generateWebpackConfig({distPath, htmlTemplatePath, mainJsPath}) 
     module: webpackModule,
     resolve: {
       extensions: [
-        '.js',
-        '.json', /* needed because some dependencies use { import './Package' } expecting to resolve Package.json */
-        '.css',  /* for libraries shipping ES6 module to work */
+        ".js",
+        ".json" /* needed because some dependencies use { import './Package' } expecting to resolve Package.json */,
+        ".css" /* for libraries shipping ES6 module to work */
       ],
       alias: aliases
     },
@@ -192,6 +211,6 @@ export function generateWebpackConfig({distPath, htmlTemplatePath, mainJsPath}) 
       chunks: false,
       chunkModules: false,
       modules: false
-    },
+    }
   };
 }

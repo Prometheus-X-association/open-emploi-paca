@@ -52,8 +52,8 @@ import {useSnackbar} from "notistack";
 import {SearchBar} from "../SearchBar";
 
 const gqlRemoveEntities = gql`
-  mutation RemoveEntities($input: RemoveEntitiesInput!){
-    removeEntities(input: $input){
+  mutation RemoveEntities($input: RemoveEntitiesInput!) {
+    removeEntities(input: $input) {
       deletedIds
     }
   }
@@ -63,12 +63,12 @@ export const builtinDisplayModes = [
   {
     key: "table",
     Icon: ViewListIcon,
-    renderComponent: (props) => <TableView {...props} />
+    renderComponent: props => <TableView {...props} />
   },
   {
     key: "grid",
     Icon: AppsIcon,
-    renderComponent: (props) => <GridView {...props} />
+    renderComponent: props => <GridView {...props} />
   }
 ];
 
@@ -111,14 +111,11 @@ export function CollectionView({
   searchEnabled,
   onSelectNodes,
   renderFilters,
-  renderLeftSideActions = () => {
-  },
-  renderRightSideActions = () => {
-  },
+  renderLeftSideActions = () => {},
+  renderRightSideActions = () => {},
   NoResultComponent,
   customDisplayModes,
-  onGqlVariablesChange = () => {
-  },
+  onGqlVariablesChange = () => {},
   ...props
 }) {
   const params = new URLSearchParams(useLocation().search);
@@ -197,7 +194,7 @@ export function CollectionView({
     fetchPolicy: "cache-and-network",
     errorPolicy: "all",
     variables: getGqlVariables(),
-    onCompleted: (data) => {
+    onCompleted: data => {
       const pageCount = Math.ceil(get(data, gqlCountPath) / pageSize);
       if (currentPage > pageCount) {
         handlePageChange(1);
@@ -207,14 +204,13 @@ export function CollectionView({
   });
 
   const [removeNodes, {loading: savingMutation}] = useMutation(gqlRemoveEntities, {
-      onCompleted: async (data) => {
-        enqueueSnackbar(t("REMOTE_TABLE.ACTIONS.REMOVE_SUCCESS"), {variant: "success"});
-        if (pageCount > 1) {
-          await apolloClient.reFetchObservableQueries();
-        }
+    onCompleted: async data => {
+      enqueueSnackbar(t("REMOTE_TABLE.ACTIONS.REMOVE_SUCCESS"), {variant: "success"});
+      if (pageCount > 1) {
+        await apolloClient.reFetchObservableQueries();
       }
     }
-  );
+  });
 
   function handlePageChange(page) {
     setCurrentPage(page);
@@ -227,7 +223,7 @@ export function CollectionView({
   }
 
   return !data ? (
-    <LoadingSplashScreen/>
+    <LoadingSplashScreen />
   ) : (
     <div className={classes.root}>
       <ExpansionPanel expanded={filtersActive} variant={"outlined"} className={classes.actions}>
@@ -250,7 +246,7 @@ export function CollectionView({
                   <If condition={renderFilters}>
                     <Button
                       variant={filtersActive ? "contained" : "outlined"}
-                      endIcon={filtersActive ? <KeyboardArrowDownIcon/> : <KeyboardArrowRightIcon/>}
+                      endIcon={filtersActive ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
                       onClick={() => setFiltersActive(!filtersActive)}>
                       {t("REMOTE_TABLE.ACTIONS.FILTERS")}
                     </Button>
@@ -261,7 +257,7 @@ export function CollectionView({
 
                   <If condition={loading}>
                     <div className={classes.progressContainer}>
-                      <CircularProgress size={25} className={classes.progress}/>
+                      <CircularProgress size={25} className={classes.progress} />
                     </div>
                   </If>
                 </Grid>
@@ -271,7 +267,7 @@ export function CollectionView({
               <If condition={removalEnabled}>
                 <LoadingButton
                   variant="contained"
-                  startIcon={<DeleteIcon/>}
+                  startIcon={<DeleteIcon />}
                   color="secondary"
                   disabled={selectedNodes.length === 0}
                   loading={savingMutation}
@@ -311,7 +307,7 @@ export function CollectionView({
             <div className={classes.pagination}>
               <If condition={loading}>
                 <div className={classes.progressContainer}>
-                  <CircularProgress size={25} className={classes.progress}/>
+                  <CircularProgress size={25} className={classes.progress} />
                 </div>
               </If>
               <Pagination
@@ -328,7 +324,7 @@ export function CollectionView({
             <Paper variant={"outlined"} className={classes.noMatch}>
               <Grid container direction="column" alignItems="center">
                 <Grid item xs={12}>
-                  <MoodBadIcon fontSize="large" className={classes.noMatchIcon}/>{" "}
+                  <MoodBadIcon fontSize="large" className={classes.noMatchIcon} />{" "}
                   <span className={classes.noMatchText}>{t("REMOTE_TABLE.BODY.NO_MATCH")}</span>
                 </Grid>
               </Grid>
@@ -347,7 +343,7 @@ export function CollectionView({
           key={key}
           color={displayMode === key ? "primary" : "default"}
           onClick={() => handleChangeDisplayMode(key)}>
-          <Icon fontSize="large"/>
+          <Icon fontSize="large" />
         </IconButton>
       ));
   }
@@ -361,17 +357,19 @@ export function CollectionView({
         gqlConnectionPath,
         gqlCountPath,
         selectedNodes,
-        onSelectNodes: (nodes) => {
+        onSelectNodes: nodes => {
           setSelectedNodes(nodes);
           if (onSelectNodes) {
             onSelectNodes(nodes);
           }
         },
         onColumnSortChange: (column, isSortDescending) => {
-          setSortings([{
-            sortBy: column.name,
-            isSortDescending
-          }])
+          setSortings([
+            {
+              sortBy: column.name,
+              isSortDescending
+            }
+          ]);
         },
         key: displayMode,
         ...props
@@ -404,7 +402,7 @@ export function CollectionView({
           ids: selectedNodes.map(({id}) => id)
         }
       },
-      update: (cache) => {
+      update: cache => {
         setSelectedNodes([]);
         if (onSelectNodes) {
           onSelectNodes([]);
@@ -443,7 +441,7 @@ export function CollectionView({
   }
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   progressContainer: {
     display: "inline-block",
     position: "relative",

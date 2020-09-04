@@ -6,7 +6,7 @@ import {useField, useFormikContext} from "formik";
 
 import {makeStyles} from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   thumbnail: {
     padding: [[theme.spacing(3), theme.spacing(5)]],
     borderRadius: 3
@@ -20,7 +20,7 @@ export const ColorPickerField = ({name, label, ...props} = {}) => {
   const classes = useStyles();
   const [color, setColor] = useState(field.value || "#333");
   const [showPicker, setShowPicker] = useState(false);
-  const handleChange = (color) => {
+  const handleChange = color => {
     setColor(color.hex);
     formikContext.setFieldValue(name, color.hex);
   };
@@ -49,7 +49,7 @@ export const ColorPickerField = ({name, label, ...props} = {}) => {
                 padding: 40,
                 borderRadius: 3
               }}>
-              <ChromePicker color={color} onChange={handleChange}/>
+              <ChromePicker color={color} onChange={handleChange} />
             </div>
           </DialogContent>
           <DialogActions>

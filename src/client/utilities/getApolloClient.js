@@ -8,7 +8,10 @@ import {InMemoryCache, IntrospectionFragmentMatcher} from "apollo-cache-inmemory
 import {SnackErrorMessage} from "../components/widgets/Snackbar/SnackErrorMessage";
 
 export function getApolloClient({i18n, enqueueSnackbar, gqlFragments} = {}) {
-  invariant(gqlFragments, "FragmentTypes must be passed. GQL Fragments are generally generated during application start. @see https://www.apollographql.com/docs/react/data/fragments/ for more details.");
+  invariant(
+    gqlFragments,
+    "FragmentTypes must be passed. GQL Fragments are generally generated during application start. @see https://www.apollographql.com/docs/react/data/fragments/ for more details."
+  );
 
   const fragmentMatcher = new IntrospectionFragmentMatcher({
     introspectionQueryResultData: gqlFragments
@@ -21,10 +24,10 @@ export function getApolloClient({i18n, enqueueSnackbar, gqlFragments} = {}) {
       .join("\n");
     console.warn(
       "You are using the default apollo client ApolloClient in a test environment. This probably won't work " +
-      "because the default apollo client hasn't access to the graphQL mocks (as provided by apollo MockedProvider). You should either mock " +
-      "the service that use the apollo client in your test suite, or inject this service with a mocked apollo client such as the one " +
-      "defined at /jest/utilities/MockedApolloClient.js\n\n" +
-      miniStackTrace
+        "because the default apollo client hasn't access to the graphQL mocks (as provided by apollo MockedProvider). You should either mock " +
+        "the service that use the apollo client in your test suite, or inject this service with a mocked apollo client such as the one " +
+        "defined at /jest/utilities/MockedApolloClient.js\n\n" +
+        miniStackTrace
     );
   }
 
@@ -46,7 +49,12 @@ export function getApolloClient({i18n, enqueueSnackbar, gqlFragments} = {}) {
   const errorLink = onError(({graphQLErrors, networkError}) => {
     if (graphQLErrors) {
       graphQLErrors.map(({message, extraInfos, stack, path}) => {
-        const ignore = ["NOT AUTHENTICATED", "USER_MUST_BE_AUTHENTICATED", "INVALID_CREDENTIALS", "FORM_VALIDATION_ERROR"];
+        const ignore = [
+          "NOT AUTHENTICATED",
+          "USER_MUST_BE_AUTHENTICATED",
+          "INVALID_CREDENTIALS",
+          "FORM_VALIDATION_ERROR"
+        ];
         if (ignore.includes(message.toUpperCase())) {
           // what to do if user not authenticated?
           // route to login is already done
@@ -69,7 +77,7 @@ export function getApolloClient({i18n, enqueueSnackbar, gqlFragments} = {}) {
                   error={
                     <>
                       In path : {(path || []).join(".")}
-                      <br/>
+                      <br />
                       Stack :{" "}
                       {(stack || []).map((line, index) => (
                         <div key={index}>{line}</div>
@@ -97,7 +105,7 @@ export function getApolloClient({i18n, enqueueSnackbar, gqlFragments} = {}) {
     cache: new InMemoryCache({
       fragmentMatcher,
       dataIdFromObject: o => {
-        return o.id
+        return o.id;
       }
     }),
     defaultOptions: {

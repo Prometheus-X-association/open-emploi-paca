@@ -23,7 +23,7 @@ import {
   SSOApiClient,
   SynaptixDatastoreAdapter,
   SynaptixDatastoreRdfAdapter
-} from '@mnemotix/synaptix.js';
+} from "@mnemotix/synaptix.js";
 import kebabCase from "lodash/kebabCase";
 
 /**
@@ -34,7 +34,11 @@ import kebabCase from "lodash/kebabCase";
  * @param {DataModel} dataModel
  * @return {{datastoreAdapter: SynaptixDatastoreAdapter, networkLayer: NetworkLayerAMQP}}
  */
-export async function generateDatastoreAdapater({ssoApiClient, graphMiddlewares, dataModel} = {}) {
+export async function generateDatastoreAdapater({
+  ssoApiClient,
+  graphMiddlewares,
+  dataModel
+} = {}) {
   /**
    * Connecting network layer.
    */
@@ -52,9 +56,7 @@ export async function generateDatastoreAdapater({ssoApiClient, graphMiddlewares,
   await networkLayer.connect();
 
   if (!graphMiddlewares) {
-    graphMiddlewares = [
-      new MnxActionGraphMiddleware()
-    ];
+    graphMiddlewares = [new MnxActionGraphMiddleware()];
   }
 
   /**
@@ -65,7 +67,7 @@ export async function generateDatastoreAdapater({ssoApiClient, graphMiddlewares,
     modelDefinitionsRegister: dataModel.generateModelDefinitionsRegister(),
     ssoApiClient,
     graphMiddlewares,
-    nodesTypeFormatter: (nodeType) => {
+    nodesTypeFormatter: nodeType => {
       return kebabCase(nodeType);
     }
   });

@@ -7,7 +7,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 
 const minWHStyle = {minWidth: 500, minHeight: 250};
 
-export const ConfirmDialog = (props) => {
+export const ConfirmDialog = props => {
   const {title, children, open, setOpen, onConfirm} = props;
   return (
     <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="confirm-dialog">
@@ -29,4 +29,4 @@ export const ConfirmDialog = (props) => {
       </DialogActions>
     </Dialog>
   );
-}; 
+};

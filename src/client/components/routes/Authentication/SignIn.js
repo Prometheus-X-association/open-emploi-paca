@@ -17,7 +17,7 @@ import {useTranslation} from "react-i18next";
 import {CheckboxWithLabel, TextField} from "formik-material-ui";
 import {useApolloClient} from "@apollo/react-hooks";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
@@ -51,7 +51,7 @@ export default function SignIn() {
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon/>
+          <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           {t("SIGN_IN.TITLE")}
@@ -121,12 +121,12 @@ export default function SignIn() {
                   {t("SIGN_IN.SUBMIT")}
                 </Button>
 
-                {isSubmitting && <CircularProgress size={24} className={classes.buttonProgress}/>}
+                {isSubmitting && <CircularProgress size={24} className={classes.buttonProgress} />}
 
                 <Grid container>
                   <Grid item xs>
                     {createLink({
-                      to: ROUTES.PROFIL_PASSWORD_FORGOTTEN,
+                      to: ROUTES.PASSWORD_FORGOTTEN,
                       text: t("SIGN_IN.PASSWORD_FORGOTTEN"),
                       variant: "body2"
                     })}
@@ -141,7 +141,7 @@ export default function SignIn() {
         </Formik>
       </div>
       <Box mt={8}>
-        <Copyright/>
+        <Copyright />
       </Box>
     </Container>
   );

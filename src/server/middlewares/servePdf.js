@@ -17,7 +17,7 @@
  */
 
 import got from "got";
-import {logError} from "@mnemotix/synaptix.js";
+import { logError } from "@mnemotix/synaptix.js";
 
 /**
  * Serves localized labels for the application under the endpoint /locales/:lang
@@ -25,10 +25,10 @@ import {logError} from "@mnemotix/synaptix.js";
  * The locales are defined in the directory src/locales
  *
  */
-export async function servePdf({app}) {
+export async function servePdf({ app }) {
   app.get("/pdf", async (req, res) => {
     try {
-      const uri = req.query.uri.replace(' ', '+');
+      const uri = req.query.uri.replace(" ", "+");
       got
         .stream(uri)
         .on("response", res => {

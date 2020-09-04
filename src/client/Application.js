@@ -12,12 +12,15 @@ import {useLoggedUser} from "./hooks/useLoggedUser";
 import {EnvironmentContext} from "./hooks/useEnvironment";
 import {DefaultLayout} from "./components/layouts/DefaultLayout";
 import {LoadingSplashScreen} from "./components/widgets/LoadingSplashScreen";
-import {Dashboard} from "./components/routes/Dashboard/Dashboard";
 import favicon from "./assets/favicon.ico";
 
-const SignIn = loadable(() => import("./components/routes/Authentication/SignIn"));
-const SignUp = loadable(() => import("./components/routes/Authentication/SignUp"));
-const PasswordForgotten = loadable(() => import("./components/routes/Authentication/PasswordForgotten"));
+const SignIn = loadable(() => import(/* webpackChunkName: "SignIn" */ "./components/routes/Authentication/SignIn"));
+const SignUp = loadable(() => import(/* webpackChunkName: "SignUp" */ "./components/routes/Authentication/SignUp"));
+const PasswordForgotten = loadable(() =>
+  import(/* webpackChunkName: "PasswordForgotten" */ "./components/routes/Authentication/PasswordForgotten")
+);
+const Profile = loadable(() => import(/* webpackChunkName: "Profile" */ "./components/routes/Profile/Profile"));
+const Dashboard = loadable(() => import(/* webpackChunkName: "Dashboard" */ "./components/routes/Dashboard/Dashboard"));
 
 const gqlEnvironmentQuery = gql`
   query EnvironmentQuery {
@@ -35,7 +38,6 @@ const gqlEnvironmentQuery = gql`
  * @constructor
  */
 export default function Application({} = {}) {
-
   const {data: envData, loading: envLoading} = useQuery(gqlEnvironmentQuery);
   const {isLogged, isAdmin, isContributor, isEditor, loading} = useLoggedUser();
 
@@ -43,20 +45,21 @@ export default function Application({} = {}) {
     <EnvironmentContext.Provider value={envData?.environment}>
       <Helmet>
         <title>Open Emploi Région Sud</title>
-        <meta name="description" content="Application pour l'Open Emploi de la Région Sud"/>
-        <link rel="icon" href={favicon} sizes="32x32"/>
+        <meta name="description" content="Application pour l'Open Emploi de la Région Sud" />
+        <link rel="icon" href={favicon} sizes="32x32" />
       </Helmet>
 
       <Choose>
         <When condition={loading || envLoading}>
-          <LoadingSplashScreen/>
+          <LoadingSplashScreen />
         </When>
 
         <When condition={isLogged}>
-          <Suspense fallback={<LoadingSplashScreen/>}>
+          <Suspense fallback={<LoadingSplashScreen />}>
             <DefaultLayout>
               <FragmentSwitch>
-                <Route component={Dashboard}/>
+                <Route path={ROUTES.PROFILE} component={Profile} />
+                <Route component={Dashboard} />
               </FragmentSwitch>
             </DefaultLayout>
           </Suspense>
@@ -64,9 +67,9 @@ export default function Application({} = {}) {
 
         <Otherwise>
           <Switch>
-            <Route exact path={ROUTES.PASSWORD_FORGOTTEN} component={PasswordForgotten}/>
-            <Route exact path={ROUTES.SIGN_UP} component={SignUp}/>
-            <Route component={SignIn}/>
+            <Route exact path={ROUTES.PASSWORD_FORGOTTEN} component={PasswordForgotten} />
+            <Route exact path={ROUTES.SIGN_UP} component={SignUp} />
+            <Route component={SignIn} />
           </Switch>
         </Otherwise>
       </Choose>

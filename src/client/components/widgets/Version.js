@@ -9,12 +9,8 @@ export function Version({className} = {}) {
   return (
     <span className={className}>
       <Choose>
-        <When condition={!!date}>
-          Dernière mise à jour le {dayjs(date[0]).format("L")}
-        </When>
-        <Otherwise>
-          Version : {version}
-        </Otherwise>
+        <When condition={!!date}>Dernière mise à jour le {dayjs(date[0]).format("L")}</When>
+        <Otherwise>Version : {version}</Otherwise>
       </Choose>
     </span>
   );

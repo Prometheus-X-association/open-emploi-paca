@@ -8,11 +8,9 @@ import {LoadingButton} from "./LoadingButton";
 export const TooltipButton = ({children, ...props} = {}) => {
   return (
     <Tooltip title={tooltip} arrow>
-        <span>
-          <LoadingButton {...props}>
-            {children}
-          </LoadingButton>
-        </span>
+      <span>
+        <LoadingButton {...props}>{children}</LoadingButton>
+      </span>
     </Tooltip>
   );
 };

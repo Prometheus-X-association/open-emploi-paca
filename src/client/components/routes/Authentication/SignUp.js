@@ -18,7 +18,7 @@ import {getUserAuthenticationService} from "../../../services/UserAuthentication
 import {useApolloClient} from "@apollo/react-hooks";
 import {TextField} from "../../widgets/Form";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
@@ -48,7 +48,7 @@ export default function SignUp() {
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon/>
+          <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           {t("SIGN_UP.TITLE")}
@@ -106,7 +106,7 @@ export default function SignUp() {
                   {t("SIGN_UP.SUBMIT")}
                 </Button>
 
-                {isSubmitting && <CircularProgress size={24} className={classes.buttonProgress}/>}
+                {isSubmitting && <CircularProgress size={24} className={classes.buttonProgress} />}
 
                 <Grid container justify="flex-end">
                   <Grid item>
@@ -119,7 +119,7 @@ export default function SignUp() {
         />
       </div>
       <Box mt={5}>
-        <Copyright/>
+        <Copyright />
       </Box>
     </Container>
   );

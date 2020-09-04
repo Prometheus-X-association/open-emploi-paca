@@ -7,7 +7,7 @@ import ErrorBoundary from "../../ErrorBoundary";
 import {TableHead} from "./TableHead";
 import clsx from "clsx";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     width: "100%"
   },
@@ -91,10 +91,10 @@ function EnhancedTableCode({className, dense, columns, rows, onColumnSortChange,
                 selected={isItemSelected}
                 className={classes.row}>
                 <TableCell padding="checkbox">
-                  <Checkbox checked={isItemSelected} inputProps={{"aria-labelledby": labelId}}/>
+                  <Checkbox checked={isItemSelected} inputProps={{"aria-labelledby": labelId}} />
                 </TableCell>
                 {columns
-                  .filter((column) => column.options?.display !== "excluded")
+                  .filter(column => column.options?.display !== "excluded")
                   .map((column, cellIndex) => (
                     <TableCell
                       key={`${rowIndex}_${cellIndex}`}

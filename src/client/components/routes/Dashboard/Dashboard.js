@@ -5,22 +5,20 @@ import {Grid, Typography} from "@material-ui/core";
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {makeStyles} from "@material-ui/core/styles";
 
-const useStyles = makeStyles(theme => ({
-  heading: {
-    fontSize: theme.typography.fontSize * 1.5
-  }
-}));
+const useStyles = makeStyles(theme => ({}));
 /**
  *
  */
-export function Dashboard({children} = {}) {
+export default function Dashboard({children} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant={"h2"} className={classes.heading}>{t("DASHBOARD.YOUR_DASHBOARD")}</Typography>
+        <Typography variant={"h2"} className={classes.heading}>
+          {t("DASHBOARD.YOUR_DASHBOARD")}
+        </Typography>
       </Grid>
 
       <Grid item xs={12}>

@@ -1,5 +1,5 @@
-import {fr} from "./fr";
-import {en} from "./en";
+import { fr } from "./fr";
+import { en } from "./en";
 
 export const locales = {
   fr,

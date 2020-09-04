@@ -10,12 +10,7 @@ export const NumberField = ({label, ...props}) => {
   }
   return (
     <div style={{display: "flex", flexDirection: "column"}}>
-      <TextField
-        type="number"
-        label={label}
-        {...field}
-        {...props}
-      />
+      <TextField type="number" label={label} {...field} {...props} />
       {meta.touched && meta.error ? (
         <div className="MuiFormHelperText-root" style={{color: "red"}}>
           {meta.error}

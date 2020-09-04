@@ -12,8 +12,11 @@ import {locale} from "dayjs";
 export const DatePickerField = ({pickTime, ...props}) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Field component={pickTime ? KeyboardDateTimePicker : KeyboardDatePicker}
-             format={locale() === "fr" ? "DD/MM/YYYY" : "YYYY/MM/DD"} {...props} />
+      <Field
+        component={pickTime ? KeyboardDateTimePicker : KeyboardDatePicker}
+        format={locale() === "fr" ? "DD/MM/YYYY" : "YYYY/MM/DD"}
+        {...props}
+      />
     </MuiPickersUtilsProvider>
   );
 };

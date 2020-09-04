@@ -13,13 +13,13 @@
  * limitations under the License.
  *
  */
-import {DataModel, launchApplication, logInfo} from "@mnemotix/synaptix.js";
+import { DataModel, launchApplication, logInfo } from "@mnemotix/synaptix.js";
 import dotenv from "dotenv";
 
-import {serveGraphQL} from "./middlewares/serveGraphQL";
-import {serveFrontend} from "./middlewares/serveFrontend";
-import {serveLocales} from "./middlewares/serveLocales";
-import {servePdf} from "./middlewares/servePdf";
+import { serveGraphQL } from "./middlewares/serveGraphQL";
+import { serveFrontend } from "./middlewares/serveFrontend";
+import { serveLocales } from "./middlewares/serveLocales";
+import { servePdf } from "./middlewares/servePdf";
 
 /**
  * @param {object} Package - Basically package.json file.
@@ -28,22 +28,28 @@ import {servePdf} from "./middlewares/servePdf";
  * @param {object} locales
  * @param {object} webpackConfig
  */
-export function launch({Package, environmentDefinition, extraDataModels, locales = {}, webpackConfig} = {}) {
+export function launch({
+  Package,
+  environmentDefinition,
+  extraDataModels,
+  locales = {},
+  webpackConfig
+} = {}) {
   dotenv.config();
 
-  let launchMiddlewares = [
-    servePdf,
-    serveLocales({locales})
-  ];
+  let launchMiddlewares = [servePdf, serveLocales({ locales })];
 
   if (!parseInt(process.env.FRONTEND_DISABLED)) {
-    launchMiddlewares.push(serveFrontend({webpackConfig}));
+    launchMiddlewares.push(serveFrontend({ webpackConfig }));
   }
 
   return launchApplication({
     Package,
     environment: environmentDefinition,
-    generateGraphQLEndpoints: serveGraphQL({extraDataModels, environmentDefinition}),
+    generateGraphQLEndpoints: serveGraphQL({
+      extraDataModels,
+      environmentDefinition
+    }),
     launchMiddlewares
   })
     .then(() => {

@@ -1,23 +1,27 @@
 import {createMuiTheme} from "@material-ui/core/styles";
 
-const mainBlue = '#014d88';
-const mainOrange = '#FCB018';
-const backgroundGrey = '#F0EFEF';
-const textBlue = '#0072BC';
-const linkBlue = '#007bff';
-const emptyGrey = '#6c757d';
+const mainBlue = "#014d88";
+const mainOrange = "#FCB018";
+const backgroundGrey = "#F0EFEF";
+const textBlue = "#0072BC";
+const linkBlue = "#007bff";
+const emptyGrey = "#6c757d";
+const fontSize = 14;
 
 export const theme = createMuiTheme({
+  typography: {
+    fontSize
+  },
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,
-      main: mainBlue,
+      main: mainBlue
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contrast with palette.primary.main
     },
     secondary: {
       main: mainOrange,
-      contrastText: '#FFFFFF',
+      contrastText: "#FFFFFF"
     },
     text: {
       emptyHint: emptyGrey,
@@ -25,14 +29,19 @@ export const theme = createMuiTheme({
       drawerMenuItemText: textBlue,
       mainBlue,
       mainOrange,
-      textBlue,
+      textBlue
     },
     background: backgroundGrey
   },
   overrides: {
+    MuiTypography: {
+      h2: {
+        fontSize: fontSize * 1.5
+      }
+    },
     MuiContainer: {
       root: {
-        backgroundColor: '#FFFFFF'
+        backgroundColor: "#FFFFFF"
       }
     },
     MuiLink: {

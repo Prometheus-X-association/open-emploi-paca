@@ -9,7 +9,7 @@ export function useLoggedUser({userAuthenticationService} = {}) {
   if (!userAuthenticationService) {
     userAuthenticationService = getUserAuthenticationService({
       apolloClient: useApolloClient()
-    })
+    });
   }
 
   return userAuthenticationService.useLoggedUser();

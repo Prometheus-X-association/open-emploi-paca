@@ -16,16 +16,16 @@
  *
  */
 
-import {DataModel, MnxDatamodels} from "@mnemotix/synaptix.js";
-import {mmDataModel} from "./mm";
-import {oepDataModel} from "./oep";
+import { DataModel, MnxDatamodels } from "@mnemotix/synaptix.js";
+import { mmDataModel } from "./mm";
+import { oepDataModel } from "./oep";
 import PersonDefinition from "./oep/PersonDefinition";
 /**
  * This is an instance of the datamodel.
  * @see https://gitlab.com/mnemotix/synaptix.js#datamodel
  */
-export function generateDataModel({environmentDefinition = {}} = {}) {
-  return (new DataModel())
+export function generateDataModel({ environmentDefinition = {} } = {}) {
+  return new DataModel()
     .mergeWithDataModels([
       MnxDatamodels.mnxCoreDataModel,
       mmDataModel,
@@ -34,5 +34,5 @@ export function generateDataModel({environmentDefinition = {}} = {}) {
     .setModelDefinitionForLoggedUserPerson(PersonDefinition)
     .addDefaultSchemaTypeDefs()
     .addSSOMutations()
-    .exposeEnvironmentDefinition({environmentDefinition});
+    .exposeEnvironmentDefinition({ environmentDefinition });
 }

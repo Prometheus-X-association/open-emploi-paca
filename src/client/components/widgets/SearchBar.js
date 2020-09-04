@@ -13,7 +13,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {LoadingSplashScreen} from "./LoadingSplashScreen";
 import ErrorBoundary from "./ErrorBoundary";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     height: 48,
     display: "flex",
@@ -153,7 +153,7 @@ function SearchBarCode(props) {
       </div>
       <Choose>
         <When condition={loading}>
-          <LoadingSplashScreen size={30} className={classes.progress}/>
+          <LoadingSplashScreen size={30} className={classes.progress} />
         </When>
         <Otherwise>
           {extraButtons}
@@ -192,10 +192,10 @@ function SearchBarCode(props) {
 
 SearchBar.defaultProps = {
   className: "",
-  closeIcon: <ClearIcon style={{color: grey[500]}}/>,
+  closeIcon: <ClearIcon style={{color: grey[500]}} />,
   disabled: false,
   placeholder: "Search",
-  searchIcon: <SearchIcon style={{color: grey[500]}}/>,
+  searchIcon: <SearchIcon style={{color: grey[500]}} />,
   style: null,
   value: ""
 };

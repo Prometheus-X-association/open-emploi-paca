@@ -18,14 +18,20 @@
 import yargs from "yargs";
 import ora from "ora";
 import dotenv from "dotenv";
-import {GraphQLContext, initEnvironment, LabelDefinition, LinkStep, MnxOntologies,} from "@mnemotix/synaptix.js";
+import {
+  GraphQLContext,
+  initEnvironment,
+  LabelDefinition,
+  LinkStep,
+  MnxOntologies
+} from "@mnemotix/synaptix.js";
 import env from "env-var";
 
-import {commonEntityFilter, commonFields} from "./connectors/commonFields";
-import {generateDatastoreAdapater} from "../../middlewares/generateDatastoreAdapter";
-import {Client} from "@elastic/elasticsearch";
+import { commonEntityFilter, commonFields } from "./connectors/commonFields";
+import { generateDatastoreAdapater } from "../../middlewares/generateDatastoreAdapter";
+import { Client } from "@elastic/elasticsearch";
 import path from "path";
-import {generateDataModel} from "../../datamodel/generateDataModel";
+import { generateDataModel } from "../../datamodel/generateDataModel";
 import fs from "fs";
 
 dotenv.config();
@@ -93,12 +99,17 @@ export let indexData = async () => {
     .epilog("Copyright Mnemotix 2019")
     .help().argv;
 
-  const environmentDefinition = require(path.resolve(process.cwd(), environmentPath)).default;
+  const environmentDefinition = require(path.resolve(
+    process.cwd(),
+    environmentPath
+  )).default;
   let extraDataModels;
   let dataModelAbsolutePath = path.resolve(process.cwd(), dataModelPath);
 
   if (fs.existsSync(dataModelAbsolutePath)) {
-    extraDataModels = [require(path.resolve(process.cwd(), dataModelAbsolutePath)).dataModel];
+    extraDataModels = [
+      require(path.resolve(process.cwd(), dataModelAbsolutePath)).dataModel
+    ];
   }
 
   initEnvironment(environmentDefinition);
@@ -135,7 +146,7 @@ export let indexData = async () => {
   });
 
   /** @type {SynaptixDatastoreRdfAdapter} */
-  let {datastoreAdapter} = await generateDatastoreAdapater({
+  let { datastoreAdapter } = await generateDatastoreAdapater({
     graphMiddlewares: [],
     dataModel
   });
@@ -160,7 +171,7 @@ export let indexData = async () => {
       (allIndices || (included && !excluded))
     ) {
       let connector = connectors.find(
-        ({name}) => name === `${indexPrefix}${modelDefinition.getIndexType()}`
+        ({ name }) => name === `${indexPrefix}${modelDefinition.getIndexType()}`
       );
 
       if (!connector) {
@@ -178,7 +189,7 @@ export let indexData = async () => {
           ],
           mappings: {
             types: {
-              "type": "keyword"
+              type: "keyword"
             }
           },
           types: [],
@@ -223,7 +234,7 @@ export let indexData = async () => {
             connector.fields.push({
               fieldName: fieldName,
               propertyChain: [
-                synaptixSession.normalizeAbsoluteUri({uri: dataProperty})
+                synaptixSession.normalizeAbsoluteUri({ uri: dataProperty })
               ],
               analyzed:
                 property instanceof LabelDefinition || property.isSearchable(),
@@ -232,30 +243,28 @@ export let indexData = async () => {
 
             if (property.isSearchable()) {
               connector.mappings[fieldName] = {
-                "type": "text",
-                "analyzer": "autocomplete",
-                "search_analyzer": "autocomplete_search",
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
+                type: "text",
+                analyzer: "autocomplete",
+                search_analyzer: "autocomplete_search",
+                fields: {
+                  keyword: {
+                    type: "keyword",
+                    ignore_above: 256
                   }
                 }
               };
             } else {
               connector.mappings[fieldName] = {
-                "type": "keyword"
-              }
+                type: "keyword"
+              };
             }
-
-
           }
 
           if (property instanceof LabelDefinition) {
             connector.fields.push({
               fieldName: `${fieldName}_locales`,
               propertyChain: [
-                synaptixSession.normalizeAbsoluteUri({uri: dataProperty}),
+                synaptixSession.normalizeAbsoluteUri({ uri: dataProperty }),
                 "lang()"
               ],
               analyzed: false,
@@ -263,7 +272,7 @@ export let indexData = async () => {
             });
 
             connector.mappings[`${fieldName}_locales`] = {
-              "type": "keyword"
+              type: "keyword"
             };
           }
         }
@@ -321,7 +330,7 @@ export let indexData = async () => {
             });
 
             connector.mappings[fieldName] = {
-              "type": "keyword"
+              type: "keyword"
             };
           }
         }
@@ -366,16 +375,14 @@ INSERT DATA {
 }
 `
         });
-    } catch (e) {
-    }
+    } catch (e) {}
 
     // Ensure index is deleted as well
     try {
       await esClient.indices.delete({
         index: name
       });
-    } catch (e) {
-    }
+    } catch (e) {}
 
     if (!deleteOnly) {
       try {
@@ -406,7 +413,7 @@ INSERT DATA {
               }
             },
             mappings: {
-              "properties": mappings
+              properties: mappings
             }
           }
         });
@@ -445,8 +452,7 @@ INSERT DATA {
       await esClient.indices.delete({
         index
       });
-    } catch (e) {
-    }
+    } catch (e) {}
 
     try {
       await esClient.indices.create({
@@ -497,10 +503,10 @@ INSERT DATA {
     }
 
     let {
-      body: {count}
+      body: { count }
     } = await esClient.count({
       index: sourceIndex,
-      body: {query: {exists: {field: "hasVocabulary"}}}
+      body: { query: { exists: { field: "hasVocabulary" } } }
     });
 
     for (let i = 1; i <= count; i++) {
@@ -509,9 +515,9 @@ INSERT DATA {
         index: sourceIndex,
         from: i - 1,
         size: 1,
-        body: {query: {exists: {field: "hasVocabulary"}}}
+        body: { query: { exists: { field: "hasVocabulary" } } }
       });
-      const {_id: id, _source: concept} = response.body.hits.hits[0];
+      const { _id: id, _source: concept } = response.body.hits.hits[0];
       try {
         await esClient.index({
           index,

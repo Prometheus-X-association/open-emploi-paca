@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import {logWarning, MnxOntologies} from "@mnemotix/synaptix.js";
+import { logWarning, MnxOntologies } from "@mnemotix/synaptix.js";
 
 export let migrationMappers = {
   UserAccount: {
@@ -154,7 +154,7 @@ export let migrationMappers = {
           let involvementUri = dseIdToURI({
             id: `${targetId}${salt}`,
             modelDefinition:
-            MnxOntologies.mnxProject.ModelDefinitions.InvolvementDefinition,
+              MnxOntologies.mnxProject.ModelDefinitions.InvolvementDefinition,
             synaptixSession
           });
 
@@ -237,7 +237,7 @@ export let migrationMappers = {
                   modelDefinition = id.match("Person")
                     ? MnxOntologies.mnxAgent.ModelDefinitions.PersonDefinition
                     : MnxOntologies.mnxAgent.ModelDefinitions
-                      .OrganizationDefinition;
+                        .OrganizationDefinition;
                   break;
                 case "Tagging":
                   mentionType = "Tagging";
@@ -280,7 +280,7 @@ export let migrationMappers = {
         linkName: "isReplyOf"
       }
     },
-    migrateIf: ({objectInput, objectLinksInput}) => {
+    migrateIf: ({ objectInput, objectLinksInput }) => {
       let content = (objectInput.description || "")
         .replace("<p></p>", "")
         .replace("\n", "")
@@ -332,7 +332,7 @@ export let migrationMappers = {
     links: {
       AGENT: {
         linkName: "hasAgent",
-        forceTargetModelDefinition: ({targetId}) => {
+        forceTargetModelDefinition: ({ targetId }) => {
           return targetId.match("Person")
             ? MnxOntologies.mnxAgent.ModelDefinitions.PersonDefinition
             : MnxOntologies.mnxAgent.ModelDefinitions.OrganizationDefinition;
@@ -353,7 +353,7 @@ export let migrationMappers = {
       },
       RESOURCE: {
         linkName: "hasResource",
-        forceTargetModelDefinition: ({targetId}) => {
+        forceTargetModelDefinition: ({ targetId }) => {
           return MnxOntologies.mnxProject.ModelDefinitions.FileDefinition;
         }
       }
@@ -407,7 +407,7 @@ export let migrationMappers = {
       TAGGING_OBJECT: {
         linkName: "hasEntity",
         mustExist: true,
-        forceTargetModelDefinition: ({targetId}) => {
+        forceTargetModelDefinition: ({ targetId }) => {
           if (targetId.match("Person")) {
             return MnxOntologies.mnxAgent.ModelDefinitions.PersonDefinition;
           }
@@ -460,10 +460,15 @@ export let migrationMappers = {
         filterOnEdgeLabel: "HAS_ACCOUNT"
       }
     },
-    migrateIf: ({objectInput, objectLinksInput}) => {
+    migrateIf: ({ objectInput, objectLinksInput }) => {
       return !!objectInput.label;
     },
-    generateURI: ({vertexId, modelDefinition, synaptixSession, dseIdToURI}) => {
+    generateURI: ({
+      vertexId,
+      modelDefinition,
+      synaptixSession,
+      dseIdToURI
+    }) => {
       switch (vertexId) {
         case "Group:583947904:545":
           return "https://data.lafayetteanticipations.com/resource/user-group/AdministratorGroup";
@@ -472,25 +477,30 @@ export let migrationMappers = {
         case "Group:2053047168:1054":
           return "https://data.lafayetteanticipations.com/resource/user-group/ContributorGroup";
         default:
-          return dseIdToURI({id: vertexId, modelDefinition, synaptixSession});
+          return dseIdToURI({ id: vertexId, modelDefinition, synaptixSession });
       }
-    },
+    }
   },
   AccessPolicy: {
-    generateURI: ({vertexId, modelDefinition, synaptixSession, dseIdToURI}) => {
+    generateURI: ({
+      vertexId,
+      modelDefinition,
+      synaptixSession,
+      dseIdToURI
+    }) => {
       switch (vertexId) {
         case "AccessPolicy:183731200:978":
           return "https://data.lafayetteanticipations.com/resource/access-policy/PublicPolicy";
         case "AccessPolicy:183731200:979":
           return "https://data.lafayetteanticipations.com/resource/access-policy/PrivatePolicy";
         default:
-          return dseIdToURI({id: vertexId, modelDefinition, synaptixSession});
+          return dseIdToURI({ id: vertexId, modelDefinition, synaptixSession });
       }
     },
     links: {
       PRIVACY: {
         linkName: "hasEntity",
-        forceTargetModelDefinition: ({targetId}) => {
+        forceTargetModelDefinition: ({ targetId }) => {
           if (targetId.match("Person")) {
             return MnxOntologies.mnxAgent.ModelDefinitions.PersonDefinition;
           }

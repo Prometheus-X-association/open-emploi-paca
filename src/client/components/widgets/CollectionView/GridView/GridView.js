@@ -27,7 +27,7 @@ function GridViewCode({gqlConnectionPath, onNodeClick, generateNodeRoute, data} 
 
   return (
     <div className={classes.displayGrid}>
-      {get(data, gqlConnectionPath).edges.map((item) => {
+      {get(data, gqlConnectionPath).edges.map(item => {
         const {id, title, image, publicUrl, shortDescription, color} = item.node;
 
         let linkProps = {};
@@ -70,7 +70,7 @@ function GridViewCode({gqlConnectionPath, onNodeClick, generateNodeRoute, data} 
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   noTextDecoration: {textDecoration: "none"},
 
   displayGrid: {

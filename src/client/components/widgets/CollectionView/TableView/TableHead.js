@@ -19,10 +19,8 @@ function EnhancedTableHeadCode({
   selectAll,
   selectPartial,
   columns,
-  onRequestSort = () => {
-  },
-  onSelectAll = () => {
-  }
+  onRequestSort = () => {},
+  onSelectAll = () => {}
 } = {}) {
   const [selectAllChecked, setSelectAllChecked] = useState(selectAll);
   const [selectPartialChecked, setSelectPartialChecked] = useState(selectPartial);
@@ -49,7 +47,7 @@ function EnhancedTableHeadCode({
           />
         </TableCell>
         {columns
-          .filter((column) => column.options?.display !== "excluded")
+          .filter(column => column.options?.display !== "excluded")
           .map((column, index) => (
             <TableCell
               key={index}

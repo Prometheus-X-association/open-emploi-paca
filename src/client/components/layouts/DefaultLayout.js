@@ -1,8 +1,8 @@
 import React from "react";
 import grey from "@material-ui/core/colors/grey";
-import { Link } from 'react-router-dom';
+import {Link} from "react-router-dom";
 import {CssBaseline, Divider, Drawer, Grid, List, ListItem, ListItemText} from "@material-ui/core";
-import {makeStyles, useTheme} from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {Version} from "../widgets/Version";
 import Logo from "../../assets/logo-region-sud.png";
@@ -10,7 +10,6 @@ import {AppBar} from "./AppBar";
 import {useLocation} from "react-router";
 import clsx from "clsx";
 import {ROUTES} from "../../routes";
-import {createLink} from "../../utilities/createLink";
 
 const drawerWidth = 240;
 
@@ -25,10 +24,10 @@ const useStyles = makeStyles(theme => ({
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0,
+    flexShrink: 0
   },
   drawerPaper: {
-    width: drawerWidth,
+    width: drawerWidth
   },
   menuItem: {
     padding: theme.spacing(2, 0)
@@ -36,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   menuItemText: {
     textAlign: "center",
     textTransform: "uppercase",
-    color: theme.palette.text.drawerMenuItemText,
+    color: theme.palette.text.drawerMenuItemText
   },
   menuItemTextActive: {
     color: theme.palette.text.mainBlue,
@@ -58,7 +57,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(0, 2)
   },
   footerContent: {
-    height: theme.spacing(5),
+    height: theme.spacing(5)
   },
   version: {
     textAlign: "right",
@@ -105,37 +104,45 @@ export function DefaultLayout({TitleComponent, children}) {
 
   return (
     <div className={classes.root}>
-      <CssBaseline/>
+      <CssBaseline />
       <Drawer
         className={classes.drawer}
         variant="permanent"
         classes={{
-          paper: classes.drawerPaper,
+          paper: classes.drawerPaper
         }}
-        anchor="left"
-      >
-        <img className={classes.logo} src={Logo} alt={"Logo Région Sud"}/>
-        <Divider/>
+        anchor="left">
+        <img className={classes.logo} src={Logo} alt={"Logo Région Sud"} />
+        <Divider />
         <List>
           {routes.map(({text, path}) => (
-            <ListItem alignItems="center" key={text} className={clsx(classes.menuItem)} button component={Link} to={path}>
-              <ListItemText classes={{
-                root: classes.menuItemText,
-                primary: clsx({[classes.menuItemTextActive]: location.pathname === path})
-              }} primary={text} />
+            <ListItem
+              alignItems="center"
+              key={text}
+              className={clsx(classes.menuItem)}
+              button
+              component={Link}
+              to={path}>
+              <ListItemText
+                classes={{
+                  root: classes.menuItemText,
+                  primary: clsx({[classes.menuItemTextActive]: location.pathname === path})
+                }}
+                primary={text}
+              />
             </ListItem>
           ))}
         </List>
       </Drawer>
       <div className={classes.viewport}>
         <main className={classes.content}>
-          <AppBar/>
+          <AppBar />
           {children}
         </main>
         <footer className={classes.footer}>
           <Grid container direction="row" alignItems="center" justify="center" className={classes.footerContent}>
             <Grid item xs={12}>
-              <Version className={classes.version}/>
+              <Version className={classes.version} />
             </Grid>
           </Grid>
         </footer>

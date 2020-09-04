@@ -13,7 +13,6 @@ import {getApolloClient} from "./utilities/getApolloClient";
 import {gqlFragments} from "./gql/gqlFragments";
 import {theme} from "./theme";
 
-
 const Application = loadable(() => import(/* webpackChunkName: "Application" */ "./Application"));
 
 let reactRootElement = document.getElementById("react-root");
@@ -29,9 +28,9 @@ I18nService().then(i18n => {
       <ThemeProvider theme={theme}>
         <SnackbarProvider maxSnack={3}>
           <ApolloContainer i18n={i18n} gqlFragments={gqlFragments}>
-            <React.Suspense fallback={<LoadingSplashScreen/>}>
+            <React.Suspense fallback={<LoadingSplashScreen />}>
               <ErrorBoundary>
-                <Application theme={theme}/>
+                <Application theme={theme} />
               </ErrorBoundary>
             </React.Suspense>
           </ApolloContainer>

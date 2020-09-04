@@ -8,5 +8,5 @@ export const ROUTES = {
   SIGN_IN: "/",
   SIGN_UP: "/création-compte",
   PROFIL_EDIT: "/profil/edit",
-  PASSWORD_FORGOTTEN: "/mot-de-passe-oublié",
+  PASSWORD_FORGOTTEN: "/mot-de-passe-oublié"
 };

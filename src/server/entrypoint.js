@@ -13,10 +13,10 @@
  * limitations under the License.
  *
  */
-import {launch} from "./launch";
+import { launch } from "./launch";
 import Package from "../../package.json";
 import environmentDefinition from "./config/environment";
-import webpackConfig from '../../webpack.config';
+import webpackConfig from "../../webpack.config";
 
 launch({
   Package,

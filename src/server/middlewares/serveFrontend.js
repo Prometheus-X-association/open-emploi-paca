@@ -16,28 +16,28 @@
  *
  */
 
-import path from 'path';
-import express from 'express';
-import webpack from 'webpack';
-import webpackMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
-import history from 'connect-history-api-fallback';
+import path from "path";
+import express from "express";
+import webpack from "webpack";
+import webpackMiddleware from "webpack-dev-middleware";
+import webpackHotMiddleware from "webpack-hot-middleware";
+import history from "connect-history-api-fallback";
 
-import {ExpressApp, logInfo} from '@mnemotix/synaptix.js';
+import { ExpressApp, logInfo } from "@mnemotix/synaptix.js";
 
 /**
  * Prepare the frontend (source bundling with webpack) and setup the express middleware to serve it
  *
  * @param {Object} webpackConfig - Config to pass to Webpack
  */
-export function serveFrontend({webpackConfig}) {
+export function serveFrontend({ webpackConfig }) {
   /**
    * Prepare the frontend (source bundling with webpack) and setup the express middleware to serve it
    *
    * @param {ExpressApp} app - The expressJS application, wrapped in a synaptix.js ExpressApp instance
    */
-  return ({app}) => {
-    if (!['production', 'integration'].includes(process.env.NODE_ENV)) {
+  return ({ app }) => {
+    if (!["production", "integration"].includes(process.env.NODE_ENV)) {
       logInfo(`Building webpack resources...`);
 
       const compiler = webpack(webpackConfig);
@@ -51,19 +51,20 @@ export function serveFrontend({webpackConfig}) {
         }
       });
 
-      app.use(history()); /* Redirects all GET requests, with type text/html, to index.html */
+      app.use(
+        history()
+      ); /* Redirects all GET requests, with type text/html, to index.html */
       app.use(middleware);
       app.use(webpackHotMiddleware(compiler));
     } else {
       /* Dist file frow webpack config */
       let distDirectory = webpackConfig.output.path;
-      let distIndex = path.resolve(distDirectory, 'index.html');
+      let distIndex = path.resolve(distDirectory, "index.html");
 
-      app.use(express.static('./dist'));
-      app.get('*', (req, res) => {
+      app.use(express.static("./dist"));
+      app.get("*", (req, res) => {
         res.sendFile(distIndex);
       });
     }
-  }
+  };
 }
-

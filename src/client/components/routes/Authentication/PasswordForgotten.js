@@ -17,7 +17,7 @@ import {useSnackbar} from "notistack";
 import * as Yup from "yup";
 import gql from "graphql-tag";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
@@ -42,7 +42,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const formikValidationSchema = Yup.object().shape({
-  email: Yup.string().email().required("Required")
+  email: Yup.string()
+    .email()
+    .required("Required")
 });
 
 export const gqlResetUserAccountPasswordByMail = gql`
@@ -52,7 +54,6 @@ export const gqlResetUserAccountPasswordByMail = gql`
     }
   }
 `;
-
 
 export default function ProfilResetPassword() {
   const classes = useStyles();
@@ -79,7 +80,7 @@ export default function ProfilResetPassword() {
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon/>
+          <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           {t("SIGN_IN.PASSWORD_FORGOTTEN")}
@@ -112,15 +113,14 @@ export default function ProfilResetPassword() {
                   {t("RESET_PASSWORD.CONFIRM")}
                 </Button>
 
-
-                {isSubmitting && <CircularProgress size={24} className={classes.buttonProgress}/>}
+                {isSubmitting && <CircularProgress size={24} className={classes.buttonProgress} />}
               </Form>
             );
           }}
         </Formik>
       </div>
       <Box mt={8}>
-        <Copyright/>
+        <Copyright />
       </Box>
     </Container>
   );
