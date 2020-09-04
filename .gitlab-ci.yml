@@ -1,0 +1,26 @@
+stages:
+  #- test
+  - publish
+
+#unit-tests:
+#  stage: test
+#  image: node:10.15.3-stretch
+#  cache:
+#    key: ${CI_COMMIT_REF_SLUG}
+#    paths:
+#      - node_modules/
+#  script:
+#    - yarn install
+#    - yarn build
+#    - yarn test
+
+publish:
+  image: node:12.16.1-alpine
+  stage: publish
+  only:
+    - tags
+  script:
+    - echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
+    - yarn install
+    - yarn build
+    - npm publish --access public

@@ -1,0 +1,12 @@
+/.idea
+/synaptix.js.iml
+/coverage/
+/jest
+/jest.config.js
+/src
+/mkdocs.yml
+/node_modules
+/CHANGELOG.md
+.gitignore
+.gitlab-ci.yml
+jsconfig.json

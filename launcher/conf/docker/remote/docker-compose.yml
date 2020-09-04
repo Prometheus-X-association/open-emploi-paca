@@ -1,0 +1,77 @@
+version: '2.1'
+services:
+  rabbitmq:
+    image: rabbitmq:3.8.2-management
+    container_name: ${COMPOSE_PROJECT_NAME}-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "5671:5671"
+      - "5672:5672"
+      - "25672:25672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "node_health_check"]
+      interval: 5s
+      timeout: 10s
+      retries: 100
+    networks:
+      - resource
+
+  graph-controller:
+    image: registry.gitlab.com/mnemotix/synaptix/synaptix-graph-controller:0.1.8-SNAPSHOT
+    container_name: ${COMPOSE_PROJECT_NAME}-graph-controller
+    external_links:
+      - ${COMPOSE_PROJECT_NAME}-rabbitmq
+    volumes:
+      - ${DATA_PATH}/synaptix/logs:/opt/docker/logs
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_PWD=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_DURABLE_MESSAGES=false
+      - RABBITMQ_TIMEOUT=${RABBITMQ_TIMEOUT}
+      - RABBITMQ_EXCHANGE_NAME=${COMPOSE_PROJECT_NAME}
+      - RDFSTORE_USER=${RDFSTORE_USER}
+      - RDFSTORE_PWD=${RDFSTORE_PWD}
+      - RDFSTORE_ROOT_URI=${RDFSTORE_ROOT_URI}
+      - RDFSTORE_REPOSITORY_NAME=${RDFSTORE_REPOSITORY_NAME}
+      - RDFSTORE_READ_ENDPOINT=
+      - RDFSTORE_WRITE_ENDPOINT=statements
+      - SYNAPTIX_VERBOSE_MODE=${SYNAPTIX_VERBOSE_MODE}
+    networks:
+      - resource
+
+  index-controller:
+    image: registry.gitlab.com/mnemotix/synaptix/synaptix-index-controller:0.1.9-SNAPSHOT
+    container_name: ${COMPOSE_PROJECT_NAME}-index-controller
+    external_links:
+      - ${COMPOSE_PROJECT_NAME}-rabbitmq
+    volumes:
+      - ${DATA_PATH}/synaptix/logs:/opt/docker/logs
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_PWD=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_DURABLE_MESSAGES=false
+      - RABBITMQ_TIMEOUT=${RABBITMQ_TIMEOUT}
+      - RABBITMQ_EXCHANGE_NAME=${COMPOSE_PROJECT_NAME}
+      - SYNAPTIX_LOG_LEVEL=${SYNAPTIX_LOG_LEVEL}
+      - ES_MASTER_URI=${ES_MASTER_URI}
+      - ES_INDEX_NAME=${ES_INDEX_NAME}
+      - ES_CLUSTER_USER=${ES_CLUSTER_USER}
+      - ES_CLUSTER_PWD=${ES_CLUSTER_PWD}
+    networks:
+      - resource
+networks:
+  resource:
+    driver: bridge

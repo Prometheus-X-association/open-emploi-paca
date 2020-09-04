@@ -1,0 +1,63 @@
+{
+  "realm": "oep",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed" : true,
+  "registrationEmailAsUsername" : true,
+  "rememberMe" : true,
+  "verifyEmail" : false,
+  "editUsernameAllowed" : false,
+  "resetPasswordAllowed" : false,
+  "revokeRefreshToken" : false,
+  "bruteForceProtected" : true,
+  "requiredCredentials": [ "password" ],
+  "eventsEnabled" : true,
+  "eventsExpiration" : 0,
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": true,
+  "eventsListeners" : [ "jboss-logging" ],
+  "clients": [
+    {
+      "clientId": "api",
+      "directAccessGrantsEnabled": true,
+      "enabled": true,
+      "fullScopeAllowed": true,
+      "rootUrl": "http://localhost:3034",
+      "baseUrl": "/",
+      "redirectUris": [
+        "http://*",
+        "https://*"
+      ],
+      "secret": "e9a7be6b-5850-4d22-8740-a8d535e2880b",
+      "protocolMappers": [
+        {
+          "id": "27894544-9cc5-44b7-9e6e-9a4e90861ddb",
+          "name": "personId",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "aggregate.attrs": "false",
+            "userinfo.token.claim": "true",
+            "multivalued": "true",
+            "user.attribute": "personId",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "attributes.personId",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "smtpServer": {
+    "password": "**********",
+    "starttls": "true",
+    "auth": "true",
+    "port": "587",
+    "host": "smtp.mailgun.org",
+    "from": "noreply@mnemotix.com",
+    "ssl": "",
+    "user": "postmaster@mg.mnemotix.com"
+  }
+}
