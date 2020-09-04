@@ -21,4 +21,4 @@ export let commonFields = [
   }
 ];
 
-export let commonEntityFilter = "!bound(?hasDeletionAction)";
+export let commonEntityFilter = "!bound(?hasDeletionAction) && !bound(?types -> <http://www.w3.org/2002/07/owl#NamedIndividual>)";

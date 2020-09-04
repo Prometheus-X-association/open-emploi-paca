@@ -245,7 +245,7 @@ export let indexData = async () => {
               connector.mappings[fieldName] = {
                 type: "text",
                 analyzer: "autocomplete",
-                search_analyzer: "autocomplete_search",
+                search_analyzer: "autocomplete",
                 fields: {
                   keyword: {
                     type: "keyword",
@@ -393,22 +393,22 @@ INSERT DATA {
           body: {
             settings: {
               analysis: {
-                analyzer: {
-                  autocomplete: {
-                    tokenizer: "autocomplete",
-                    filter: ["lowercase"]
-                  },
-                  autocomplete_search: {
-                    tokenizer: "lowercase"
+                filter: {
+                  autocomplete_filter: {
+                    type: "edge_ngram",
+                    min_gram: 1,
+                    max_gram: 20
                   }
                 },
-                tokenizer: {
+                analyzer: {
                   autocomplete: {
-                    type: "edge_ngram",
-                    min_gram: 2,
-                    max_gram: 7,
-                    token_chars: ["letter"]
-                  }
+                    type: "custom",
+                    tokenizer: "standard",
+                    filter: [
+                      "lowercase",
+                      "autocomplete_filter"
+                    ]
+                  },
                 }
               }
             },

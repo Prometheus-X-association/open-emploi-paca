@@ -6,27 +6,21 @@ import throttle from "lodash/throttle";
 import get from "lodash/get";
 import invariant from "invariant";
 import {useTranslation} from "react-i18next";
-import ErrorBoundary from "../ErrorBoundary";
 
 /**
- * @param {DocumentNode|gql} gqlEntitiesQuery
+ * @param {gql} gqlEntitiesQuery
  * @param {string} gqlEntitiesConnectionPath
  * @param {string} gqlEntityLabelPath
  * @param {function} onSelect
  * @param {object} [gqlVariables]
  * @param {object} [AutocompleteProps]
+ * @param {object} [TextFieldProps]
  * @param {string} [placeholder]
  * @param {object} [entity]
+ * @param {object[]} entities
+ * @param {boolean} [multiple]
  */
-export function GenericAutocomplete(props) {
-  return (
-    <ErrorBoundary>
-      <GenericAutocompleteCode {...props} />
-    </ErrorBoundary>
-  );
-}
-
-function GenericAutocompleteCode({
+export function GenericAutocomplete({
   gqlEntitiesQuery,
   gqlEntitiesConnectionPath,
   gqlEntityLabelPath,
@@ -34,11 +28,10 @@ function GenericAutocompleteCode({
   placeholder,
   onSelect,
   AutocompleteProps,
+  TextFieldProps,
   entity,
   entities,
   multiple,
-  variant = "outlined",
-  size = "small"
 } = {}) {
   invariant(gqlEntitiesQuery, "gqlEntitiesQuery must be passed");
   invariant(gqlEntitiesConnectionPath, "gqlEntitiesConnectionPath must be passed");
@@ -69,7 +62,6 @@ function GenericAutocompleteCode({
 
   return (
     <Autocomplete
-      size={size}
       noOptionsText={t("AUTOCOMPLETE.NO_RESULT")}
       options={get(data, `${gqlEntitiesConnectionPath}.edges`, []).map(({node: entity}) => entity)}
       getOptionLabel={entity => {
@@ -83,12 +75,13 @@ function GenericAutocompleteCode({
       renderInput={params => (
         <TextField
           {...params}
-          variant={variant}
+          variant={"outlined"}
           label={placeholder}
           onChange={event => {
             event.persist();
             throttledOnChange(event);
           }}
+          {...TextFieldProps}
         />
       )}
       {...AutocompleteProps}

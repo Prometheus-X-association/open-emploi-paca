@@ -25,7 +25,7 @@ import PrerequisiteDefinition from "./PrerequisiteDefinition.js";
 import RncpDefinition from "./RncpDefinition.js";
 import SkillGroupDefinition from "./SkillGroupDefinition.js";
 import TrainingDefinition from "./TrainingDefinition.js";
-import PersonDefinition from "./PersonDefinition";
+import PersonDefinition from "../mnx/PersonDefinition";
 
 export let OepModelDefinitions = {
   CertifinfoDefinition,

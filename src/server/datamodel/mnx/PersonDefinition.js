@@ -44,11 +44,21 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       ...super.getLinks(),
       new LinkDefinition({
         linkName: "hasOccupation",
+        description: "Métier actuel",
         rdfObjectProperty: "oep:hasOccupation",
         relatedModelDefinition: OccupationDefinition,
+        isPlural: false,
+        graphQLPropertyName: "occupation",
+        graphQLInputName: "occupationInput"
+      }),
+      new LinkDefinition({
+        linkName: "hasWishedOccupation",
+        description: "Liste des métiers souhaités",
+        rdfObjectProperty: "oep:hasWishedOccupation",
+        relatedModelDefinition: OccupationDefinition,
         isPlural: true,
-        graphQLPropertyName: "occupations",
-        graphQLInputName: "occupationInputs"
+        graphQLPropertyName: "wishedOccupations",
+        graphQLInputName: "wishedOccupationInputs"
       })
     ];
   }
@@ -62,8 +72,21 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       ...super.getLiterals(),
       new LiteralDefinition({
         literalName: "income",
-        description: "Salaire actuel",
-        rdfDataProperty: "oep:income"
+        description: "Salaire actuel en € brut mensuel",
+        rdfDataProperty: "oep:income",
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
+      }),
+      new LiteralDefinition({
+        literalName: "wishedMinIncome",
+        description: "Salaire souhaité minimum en € brut mensuel",
+        rdfDataProperty: "oep:wishedMinIncome",
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
+      }),
+      new LiteralDefinition({
+        literalName: "wishedMaxIncome",
+        description: "Salaire souhaité maximim en € brut mensuel",
+        rdfDataProperty: "oep:wishedMinIncome",
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       })
     ];
   }

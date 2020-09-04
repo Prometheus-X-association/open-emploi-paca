@@ -8,12 +8,9 @@ export const gqlMe = gql`
       firstName
       lastName
       income
-      occupations(first: 1, sortBy: "startDate") {
-        edges {
-          node {
-            prefLabel
-          }
-        }
+      occupation {
+        id
+        prefLabel
       }
     }
   }

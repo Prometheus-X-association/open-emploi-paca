@@ -38,6 +38,12 @@ export const fr = {
       SIGN_OUT: "Se déconnecter"
     }
   },
+  CONCEPT: {
+    AUTOCOMPLETE: {
+      NO_RESULT: 'Aucun résultat trouvé.',
+      PLACEHOLDER: 'Sélectionner...',
+    },
+  },
   SIGN_IN: {
     EMAIL: "Adresse mail",
     PASSWORD: "Mot de passe",
@@ -70,7 +76,9 @@ export const fr = {
     YOUR_PROFILE: "Votre profil",
     FIRST_NAME: "Prénom",
     LAST_NAME: "Nom",
-    INCOME: "Salaire actuel"
+    INCOME: "Salaire actuel",
+    OCCUPATION: "Métier actuel",
+    LOCATION: "Bassin d'emploi actuel"
   },
   FORM_ERRORS: {
     FIELD_ERRORS: {

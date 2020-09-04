@@ -7,7 +7,8 @@ import {DragHandle} from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
+    height: "100%"
   },
   title: {
     color: theme.palette.text.mainBlue,

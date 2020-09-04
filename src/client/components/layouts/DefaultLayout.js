@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   },
   viewport: {
     flexGrow: 1,
-    background: theme.palette.background
+    background: theme.palette.backgroundColor
   },
   toolbar: {},
   content: {

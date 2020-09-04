@@ -31,7 +31,7 @@ export const theme = createMuiTheme({
       mainOrange,
       textBlue
     },
-    background: backgroundGrey
+    backgroundColor: backgroundGrey
   },
   overrides: {
     MuiTypography: {
