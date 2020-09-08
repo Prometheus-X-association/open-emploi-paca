@@ -25,12 +25,14 @@ import {getGqlFiltersForQs, gqlConcepts} from "./gql/Concepts.gql";
  * @param {function} getGqlVariables
  * @param {function} onSelectConcepts
  * @param {array} selectedConcepts
+ * @param {array} disabledConcepts
  * @param {string} placeholder
  * @param {object} AutocompleteProps
- *  @param {object} TextFieldProps
+ * @param {object} TextFieldProps
  * @param {string} [vocabularyId = "*"] - Filter on vocabulary ID (default to *)
  * @param {boolean} [excludeTopConcepts] - Exclude top concepts
  * @param {boolean} [multiple] - Select multiple concepts
+ * @param className
  * @return {*}
  * @constructor
  */
@@ -40,17 +42,20 @@ export function ConceptAutocomplete({
   getGqlVariables,
   onSelectConcepts,
   selectedConcepts,
+  disabledConcepts,
   placeholder,
   excludeTopConcepts,
   vocabularyId,
   multiple,
   AutocompleteProps,
-  TextFieldProps
+  TextFieldProps,
+  className
 } = {}) {
   const {t} = useTranslation();
 
   return (
     <GenericAutocomplete
+      className={className}
       multiple={multiple}
       placeholder={placeholder || t("CONCEPT.AUTOCOMPLETE.PLACEHOLDER")}
       gqlEntitiesQuery={gqlQuery}
@@ -59,13 +64,15 @@ export function ConceptAutocomplete({
       gqlVariables={getGqlVariables || (({qs}) => getGqlFiltersForQs({qs, excludeTopConcepts, vocabularyId}))}
       onSelect={onSelectConcepts}
       entities={selectedConcepts}
+      disableEntities={disabledConcepts}
       AutocompleteProps={{
         size: "medium",
         noOptionsText: t("CONCEPT.AUTOCOMPLETE.NO_RESULT"),
         ...AutocompleteProps
       }}
       TextFieldProps={{
-        variant: "standard"
+        variant: "standard",
+        ...TextFieldProps
       }}
     />
   );

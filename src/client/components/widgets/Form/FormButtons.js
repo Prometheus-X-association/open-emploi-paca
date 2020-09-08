@@ -24,38 +24,20 @@ export function FormButtons({label, errors, touched, isValid, dirty, saving, res
   if (disabled) {
     let reason;
     if (errors) {
-      let required = [];
-      let tooShort = [];
+      let required = false;
+      let tooShort = false;
       for (let i in errors) {
         if (errors[i] === "Required") {
-          required.push(t(formLabels[i]) || i);
+          required = true;
         } else if (errors[i] === "Too Short!") {
-          tooShort.push(t(formLabels[i]) || i);
+          tooShort = true;
         }
       }
       if (required.length > 0 || tooShort.length > 0) {
         reason = (
           <div style={{fontSize: 14}}>
-            {required.length > 0 && (
-              <>
-                {t("FORM_ERRORS.FIELD_ERRORS.REQUIRED_S")}
-                <ul>
-                  {required.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              </>
-            )}
-            {tooShort.length > 0 && (
-              <>
-                {t("FORM_ERRORS.FIELD_ERRORS.TOO_SHORTS")}
-                <ul>
-                  {tooShort.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              </>
-            )}
+            {required.length > 0 && <>{t("FORM_ERRORS.FIELD_ERRORS.REQUIRED_S")}</>}
+            {tooShort.length > 0 && <>{t("FORM_ERRORS.FIELD_ERRORS.TOO_SHORTS")}</>}
           </div>
         );
       }

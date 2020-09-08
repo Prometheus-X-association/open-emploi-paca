@@ -24,19 +24,19 @@ export const gqlConcepts = gql`
  *
  * @return {{sortings: [], filters: [string], first: number}}
  */
-export function getGqlFiltersForQs({qs, first = 10, vocabularyId = "*", excludeTopConcepts} = {}){
+export function getGqlFiltersForQs({qs, first = 10, vocabularyId = "*", excludeTopConcepts} = {}) {
   let filters = [],
     sortings = [];
 
-  if(vocabularyId){
+  if (vocabularyId) {
     filters.push(`hasVocabulary:${vocabularyId || "*"}`);
   }
 
-  if (excludeTopConcepts){
-    filters.push("topInScheme != *")
+  if (excludeTopConcepts) {
+    filters.push("topInScheme != *");
   }
 
-  if (!qs || qs === ""){
+  if (!qs || qs === "") {
     sortings.push({
       sortBy: "prefLabel"
     });
@@ -46,5 +46,5 @@ export function getGqlFiltersForQs({qs, first = 10, vocabularyId = "*", excludeT
     first: 10,
     filters,
     sortings
-  }
+  };
 }

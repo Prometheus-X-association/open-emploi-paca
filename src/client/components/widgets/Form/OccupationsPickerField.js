@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useFormikContext} from "formik";
 import {OccupationAutocomplete} from "../Autocomplete/OccupationAutocomplete/OccupationAutocomplete";
+
 /**
  * @param {string} v
  * @param {string} name

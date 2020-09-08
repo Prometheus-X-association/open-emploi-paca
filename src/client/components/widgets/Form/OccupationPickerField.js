@@ -17,6 +17,7 @@
 import React from "react";
 import {useFormikContext} from "formik";
 import {OccupationAutocomplete} from "../Autocomplete/OccupationAutocomplete/OccupationAutocomplete";
+
 /**
  * @param {string} label
  * @param {string} name

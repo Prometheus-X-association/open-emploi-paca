@@ -18,7 +18,9 @@ import {useTranslation} from "react-i18next";
  * @param {string} [placeholder]
  * @param {object} [entity]
  * @param {object[]} entities
+ * @param {object[]} [disableEntities]
  * @param {boolean} [multiple]
+ * @param {string} [className]
  */
 export function GenericAutocomplete({
   gqlEntitiesQuery,
@@ -32,6 +34,8 @@ export function GenericAutocomplete({
   entity,
   entities,
   multiple,
+  className,
+  disableEntities = []
 } = {}) {
   invariant(gqlEntitiesQuery, "gqlEntitiesQuery must be passed");
   invariant(gqlEntitiesConnectionPath, "gqlEntitiesConnectionPath must be passed");
@@ -62,12 +66,14 @@ export function GenericAutocomplete({
 
   return (
     <Autocomplete
+      className={className}
       noOptionsText={t("AUTOCOMPLETE.NO_RESULT")}
       options={get(data, `${gqlEntitiesConnectionPath}.edges`, []).map(({node: entity}) => entity)}
       getOptionLabel={entity => {
         return entity[gqlEntityLabelPath];
       }}
       getOptionSelected={(option, value) => option?.id === value?.id}
+      getOptionDisabled={option => !!disableEntities.find(({id}) => id === option.id)}
       loading={loading}
       onChange={(e, value) => onSelect(value)}
       value={entity || entities}

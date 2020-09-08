@@ -1,16 +1,16 @@
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {Grid, Typography, InputAdornment} from "@material-ui/core";
+import {Grid, InputAdornment, Typography} from "@material-ui/core";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import {Form, Formik} from "formik";
 import {object, string} from "yup";
 import pick from "lodash/pick";
 
 import {BlockContainer} from "../../widgets/BlockContainer";
-import {TextField, OccupationPickerField, FormButtons} from "../../widgets/Form";
+import {FormButtons, OccupationPickerField, TextField} from "../../widgets/Form";
 
-import {gqlMe} from "./gql/Me.gql";
+import {gqlMyProfile} from "./gql/MyProfile.gql";
 import {gqlUpdateProfile} from "./gql/UpdateProfile.gql";
 import {useSnackbar} from "notistack";
 
@@ -23,7 +23,7 @@ export default function Profile({} = {}) {
   const {t} = useTranslation();
   const {enqueueSnackbar} = useSnackbar();
 
-  const {data, loading} = useQuery(gqlMe);
+  const {data: {me} = {}, loading} = useQuery(gqlMyProfile);
   const [updateProfile, {loading: saving}] = useMutation(gqlUpdateProfile, {
     onCompleted: () => {
       enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
@@ -39,7 +39,7 @@ export default function Profile({} = {}) {
       <If condition={!loading}>
         <Grid item xs={12}>
           <Formik
-            initialValues={pick(data?.me || {}, ["firstName", "lastName", "income", "occupation"])}
+            initialValues={pick(me || {}, ["firstName", "lastName", "income", "occupation"])}
             onSubmit={async (values, {setSubmitting}) => {
               await save(values);
               setSubmitting(false);
@@ -67,41 +67,33 @@ export default function Profile({} = {}) {
                       </BlockContainer>
                     </Grid>
 
-                    <Grid item container xs={12} spacing={2} alignItems="stretch">
-                      <Grid item xs={12} md={6}>
-                        <BlockContainer title={"Ma situation"}>
-                          <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                              <TextField
-                                name="income"
-                                type={"number"}
-                                label={t("PROFILE.INCOME")}
-                                InputProps={{
-                                  endAdornment: <InputAdornment position="end">€ brut mensuel</InputAdornment>
-                                }}
-                              />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                              <OccupationPickerField label={t("PROFILE.OCCUPATION")} name="occupation" multiple={false} />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                              <TextField
-                                disabled
-                                name={"location"}
-                                label={t("PROFILE.LOCATION")}
-                              />
-                            </Grid>
+                    <Grid item xs={12} md={6}>
+                      <BlockContainer title={"Ma situation"}>
+                        <Grid container spacing={2} alignItems={"stretch"}>
+                          <Grid item xs={12}>
+                            <TextField
+                              name="income"
+                              type={"number"}
+                              label={t("PROFILE.INCOME")}
+                              InputProps={{
+                                endAdornment: <InputAdornment position="end">€ brut mensuel</InputAdornment>
+                              }}
+                            />
                           </Grid>
-                        </BlockContainer>
-                      </Grid>
 
-                      <Grid item xs={12} md={6}>
-                        <BlockContainer title={"Carto.net"}>
+                          <Grid item xs={12}>
+                            <OccupationPickerField label={t("PROFILE.OCCUPATION")} name="occupation" multiple={false} />
+                          </Grid>
 
-                        </BlockContainer>
-                      </Grid>
+                          <Grid item xs={12}>
+                            <TextField disabled name={"location"} label={t("PROFILE.LOCATION")} />
+                          </Grid>
+                        </Grid>
+                      </BlockContainer>
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <BlockContainer title={"Carto.net"}></BlockContainer>
                     </Grid>
 
                     <Grid item xs={12}>
@@ -130,7 +122,7 @@ export default function Profile({} = {}) {
     await updateProfile({
       variables: {
         input: {
-          objectId: data.me.id,
+          objectId: me.id,
           objectInput
         }
       }

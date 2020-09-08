@@ -80,6 +80,23 @@ export const fr = {
     OCCUPATION: "Métier actuel",
     LOCATION: "Bassin d'emploi actuel"
   },
+  PROJECT: {
+    YOUR_PROJECT: "Votre projet",
+    WISHED_INCOME: "Salaire mensuel souhaité",
+    WISHED_MAX_INCOME: "Maximum",
+    WISHED_MIN_INCOME: "Mininum",
+    WISHED_OCCUPATION: {
+      TITLE: "Métier recherché",
+      TIP: "Vous pouvez sélectionner 4 métiers",
+      CURRENT: "Actuel",
+      ADD: "Ajouter un métier..."
+    },
+    WISHED_LOCATION: {
+      TITLE: "Bassin d'emploi",
+      TIP: "Vous pouvez sélectionner 4 bassins d'emploi",
+      CURRENT: "Actuel"
+    }
+  },
   FORM_ERRORS: {
     FIELD_ERRORS: {
       EMAIL_ALREADY_REGISTERED: "Cette adresse de courriel est déjà utilisée",

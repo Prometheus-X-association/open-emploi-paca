@@ -1,5 +1,13 @@
 export let commonFields = [
   {
+    fieldName: "entityId",
+    propertyChain: [
+      "$self"
+    ],
+    analyzed: false,
+    multivalued: false
+  },
+  {
     fieldName: "createdAt",
     propertyChain: [
       "http://ns.mnemotix.com/ontologies/2019/8/generic-model/hasCreation",

@@ -21,6 +21,7 @@ const PasswordForgotten = loadable(() =>
 );
 const Profile = loadable(() => import(/* webpackChunkName: "Profile" */ "./components/routes/Profile/Profile"));
 const Dashboard = loadable(() => import(/* webpackChunkName: "Dashboard" */ "./components/routes/Dashboard/Dashboard"));
+const Project = loadable(() => import(/* webpackChunkName: "Project" */ "./components/routes/Project/Project"));
 
 const gqlEnvironmentQuery = gql`
   query EnvironmentQuery {
@@ -58,6 +59,7 @@ export default function Application({} = {}) {
           <Suspense fallback={<LoadingSplashScreen />}>
             <DefaultLayout>
               <FragmentSwitch>
+                <Route path={ROUTES.PROJECT} component={Project} />
                 <Route path={ROUTES.PROFILE} component={Profile} />
                 <Route component={Dashboard} />
               </FragmentSwitch>

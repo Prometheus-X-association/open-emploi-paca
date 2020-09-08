@@ -85,7 +85,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       new LiteralDefinition({
         literalName: "wishedMaxIncome",
         description: "Salaire souhaité maximim en € brut mensuel",
-        rdfDataProperty: "oep:wishedMinIncome",
+        rdfDataProperty: "oep:wishedMaxIncome",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       })
     ];
