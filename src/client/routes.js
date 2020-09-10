@@ -8,5 +8,11 @@ export const ROUTES = {
   SIGN_IN: "/",
   SIGN_UP: "/création-compte",
   PROFIL_EDIT: "/profil/edit",
-  PASSWORD_FORGOTTEN: "/mot-de-passe-oublié"
+  PASSWORD_FORGOTTEN: "/mot-de-passe-oublié",
+  CARTONET_EDIT_EXPERIENCE: "/cartonet/edit-experience",
+  CARTONET_EDIT_TRAINING: "/cartonet/edit-training",
+  CARTONET_EDIT_HOBBY: "/cartonet/edit-hobby",
+  CARTONET_EDIT_APTITUDES: "/cartonet/edit-aptitudes",
+  CARTONET_SHOW_PROFILE: "/cartonet/show-profile",
+  CARTONET_SHOW_OFFERS: "/cartonet/show-offers"
 };

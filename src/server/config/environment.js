@@ -162,75 +162,22 @@ export default {
     defaultValue: "ERROR",
     defaultValueInProduction: true
   },
-  GEONAMES_USERNAME: {
-    description: "Geonames usename to call geonames API",
-    defaultValue: "dev.mnemotix"
-  },
   SYNAPTIX_USER_SESSION_COOKIE_NAME: {
     description: "This is the session cookie name",
     defaultValue: "SNXID",
     defaultValueInProduction: true,
     exposeInGraphQL: true
   },
-  TUSD_ENDPOINT: {
-    description: "This is the TUS resumable uploader server endpoint",
-    defaultValue: "http://localhost:1080/files/",
-    exposeInGraphQL: true
+  ADDVISEO_AUTH_LOGIN: {
+    description: "This is addViseo X-Auth-Login",
+    obfuscate: true
   },
-  THUMBOR_BASE_URL: {
-    description: "This is the Thumbor (thumbnail generation) endpoint",
-    defaultValue: "http://127.0.0.1:8000/unsafe",
-    exposeInGraphQL: true
+  ADDVISEO_AUTH_TOKEN: {
+    description: "This is addViseo X-Auth-Token",
+    obfuscate: true
   },
-  DATA_DEBUG_ENABLED: {
-    description:
-      "This is an option to debug data and tell FrontEnd to display legacy URLs",
-    defaultValue: 1,
-    exposeInGraphQL: true
+  ADDVISEO_PASSWORD_SALT: {
+    description: "This is addViseo password salt",
+    obfuscate: true
   },
-  COMPANION_ENDPOINT: {
-    description:
-      "This is the Uppy companion endpoint to enabled server to server upload",
-    defaultValue: "http://localhost:3020",
-    exposeInGraphQL: true
-  },
-  COMPANION_GOOGLE_DRIVE_ENABLED: {
-    description: "Is Google Drive files upload enabled in Uppy",
-    defaultValue: "1",
-    exposeInGraphQL: true
-  },
-  COMPANION_REMOTE_URL_ENABLED: {
-    description: "Is Google Drive files upload enabled in Uppy",
-    defaultValue: "1",
-    exposeInGraphQL: true
-  },
-  CONTRIBUTOR_USER_GROUP_ID: {
-    description: "The DDF UserGroup contributor URI",
-    defaultValue: () =>
-      `${process.env.NODES_NAMESPACE_URI}user-group/ContributorGroup`,
-    defaultValueInProduction: true
-  },
-  EDITOR_USER_GROUP_ID: {
-    description: "The DDF UserGroup edtitor URI",
-    defaultValue: () =>
-      `${process.env.NODES_NAMESPACE_URI}user-group/EditorGroup`,
-    defaultValueInProduction: true
-  },
-  ADMIN_USER_GROUP_ID: {
-    description: "Administrator user group URI",
-    defaultValue: () =>
-      `${process.env.NODES_NAMESPACE_URI}user-group/AdministratorGroup`,
-    defaultValueInProduction: true
-  },
-  PUBLIC_POLICY_ID: {
-    description: "Public access policy URI. Use this id to publish oeps",
-    defaultValue: () => `access-policy/PublicPolicy`,
-    defaultValueInProduction: true
-  },
-  DEFAULT_POLICY_ID: {
-    description: "Default access policy URI",
-    defaultValue: () => `access-policy/PrivatePolicy`,
-    defaultValueInProduction: true,
-    exposeInGraphQL: true
-  }
 };

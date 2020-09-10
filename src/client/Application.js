@@ -7,7 +7,6 @@ import Helmet from "react-helmet";
 import {ROUTES} from "./routes";
 import EnvVars from "../server/config/environment";
 
-import {FragmentSwitch} from "./components/widgets/FragmentSwitch";
 import {useLoggedUser} from "./hooks/useLoggedUser";
 import {EnvironmentContext} from "./hooks/useEnvironment";
 import {DefaultLayout} from "./components/layouts/DefaultLayout";
@@ -23,6 +22,10 @@ const Profile = loadable(() => import(/* webpackChunkName: "Profile" */ "./compo
 const Dashboard = loadable(() => import(/* webpackChunkName: "Dashboard" */ "./components/routes/Dashboard/Dashboard"));
 const Project = loadable(() => import(/* webpackChunkName: "Project" */ "./components/routes/Project/Project"));
 
+const EditExperience = loadable(() => import(/* webpackChunkName: "EditExperience" */ "./components/routes/Cartonet/Experience/EditExperience"));
+const EditAptitudes = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./components/routes/Cartonet/Aptitudes/EditAptitudes"));
+const Cartography = loadable(() => import(/* webpackChunkName: "Cartography" */ "./components/routes/Cartonet/Cartography/Cartography"));
+const OfferMatching = loadable(() => import(/* webpackChunkName: "OfferMatching" */ "./components/routes/Cartonet/Offers/OfferMatching"));
 const gqlEnvironmentQuery = gql`
   query EnvironmentQuery {
     environment {
@@ -57,13 +60,24 @@ export default function Application({} = {}) {
 
         <When condition={isLogged}>
           <Suspense fallback={<LoadingSplashScreen />}>
-            <DefaultLayout>
-              <FragmentSwitch>
-                <Route path={ROUTES.PROJECT} component={Project} />
-                <Route path={ROUTES.PROFILE} component={Profile} />
-                <Route component={Dashboard} />
-              </FragmentSwitch>
-            </DefaultLayout>
+            <Switch>
+              <Route exact path={ROUTES.CARTONET_EDIT_EXPERIENCE} component={EditExperience}/>
+              <Route exact path={ROUTES.CARTONET_EDIT_TRAINING}   render={() => <EditExperience experienceType={"training"}/>}/>
+              <Route exact path={ROUTES.CARTONET_EDIT_HOBBY}      render={() => <EditExperience experienceType={"hobby"}/>}/>
+              <Route exact path={ROUTES.CARTONET_EDIT_APTITUDES}  component={EditAptitudes}/>
+              <Route exact path={ROUTES.CARTONET_SHOW_PROFILE}    component={Cartography}/>
+              <Route exact path={ROUTES.CARTONET_SHOW_OFFERS}     component={OfferMatching} />
+
+              <Route>
+                <DefaultLayout>
+                  <Switch>
+                    <Route path={ROUTES.PROJECT} component={Project} />
+                    <Route path={ROUTES.PROFILE} component={Profile} />
+                    <Route component={Dashboard} />
+                  </Switch>
+                </DefaultLayout>
+              </Route>
+            </Switch>
           </Suspense>
         </When>
 
