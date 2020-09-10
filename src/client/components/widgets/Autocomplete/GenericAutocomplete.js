@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import {useQuery} from "@apollo/react-hooks";
+import {useQuery} from "@apollo/client";
 import throttle from "lodash/throttle";
 import get from "lodash/get";
 import invariant from "invariant";

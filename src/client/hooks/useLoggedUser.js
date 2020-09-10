@@ -1,5 +1,5 @@
 import {getUserAuthenticationService} from "../services/UserAuthenticationService";
-import {useApolloClient} from "@apollo/react-hooks";
+import {useApolloClient} from "@apollo/client";
 
 /**
  * @param {UserAuthenticationService} [userAuthenticationService]

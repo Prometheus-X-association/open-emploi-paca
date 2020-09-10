@@ -15,7 +15,7 @@ import {Form, Formik} from "formik";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import {getUserAuthenticationService} from "../../../services/UserAuthenticationService";
-import {useApolloClient} from "@apollo/react-hooks";
+import {useApolloClient} from "@apollo/client";
 import {TextField} from "../../widgets/Form";
 
 const useStyles = makeStyles(theme => ({

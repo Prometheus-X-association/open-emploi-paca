@@ -1,21 +1,14 @@
 import React from "react";
 import invariant from "invariant";
-import {ApolloClient} from "apollo-client";
-import {HttpLink} from "apollo-link-http";
-import {onError} from "apollo-link-error";
-import {ApolloLink, concat} from "apollo-link";
-import {InMemoryCache, IntrospectionFragmentMatcher} from "apollo-cache-inmemory";
+import {ApolloClient, HttpLink, ApolloLink, concat, InMemoryCache} from "@apollo/client";
+import {onError} from "@apollo/client/link/error";
 import {SnackErrorMessage} from "../components/widgets/Snackbar/SnackErrorMessage";
 
-export function getApolloClient({i18n, enqueueSnackbar, gqlFragments} = {}) {
+export function getApolloClient({i18n, enqueueSnackbar, possibleTypes} = {}) {
   invariant(
-    gqlFragments,
-    "FragmentTypes must be passed. GQL Fragments are generally generated during application start. @see https://www.apollographql.com/docs/react/data/fragments/ for more details."
+    possibleTypes,
+    "GraphQL possibleTypes must be passed. GQL Fragments are generally generated during application start. @see https://www.apollographql.com/docs/react/data/fragments/ for more details."
   );
-
-  const fragmentMatcher = new IntrospectionFragmentMatcher({
-    introspectionQueryResultData: gqlFragments
-  });
 
   if (process.env.NODE_ENV === "test") {
     let miniStackTrace = new Error().stack
@@ -103,7 +96,7 @@ export function getApolloClient({i18n, enqueueSnackbar, gqlFragments} = {}) {
   const apolloClient = new ApolloClient({
     link: concat(languageMiddleware, concat(errorLink, httpLink)),
     cache: new InMemoryCache({
-      fragmentMatcher,
+      possibleTypes,
       dataIdFromObject: o => {
         return o.id;
       }

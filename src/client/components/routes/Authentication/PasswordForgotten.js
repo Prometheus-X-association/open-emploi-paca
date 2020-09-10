@@ -12,7 +12,7 @@ import {Copyright} from "../../widgets/Copyright";
 import {Field, Form, Formik} from "formik";
 import {useTranslation} from "react-i18next";
 import {TextField} from "formik-material-ui";
-import {useMutation} from "@apollo/react-hooks";
+import {useMutation} from "@apollo/client";
 import {useSnackbar} from "notistack";
 import * as Yup from "yup";
 import gql from "graphql-tag";

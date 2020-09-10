@@ -1,7 +1,7 @@
 import React, {Suspense} from "react";
 import {Route, Switch} from "react-router-dom";
 import loadable from "@loadable/component";
-import {useQuery} from "@apollo/react-hooks";
+import {useQuery} from "@apollo/client";
 import gql from "graphql-tag";
 import Helmet from "react-helmet";
 import {ROUTES} from "./routes";

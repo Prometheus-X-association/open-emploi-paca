@@ -15,7 +15,7 @@ import {Copyright} from "../../widgets/Copyright";
 import {Field, Form, Formik} from "formik";
 import {useTranslation} from "react-i18next";
 import {CheckboxWithLabel, TextField} from "formik-material-ui";
-import {useApolloClient} from "@apollo/react-hooks";
+import {useApolloClient} from "@apollo/client";
 
 const useStyles = makeStyles(theme => ({
   paper: {

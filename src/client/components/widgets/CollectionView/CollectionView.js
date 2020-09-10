@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, {useEffect, useState} from "react";
-import {useApolloClient, useMutation, useQuery} from "@apollo/react-hooks";
+import {useApolloClient, useMutation, useQuery} from "@apollo/client";
 import {LoadingSplashScreen} from "../../widgets/LoadingSplashScreen";
 import {useTranslation} from "react-i18next";
 import get from "lodash/get";

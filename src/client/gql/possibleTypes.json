@@ -1,0 +1,118 @@
+{
+  "EntityInterface": [
+    "AccessPolicy",
+    "UserAccount",
+    "Person",
+    "ExternalLink",
+    "Tagging",
+    "Comment",
+    "Concept",
+    "Creation",
+    "Update",
+    "Deletion",
+    "Vocabulary",
+    "Collection",
+    "Scheme",
+    "EmailAccount",
+    "Phone",
+    "Address",
+    "Affiliation",
+    "Organization",
+    "Occupation",
+    "Award",
+    "Qualification",
+    "Skill",
+    "Prerequisite",
+    "Aptitude",
+    "AptitudeRating",
+    "Expectation",
+    "Offer",
+    "Apply",
+    "Experience",
+    "SkillGroup",
+    "UserGroup",
+    "Location",
+    "GroupMembership",
+    "Partnership",
+    "Certifinfo",
+    "FormaCode",
+    "Nsf",
+    "Rncp",
+    "Training",
+    "Point"
+  ],
+  "ActionInterface": [
+    "Creation",
+    "Update",
+    "Deletion"
+  ],
+  "AccessPolicyTargetInterface": [
+    "UserAccount",
+    "UserGroup"
+  ],
+  "PersonInterface": [
+    "Person"
+  ],
+  "OnlineContributionInterface": [
+    "Tagging",
+    "Comment"
+  ],
+  "InstantInterface": [
+    "Tagging",
+    "Comment"
+  ],
+  "ConceptInterface": [
+    "Concept",
+    "Occupation",
+    "Qualification",
+    "Skill",
+    "SkillGroup",
+    "Certifinfo",
+    "FormaCode",
+    "Nsf",
+    "Rncp"
+  ],
+  "SKOSElementInterface": [
+    "Vocabulary",
+    "Collection",
+    "Scheme"
+  ],
+  "LocationInterface": [
+    "Address",
+    "Location"
+  ],
+  "GeometryInterface": [
+    "Point"
+  ],
+  "SpatialEntityInterface": [
+    "Address",
+    "Location"
+  ],
+  "DurationInterface": [
+    "Affiliation",
+    "Offer",
+    "Experience",
+    "Training"
+  ],
+  "AgentInterface": [
+    "Person",
+    "Organization"
+  ],
+  "OrganizationInterface": [
+    "Organization"
+  ],
+  "KnowledgeInterface": [
+    "Skill",
+    "SkillGroup"
+  ],
+  "TemporalEntityInterface": [
+    "Offer",
+    "Experience",
+    "Training"
+  ],
+  "AccessPriviledgeInterface": [
+    "ReadPriviledge",
+    "WritePriviledge"
+  ],
+  "GroupInterface": []
+}

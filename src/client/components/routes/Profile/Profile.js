@@ -2,7 +2,7 @@ import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {Grid, InputAdornment, Typography} from "@material-ui/core";
-import {useMutation, useQuery} from "@apollo/react-hooks";
+import {useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
 import {object, string} from "yup";
 import pick from "lodash/pick";
@@ -119,6 +119,8 @@ export default function Profile({} = {}) {
   );
 
   async function save(objectInput) {
+    delete objectInput.occupation;
+
     await updateProfile({
       variables: {
         input: {

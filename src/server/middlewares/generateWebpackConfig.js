@@ -17,7 +17,7 @@ const aliases = [
   "@material-ui/types",
   "@material-ui/utils",
   "@mnemotix",
-  "apollo-client",
+  "@apollo/client",
   "formik",
   "i18next",
   "notistack",

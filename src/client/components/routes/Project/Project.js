@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useSnackbar} from "notistack";
-import {useMutation, useQuery} from "@apollo/react-hooks";
+import {useMutation, useQuery} from "@apollo/client";
 import {Grid, InputAdornment, Typography} from "@material-ui/core";
 
 import {Form, Formik} from "formik";
