@@ -70,7 +70,7 @@ export function GenericAutocomplete({
       noOptionsText={t("AUTOCOMPLETE.NO_RESULT")}
       options={get(data, `${gqlEntitiesConnectionPath}.edges`, []).map(({node: entity}) => entity)}
       getOptionLabel={entity => {
-        return entity[gqlEntityLabelPath];
+        return entity?.[gqlEntityLabelPath] || "";
       }}
       getOptionSelected={(option, value) => option?.id === value?.id}
       getOptionDisabled={option => !!disableEntities.find(({id}) => id === option.id)}

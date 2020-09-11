@@ -1,5 +1,12 @@
 import gql from "graphql-tag";
 
+export const gqlOccupationFragment = gql`
+  fragment OccupationFragment on Occupation {
+    id
+    prefLabel
+  }
+`;
+
 export const gqlMyProject = gql`
   query Me {
     me {
@@ -7,16 +14,17 @@ export const gqlMyProject = gql`
       wishedMaxIncome
       wishedMinIncome
       occupation {
+        id
         prefLabel
       }
       wishedOccupations {
         edges {
-          node {
-            id
-            prefLabel
+          node{
+            ...OccupationFragment
           }
         }
       }
     }
   }
+  ${gqlOccupationFragment}
 `;

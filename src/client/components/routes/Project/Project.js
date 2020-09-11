@@ -7,14 +7,17 @@ import {Grid, InputAdornment, Typography} from "@material-ui/core";
 
 import {Form, Formik} from "formik";
 import pick from "lodash/pick";
+import cloneDeep from "lodash/cloneDeep";
+
 import {number, object} from "yup";
 
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {FormButtons, TextField} from "../../widgets/Form";
 
-import {gqlMyProject} from "./gql/MyProject";
+import {gqlMyProject, gqlOccupationFragment} from "./gql/MyProject";
 import {gqlUpdateProject} from "./gql/UpdateProject.gql";
 import {WishedOccupations} from "./WishedOccupations";
+import {prepareUpdateMutation} from "../../../utilities/apollo/prepareUpdateMutation";
 
 const useStyles = makeStyles(theme => ({}));
 
@@ -33,8 +36,7 @@ export default function Project({} = {}) {
     }
   });
 
-  const [selectedOccupations, setSelectedOccupations] = useState([]);
-
+  console.log(me?.wishedOccupations?.edges)
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -44,7 +46,7 @@ export default function Project({} = {}) {
       <If condition={!loading}>
         <Grid item xs={12}>
           <Formik
-            initialValues={pick(me, ["wishedMaxIncome", "wishedMinIncome", "wishedOccupations"])}
+            initialValues={pick(cloneDeep(me), ["wishedMaxIncome", "wishedMinIncome", "wishedOccupations"])}
             onSubmit={async (values, {setSubmitting, setStatus}) => {
               await save(values);
               setSubmitting(false);
@@ -98,7 +100,7 @@ export default function Project({} = {}) {
                     <Grid item xs={6}>
                       <BlockContainer title={t("PROJECT.WISHED_OCCUPATION.TITLE")}>
                         <Typography>{t("PROJECT.WISHED_OCCUPATION.TIP")}</Typography>
-                        <WishedOccupations currentOccupation={me?.occupation?.prefLabel} />
+                        <WishedOccupations currentOccupation={me?.occupation} />
                       </BlockContainer>
                     </Grid>
 
@@ -130,8 +132,18 @@ export default function Project({} = {}) {
     </Grid>
   );
 
-  async function save(objectInput) {
-    delete objectInput.wishedOccupations;
+  async function save(values) {
+    const {objectInput, updateCache} = prepareUpdateMutation({
+      entity: me,
+      values,
+      links: [{
+        name: "wishedOccupations",
+        isPlural: true,
+        inputName: "wishedOccupationInputs",
+        deleteInputName: "wishedOccupationInputsToDelete",
+        targetFragment: gqlOccupationFragment,
+      }]
+    });
 
     await updateProject({
       variables: {
@@ -139,7 +151,9 @@ export default function Project({} = {}) {
           objectId: me.id,
           objectInput
         }
-      }
+      },
+      update: updateCache,
     });
   }
 }
+

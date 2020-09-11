@@ -105,11 +105,8 @@ export function generateWebpackConfig({
       : []),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.EnvironmentPlugin([
-      "FRONTEND_DEBUG",
       "NODE_ENV",
-      "SYNAPTIX_USER_SESSION_COOKIE_NAME",
-      "TUSD_ENDPOINT",
-      "THUMBOR_BASE_URL"
+      "SYNAPTIX_USER_SESSION_COOKIE_NAME"
     ])
   ];
 

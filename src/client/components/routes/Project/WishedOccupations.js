@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {IconButton, List, ListItem, ListItemSecondaryAction, ListItemText} from "@material-ui/core";
@@ -14,37 +14,26 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export function WishedOccupations({
-  currentOccupation,
-  inputName = "wishedOccupationInputs",
-  deleteInputName = "wishedOccupationInputsToDelete"
-} = {}) {
+export function WishedOccupations({currentOccupation, name = "wishedOccupations"} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const formikContext = useFormikContext();
-  const existingOccupations = (formikContext.getFieldProps("wishedOccupations").value?.edges || []).map(
-    ({node: occupation}) => occupation
-  );
-  const [selectedOccupations, setSelectedOccupations] = useState([]);
+  const existingOccupationEdges = [...formikContext.getFieldProps(name).value?.edges || []];
+  const inputEl = useRef();
 
-  useEffect(() => {
-    // That handlet if used on init and form resetting.
-    if (!formikContext.values[inputName] && !formikContext.values[deleteInputName]) {
-      setSelectedOccupations([...existingOccupations]);
-    }
-  }, [formikContext.values]);
+  let disabledOccupations = existingOccupationEdges.map(({node}) => node);
 
-  useEffect(() => {
-    console.log("submit");
-  }, [formikContext.submitForm]);
+  if(currentOccupation){
+    disabledOccupations.push(currentOccupation);
+  }
 
   return (
     <List>
       <ListItem>
-        <ListItemText primary={currentOccupation} secondary={t("PROFILE.OCCUPATION")} />
+        <ListItemText primary={currentOccupation.prefLabel} secondary={t("PROFILE.OCCUPATION")} />
       </ListItem>
 
-      {selectedOccupations.map(occupation => (
+      {existingOccupationEdges.map(({node : occupation}) => (
         <ListItem key={occupation.id}>
           <ListItemText primary={occupation?.prefLabel} />
           <ListItemSecondaryAction>
@@ -58,7 +47,7 @@ export function WishedOccupations({
         <OccupationAutocomplete
           className={classes.occupationAutocomplete}
           selectedConcepts={null}
-          disabledConcepts={selectedOccupations}
+          disabledConcepts={disabledOccupations}
           placeholder={t("PROJECT.WISHED_OCCUPATION.ADD")}
           multiple={false}
           onSelectConcepts={handleSelectOccupation}
@@ -66,49 +55,33 @@ export function WishedOccupations({
             size: "small",
             clearOnBlur: true
           }}
-          TextFieldProps={{variant: "outlined"}}
+          TextFieldProps={{
+            variant: "outlined",
+            inputRef: inputEl
+          }}
         />
       </ListItem>
     </List>
   );
 
   function handleSelectOccupation(occupation) {
-    persitSelectOccupations([...selectedOccupations, occupation]);
+    const newOccupationEdge = {
+      node: occupation
+    };
+
+    persitSelectOccupations([...existingOccupationEdges, newOccupationEdge]);
+    inputEl?.current?.blur();
   }
 
   function handleRemoveOccupation(occupation) {
-    const indexOf = selectedOccupations.find(({id}) => id === occupation.id);
-    selectedOccupations.splice(indexOf, 1);
-    persitSelectOccupations([...selectedOccupations]);
+    const indexOf = existingOccupationEdges.findIndex(({node}) => node.id === occupation.id);
+    existingOccupationEdges.splice(indexOf, 1);
+    persitSelectOccupations([...existingOccupationEdges]);
   }
 
   function persitSelectOccupations(occupations) {
-    setSelectedOccupations(occupations);
-
-    let occupationsToDelete = [];
-    let occupationsToCreate = [];
-
-    for (let occupation of occupations) {
-      if (!existingOccupations.find(existingOccupation => existingOccupation.id === occupation.id)) {
-        occupationsToCreate.push({
-          id: occupation.id
-        });
-      }
-    }
-
-    for (let existingOccupation of existingOccupations) {
-      if (!occupations.find(occupation => occupation?.id === existingOccupation.id)) {
-        occupationsToDelete.push(existingOccupation.id);
-      }
-    }
-
-    console.log(existingOccupations, occupationsToCreate, occupationsToDelete);
-    if (occupationsToCreate.length > 0) {
-      formikContext.setFieldValue(inputName, occupationsToCreate);
-    }
-
-    if (occupationsToDelete.length > 0) {
-      formikContext.setFieldValue(deleteInputName, occupationsToDelete);
-    }
+    formikContext.setFieldValue(name, {
+      edges: occupations
+    });
   }
 }

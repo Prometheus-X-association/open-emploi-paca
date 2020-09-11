@@ -17,8 +17,6 @@ const Application = loadable(() => import(/* webpackChunkName: "Application" */ 
 
 let reactRootElement = document.getElementById("react-root");
 
-console.log(possibleTypes);
-
 const ApolloContainer = ({i18n, children, possibleTypes}) => {
   const {enqueueSnackbar} = useSnackbar();
   return <ApolloProvider client={getApolloClient({i18n, enqueueSnackbar, possibleTypes})}>{children}</ApolloProvider>;

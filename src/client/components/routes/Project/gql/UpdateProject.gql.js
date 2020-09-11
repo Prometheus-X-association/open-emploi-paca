@@ -5,16 +5,6 @@ export const gqlUpdateProject = gql`
     updatePerson(input: $input) {
       updatedObject {
         id
-        wishedMaxIncome
-        wishedMinIncome
-        wishedOccupations {
-          edges {
-            node {
-              id
-              prefLabel
-            }
-          }
-        }
       }
     }
   }
