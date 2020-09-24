@@ -94,26 +94,26 @@ export default function ProjectExcerpt({} = {}) {
           <Grid item xs>
             <TextField
               variant="outlined"
+              disabled={true}
               size={"small"}
               label={t("PROJECT.WISHED_MIN_INCOME")}
               InputProps={{
                 endAdornment: <InputAdornment position="end">€ brut mensuel</InputAdornment>
               }}
-              defaultValue={"a"}
-              value={me?.wishedMinIncome}
+              value={me?.wishedMinIncome || ""}
             />
           </Grid>
           <Grid item xs>
             <TextField
               variant="outlined"
+              disabled={true}
               size={"small"}
               label={t("PROJECT.WISHED_MAX_INCOME")}
               InputProps={{
                 readOnly: true,
                 endAdornment: <InputAdornment position="end">€ brut mensuel</InputAdornment>
               }}
-              defaultValue={"a"}
-              value={me?.wishedMaxIncome}
+              value={me?.wishedMaxIncome || ""}
             />
           </Grid>
           <Grid item xs={3} />
