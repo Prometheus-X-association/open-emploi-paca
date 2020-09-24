@@ -1345,10 +1345,10 @@
     react-use "^13.2.1"
     sanitize-html "^1.20.1"
 
-"@mnemotix/synaptix.js@4.6.0-rc.5-patched":
-  version "4.6.0-rc.5-patched"
-  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.6.0-rc.5-patched.tgz#a03188b6f9098f2d457d78e08c3b3f5f2e423efa"
-  integrity sha512-CvH6DcrsXxWq6Nwwp46fNKRnviwv9ntQmsEXS3g1DHWR0s0c4yuWSU0gdGMvJblzxNiBl4SQvJcuzhG22mtNnQ==
+"@mnemotix/synaptix.js@4.6.0-rc.5-wip-20200924":
+  version "4.6.0-rc.5-wip-20200924"
+  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.6.0-rc.5-wip-20200924.tgz#82fe09558b23e58e29295ee0e883678e7abbbb53"
+  integrity sha512-VBioUV0aMVxlh2G/w13UaXZ1Pp12ViLH72Op+AUNv9FelrNdqEVjIY5V2p24PlReWkaL0O+sd9hwcU9A4Srqcg==
   dependencies:
     "@babel/plugin-proposal-throw-expressions" "^7.8.3"
     amqplib "0.5.3"
@@ -6543,7 +6543,7 @@ passport-local@1.0.0:
   dependencies:
     passport-strategy "1.x.x"
 
-passport-oauth2-middleware@Mnemotix/passport-oauth2-middleware#add-client-secret-to-local-strategy:
+"passport-oauth2-middleware@github:Mnemotix/passport-oauth2-middleware#add-client-secret-to-local-strategy":
   version "1.0.3"
   resolved "https://codeload.github.com/Mnemotix/passport-oauth2-middleware/tar.gz/d5f86ee80b71f53744804f3bb2f194a0a0e06cb5"
   dependencies:
