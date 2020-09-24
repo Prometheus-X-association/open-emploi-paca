@@ -13,6 +13,7 @@ import {FormButtons, OccupationPickerField, TextField} from "../../widgets/Form"
 import {gqlMyProfile} from "./gql/MyProfile.gql";
 import {gqlUpdateProfile} from "./gql/UpdateProfile.gql";
 import {useSnackbar} from "notistack";
+import {JobAreaPickerField} from "../../widgets/Form/JobAreaPickerField";
 
 const useStyles = makeStyles(theme => ({}));
 /**
@@ -39,7 +40,7 @@ export default function Profile({} = {}) {
       <If condition={!loading}>
         <Grid item xs={12}>
           <Formik
-            initialValues={pick(me || {}, ["firstName", "lastName", "income", "occupation"])}
+            initialValues={pick(me || {}, ["firstName", "lastName", "income", "occupation", "jobArea"])}
             onSubmit={async (values, {setSubmitting}) => {
               await save(values);
               setSubmitting(false);
@@ -86,7 +87,7 @@ export default function Profile({} = {}) {
                           </Grid>
 
                           <Grid item xs={12}>
-                            <TextField disabled name={"location"} label={t("PROFILE.LOCATION")} />
+                            <JobAreaPickerField label={t("PROFILE.JOB_AREA")} name="jobArea" multiple={false} />
                           </Grid>
                         </Grid>
                       </BlockContainer>
@@ -120,6 +121,7 @@ export default function Profile({} = {}) {
 
   async function save(objectInput) {
     delete objectInput.occupation;
+    delete objectInput.jobArea;
 
     await updateProfile({
       variables: {

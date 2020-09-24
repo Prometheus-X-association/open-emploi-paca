@@ -29,4 +29,16 @@ export let commonFields = [
   }
 ];
 
+export let commonMapping = {
+  createdAt: {
+    type: "date"
+  },
+  updatedAt: {
+    type: "date"
+  },
+  query: {
+    type: "percolator"
+  }
+}
+
 export let commonEntityFilter = "!bound(?hasDeletionAction) && !bound(?types -> <http://www.w3.org/2002/07/owl#NamedIndividual>)";

@@ -7,10 +7,16 @@ export const gqlMyProfile = gql`
       avatar
       firstName
       lastName
-      income
-      occupation {
-        id
-        prefLabel
+      ... on Person{
+        income
+        occupation {
+          id
+          prefLabel
+        }
+        jobArea {
+          id
+          title
+        }
       }
     }
   }

@@ -23,6 +23,7 @@ import {
   MnxOntologies
 } from "@mnemotix/synaptix.js";
 import OccupationDefinition from "../mm/OccupationDefinition";
+import JobAreaDefinition from "../oep/JobAreaDefinition";
 
 export default class PersonDefinition extends ModelDefinitionAbstract {
   /**
@@ -59,6 +60,24 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         isPlural: true,
         graphQLPropertyName: "wishedOccupations",
         graphQLInputName: "wishedOccupationInputs"
+      }),
+      new LinkDefinition({
+        linkName: "hasJobArea",
+        description: "Bassin d'emploi actuel",
+        rdfObjectProperty: "oep:hasJobArea",
+        relatedModelDefinition: JobAreaDefinition,
+        isPlural: false,
+        graphQLPropertyName: "jobArea",
+        graphQLInputName: "jobAreaInput"
+      }),
+      new LinkDefinition({
+        linkName: "hasWishedJobArea",
+        description: "Liste des bassins d'emploi souhaités",
+        rdfObjectProperty: "oep:hasWishedJobArea",
+        relatedModelDefinition: JobAreaDefinition,
+        isPlural: true,
+        graphQLPropertyName: "wishedJobAreas",
+        graphQLInputName: "wishedJobAreaInputs"
       })
     ];
   }

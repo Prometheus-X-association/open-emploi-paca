@@ -79,7 +79,11 @@ function generatePluralLinkFields({link, cache, targetConnection}){
     const mutatingEdges = targetConnection.edges;
 
     // Conserve existant ones.
-    const resultingEdges = existingEdges.filter(existingEdge => mutatingEdges.some((mutatingEdge) => mutatingEdge.node?.id === readField("id", readField("node", existingEdge))));
+    const resultingEdges = existingEdges.filter(existingEdge => {
+      return mutatingEdges.some((mutatingEdge) => {
+        return mutatingEdge.node?.id === readField("id", readField("node", existingEdge)); //
+      })
+    });
 
 
     // Add new ones

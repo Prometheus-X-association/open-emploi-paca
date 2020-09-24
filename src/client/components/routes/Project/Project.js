@@ -14,10 +14,11 @@ import {number, object} from "yup";
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {FormButtons, TextField} from "../../widgets/Form";
 
-import {gqlMyProject, gqlOccupationFragment} from "./gql/MyProject";
+import {gqlJobAreaFragment, gqlMyProject, gqlOccupationFragment} from "./gql/MyProject";
 import {gqlUpdateProject} from "./gql/UpdateProject.gql";
 import {WishedOccupations} from "./WishedOccupations";
 import {prepareUpdateMutation} from "../../../utilities/apollo/prepareUpdateMutation";
+import {WishedJobAreas} from "./WishedJobAreas";
 
 const useStyles = makeStyles(theme => ({}));
 
@@ -36,7 +37,6 @@ export default function Project({} = {}) {
     }
   });
 
-  console.log(me?.wishedOccupations?.edges)
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -46,7 +46,7 @@ export default function Project({} = {}) {
       <If condition={!loading}>
         <Grid item xs={12}>
           <Formik
-            initialValues={pick(cloneDeep(me), ["wishedMaxIncome", "wishedMinIncome", "wishedOccupations"])}
+            initialValues={pick(cloneDeep(me), ["wishedMaxIncome", "wishedMinIncome", "wishedOccupations", "wishedJobAreas"])}
             onSubmit={async (values, {setSubmitting, setStatus}) => {
               await save(values);
               setSubmitting(false);
@@ -92,7 +92,7 @@ export default function Project({} = {}) {
                               }}
                             />
                           </Grid>
-                          <Grid item xs={3}></Grid>
+                          <Grid item xs={3}/>
                         </Grid>
                       </BlockContainer>
                     </Grid>
@@ -100,13 +100,14 @@ export default function Project({} = {}) {
                     <Grid item xs={6}>
                       <BlockContainer title={t("PROJECT.WISHED_OCCUPATION.TITLE")}>
                         <Typography>{t("PROJECT.WISHED_OCCUPATION.TIP")}</Typography>
-                        <WishedOccupations currentOccupation={me?.occupation} />
+                        <WishedOccupations currentOccupation={me?.occupation} name={"wishedOccupations"}/>
                       </BlockContainer>
                     </Grid>
 
                     <Grid item xs={6}>
-                      <BlockContainer title={t("PROJECT.WISHED_LOCATION.TITLE")}>
-                        <Typography>{t("PROJECT.WISHED_LOCATION.TIP")}</Typography>
+                      <BlockContainer title={t("PROJECT.WISHED_JOB_AREA.TITLE")}>
+                        <Typography>{t("PROJECT.WISHED_JOB_AREA.TIP")}</Typography>
+                        <WishedJobAreas currentJobArea={me?.jobArea} name={"wishedJobAreas"} />
                       </BlockContainer>
                     </Grid>
 
@@ -142,7 +143,14 @@ export default function Project({} = {}) {
         inputName: "wishedOccupationInputs",
         deleteInputName: "wishedOccupationInputsToDelete",
         targetFragment: gqlOccupationFragment,
-      }]
+      },
+        {
+          name: "wishedJobAreas",
+          isPlural: true,
+          inputName: "wishedJobAreaInputs",
+          deleteInputName: "wishedJobAreaInputsToDelete",
+          targetFragment: gqlJobAreaFragment,
+        }]
     });
 
     await updateProject({

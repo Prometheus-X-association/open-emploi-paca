@@ -30,7 +30,7 @@ export function WishedOccupations({currentOccupation, name = "wishedOccupations"
   return (
     <List>
       <ListItem>
-        <ListItemText primary={currentOccupation.prefLabel} secondary={t("PROFILE.OCCUPATION")} />
+        <ListItemText primary={currentOccupation?.prefLabel} secondary={t("PROFILE.OCCUPATION")} />
       </ListItem>
 
       {existingOccupationEdges.map(({node : occupation}) => (

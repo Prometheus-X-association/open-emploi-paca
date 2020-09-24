@@ -30,9 +30,10 @@ export default {
       prov: "http://www.w3.org/ns/prov#",
       sioc: "http://rdfs.org/sioc/ns#",
       dc: "http://purl.org/dc/terms/",
+      dct: "http://purl.org/dc/terms/",
       mnx: "http://ns.mnemotix.com/ontologies/2019/8/generic-model/",
       mm: "https://ontologies.mindmatcher.org/carto/",
-      oep: "http://ontology.datasud.fr/openemploi/"
+      oep: "http://openemploi.datasud.fr/ontology/"
     }),
     defaultValueInProduction: true
   },

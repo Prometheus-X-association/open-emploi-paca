@@ -41,7 +41,7 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
   }
 
   static getRdfInstanceBaseUri(){
-    return "http://ontology.datasud.fr/openemploi/data/occupation";
+    return "http://openemploi.datasud.fr/ontology/data/occupation";
   }
 
   /**

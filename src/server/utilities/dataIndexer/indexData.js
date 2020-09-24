@@ -27,7 +27,7 @@ import {
 } from "@mnemotix/synaptix.js";
 import env from "env-var";
 
-import { commonEntityFilter, commonFields } from "./connectors/commonFields";
+import {commonEntityFilter, commonFields, commonMapping} from "./connectors/commonFields";
 import { generateDatastoreAdapater } from "../../middlewares/generateDatastoreAdapter";
 import { Client } from "@elastic/elasticsearch";
 import path from "path";
@@ -190,7 +190,8 @@ export let indexData = async () => {
           mappings: {
             types: {
               type: "keyword"
-            }
+            },
+            ...commonMapping
           },
           types: [],
           elasticsearchNode,
@@ -255,7 +256,8 @@ export let indexData = async () => {
               };
             } else {
               connector.mappings[fieldName] = {
-                type: "keyword"
+                type: "keyword",
+                ignore_above: 256
               };
             }
           }

@@ -26,10 +26,12 @@ import RncpDefinition from "./RncpDefinition.js";
 import SkillGroupDefinition from "./SkillGroupDefinition.js";
 import TrainingDefinition from "./TrainingDefinition.js";
 import PersonDefinition from "../mnx/PersonDefinition";
+import JobAreaDefinition from "./JobAreaDefinition";
 
 export let OepModelDefinitions = {
   CertifinfoDefinition,
   FormaCodeDefinition,
+  JobAreaDefinition,
   KnowledgeDefinition,
   NsfDefinition,
   PrerequisiteDefinition,

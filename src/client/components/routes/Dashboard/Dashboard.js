@@ -4,6 +4,7 @@ import {Grid, Typography} from "@material-ui/core";
 
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {makeStyles} from "@material-ui/core/styles";
+import ProjectExcerpt from "../Project/ProjectExcerpt";
 
 const useStyles = makeStyles(theme => ({}));
 /**
@@ -22,7 +23,9 @@ export default function Dashboard({children} = {}) {
       </Grid>
 
       <Grid item xs={12}>
-        <BlockContainer title={t("DASHBOARD.YOUR_PROJECT")}>...</BlockContainer>
+        <BlockContainer title={t("DASHBOARD.YOUR_PROJECT")}>
+          <ProjectExcerpt />
+        </BlockContainer>
       </Grid>
 
       <Grid item xs={12}>

@@ -44,6 +44,12 @@ export const fr = {
       PLACEHOLDER: 'Sélectionner...',
     },
   },
+  JOB_AREA: {
+    AUTOCOMPLETE: {
+      NO_RESULT: 'Aucun résultat trouvé.',
+      PLACEHOLDER: 'Sélectionner...',
+    },
+  },
   SIGN_IN: {
     EMAIL: "Adresse mail",
     PASSWORD: "Mot de passe",
@@ -78,7 +84,7 @@ export const fr = {
     LAST_NAME: "Nom",
     INCOME: "Salaire actuel",
     OCCUPATION: "Métier actuel",
-    LOCATION: "Bassin d'emploi actuel"
+    JOB_AREA: "Bassin d'emploi actuel"
   },
   PROJECT: {
     YOUR_PROJECT: "Votre projet",
@@ -91,10 +97,11 @@ export const fr = {
       CURRENT: "Actuel",
       ADD: "Ajouter un métier..."
     },
-    WISHED_LOCATION: {
+    WISHED_JOB_AREA: {
       TITLE: "Bassin d'emploi",
       TIP: "Vous pouvez sélectionner 4 bassins d'emploi",
-      CURRENT: "Actuel"
+      CURRENT: "Actuel",
+      ADD: "Ajouter un bassin d'emploi..."
     }
   },
   FORM_ERRORS: {
