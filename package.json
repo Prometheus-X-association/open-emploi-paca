@@ -1,6 +1,6 @@
 {
   "name": "oep-application",
-  "version": "1.0.0-wip-20200924-3",
+  "version": "1.0.0-wip-20200925-1",
   "license": "Apache-2.0",
   "description": "OpenEmploi PACA application",
   "repository": "https://gitlab.com/ami-paca/oep-application",
