@@ -36,7 +36,7 @@ export function serveFrontend({ webpackConfig }) {
    *
    * @param {ExpressApp} app - The expressJS application, wrapped in a synaptix.js ExpressApp instance
    */
-  return ({ app }) => {
+  return ({ app, authenticate }) => {
     if (!["production", "integration"].includes(process.env.NODE_ENV)) {
       logInfo(`Building webpack resources...`);
 
@@ -52,7 +52,8 @@ export function serveFrontend({ webpackConfig }) {
       });
 
       app.use(
-        history()
+        history(),
+        authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true})
       ); /* Redirects all GET requests, with type text/html, to index.html */
       app.use(middleware);
       app.use(webpackHotMiddleware(compiler));
@@ -61,8 +62,8 @@ export function serveFrontend({ webpackConfig }) {
       let distDirectory = webpackConfig.output.path;
       let distIndex = path.resolve(distDirectory, "index.html");
 
-      app.use(express.static("./dist"));
-      app.get("*", (req, res) => {
+      app.use(express.static("./dist"), authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true}));
+      app.get("*", authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true}), (req, res) => {
         res.sendFile(distIndex);
       });
     }

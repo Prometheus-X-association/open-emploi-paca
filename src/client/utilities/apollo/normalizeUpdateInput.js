@@ -41,14 +41,14 @@ function normalizeSingleLinkInput({link, targetEntity}){
     //  - record the link AND update the target object.
     if (targetEntity.id){
       if (link.forceUpdateTarget){
-        objectInput[link.name] = omitBy(targetEntity, (value) => value === "__typename" || typeof value === "object");
+        objectInput[link.inputName] = omitBy(targetEntity, (value) => value === "__typename" || typeof value === "object");
       } else {
-        objectInput[link.name] = {
+        objectInput[link.inputName] = {
           id: targetEntity.id
         };
       }
     } else {
-      objectInput[link.name] = targetEntity;
+      objectInput[link.inputName] = targetEntity;
     }
   }
 
@@ -62,6 +62,8 @@ function normalizeSingleLinkInput({link, targetEntity}){
  */
 function normalizePluralLinkInput({link, entity, targetConnection}){
   let objectInput = {};
+
+  debugger;
 
   if(!Array.isArray(targetConnection?.edges)){
     throw new Error(`Link ${link.name} has been declared as plural, targetEntityConnection must be GraphQL connection`)
@@ -86,7 +88,7 @@ function normalizePluralLinkInput({link, entity, targetConnection}){
   }
 
   if (edgesToCreate.length > 0) {
-    objectInput[link.inputName] = edgesToCreate.map(edge => normalizeSingleLinkInput({link, targetEntity: edge.node})[link.name]);
+    objectInput[link.inputName] = edgesToCreate.map(edge => normalizeSingleLinkInput({link, targetEntity: edge.node})[link.inputName]);
   }
 
   if (edgesToDelete.length > 0) {

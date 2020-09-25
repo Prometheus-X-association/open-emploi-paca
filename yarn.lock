@@ -1345,10 +1345,10 @@
     react-use "^13.2.1"
     sanitize-html "^1.20.1"
 
-"@mnemotix/synaptix.js@4.6.0-rc.5-wip-20200924":
-  version "4.6.0-rc.5-wip-20200924"
-  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.6.0-rc.5-wip-20200924.tgz#82fe09558b23e58e29295ee0e883678e7abbbb53"
-  integrity sha512-VBioUV0aMVxlh2G/w13UaXZ1Pp12ViLH72Op+AUNv9FelrNdqEVjIY5V2p24PlReWkaL0O+sd9hwcU9A4Srqcg==
+"@mnemotix/synaptix.js@4.6.0-rc.5-wip-20200925":
+  version "4.6.0-rc.5-wip-20200925"
+  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.6.0-rc.5-wip-20200925.tgz#a7e6135042084ebb6ab43d75a4e7aa03731b9f1a"
+  integrity sha512-1o31+30S8rOtHMYRshg2inBq5OPV4tO9p6U4ZYSZ/rIJwwo7XvOQ9QPpjvT4j//Ss0gHGHgM8VNtBjEqsPs8wA==
   dependencies:
     "@babel/plugin-proposal-throw-expressions" "^7.8.3"
     amqplib "0.5.3"

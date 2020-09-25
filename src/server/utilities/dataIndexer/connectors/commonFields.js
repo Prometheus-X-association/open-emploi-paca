@@ -30,6 +30,9 @@ export let commonFields = [
 ];
 
 export let commonMapping = {
+  entityId: {
+    type: "keyword"
+  },
   createdAt: {
     type: "date"
   },

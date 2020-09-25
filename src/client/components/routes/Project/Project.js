@@ -14,7 +14,7 @@ import {number, object} from "yup";
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {FormButtons, TextField} from "../../widgets/Form";
 
-import {gqlJobAreaFragment, gqlMyProject, gqlOccupationFragment} from "./gql/MyProject";
+import {gqlJobAreaFragment, gqlMyProfile, gqlOccupationFragment} from "../Profile/gql/MyProfile.gql";
 import {gqlUpdateProject} from "./gql/UpdateProject.gql";
 import {WishedOccupations} from "./WishedOccupations";
 import {prepareUpdateMutation} from "../../../utilities/apollo/prepareUpdateMutation";
@@ -30,7 +30,7 @@ export default function Project({} = {}) {
   const {t} = useTranslation();
   const {enqueueSnackbar} = useSnackbar();
 
-  const {data: {me} = {}, loading} = useQuery(gqlMyProject);
+  const {data: {me} = {}, loading} = useQuery(gqlMyProfile);
   const [updateProject, {loading: saving}] = useMutation(gqlUpdateProject, {
     onCompleted: () => {
       enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
@@ -54,10 +54,7 @@ export default function Project({} = {}) {
             }}
             validateOnChange={true}
             validateOnBlur={true}
-            validationSchema={object().shape({
-              wishedMaxIncome: number().required(t("Required")),
-              wishedMinIncome: number().required(t("Required"))
-            })}>
+          >
             {({errors, touched, isValid, dirty, resetForm}) => {
               return (
                 <Form>

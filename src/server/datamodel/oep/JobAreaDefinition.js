@@ -18,9 +18,7 @@
 
 import {
   ModelDefinitionAbstract,
-  LiteralDefinition,
   LabelDefinition,
-  LinkDefinition,
   GraphQLTypeDefinition,
   MnxOntologies
 } from "@mnemotix/synaptix.js";
@@ -59,7 +57,6 @@ export default class JobAreaDefinition extends ModelDefinitionAbstract {
       ...super.getLabels(),
       new LabelDefinition({
         labelName: "title",
-        isSearchable: true,
         description: "Job area title",
         rdfDataProperty: "http://purl.org/dc/terms/title"
       })

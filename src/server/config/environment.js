@@ -151,7 +151,7 @@ export default {
   },
   INDEX_DISABLED: {
     description: "Is index disabled",
-    defaultValue: "1",
+    defaultValue: "0",
     defaultValueInProduction: true
   },
   INDEX_PREFIX_TYPES_WITH: {

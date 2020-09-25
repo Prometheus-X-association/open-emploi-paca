@@ -7,12 +7,17 @@ import {Map, Polygon, TileLayer, CircleMarker, Popup, GeoJSON} from "react-leafl
 import Wkt from "wicket";
 import "wicket/wicket-leaflet";
 
-import {gqlMyProject} from "./gql/MyProject";
+import {createLink} from "../../../utilities/createLink";
+import {ROUTES} from "../../../routes";
+import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
 
 const useStyles = makeStyles(theme => ({
   map: {
     width: "100%",
     height: theme.spacing(40)
+  },
+  empty: {
+    color: theme.palette.text.emptyHint
   }
 }));
 
@@ -22,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 export default function ProjectExcerpt({} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
-  const {data: {me} = {}} = useQuery(gqlMyProject);
+  const {data: {me} = {}} = useQuery(gqlMyProfile);
   const wktHelper = new Wkt.Wkt();
 
   return (
@@ -37,6 +42,16 @@ export default function ProjectExcerpt({} = {}) {
                 <ListItemText primary={me?.occupation.prefLabel} secondary={t("PROFILE.OCCUPATION")} />
               </ListItem>
             </If>
+
+            <If condition={me?.wishedOccupations?.edges.length === 0}>
+              <ListItem>
+                <ListItemText className={classes.empty}  primary={t("PROJECT.WISHED_OCCUPATION.NONE")} secondary={createLink({
+                  to: ROUTES.PROJECT,
+                  text: t("PROJECT.EDIT")
+                })}/>
+              </ListItem>
+            </If>
+
 
             {me?.wishedOccupations?.edges.map(({node: occupation}) => (
               <ListItem key={occupation.id}>
@@ -53,6 +68,15 @@ export default function ProjectExcerpt({} = {}) {
             <If condition={me?.jobArea}>
               <ListItem>
                 <ListItemText primary={me?.jobArea.title} secondary={t("PROFILE.JOB_AREA")} />
+              </ListItem>
+            </If>
+
+            <If condition={me?.wishedJobAreas?.edges.length === 0}>
+              <ListItem>
+                <ListItemText className={classes.empty} primary={t("PROJECT.WISHED_JOB_AREA.NONE")} secondary={createLink({
+                  to: ROUTES.PROJECT,
+                  text: t("PROJECT.EDIT")
+                })}/>
               </ListItem>
             </If>
 

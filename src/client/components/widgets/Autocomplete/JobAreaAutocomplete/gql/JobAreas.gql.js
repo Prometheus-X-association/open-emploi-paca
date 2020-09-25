@@ -1,16 +1,18 @@
 import gql from "graphql-tag";
+import {gqlJobAreaFragment} from "../../../../routes/Profile/gql/MyProfile.gql";
 
 export const gqlJobAreas = gql`
   query JobAreas($qs: String, $first: Int, $filters: [String], $sortings: [SortingInput]) {
     jobAreas(qs: $qs, first: $first, sortings: $sortings, filters: $filters) {
       edges {
         node {
-          id
-          title
+          ...JobAreaFragment
         }
       }
     }
   }
+  
+  ${gqlJobAreaFragment}
 `;
 
 /**

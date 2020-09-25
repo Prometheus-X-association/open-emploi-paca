@@ -88,6 +88,7 @@ export const fr = {
   },
   PROJECT: {
     YOUR_PROJECT: "Votre projet",
+    EDIT: "Editer votre projet",
     WISHED_INCOME: "Salaire mensuel souhaité",
     WISHED_MAX_INCOME: "Maximum",
     WISHED_MIN_INCOME: "Mininum",
@@ -95,13 +96,15 @@ export const fr = {
       TITLE: "Métier recherché",
       TIP: "Vous pouvez sélectionner 4 métiers",
       CURRENT: "Actuel",
-      ADD: "Ajouter un métier..."
+      ADD: "Ajouter un métier...",
+      NONE: "Aucun métier sélectionné"
     },
     WISHED_JOB_AREA: {
       TITLE: "Bassin d'emploi",
       TIP: "Vous pouvez sélectionner 4 bassins d'emploi",
       CURRENT: "Actuel",
-      ADD: "Ajouter un bassin d'emploi..."
+      ADD: "Ajouter un bassin d'emploi...",
+      NONE: "Aucun bassin sélectionné"
     }
   },
   FORM_ERRORS: {

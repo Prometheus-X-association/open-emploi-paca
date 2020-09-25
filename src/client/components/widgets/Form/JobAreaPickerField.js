@@ -26,7 +26,7 @@ import {JobAreaAutocomplete} from "../Autocomplete/JobAreaAutocomplete/JobAreaAu
  * @return {*}
  * @constructor
  */
-export function JobAreaPickerField({label, name, inputName = "jobAreaInput", concept} = {}) {
+export function JobAreaPickerField({label, name, concept} = {}) {
   const formikContext = useFormikContext();
 
   
@@ -40,6 +40,6 @@ export function JobAreaPickerField({label, name, inputName = "jobAreaInput", con
   );
 
   function handleSelectJobAreas(jobArea) {
-    formikContext.setFieldValue(inputName, {id: jobArea.id});
+    formikContext.setFieldValue(name, jobArea);
   }
 }

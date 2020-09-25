@@ -3,6 +3,8 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Avatar, CardHeader, Grid, Menu, MenuItem} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
 import {useLoggedUser} from "../../hooks/useLoggedUser";
+import {useQuery} from "@apollo/client";
+import {gqlMyProfile} from "../routes/Profile/gql/MyProfile.gql";
 
 const useStyles = makeStyles(theme => ({
   profileButton: {
@@ -27,6 +29,7 @@ export function AppBar({} = {}) {
   const {user, useLogout} = useLoggedUser();
   const {logout} = useLogout();
   const classes = useStyles();
+  const {data: {me} = {}, loading} = useQuery(gqlMyProfile);
 
   return (
     <div className={classes.root}>
@@ -45,7 +48,7 @@ export function AppBar({} = {}) {
               </Avatar>
             }
             title={`${user?.firstName} ${user?.lastName}`}
-            subheader="Ingénieur"
+            subheader={me?.occupation?.prefLabel}
             onClick={e => setProfileMenuAnchorEl(e.currentTarget)}
           />
           <Menu

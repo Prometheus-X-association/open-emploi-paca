@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import {useQuery} from "@apollo/client";
+import {useLazyQuery, useQuery} from "@apollo/client";
 import throttle from "lodash/throttle";
 import get from "lodash/get";
 import invariant from "invariant";
@@ -54,7 +54,7 @@ export function GenericAutocomplete({
     Object.assign(variables, gqlVariables({qs}));
   }
 
-  const {data, loading} = useQuery(gqlEntitiesQuery, {variables});
+  const [loadEntities, {data, loading}] = useLazyQuery(gqlEntitiesQuery);
 
   const throttledOnChange = throttle(
     event => {
@@ -63,6 +63,13 @@ export function GenericAutocomplete({
     250,
     {leading: false, trailing: true}
   );
+
+  useEffect(() => {
+    if(qs){
+      console.log(qs);
+      loadEntities({variables})
+    }
+  }, [qs])
 
   return (
     <Autocomplete

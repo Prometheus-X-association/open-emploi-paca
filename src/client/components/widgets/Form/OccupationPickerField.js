@@ -26,7 +26,7 @@ import {OccupationAutocomplete} from "../Autocomplete/OccupationAutocomplete/Occ
  * @return {*}
  * @constructor
  */
-export function OccupationPickerField({label, name, inputName = "occupationInput", concept} = {}) {
+export function OccupationPickerField({label, name, concept} = {}) {
   const formikContext = useFormikContext();
 
   return (
@@ -39,6 +39,6 @@ export function OccupationPickerField({label, name, inputName = "occupationInput
   );
 
   function handleSelectConcepts(concept) {
-    formikContext.setFieldValue(inputName, {id: concept.id});
+    formikContext.setFieldValue(name, concept);
   }
 }

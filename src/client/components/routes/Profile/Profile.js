@@ -14,6 +14,8 @@ import {gqlMyProfile} from "./gql/MyProfile.gql";
 import {gqlUpdateProfile} from "./gql/UpdateProfile.gql";
 import {useSnackbar} from "notistack";
 import {JobAreaPickerField} from "../../widgets/Form/JobAreaPickerField";
+import {prepareUpdateMutation} from "../../../utilities/apollo/prepareUpdateMutation";
+import {gqlJobAreaFragment, gqlOccupationFragment} from "./gql/MyProfile.gql";
 
 const useStyles = makeStyles(theme => ({}));
 /**
@@ -119,9 +121,25 @@ export default function Profile({} = {}) {
     </Grid>
   );
 
-  async function save(objectInput) {
-    delete objectInput.occupation;
-    delete objectInput.jobArea;
+  async function save(values) {
+    const {objectInput, updateCache} = prepareUpdateMutation({
+      entity: me,
+      values,
+      links: [{
+        name: "occupation",
+        isPlural: false,
+        inputName: "occupationInput",
+        targetFragment: gqlOccupationFragment,
+      },
+        {
+          name: "jobArea",
+          isPlural: false,
+          inputName: "jobAreaInput",
+          targetFragment: gqlJobAreaFragment,
+        }]
+    });
+
+    console.log(values, objectInput);
 
     await updateProfile({
       variables: {
@@ -129,7 +147,8 @@ export default function Profile({} = {}) {
           objectId: me.id,
           objectInput
         }
-      }
+      },
+      update: updateCache
     });
   }
 }
