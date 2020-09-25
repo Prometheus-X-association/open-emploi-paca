@@ -38,6 +38,20 @@ export const fr = {
       SIGN_OUT: "Se déconnecter"
     }
   },
+  CARTONET: {
+    ACTIONS: {
+      ADD_EXPERIENCE: "Ajouter une expérience",
+      ADD_TRAINING: "Ajouter une formation",
+      ADD_HOBBY: "Ajouter une expérience extra-professionelle"
+    },
+    EXPERIENCE: {
+      TITLE: "Titre",
+      DESCRIPTION: "Description",
+      START_DATE: "Date de début",
+      END_DATE: "Date de fin",
+      OCCUPATIONS: "Métiers"
+    }
+  },
   CONCEPT: {
     AUTOCOMPLETE: {
       NO_RESULT: 'Aucun résultat trouvé.',

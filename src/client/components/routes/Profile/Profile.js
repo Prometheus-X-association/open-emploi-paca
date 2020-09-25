@@ -1,7 +1,7 @@
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {Grid, InputAdornment, Typography} from "@material-ui/core";
+import {Button, Grid, InputAdornment, List, ListItem, Typography} from "@material-ui/core";
 import {useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
 import {object, string} from "yup";
@@ -16,6 +16,10 @@ import {useSnackbar} from "notistack";
 import {JobAreaPickerField} from "../../widgets/Form/JobAreaPickerField";
 import {prepareUpdateMutation} from "../../../utilities/apollo/prepareUpdateMutation";
 import {gqlJobAreaFragment, gqlOccupationFragment} from "./gql/MyProfile.gql";
+import {createLink} from "../../../utilities/createLink";
+import {Switch} from "react-router";
+import {CartonetModal} from "../Cartonet/CartonetModal";
+import {ROUTES} from "../../../routes";
 
 const useStyles = makeStyles(theme => ({}));
 /**
@@ -96,7 +100,30 @@ export default function Profile({} = {}) {
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                      <BlockContainer title={"Carto.net"}></BlockContainer>
+                      <BlockContainer title={"Carto.net"}>
+                        <List>
+                          <ListItem>
+                            {createLink({
+                              text: t("CARTONET.ACTIONS.ADD_EXPERIENCE"),
+                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_EXPERIENCE}`
+                            })}
+                          </ListItem>
+                          <ListItem>
+                            {createLink({
+                              text: t("CARTONET.ACTIONS.ADD_TRAINING"),
+                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_TRAINING}`
+                            })}
+                          </ListItem>
+                          <ListItem>
+                            {createLink({
+                              text: t("CARTONET.ACTIONS.ADD_HOBBY"),
+                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_HOBBY}`
+                            })}
+                          </ListItem>
+                        </List>
+
+                        <CartonetModal />
+                      </BlockContainer>
                     </Grid>
 
                     <Grid item xs={12}>

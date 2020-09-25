@@ -26,6 +26,7 @@ import {
 
 import OccupationDefinition from "../mm/OccupationDefinition";
 import QualificationDefinition from "../mm/QualificationDefinition";
+import SkillDefinition from "./SkillDefinition";
 
 export default class ExperienceDefinition extends ModelDefinitionAbstract {
   /**
@@ -67,13 +68,23 @@ export default class ExperienceDefinition extends ModelDefinitionAbstract {
         rdfObjectProperty: "mm:hasOccupation",
         relatedModelDefinition: OccupationDefinition,
         isPlural: true,
+        graphQLPropertyName: "occupations",
         graphQLInputName: "occupationInputs"
+      }),
+      new LinkDefinition({
+        linkName: "hasSkill",
+        rdfObjectProperty: "mm:hasSkill",
+        relatedModelDefinition: SkillDefinition,
+        isPlural: true,
+        graphQLPropertyName: "skills",
+        graphQLInputName: "skillInputs"
       }),
       new LinkDefinition({
         linkName: "hasQualification",
         rdfObjectProperty: "mm:hasQualification",
         relatedModelDefinition: QualificationDefinition,
         isPlural: true,
+        graphQLPropertyName: "qualifications",
         graphQLInputName: "qualificationInputs"
       }),
       new LinkDefinition({
@@ -81,7 +92,16 @@ export default class ExperienceDefinition extends ModelDefinitionAbstract {
         rdfObjectProperty: "mnx:hasLocation",
         relatedModelDefinition:
           MnxOntologies.mnxAgent.ModelDefinitions.AddressDefinition,
+        graphQLPropertyName: "location",
         graphQLInputName: "locationInput"
+      }),
+      new LinkDefinition({
+        linkName: "hasOrganization",
+        rdfObjectProperty: "mm:hasOrg",
+        relatedModelDefinition:
+        MnxOntologies.mnxAgent.ModelDefinitions.OrganizationDefinition,
+        graphQLPropertyName: "organization",
+        graphQLInputName: "organizationInput"
       })
     ];
   }
