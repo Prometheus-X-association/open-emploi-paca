@@ -10,7 +10,6 @@ import {JobAreaAutocomplete} from "../../widgets/Autocomplete/JobAreaAutocomplet
 const useStyles = makeStyles(theme => ({
   jobAreaAutocomplete: {
     width: "100%",
-    marginTop: theme.spacing(2)
   }
 }));
 

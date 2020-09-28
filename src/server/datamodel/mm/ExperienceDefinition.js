@@ -27,6 +27,7 @@ import {
 import OccupationDefinition from "../mm/OccupationDefinition";
 import QualificationDefinition from "../mm/QualificationDefinition";
 import SkillDefinition from "./SkillDefinition";
+import AptitudeDefinition from "./AptitudeDefinition";
 
 export default class ExperienceDefinition extends ModelDefinitionAbstract {
   /**
@@ -72,12 +73,12 @@ export default class ExperienceDefinition extends ModelDefinitionAbstract {
         graphQLInputName: "occupationInputs"
       }),
       new LinkDefinition({
-        linkName: "hasSkill",
-        rdfObjectProperty: "mm:hasSkill",
-        relatedModelDefinition: SkillDefinition,
+        linkName: "hasAptitude",
+        rdfObjectProperty: "mm:isExperienceOf",
+        relatedModelDefinition: AptitudeDefinition,
         isPlural: true,
-        graphQLPropertyName: "skills",
-        graphQLInputName: "skillInputs"
+        graphQLPropertyName: "aptitudes",
+        graphQLInputName: "aptitudeInputs"
       }),
       new LinkDefinition({
         linkName: "hasQualification",

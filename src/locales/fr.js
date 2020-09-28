@@ -10,6 +10,7 @@ export const fr = {
     GO_BACK: "Retour",
     ONE_VALUE_ONLY: "Une seule valeur possible",
     NO_RESULT: "Aucun résultat ne correspond à votre recherche",
+    TYPE_SOMETHING: "Taper quelque chose pour commencer une recherche....",
     PROCEED: "Valider",
     REMOVE_IMAGE: "Supprimer",
     SAVE: "Enregistrer",
@@ -49,8 +50,13 @@ export const fr = {
       DESCRIPTION: "Description",
       START_DATE: "Date de début",
       END_DATE: "Date de fin",
-      OCCUPATIONS: "Métiers"
+      OCCUPATIONS: "Métiers",
+      FORM_DESCRIPTION_LABEL: "Description de l'expérience",
+      FORM_DESCRIPTION_OCCUPATIONS: "Métiers sélectionnés pour l'expérience"
     }
+  },
+  AUTOCOMPLETE: {
+    ADD: "Ajouter \"{{value}}\""
   },
   CONCEPT: {
     AUTOCOMPLETE: {
@@ -62,6 +68,12 @@ export const fr = {
     AUTOCOMPLETE: {
       NO_RESULT: 'Aucun résultat trouvé.',
       PLACEHOLDER: 'Sélectionner...',
+    },
+  },
+  ORGANIZATION:  {
+    AUTOCOMPLETE: {
+      NO_RESULT: 'Aucun résultat trouvé.',
+      PLACEHOLDER: 'Entreprise / Organisation',
     },
   },
   SIGN_IN: {

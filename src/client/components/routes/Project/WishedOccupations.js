@@ -10,7 +10,6 @@ import {OccupationAutocomplete} from "../../widgets/Autocomplete/OccupationAutoc
 const useStyles = makeStyles(theme => ({
   occupationAutocomplete: {
     width: "100%",
-    marginTop: theme.spacing(2)
   }
 }));
 

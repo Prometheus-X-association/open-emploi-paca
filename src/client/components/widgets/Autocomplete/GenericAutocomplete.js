@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from "react";
 import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import Autocomplete, {createFilterOptions} from "@material-ui/lab/Autocomplete";
 import {useLazyQuery, useQuery} from "@apollo/client";
 import throttle from "lodash/throttle";
 import get from "lodash/get";
 import invariant from "invariant";
 import {useTranslation} from "react-i18next";
+
+const filter = createFilterOptions();
 
 /**
  * @param {gql} gqlEntitiesQuery
@@ -21,6 +23,7 @@ import {useTranslation} from "react-i18next";
  * @param {object[]} [disableEntities]
  * @param {boolean} [multiple]
  * @param {string} [className]
+ * @param {boolean} [creatable]
  */
 export function GenericAutocomplete({
   gqlEntitiesQuery,
@@ -35,7 +38,8 @@ export function GenericAutocomplete({
   entities,
   multiple,
   className,
-  disableEntities = []
+  disableEntities = [],
+  creatable
 } = {}) {
   invariant(gqlEntitiesQuery, "gqlEntitiesQuery must be passed");
   invariant(gqlEntitiesConnectionPath, "gqlEntitiesConnectionPath must be passed");
@@ -43,9 +47,10 @@ export function GenericAutocomplete({
   invariant(onSelect, "onSelect must be passed");
 
   const {t} = useTranslation();
-  const [qs, setQs] = useState("");
+  const [qs, setQs] = useState();
   let variables = {
-    qs
+    qs,
+    first: 10
   };
 
   if (typeof gqlVariables === "object") {
@@ -65,8 +70,7 @@ export function GenericAutocomplete({
   );
 
   useEffect(() => {
-    if(qs){
-      console.log(qs);
+    if(typeof qs === "string"){
       loadEntities({variables})
     }
   }, [qs])
@@ -94,9 +98,26 @@ export function GenericAutocomplete({
             event.persist();
             throttledOnChange(event);
           }}
+          onFocus={() => {
+            setQs("");
+          }}
           {...TextFieldProps}
         />
       )}
+      filterOptions={(options, params) => {
+        const filtered = filter(options, params);
+
+        // Suggest the creation of a new value
+        if (creatable && params.inputValue !== '') {
+          filtered.push({
+            inputValue: params.inputValue,
+            [gqlEntityLabelPath]: t("AUTOCOMPLETE.ADD", {value: params.inputValue }),
+            isCreation: true
+          });
+        }
+
+        return filtered;
+      }}
       {...AutocompleteProps}
     />
   );

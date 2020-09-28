@@ -1,3 +1,5 @@
+export {OrganizationPickerField} from "./OrganizationPickerField";
+
 export {FormButtons} from "./FormButtons";
 export {OccupationPickerField} from "./OccupationPickerField";
 export {ColorPickerField} from "./ColorPickerField";
