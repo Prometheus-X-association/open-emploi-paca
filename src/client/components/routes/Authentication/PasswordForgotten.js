@@ -15,7 +15,7 @@ import {TextField} from "formik-material-ui";
 import {useMutation} from "@apollo/client";
 import {useSnackbar} from "notistack";
 import * as Yup from "yup";
-import gql from "graphql-tag";
+import {gql} from "@apollo/client";
 
 const useStyles = makeStyles(theme => ({
   paper: {

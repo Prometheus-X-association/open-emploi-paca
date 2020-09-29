@@ -24,6 +24,7 @@ import {
 } from "@mnemotix/synaptix.js";
 import OccupationDefinition from "../mm/OccupationDefinition";
 import JobAreaDefinition from "../oep/JobAreaDefinition";
+import ExperienceDefinition from "../mm/ExperienceDefinition";
 
 export default class PersonDefinition extends ModelDefinitionAbstract {
   /**
@@ -78,7 +79,16 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         isPlural: true,
         graphQLPropertyName: "wishedJobAreas",
         graphQLInputName: "wishedJobAreaInputs"
-      })
+      }),
+      new LinkDefinition({
+        linkName: "hasExperience",
+        description: "Expériences",
+        rdfObjectProperty: "mm:hasExperience",
+        relatedModelDefinition: ExperienceDefinition,
+        isPlural: true,
+        graphQLPropertyName: "experiences",
+        graphQLInputName: "experienceInputs"
+      }),
     ];
   }
 

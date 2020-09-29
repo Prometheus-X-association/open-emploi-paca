@@ -1,6 +1,6 @@
 import {UserAuthenticationService as DefaultUserAuthenticationService} from "@mnemotix/synaptix-client-toolkit";
 import i18next from "i18next";
-import gql from "graphql-tag";
+import {gql} from "@apollo/client";
 import * as Yup from "yup";
 import {useEffect} from "react";
 import {useHistory} from "react-router-dom";

@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import {gql} from "@apollo/client";
 import {gqlOccupationFragment} from "../../../../routes/Profile/gql/MyProfile.gql";
 
 export const gqlOccupations = gql`

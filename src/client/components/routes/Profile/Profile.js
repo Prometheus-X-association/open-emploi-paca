@@ -14,7 +14,7 @@ import {gqlMyProfile} from "./gql/MyProfile.gql";
 import {gqlUpdateProfile} from "./gql/UpdateProfile.gql";
 import {useSnackbar} from "notistack";
 import {JobAreaPickerField} from "../../widgets/Form/JobAreaPickerField";
-import {prepareUpdateMutation} from "../../../utilities/apollo/prepareUpdateMutation";
+import {prepareMutation} from "../../../utilities/apollo/prepareMutation";
 import {gqlJobAreaFragment, gqlOccupationFragment} from "./gql/MyProfile.gql";
 import {createLink} from "../../../utilities/createLink";
 import {Switch} from "react-router";
@@ -149,7 +149,7 @@ export default function Profile({} = {}) {
   );
 
   async function save(values) {
-    const {objectInput, updateCache} = prepareUpdateMutation({
+    const {objectInput, updateCache} = prepareMutation({
       entity: me,
       values,
       links: [{
@@ -165,8 +165,6 @@ export default function Profile({} = {}) {
           targetFragment: gqlJobAreaFragment,
         }]
     });
-
-    console.log(values, objectInput);
 
     await updateProfile({
       variables: {

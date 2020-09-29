@@ -17,7 +17,7 @@ import {FormButtons, TextField} from "../../widgets/Form";
 import {gqlJobAreaFragment, gqlMyProfile, gqlOccupationFragment} from "../Profile/gql/MyProfile.gql";
 import {gqlUpdateProject} from "./gql/UpdateProject.gql";
 import {WishedOccupations} from "./WishedOccupations";
-import {prepareUpdateMutation} from "../../../utilities/apollo/prepareUpdateMutation";
+import {prepareMutation} from "../../../utilities/apollo/prepareMutation";
 import {WishedJobAreas} from "./WishedJobAreas";
 
 const useStyles = makeStyles(theme => ({}));
@@ -131,7 +131,7 @@ export default function Project({} = {}) {
   );
 
   async function save(values) {
-    const {objectInput, updateCache} = prepareUpdateMutation({
+    const {objectInput, updateCache} = prepareMutation({
       entity: me,
       values,
       links: [{

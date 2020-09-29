@@ -19,7 +19,7 @@
 import {
   GraphQLTypeDefinition,
   LabelDefinition,
-  LinkDefinition,
+  LinkDefinition, LiteralDefinition,
   MnxOntologies,
   ModelDefinitionAbstract
 } from "@mnemotix/synaptix.js";
@@ -28,6 +28,7 @@ import OccupationDefinition from "../mm/OccupationDefinition";
 import QualificationDefinition from "../mm/QualificationDefinition";
 import SkillDefinition from "./SkillDefinition";
 import AptitudeDefinition from "./AptitudeDefinition";
+import PersonDefinition from "../mnx/PersonDefinition";
 
 export default class ExperienceDefinition extends ModelDefinitionAbstract {
   /**
@@ -64,6 +65,13 @@ export default class ExperienceDefinition extends ModelDefinitionAbstract {
   static getLinks() {
     return [
       ...super.getLinks(),
+      new LinkDefinition({
+        linkName: "hasPerson",
+        rdfObjectProperty: "mm:isExperienceOf",
+        relatedModelDefinition: PersonDefinition,
+        graphQLPropertyName: "person",
+        graphQLInputName: "personInput"
+      }),
       new LinkDefinition({
         linkName: "hasOccupation",
         rdfObjectProperty: "mm:hasOccupation",
@@ -120,6 +128,16 @@ export default class ExperienceDefinition extends ModelDefinitionAbstract {
       new LabelDefinition({
         labelName: "description",
         rdfDataProperty: "dct:description"
+      })
+    ];
+  }
+
+  static getLiterals(){
+    return [
+      ...super.getLiterals(),
+      new LiteralDefinition({
+        literalName: "experienceType",
+        rdfDataProperty: "mm:experienceType"
       })
     ];
   }

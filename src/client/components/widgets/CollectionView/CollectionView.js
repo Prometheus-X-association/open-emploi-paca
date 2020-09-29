@@ -40,7 +40,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import URLSearchParams from "@ungap/url-search-params";
-import gql from "graphql-tag";
+import {gql} from "@apollo/client";
 import {useHistory, useLocation} from "react-router-dom";
 
 import {GridView} from "./GridView/GridView";

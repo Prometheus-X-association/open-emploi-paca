@@ -24,6 +24,7 @@ import {
 import AptitudeDefinition from "../mm/AptitudeDefinition";
 import KnowledgeDefinition from "../oep/KnowledgeDefinition";
 import SkillGroupDefinition from "../oep/SkillGroupDefinition";
+import OccupationDefinition from "./OccupationDefinition";
 
 export default class SkillDefinition extends ModelDefinitionAbstract {
   /**
@@ -66,6 +67,13 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
   static getLinks() {
     return [
       ...super.getLinks(),
+      new LinkDefinition({
+        linkName: "hasOccupation",
+        rdfObjectProperty: "mm:hasOccupation",
+        relatedModelDefinition: OccupationDefinition,
+        isPlural: true,
+        graphQLInputName: "occupationInputs"
+      }),
       new LinkDefinition({
         linkName: "isSkillOf",
         rdfObjectProperty: "mm:isSkillOf",

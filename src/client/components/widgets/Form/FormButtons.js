@@ -15,7 +15,7 @@ import {LoadingButton} from "../Button/LoadingButton";
  * @param valuesFromLinkEdit
  * @param {boolean} saving
  */
-export function FormButtons({label, errors, touched, isValid, dirty, saving, resetForm} = {}) {
+export function FormButtons({label, errors, touched, isValid, dirty, saving, resetForm, cancelAction, extraSubmitAndResetButton, inDialog} = {}) {
   const {t} = useTranslation();
 
   let disabled = !isValid || !dirty;
@@ -51,7 +51,7 @@ export function FormButtons({label, errors, touched, isValid, dirty, saving, res
       <Tooltip title={reason || ""} arrow>
         <span>
           {/* don't remove this span or it will fire an error because of disabled button inside tooltip cannot being able to display title */}
-          <Button disabled={disabled} type="submit" variant="contained" color="primary">
+          <Button disabled={disabled} type="submit">
             {label || t("ACTIONS.SAVE")}
           </Button>
         </span>
@@ -65,11 +65,16 @@ export function FormButtons({label, errors, touched, isValid, dirty, saving, res
     );
   }
 
-  return (
+  return inDialog ? (
+    <>
+      {submitButton}
+      <Button onClick={resetForm || cancelAction}>{t("ACTIONS.CANCEL")}</Button>
+    </>
+  ) : (
     <Grid container spacing={2} justify={"flex-end"}>
       <Grid item>{submitButton}</Grid>
-      <If condition={dirty && resetForm}>
-        <Button onClick={resetForm}>{t("ACTIONS.CANCEL")}</Button>
+      <If condition={cancelAction || (dirty && resetForm)}>
+        <Button onClick={resetForm || cancelAction}>{t("ACTIONS.CANCEL")}</Button>
       </If>
     </Grid>
   );

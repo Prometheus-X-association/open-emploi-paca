@@ -71,7 +71,7 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
     return [
       ...super.getLinks(),
       new LinkDefinition({
-        linkName: "isOccupationOf",
+        linkName: "hasAward",
         rdfObjectProperty: "mm:isOccupationOf",
         relatedModelDefinition: AwardDefinition,
         isCascadingUpdated: true,
@@ -81,7 +81,7 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
       }),
       new LinkDefinition({
         linkName: "hasSkill",
-        rdfObjectProperty: "skos:related",
+        rdfObjectProperty: "mm:isOccupationOf",
         relatedModelDefinition: SkillDefinition,
         isPlural: true,
         graphQLInputName: "skillInputs"

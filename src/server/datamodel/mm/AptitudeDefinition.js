@@ -27,6 +27,7 @@ import AptitudeRatingDefinition from "../mm/AptitudeRatingDefinition";
 import SkillDefinition from "../mm/SkillDefinition";
 import ExpectationDefinition from "../mm/ExpectationDefinition";
 import ExperienceDefinition from "../mm/ExperienceDefinition";
+import PersonDefinition from "../mnx/PersonDefinition";
 
 export default class AptitudeDefinition extends ModelDefinitionAbstract {
   /**
@@ -69,12 +70,14 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: AptitudeRatingDefinition,
         isCascadingRemoved: true,
         isPlural: false,
+        graphQLPropertyName: "rating",
         graphQLInputName: "ratingInput"
       }),
       new LinkDefinition({
         linkName: "hasSkill",
         rdfObjectProperty: "mm:hasSkill",
         relatedModelDefinition: SkillDefinition,
+        graphQLPropertyName: "skill",
         graphQLInputName: "skillInput"
       }),
       new LinkDefinition({
@@ -84,16 +87,23 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
         isCascadingUpdated: true,
         isCascadingRemoved: true,
         isPlural: true,
+        graphQLPropertyName: "expectations",
         graphQLInputName: "isAptitudeOfInputs"
       }),
       new LinkDefinition({
-        linkName: "relatedExperience",
+        linkName: "hasExperience",
         rdfObjectProperty: "mm:relatedExperience",
         relatedModelDefinition: ExperienceDefinition,
-        isCascadingUpdated: true,
-        isCascadingRemoved: true,
         isPlural: true,
+        graphQLPropertyName: "experiences",
         graphQLInputName: "relatedExperienceInputs"
+      }),
+      new LinkDefinition({
+        linkName: "hasPerson",
+        rdfObjectProperty: "mm:hasCreator",
+        relatedModelDefinition: PersonDefinition,
+        graphQLPropertyName: "person",
+        graphQLInputName: "personInput"
       })
     ];
   }

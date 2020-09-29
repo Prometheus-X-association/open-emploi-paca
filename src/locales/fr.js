@@ -51,8 +51,27 @@ export const fr = {
       START_DATE: "Date de début",
       END_DATE: "Date de fin",
       OCCUPATIONS: "Métiers",
+      ORGANIZATION: "Entreprise ou organisation",
       FORM_DESCRIPTION_LABEL: "Description de l'expérience",
-      FORM_DESCRIPTION_OCCUPATIONS: "Métiers sélectionnés pour l'expérience"
+      FORM_OCCUPATIONS_LABEL: "Métiers sélectionnés pour l'expérience",
+      FORM_APTITUDES_LABEL: "Compétences sélectionnés pour l'expérience",
+      SAVE_AND_ADD_NEW: "Sauver et ajouter une nouvelle expérience",
+      PLEASE_SELECT_OCCUPATIONS: "Sélectionner des métiers pour pouvoir choisir des compétences associées"
+    },
+    TRAINING: {
+      ORGANIZATION: "Entreprise ou organisme de formation",
+      FORM_DESCRIPTION_LABEL: "Description la formation",
+      FORM_OCCUPATIONS_LABEL: "Métiers sélectionnés pour la formation",
+      FORM_APTITUDES_LABEL: "Compétences sélectionnés pour la formation",
+    },
+    HOBBY: {
+      ORGANIZATION: "Organisation",
+      FORM_DESCRIPTION_LABEL: "Description l'expérience extra-professionnelle",
+      FORM_OCCUPATIONS_LABEL: "Métiers sélectionnés pour l'expérience extra-professionnelle",
+      FORM_APTITUDES_LABEL: "Compétences sélectionnés pour l'expérience extra-professionnelle",
+    },
+    SKILL: {
+      ADD: "Ajouter une compétence"
     }
   },
   AUTOCOMPLETE: {

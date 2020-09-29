@@ -10,10 +10,11 @@ import {OccupationAutocomplete} from "../../widgets/Autocomplete/OccupationAutoc
 const useStyles = makeStyles(theme => ({
   occupationAutocomplete: {
     width: "100%",
+    marginTop: theme.spacing(2)
   }
 }));
 
-export function WishedOccupations({currentOccupation, name = "wishedOccupations"} = {}) {
+export function WishedOccupations({currentOccupation, name = "wishedOccupations", dense } = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const formikContext = useFormikContext();
@@ -27,7 +28,7 @@ export function WishedOccupations({currentOccupation, name = "wishedOccupations"
   }
 
   return (
-    <List>
+    <List dense={dense}>
       <If condition={currentOccupation}>
         <ListItem>
           <ListItemText primary={currentOccupation?.prefLabel} secondary={t("PROFILE.OCCUPATION")} />

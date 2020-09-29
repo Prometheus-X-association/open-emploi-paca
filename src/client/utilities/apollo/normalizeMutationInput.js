@@ -2,16 +2,18 @@ import {StoreObject} from "@apollo/client";
 import omitBy from "lodash/omitBy";
 
 /**
- * @param {StoreObject} entity - entity object that must contain an "id" field.
+ * @param {StoreObject} [entity] - entity object that must contain an "id" field. Leave it null if creation
  * @param {object} values - object representing mutating values (can be straight formik form result values)
  * @param {string[]} [inputNames] - restrict field input names. Default to all simple field (not link) foundable in "values"
  * @param {GraphQLLinkDefinition[]} links - list of links to mutate.
  * @param {boolean} [optimistic=true] - is mutation optimistic ?
  * @return {object}
  */
-export function normalizeUpdateInput({entity, values, links, inputNames, optimistic}){
+export function normalizeMutationInput({entity, values, links, inputNames, optimistic}){
   return Object.entries(values).reduce((objectInput, [name, value]) => {
-    if ((typeof value !== "object" && (inputNames.length === 0 || inputNames.includes(name)))){
+    if (!!value?.toISOString) {
+      objectInput[name] = value.toISOString();
+    } else if ((typeof value !== "object" && (inputNames.length === 0 || inputNames.includes(name)))){
       objectInput[name] = value;
     } else {
       const link = links.find((link) => name === link.name);
@@ -35,7 +37,15 @@ export function normalizeUpdateInput({entity, values, links, inputNames, optimis
 function normalizeSingleLinkInput({link, targetEntity}){
   let objectInput = {};
 
+  if(typeof link.modifyValue === "function"){
+    targetEntity = link.modifyValue(targetEntity);
+  }
+
   if(targetEntity){
+    if(link.nestedLinks?.length > 0){
+      targetEntity = normalizeMutationInput({values: targetEntity, links: link.nestedLinks});
+    }
+
     // If target entity has an ID, we have the choice to :
     //  - just record the link,
     //  - record the link AND update the target object.
@@ -56,20 +66,18 @@ function normalizeSingleLinkInput({link, targetEntity}){
 }
 
 /**
- * @param {StoreObject} entity
+ * @param {StoreObject} [entity]
  * @param {GraphQLLinkDefinition} link
  * @param {StoreObject[]} targetConnection
  */
 function normalizePluralLinkInput({link, entity, targetConnection}){
   let objectInput = {};
 
-  debugger;
-
   if(!Array.isArray(targetConnection?.edges)){
     throw new Error(`Link ${link.name} has been declared as plural, targetEntityConnection must be GraphQL connection`)
   }
 
-  const existingEdges =  entity[link.name]?.edges || [];
+  const existingEdges =  entity?.[link.name]?.edges || [];
   const mutatingEdges =  targetConnection?.edges || [];
 
   let edgesToDelete = [];
