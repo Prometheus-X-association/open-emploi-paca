@@ -43,9 +43,11 @@ export const fr = {
     ACTIONS: {
       ADD_EXPERIENCE: "Ajouter une expérience",
       ADD_TRAINING: "Ajouter une formation",
-      ADD_HOBBY: "Ajouter une expérience extra-professionelle"
+      ADD_HOBBY: "Ajouter une expérience extra-professionelle",
+      EDIT_APTITUDES: "Éditer ses compétences"
     },
     EXPERIENCE: {
+      PAGE_TITLE: "Édition d'expérience professionnelle",
       TITLE: "Titre",
       DESCRIPTION: "Description",
       START_DATE: "Date de début",
@@ -59,12 +61,14 @@ export const fr = {
       PLEASE_SELECT_OCCUPATIONS: "Sélectionner des métiers pour pouvoir choisir des compétences associées"
     },
     TRAINING: {
+      PAGE_TITLE: "Édition de formation",
       ORGANIZATION: "Entreprise ou organisme de formation",
       FORM_DESCRIPTION_LABEL: "Description la formation",
       FORM_OCCUPATIONS_LABEL: "Métiers sélectionnés pour la formation",
       FORM_APTITUDES_LABEL: "Compétences sélectionnés pour la formation",
     },
     HOBBY: {
+      PAGE_TITLE: "Édition d'expérience extra-professionnelle",
       ORGANIZATION: "Organisation",
       FORM_DESCRIPTION_LABEL: "Description l'expérience extra-professionnelle",
       FORM_OCCUPATIONS_LABEL: "Métiers sélectionnés pour l'expérience extra-professionnelle",
@@ -72,6 +76,9 @@ export const fr = {
     },
     SKILL: {
       ADD: "Ajouter une compétence"
+    },
+    APTITUDES: {
+      PAGE_TITLE: "Édition de compétences",
     }
   },
   AUTOCOMPLETE: {

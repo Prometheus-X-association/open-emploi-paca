@@ -19,6 +19,13 @@ import {gql} from "@apollo/client";
 export const gqlAptitudeFragment = gql`
 fragment AptitudeFragment on Aptitude{
   id
-  relatedExperience
+  experiences{
+    edges{
+      node{
+        id
+        title
+      }
+    }
+  }
 }
 `;

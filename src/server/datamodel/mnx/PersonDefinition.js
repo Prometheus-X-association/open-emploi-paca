@@ -82,6 +82,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       }),
       new LinkDefinition({
         linkName: "hasExperience",
+        symmetricLinkName: "hasPerson",
         description: "Expériences",
         rdfObjectProperty: "mm:hasExperience",
         relatedModelDefinition: ExperienceDefinition,

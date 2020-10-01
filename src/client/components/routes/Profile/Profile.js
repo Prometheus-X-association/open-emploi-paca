@@ -120,6 +120,12 @@ export default function Profile({} = {}) {
                               to: `${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_HOBBY}`
                             })}
                           </ListItem>
+                          <ListItem>
+                            {createLink({
+                              text: t("CARTONET.ACTIONS.EDIT_APTITUDES"),
+                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_APTITUDES}`
+                            })}
+                          </ListItem>
                         </List>
 
                         <CartonetModal />

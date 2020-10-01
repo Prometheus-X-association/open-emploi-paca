@@ -67,7 +67,7 @@ export default class ExperienceDefinition extends ModelDefinitionAbstract {
       ...super.getLinks(),
       new LinkDefinition({
         linkName: "hasPerson",
-        rdfObjectProperty: "mm:isExperienceOf",
+        rdfObjectProperty: "mm:hasCreator",
         relatedModelDefinition: PersonDefinition,
         graphQLPropertyName: "person",
         graphQLInputName: "personInput"

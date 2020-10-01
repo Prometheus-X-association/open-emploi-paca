@@ -18,7 +18,7 @@
 
 import {
   GraphQLTypeDefinition,
-  LinkDefinition,
+  LinkDefinition, LinkPath,
   LiteralDefinition,
   MnxOntologies,
   ModelDefinitionAbstract
@@ -118,7 +118,17 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
         literalName: "isMandatory",
         rdfDataProperty: "mm:isMandatory",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
-      })
+      }),
+      new LiteralDefinition({
+        literalName: 'rating',
+        linkPath: new LinkPath()
+          .step({linkDefinition: AptitudeDefinition.getLink("hasRating")})
+          .property({
+            propertyDefinition: AptitudeRatingDefinition.getLiteral("rating"),
+            rdfDataPropertyAlias: 'mm:rating'
+          }),
+        rdfDataType: 'http://www.w3.org/2001/XMLSchema#integer'
+      }),
     ];
   }
 }

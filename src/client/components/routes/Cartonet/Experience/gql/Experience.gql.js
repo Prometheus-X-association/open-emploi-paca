@@ -34,13 +34,5 @@ fragment ExperienceFragment on Experience{
       }
     }
   }
-  skills{
-    edges{
-      node {
-        id
-        prefLabel
-      }
-    }
-  }
 }
 `;

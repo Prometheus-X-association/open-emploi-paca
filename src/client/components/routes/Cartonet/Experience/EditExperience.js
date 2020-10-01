@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import * as Yup from "yup";
-import dayjs from "dayjs";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {DialogActions, DialogContent, DialogTitle, Grid, Typography, Checkbox, FormControlLabel, Paper} from "@material-ui/core";
@@ -14,11 +13,11 @@ import {DatePickerField, FormButtons, TextField, OrganizationPickerField} from "
 import {WishedOccupations} from "../../Project/WishedOccupations";
 import {AptitudePicker} from "../../../widgets/Form/AptitudePicker";
 import {gqlOccupationFragment} from "../../Profile/gql/MyProfile.gql";
-import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 import {gqlUpdateProfile} from "../../Profile/gql/UpdateProfile.gql";
 import {prepareMutation} from "../../../../utilities/apollo/prepareMutation";
 import {gqlAptitudeFragment} from "../Aptitudes/gql/Aptitude.gql";
 import {gqlOrganizationFragment} from "../../../widgets/Autocomplete/OrganizationAutocomplete/gql/Organizations.gql";
+import {gqlMyExperiences} from "./MyExperiences.gql";
 
 const useStyles = makeStyles(theme => ({
   categoryTitle: {
@@ -49,10 +48,9 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   const {t} = useTranslation();
   const {enqueueSnackbar} = useSnackbar();
   const history = useHistory();
-  const {user: me} = useLoggedUser();
   const [saveAndResetForm, setSaveAndResetForm] = useState(false);
 
-
+  const {data: {me} = {}} = useQuery(gqlMyExperiences);
   const [updateProfile, {loading: saving}] = useMutation(gqlUpdateProfile, {
     onCompleted: () => {
       enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
@@ -64,11 +62,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   return (
     <>
       <DialogTitle>
-        <Choose>
-          <When condition={experienceType === "training"}>Edition de formation</When>
-          <When condition={experienceType === "hobby"}>Edition d'expérience extra-professionelle</When>
-          <Otherwise>Edition d'expérience</Otherwise>
-        </Choose>
+        {t(`CARTONET.${experienceType.toUpperCase()}.PAGE_TITLE`)}
       </DialogTitle>
       <Formik
         initialValues={{
@@ -103,7 +97,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           return (
             <Form>
               <DialogContent>
-                <Grid container spacing={8}>
+                <Grid container spacing={6}>
                   <Grid item xs={12} md={6}>
                     <Grid container spacing={2}>
                       <Grid item xs={12}>
