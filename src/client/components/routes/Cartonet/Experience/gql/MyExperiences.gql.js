@@ -3,7 +3,7 @@ import {gqlExperienceFragment} from "./Experience.gql";
 
 export const gqlMyExperiencesFragment = gql`
   fragment MyExperiencesFragment on Person {
-    experiences{
+    experiences(sortings: [{sortBy: "startDate"}]){
       edges{
         node{
           ...ExperienceFragment

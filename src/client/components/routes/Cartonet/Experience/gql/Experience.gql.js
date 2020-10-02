@@ -18,7 +18,9 @@ import {gql} from "@apollo/client";
 
 export const gqlExperienceFragment = gql`
 fragment ExperienceFragment on Experience{
+  id
   title
+  experienceType
   description
   startDate
   endDate
@@ -31,6 +33,14 @@ fragment ExperienceFragment on Experience{
       node{
         id 
         prefLabel
+      }
+    }
+  }
+  aptitudes{
+    edges{
+      node{
+        id
+        skillLabel
       }
     }
   }

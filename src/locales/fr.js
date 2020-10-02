@@ -91,6 +91,8 @@ export const fr = {
     },
     CARTOGRAPHY: {
       PAGE_TITLE: "Restitution du profil Carto.net",
+      APTITUDES: "Compétences",
+      EXPERIENCES: "Expériences"
     },
     OCCUPATION_MATCHING: {
       PAGE_TITLE: "Suggestion de métiers",
