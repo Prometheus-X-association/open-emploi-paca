@@ -27,7 +27,8 @@ function TableViewCode({
   gqlConnectionPath,
   selectedNodes,
   onSelectNodes = () => {},
-  onColumnSortChange = () => {}
+  onColumnSortChange = () => {},
+  getRowsSharedState= () => {}
 } = {}) {
   const {t} = useTranslation();
 
@@ -45,6 +46,7 @@ function TableViewCode({
       rows={rows}
       onColumnSortChange={handleColumnSortChange}
       onRowsIndexesSelected={handleRowsIndexesSelected}
+      getRowsSharedState={getRowsSharedState}
     />
   );
 

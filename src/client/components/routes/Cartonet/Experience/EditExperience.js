@@ -17,7 +17,7 @@ import {gqlUpdateProfile} from "../../Profile/gql/UpdateProfile.gql";
 import {prepareMutation} from "../../../../utilities/apollo/prepareMutation";
 import {gqlAptitudeFragment} from "../Aptitudes/gql/Aptitude.gql";
 import {gqlOrganizationFragment} from "../../../widgets/Autocomplete/OrganizationAutocomplete/gql/Organizations.gql";
-import {gqlMyExperiences} from "./MyExperiences.gql";
+import {gqlMyExperiences} from "./gql/MyExperiences.gql";
 
 const useStyles = makeStyles(theme => ({
   categoryTitle: {
@@ -210,11 +210,19 @@ export default function EditExperience({experienceType = "experience"} = {}) {
             {
               name: "person",
               inputName: "personInput"
+            },
+            {
+              name: "rating",
+              inputName: "ratingInput"
             }
           ],
           modifyValue: value => ({
             ...value,
-            person: {id: me.id}
+            person: {id: me.id},
+            rating: {
+              range: 5,
+              value: 0
+            }
           })
         }
       ]

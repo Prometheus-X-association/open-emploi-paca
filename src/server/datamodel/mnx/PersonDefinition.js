@@ -25,6 +25,7 @@ import {
 import OccupationDefinition from "../mm/OccupationDefinition";
 import JobAreaDefinition from "../oep/JobAreaDefinition";
 import ExperienceDefinition from "../mm/ExperienceDefinition";
+import AptitudeDefinition from "../mm/AptitudeDefinition";
 
 export default class PersonDefinition extends ModelDefinitionAbstract {
   /**
@@ -84,11 +85,21 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         linkName: "hasExperience",
         symmetricLinkName: "hasPerson",
         description: "Expériences",
-        rdfObjectProperty: "mm:hasExperience",
+        rdfReversedObjectProperty: "mm:hasCreator",
         relatedModelDefinition: ExperienceDefinition,
         isPlural: true,
         graphQLPropertyName: "experiences",
         graphQLInputName: "experienceInputs"
+      }),
+      new LinkDefinition({
+        linkName: "hasAptitude",
+        symmetricLinkName: "hasPerson",
+        description: "Compétences",
+        rdfReversedObjectProperty: "mm:hasCreator",
+        relatedModelDefinition: AptitudeDefinition,
+        isPlural: true,
+        graphQLPropertyName: "aptitudes",
+        graphQLInputName: "aptitudeInputs"
       }),
     ];
   }

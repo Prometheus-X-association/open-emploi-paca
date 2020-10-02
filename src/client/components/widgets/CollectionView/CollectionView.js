@@ -15,7 +15,6 @@
  */
 import React, {useEffect, useState} from "react";
 import {useApolloClient, useMutation, useQuery} from "@apollo/client";
-import {LoadingSplashScreen} from "../../widgets/LoadingSplashScreen";
 import {useTranslation} from "react-i18next";
 import get from "lodash/get";
 import {makeStyles} from "@material-ui/core/styles";
@@ -26,9 +25,9 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   IconButton,
   Paper
 } from "@material-ui/core";
@@ -116,6 +115,7 @@ export function CollectionView({
   NoResultComponent,
   customDisplayModes,
   onGqlVariablesChange = () => {},
+  getRowsSharedState = () => {},
   ...props
 }) {
   const params = new URLSearchParams(useLocation().search);
@@ -146,10 +146,6 @@ export function CollectionView({
   const [qs, setQs] = useState(forceQs);
 
   const classes = useStyles();
-
-  useEffect(() => {
-    setCurrentPage(defaultPage || 1);
-  }, [qs]);
 
   useEffect(() => {
     setQs(forceQs);
@@ -190,8 +186,11 @@ export function CollectionView({
     };
   }
 
+  let cachedData = React.useRef(undefined);
   const {data, loading, error} = useQuery(gqlQuery, {
     fetchPolicy: "cache-and-network",
+    // @see https://github.com/apollographql/apollo-client/issues/6760#issuecomment-668188727
+    nextFetchPolicy: "cache-first",
     errorPolicy: "all",
     variables: getGqlVariables(),
     onCompleted: data => {
@@ -202,6 +201,10 @@ export function CollectionView({
       setPageCount(pageCount);
     }
   });
+  // @see https://github.com/apollographql/apollo-client/issues/6603#issuecomment-661817678
+  if (data) {
+    cachedData.current = data;
+  }
 
   const [removeNodes, {loading: savingMutation}] = useMutation(gqlRemoveEntities, {
     onCompleted: async data => {
@@ -222,12 +225,10 @@ export function CollectionView({
     console.error(error);
   }
 
-  return !data ? (
-    <LoadingSplashScreen />
-  ) : (
+  return (
     <div className={classes.root}>
-      <ExpansionPanel expanded={filtersActive} variant={"outlined"} className={classes.actions}>
-        <ExpansionPanelSummary>
+      <Accordion expanded={filtersActive} variant={"outlined"} className={classes.actions}>
+        <AccordionSummary>
           <Grid container spacing={2}>
             <Grid item md={6} xs={12}>
               <Grid container spacing={2} alignContent={"center"} alignItems={"center"}>
@@ -237,7 +238,6 @@ export function CollectionView({
                       value={qs}
                       onRequestSearch={handleRequestSearch}
                       onCancelSearch={handleCancelSearch}
-                      loading={loading}
                       placeholder={t("REMOTE_TABLE.TOOLBAR.SEARCH")}
                     />
                   </Grid>
@@ -295,12 +295,12 @@ export function CollectionView({
               {renderRightSideActions()}
             </Grid>
           </Grid>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>{renderFilters ? renderFilters() : null}</ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionSummary>
+        <AccordionDetails>{renderFilters ? renderFilters() : null}</AccordionDetails>
+      </Accordion>
 
       <Choose>
-        <When condition={gqlCountPath === null || get(data, gqlCountPath) > 0}>
+        <When condition={loading || get(cachedData.current, gqlCountPath) > 0 }>
           {renderDisplay()}
 
           <If condition={pageCount > 1}>
@@ -353,7 +353,7 @@ export function CollectionView({
 
     if (renderComponent) {
       const displayComponentSharedProps = {
-        data,
+        data: cachedData.current,
         gqlConnectionPath,
         gqlCountPath,
         selectedNodes,
@@ -372,6 +372,7 @@ export function CollectionView({
           ]);
         },
         key: displayMode,
+        getRowsSharedState,
         ...props
       };
 
@@ -415,7 +416,7 @@ export function CollectionView({
           variables: getGqlVariables(),
           connectionPathInData: gqlConnectionPath,
           countPathInData: gqlCountPath,
-          data,
+          data: cachedData.current,
           deletedNodeIds: selectedNodes.map(({id}) => id)
         });
       }

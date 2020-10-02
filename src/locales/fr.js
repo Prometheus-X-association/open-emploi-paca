@@ -5,6 +5,7 @@ export const fr = {
   ACTIONS: {
     ADD: "Ajouter",
     CANCEL: "Annuler",
+    CLOSE: "Fermer",
     CHANGE_IMAGE: "Modifier l'image",
     DELETE: "Effacer",
     GO_BACK: "Retour",
@@ -79,6 +80,10 @@ export const fr = {
     },
     APTITUDES: {
       PAGE_TITLE: "Édition de compétences",
+      SKILL: "Nom de la compétence",
+      EXPERIENCE_COUNT: "Nombre d'expériences associées",
+      RATING: "Niveau de maîtrise",
+      TOP_5: "Mettre en Top 5",
     }
   },
   AUTOCOMPLETE: {
@@ -182,5 +187,47 @@ export const fr = {
       USER_NOT_ALLOWED:
         "Vous n'avez pas la persmission d'effectuer cette action"
     }
-  }
+  },
+  REMOTE_TABLE: {
+    ACTIONS: {
+      FILTERS: 'Filtres',
+      REMOVE: 'Supprimer',
+      REMOVE_CONFIRM_TEXT: 'Êtes-vous sûr de vouloir supprimer cet objet ?',
+      REMOVE_CONFIRM_TEXT_plural:
+        'Êtes-vous sûr de vouloir supprimer ces {{count}} objets ?',
+      REMOVE_plural: 'Supprimer ({{count}})',
+      REMOVE_SUCCESS: 'Élements supprimés avec succès',
+    },
+    BODY: {
+      NO_MATCH: 'Aucun résultat trouvé...',
+      TOOLTIP: 'Sort',
+    },
+    FILTER: {
+      ALL: 'Tout',
+      RESET: 'Réinitialiser',
+      TITLE: 'Filtres',
+    },
+    PAGINATION: {
+      DISPLAY_ROWS: 'de',
+      NEXT: 'Page suivante',
+      PREVIOUS: 'Page précédente',
+      ROWS_PER_PAGE: 'Lignes par page:',
+    },
+    SELECTED_ROWS: {
+      DELETE: 'Supprimer',
+      DELETE_ARIA: 'Supprimer les colonnes sélectionnées',
+      TEXT: 'colonne(s) sélectionnée(s)',
+    },
+    TOOLBAR: {
+      DOWNLOAD_CSV: 'Télécharger CSV',
+      FILTER_TABLE: 'Filtrer',
+      PRINT: 'Imprimer',
+      SEARCH: 'Rechercher',
+      VIEW_COLUMNS: 'Colonnes visibles',
+    },
+    VIEW_COLUMNS: {
+      TITLE: 'Colonnes visibles',
+      TITLE_ARIA: 'Afficher/Cacher les colonnes du tableau',
+    },
+  },
 };

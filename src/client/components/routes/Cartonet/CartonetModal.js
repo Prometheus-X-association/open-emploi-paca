@@ -20,7 +20,7 @@ export function CartonetModal({} = {}) {
 
   return (
     <Route path={`${ROUTES.PROFILE}/cartonet`}>
-      <Dialog open={true} maxWidth={"lg"} scroll={"body"}  fullWidth disableBackdropClick disableEscapeKeyDown>
+      <Dialog open={true} maxWidth={"lg"} scroll={"paper"}  fullWidth disableBackdropClick disableEscapeKeyDown>
         <Switch>
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_EXPERIENCE}`} component={EditExperience} />
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_TRAINING}`} render={() => <EditExperience experienceType={"training"}/>} />

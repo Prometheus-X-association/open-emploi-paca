@@ -64,7 +64,7 @@ export default class AptitudeRatingDefinition extends ModelDefinitionAbstract {
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       }),
       new LiteralDefinition({
-        literalName: "rating",
+        literalName: "value",
         rdfDataProperty: "mm:rating",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       })

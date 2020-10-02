@@ -23,11 +23,16 @@ import {
   initEnvironment,
   LabelDefinition,
   LinkStep,
-  MnxOntologies
+  MnxOntologies,
+  PropertyStep
 } from "@mnemotix/synaptix.js";
 import env from "env-var";
 
-import {commonEntityFilter, commonFields, commonMapping} from "./connectors/commonFields";
+import {
+  commonEntityFilter,
+  commonFields,
+  commonMapping
+} from "./connectors/commonFields";
 import { generateDatastoreAdapater } from "../../middlewares/generateDatastoreAdapter";
 import { Client } from "@elastic/elasticsearch";
 import path from "path";
@@ -229,18 +234,54 @@ export let indexData = async () => {
           property instanceof LabelDefinition || property.isPlural?.();
         let fieldName = property.getPathInIndex();
         let dataProperty = property.getRdfDataProperty();
+        let dataType = property
+          .getRdfDataType()
+          .replace("http://www.w3.org/2001/XMLSchema#", "xsd:")
+          .replace("integer", "int");
 
-        if (dataProperty) {
+        let propertyChain = [];
+
+        if (property.getRdfDataProperty()) {
+          propertyChain.push(
+            synaptixSession.normalizeAbsoluteUri({ uri: dataProperty })
+          );
+        } else if (property.getLinkPath()) {
+          propertyChain = linkPathToPropertyChain({
+            linkPath: property.getLinkPath(),
+            synaptixSession
+          });
+        }
+
+        if (propertyChain.length > 0) {
           if (typeof fieldName === "string") {
             connector.fields.push({
               fieldName: fieldName,
-              propertyChain: [
-                synaptixSession.normalizeAbsoluteUri({ uri: dataProperty })
-              ],
+              propertyChain,
               analyzed:
                 property instanceof LabelDefinition || property.isSearchable(),
-              multivalued: multivalued
+              multivalued: multivalued,
+              datatype: [
+                "xsd:date",
+                "xsd:dateTime",
+                "xsd:int",
+                "xsd:long",
+                "xsd:float",
+                "xsd:double",
+                "xsd:boolean"
+              ].includes(dataType)
+                ? dataType
+                : null
             });
+
+            const typeMapping = {
+              "xsd:date": "date",
+              "xsd:dateTime": "date",
+              "xsd:int": "integer",
+              "xsd:long": "long",
+              "xsd:float": "float",
+              "xsd:double": "double",
+              "xsd:boolean": "boolean"
+            };
 
             if (property.isSearchable()) {
               connector.mappings[fieldName] = {
@@ -248,14 +289,18 @@ export let indexData = async () => {
                 analyzer: "autocomplete",
                 search_analyzer: "autocomplete",
                 fields: {
-                  keyword: {
+                  keyword: typeMapping[dataType] ? {
+                    type: typeMapping[dataType]
+                  } : {
                     type: "keyword",
                     ignore_above: 256
                   }
                 }
               };
             } else {
-              connector.mappings[fieldName] = {
+              connector.mappings[fieldName] = typeMapping[dataType] ? {
+                type: typeMapping[dataType]
+              } : {
                 type: "keyword",
                 ignore_above: 256
               };
@@ -265,10 +310,7 @@ export let indexData = async () => {
           if (property instanceof LabelDefinition) {
             connector.fields.push({
               fieldName: `${fieldName}_locales`,
-              propertyChain: [
-                synaptixSession.normalizeAbsoluteUri({ uri: dataProperty }),
-                "lang()"
-              ],
+              propertyChain: [...propertyChain, "lang()"],
               analyzed: false,
               multivalued: multivalued
             });
@@ -277,6 +319,8 @@ export let indexData = async () => {
               type: "keyword"
             };
           }
+        } else {
+          connector.datatype = property.getRdfDataType();
         }
       }
 
@@ -297,28 +341,10 @@ export let indexData = async () => {
               })
             );
           } else if (linkPath) {
-            propertyChain = linkPath
-              .getSteps()
-              .reduce((propertyChain, step) => {
-                if (step instanceof LinkStep) {
-                  let objectProperty =
-                    step.getLinkDefinition().getRdfObjectProperty() ||
-                    link
-                      .getSymmetricLinkDefinition()
-                      ?.getRdfReversedObjectProperty();
-                  if (objectProperty) {
-                    propertyChain.push(
-                      synaptixSession.normalizeAbsoluteUri({
-                        uri: objectProperty
-                      })
-                    );
-                  } else {
-                    // logWarning(`Model definition link ${modelDefinition.name} -> ${fieldName} can't be indexed while GraphDB only support straight property chains. Try to change "rdfReversedObjectProperty" (${step.getLinkDefinition().getRdfReversedObjectProperty()}) of step link "${step.getLinkDefinition().getLinkName()}" by it's owl:inverseOf in "rdfObjectProperty"`);
-                  }
-                }
-
-                return propertyChain;
-              }, []);
+            propertyChain = linkPathToPropertyChain({
+              linkPath,
+              synaptixSession
+            });
           } else {
             // logWarning(`Model definition link ${modelDefinition.name} -> ${fieldName} can't be indexed while GraphDB only support straight property chains. Try to change "rdfReversedObjectProperty" (${link.getRdfReversedObjectProperty()}) of link "${fieldName}" by it's owl:inverseOf in "rdfObjectProperty"`);
           }
@@ -406,11 +432,8 @@ INSERT DATA {
                   autocomplete: {
                     type: "custom",
                     tokenizer: "standard",
-                    filter: [
-                      "lowercase",
-                      "autocomplete_filter"
-                    ]
-                  },
+                    filter: ["lowercase", "autocomplete_filter"]
+                  }
                 }
               }
             },
@@ -543,3 +566,31 @@ INSERT DATA {
 
   process.exit(0);
 };
+
+function linkPathToPropertyChain({ linkPath, synaptixSession }) {
+  return linkPath.getSteps().reduce((propertyChain, step) => {
+    if (step instanceof LinkStep) {
+      let objectProperty =
+        step.getLinkDefinition().getRdfObjectProperty() ||
+        link.getSymmetricLinkDefinition()?.getRdfReversedObjectProperty();
+
+      if (objectProperty) {
+        propertyChain.push(
+          synaptixSession.normalizeAbsoluteUri({
+            uri: objectProperty
+          })
+        );
+      } else {
+        // logWarning(`Model definition link ${modelDefinition.name} -> ${fieldName} can't be indexed while GraphDB only support straight property chains. Try to change "rdfReversedObjectProperty" (${step.getLinkDefinition().getRdfReversedObjectProperty()}) of step link "${step.getLinkDefinition().getLinkName()}" by it's owl:inverseOf in "rdfObjectProperty"`);
+      }
+    } else if (step instanceof PropertyStep) {
+      propertyChain.push(
+        synaptixSession.normalizeAbsoluteUri({
+          uri: step.getPropertyDefinition().getRdfDataProperty()
+        })
+      );
+    }
+
+    return propertyChain;
+  }, []);
+}

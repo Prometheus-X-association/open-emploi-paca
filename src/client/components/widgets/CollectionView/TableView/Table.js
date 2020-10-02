@@ -47,14 +47,16 @@ export function Table(props) {
   );
 }
 
-function EnhancedTableCode({className, dense, columns, rows, onColumnSortChange, onRowsIndexesSelected} = {}) {
+function EnhancedTableCode({className, dense, columns, rows, onColumnSortChange, onRowsIndexesSelected, getRowsSharedState = () => {}} = {}) {
   const classes = useStyles();
   const [sortBy, setSortBy] = useState();
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectedRowsIndexes, setSelectedRowsIndexes] = useState([]);
+  const [rowsSharedState, setRowsSharedState] = useState({});
 
   useEffect(() => {
     setSelectedRowsIndexes([]);
+    setRowsSharedState(getRowsSharedState({rows}))
   }, [JSON.stringify(rows)]);
 
   return (
@@ -133,7 +135,7 @@ function EnhancedTableCode({className, dense, columns, rows, onColumnSortChange,
     if (column.transformValue) {
       return column.transformValue(value);
     } else if (column.options?.customBodyRender) {
-      return column.options?.customBodyRender(value, {row, rowData: Object.values(row)});
+      return column.options?.customBodyRender(value, {row, rowData: Object.values(row), rows, rowsSharedState});
     } else {
       return value;
     }

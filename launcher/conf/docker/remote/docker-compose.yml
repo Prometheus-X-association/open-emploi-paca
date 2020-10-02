@@ -48,7 +48,7 @@ services:
       - resource
 
   index-controller:
-    image: registry.gitlab.com/mnemotix/synaptix/synaptix-index-controller:0.1.9-SNAPSHOT
+    image: registry.gitlab.com/mnemotix/synaptix/synaptix-index-controller:0.1.11-SNAPSHOT
     container_name: ${COMPOSE_PROJECT_NAME}-index-controller
     external_links:
       - ${COMPOSE_PROJECT_NAME}-rabbitmq

@@ -17,11 +17,11 @@
  */
 
 import {
-  GraphQLTypeDefinition,
+  GraphQLTypeDefinition, LabelDefinition,
   LinkDefinition, LinkPath,
   LiteralDefinition,
   MnxOntologies,
-  ModelDefinitionAbstract
+  ModelDefinitionAbstract, SortingDefinition
 } from "@mnemotix/synaptix.js";
 import AptitudeRatingDefinition from "../mm/AptitudeRatingDefinition";
 import SkillDefinition from "../mm/SkillDefinition";
@@ -108,6 +108,21 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
     ];
   }
 
+  static getLabels(){
+    return [
+      ...super.getLabels(),
+      new LabelDefinition({
+        labelName: "skillLabel",
+        linkPath: new LinkPath()
+          .step({linkDefinition: AptitudeDefinition.getLink("hasSkill")})
+          .property({
+            propertyDefinition: SkillDefinition.getLabel("prefLabel"),
+            rdfDataPropertyAlias: 'mm:skillLabel'
+          }),
+      })
+    ]
+  }
+
   /**
    * @inheritDoc
    */
@@ -115,20 +130,49 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
     return [
       ...super.getLiterals(),
       new LiteralDefinition({
+        literalName: "isTop5",
+        rdfDataProperty: "mm:isTop5",
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
+      }),
+      new LiteralDefinition({
         literalName: "isMandatory",
         rdfDataProperty: "mm:isMandatory",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
       }),
       new LiteralDefinition({
-        literalName: 'rating',
+        literalName: 'ratingValue',
         linkPath: new LinkPath()
           .step({linkDefinition: AptitudeDefinition.getLink("hasRating")})
           .property({
-            propertyDefinition: AptitudeRatingDefinition.getLiteral("rating"),
-            rdfDataPropertyAlias: 'mm:rating'
+            propertyDefinition: AptitudeRatingDefinition.getLiteral("value"),
+            rdfDataPropertyAlias: 'mm:ratingValue'
           }),
         rdfDataType: 'http://www.w3.org/2001/XMLSchema#integer'
-      }),
+      })
     ];
+  }
+
+
+  static getSortings() {
+    return [
+      new SortingDefinition({
+        sortingName: "experiencesCount",
+        indexSorting: ({direction}) => ({
+          "_script": {
+            "type": "number",
+            "script": {
+              "lang": "painless",
+              "source": `
+                if(doc.containsKey('hasExperience')) {
+                  return doc['hasExperience'].length;
+                }
+                return 0;
+              `,
+            },
+            "order": direction || "asc"
+          }
+        })
+      }),
+    ]
   }
 }
