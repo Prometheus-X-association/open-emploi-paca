@@ -9,14 +9,14 @@ const useStyles = makeStyles(theme => ({}));
 /**
  *
  */
-export default function Cartography({} = {}) {
+export default function OccupationsMatching({} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const history = useHistory();
 
   return (
     <>
-      <DialogTitle>{t("CARTONET.CARTOGRAPHY.PAGE_TITLE")}</DialogTitle>
+      <DialogTitle>{t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE")}</DialogTitle>
       <DialogContent>
         Coming soon...
       </DialogContent>

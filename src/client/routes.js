@@ -14,5 +14,5 @@ export const ROUTES = {
   CARTONET_EDIT_HOBBY: "/cartonet/edit-hobby",
   CARTONET_EDIT_APTITUDES: "/cartonet/edit-aptitudes",
   CARTONET_SHOW_PROFILE: "/cartonet/show-profile",
-  CARTONET_SHOW_OFFERS: "/cartonet/show-offers"
+  CARTONET_SHOW_JOBS: "/cartonet/show-jobs"
 };

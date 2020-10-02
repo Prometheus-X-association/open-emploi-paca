@@ -25,7 +25,7 @@ const Project = loadable(() => import(/* webpackChunkName: "Project" */ "./compo
 const EditExperience = loadable(() => import(/* webpackChunkName: "EditExperience" */ "./components/routes/Cartonet/Experience/EditExperience"));
 const EditAptitudes = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./components/routes/Cartonet/Aptitudes/EditAptitudes"));
 const Cartography = loadable(() => import(/* webpackChunkName: "Cartography" */ "./components/routes/Cartonet/Cartography/Cartography"));
-const OfferMatching = loadable(() => import(/* webpackChunkName: "OfferMatching" */ "./components/routes/Cartonet/Offers/OfferMatching"));
+const OccupationsMatching = loadable(() => import(/* webpackChunkName: "OccupationsMatching" */ "./components/routes/Cartonet/Recommendation/OccupationsMatching"));
 const gqlEnvironmentQuery = gql`
   query EnvironmentQuery {
     environment {
@@ -66,7 +66,7 @@ export default function Application({} = {}) {
               <Route exact path={ROUTES.CARTONET_EDIT_HOBBY}      render={() => <EditExperience experienceType={"hobby"}/>}/>
               <Route exact path={ROUTES.CARTONET_EDIT_APTITUDES}  component={EditAptitudes}/>
               <Route exact path={ROUTES.CARTONET_SHOW_PROFILE}    component={Cartography}/>
-              <Route exact path={ROUTES.CARTONET_SHOW_OFFERS}     component={OfferMatching} />
+              <Route exact path={ROUTES.CARTONET_SHOW_JOBS} component={OccupationsMatching} />
 
               <Route>
                 <DefaultLayout>

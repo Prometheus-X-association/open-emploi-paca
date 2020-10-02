@@ -45,7 +45,11 @@ export const fr = {
       ADD_EXPERIENCE: "Ajouter une expérience",
       ADD_TRAINING: "Ajouter une formation",
       ADD_HOBBY: "Ajouter une expérience extra-professionelle",
-      EDIT_APTITUDES: "Éditer ses compétences"
+      EDIT_APTITUDES: "Éditer ses compétences",
+      SHOW_JOBS: "Voir les métiers suggérés",
+      SHOW_PROFILE: "Voir son profil",
+      RESTITUTION: "Restitution de profil",
+      EDITION: "Édition de profil"
     },
     EXPERIENCE: {
       PAGE_TITLE: "Édition d'expérience professionnelle",
@@ -58,7 +62,7 @@ export const fr = {
       FORM_DESCRIPTION_LABEL: "Description de l'expérience",
       FORM_OCCUPATIONS_LABEL: "Métiers sélectionnés pour l'expérience",
       FORM_APTITUDES_LABEL: "Compétences sélectionnés pour l'expérience",
-      SAVE_AND_ADD_NEW: "Sauver et ajouter une nouvelle expérience",
+      SAVE_AND_ADD_NEW: "Ajouter une nouvelle expérience après enregistrement",
       PLEASE_SELECT_OCCUPATIONS: "Sélectionner des métiers pour pouvoir choisir des compétences associées"
     },
     TRAINING: {
@@ -84,6 +88,12 @@ export const fr = {
       EXPERIENCE_COUNT: "Nombre d'expériences associées",
       RATING: "Niveau de maîtrise",
       TOP_5: "Mettre en Top 5",
+    },
+    CARTOGRAPHY: {
+      PAGE_TITLE: "Restitution du profil Carto.net",
+    },
+    OCCUPATION_MATCHING: {
+      PAGE_TITLE: "Suggestion de métiers",
     }
   },
   AUTOCOMPLETE: {

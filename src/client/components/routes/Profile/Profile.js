@@ -1,7 +1,7 @@
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {Button, Grid, InputAdornment, List, ListItem, Typography} from "@material-ui/core";
+import {Grid, InputAdornment, List, ListItem, Typography, ListSubheader, Divider} from "@material-ui/core";
 import {useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
 import {object, string} from "yup";
@@ -21,7 +21,12 @@ import {Switch} from "react-router";
 import {CartonetModal} from "../Cartonet/CartonetModal";
 import {ROUTES} from "../../../routes";
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles(theme => ({
+  cartoNetSubHeader: {
+    lineHeight: "initial",
+    margin: [theme.spacing(1, 0)]
+  }
+}));
 /**
  *
  */
@@ -46,7 +51,14 @@ export default function Profile({} = {}) {
       <If condition={!loading}>
         <Grid item xs={12}>
           <Formik
-            initialValues={pick(me || {}, ["firstName", "lastName", "income", "occupation", "jobArea", "spouseOccupation"])}
+            initialValues={pick(me || {}, [
+              "firstName",
+              "lastName",
+              "income",
+              "occupation",
+              "jobArea",
+              "spouseOccupation"
+            ])}
             onSubmit={async (values, {setSubmitting}) => {
               await save(values);
               setSubmitting(false);
@@ -110,6 +122,9 @@ export default function Profile({} = {}) {
                     <Grid item xs={12} md={6}>
                       <BlockContainer title={"Carto.net"}>
                         <List>
+                          <ListSubheader disableGutters disableSticky className={classes.cartoNetSubHeader}>
+                            {t("CARTONET.ACTIONS.EDITION")}
+                          </ListSubheader>
                           <ListItem>
                             {createLink({
                               text: t("CARTONET.ACTIONS.ADD_EXPERIENCE"),
@@ -132,6 +147,21 @@ export default function Profile({} = {}) {
                             {createLink({
                               text: t("CARTONET.ACTIONS.EDIT_APTITUDES"),
                               to: `${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_APTITUDES}`
+                            })}
+                          </ListItem>
+                          <ListSubheader disableGutters disableSticky className={classes.cartoNetSubHeader}>
+                            {t("CARTONET.ACTIONS.RESTITUTION")}
+                          </ListSubheader>
+                          <ListItem>
+                            {createLink({
+                              text: t("CARTONET.ACTIONS.SHOW_PROFILE"),
+                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_PROFILE}`
+                            })}
+                          </ListItem>
+                          <ListItem>
+                            {createLink({
+                              text: t("CARTONET.ACTIONS.SHOW_JOBS"),
+                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_JOBS}`
                             })}
                           </ListItem>
                         </List>

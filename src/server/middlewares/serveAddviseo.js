@@ -17,7 +17,7 @@ const resourceTypesMapping = {
   'edit_hobby': ROUTES.CARTONET_EDIT_HOBBY,
   'edit_aptitudes': ROUTES.CARTONET_EDIT_APTITUDES,
   'show_profile':  ROUTES.CARTONET_SHOW_PROFILE,
-  'show_offers': ROUTES.CARTONET_SHOW_OFFERS,
+  'show_jobs': ROUTES.CARTONET_SHOW_JOBS,
 }
 /**
  * Serves AddViseo redirection pages

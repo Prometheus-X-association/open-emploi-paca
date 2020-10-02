@@ -8,6 +8,9 @@ import {ROUTES} from "../../../routes";
 
 const EditExperience = loadable(() => import(/* webpackChunkName: "EditExperience" */ "./Experience/EditExperience"));
 const EditAptitudes = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./Aptitudes/EditAptitudes"));
+const Cartography = loadable(() => import(/* webpackChunkName: "Cartography" */ "./Cartography/Cartography"));
+const OccupationsMatching = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./Recommendation/OccupationsMatching"));
+
 
 const useStyles = makeStyles(theme => ({}));
 
@@ -26,6 +29,8 @@ export function CartonetModal({} = {}) {
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_TRAINING}`} render={() => <EditExperience experienceType={"training"}/>} />
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_HOBBY}`} render={() => <EditExperience experienceType={"hobby"}/>} />
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_APTITUDES}`} render={() => <EditAptitudes />} />
+          <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_PROFILE}`} render={() => <Cartography />} />
+          <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_JOBS}`} render={() => <OccupationsMatching />} />
         </Switch>
       </Dialog>
     </Route>
