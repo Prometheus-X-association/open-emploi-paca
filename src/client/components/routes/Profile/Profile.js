@@ -46,7 +46,7 @@ export default function Profile({} = {}) {
       <If condition={!loading}>
         <Grid item xs={12}>
           <Formik
-            initialValues={pick(me || {}, ["firstName", "lastName", "income", "occupation", "jobArea"])}
+            initialValues={pick(me || {}, ["firstName", "lastName", "income", "occupation", "jobArea", "spouseOccupation"])}
             onSubmit={async (values, {setSubmitting}) => {
               await save(values);
               setSubmitting(false);
@@ -94,6 +94,14 @@ export default function Profile({} = {}) {
 
                           <Grid item xs={12}>
                             <JobAreaPickerField label={t("PROFILE.JOB_AREA")} name="jobArea" multiple={false} />
+                          </Grid>
+
+                          <Grid item xs={12}>
+                            <OccupationPickerField
+                              label={t("PROFILE.SPOUSE_OCCUPATION")}
+                              name="spouseOccupation"
+                              multiple={false}
+                            />
                           </Grid>
                         </Grid>
                       </BlockContainer>
@@ -158,18 +166,26 @@ export default function Profile({} = {}) {
     const {objectInput, updateCache} = prepareMutation({
       entity: me,
       values,
-      links: [{
-        name: "occupation",
-        isPlural: false,
-        inputName: "occupationInput",
-        targetFragment: gqlOccupationFragment,
-      },
+      links: [
+        {
+          name: "occupation",
+          isPlural: false,
+          inputName: "occupationInput",
+          targetFragment: gqlOccupationFragment
+        },
+        {
+          name: "spouseOccupation",
+          isPlural: false,
+          inputName: "spouseOccupationInput",
+          targetFragment: gqlOccupationFragment
+        },
         {
           name: "jobArea",
           isPlural: false,
           inputName: "jobAreaInput",
-          targetFragment: gqlJobAreaFragment,
-        }]
+          targetFragment: gqlJobAreaFragment
+        }
+      ]
     });
 
     await updateProfile({

@@ -55,6 +55,15 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         graphQLInputName: "occupationInput"
       }),
       new LinkDefinition({
+        linkName: "hasSpouseOccupation",
+        description: "Métier actuel du conjoint",
+        rdfObjectProperty: "oep:hasSpouseOccupation",
+        relatedModelDefinition: OccupationDefinition,
+        isPlural: false,
+        graphQLPropertyName: "spouseOccupation",
+        graphQLInputName: "spouseOccupationInput"
+      }),
+      new LinkDefinition({
         linkName: "hasWishedOccupation",
         description: "Liste des métiers souhaités",
         rdfObjectProperty: "oep:hasWishedOccupation",

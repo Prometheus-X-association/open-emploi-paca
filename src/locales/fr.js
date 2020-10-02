@@ -141,6 +141,7 @@ export const fr = {
     LAST_NAME: "Nom",
     INCOME: "Salaire actuel",
     OCCUPATION: "Métier actuel",
+    SPOUSE_OCCUPATION: "Métier du conjoint",
     JOB_AREA: "Bassin d'emploi actuel"
   },
   PROJECT: {

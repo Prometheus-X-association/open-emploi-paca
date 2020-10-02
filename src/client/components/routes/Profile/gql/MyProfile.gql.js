@@ -23,6 +23,9 @@ export const gqlMyProfileFragment = gql`
     occupation {
       ...OccupationFragment
     }
+    spouseOccupation{
+      ...OccupationFragment
+    }
     jobArea {
       ...JobAreaFragment
     }
