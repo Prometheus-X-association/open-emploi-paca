@@ -163,14 +163,14 @@ export const fr = {
     WISHED_MAX_INCOME: "Maximum",
     WISHED_MIN_INCOME: "Mininum",
     WISHED_OCCUPATION: {
-      TITLE: "Métier recherché",
+      TITLE: "Métiers recherchés",
       TIP: "Vous pouvez sélectionner 4 métiers",
       CURRENT: "Actuel",
       ADD: "Ajouter un métier...",
       NONE: "Aucun métier sélectionné"
     },
     WISHED_JOB_AREA: {
-      TITLE: "Bassin d'emploi",
+      TITLE: "Bassins d'emplois recherchés",
       TIP: "Vous pouvez sélectionner 4 bassins d'emploi",
       CURRENT: "Actuel",
       ADD: "Ajouter un bassin d'emploi...",

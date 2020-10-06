@@ -14,6 +14,7 @@ import {
   Grid,
   Chip,
   Typography,
+  CircularProgress
 } from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
 
@@ -65,8 +66,8 @@ export default function Cartography({} = {}) {
   const history = useHistory();
   const [selectedAptitude, setSelectedAptitude] = useState();
 
-  const {data: {me: myExperiences} = {}} = useQuery(gqlMyExperiences);
-  const {data: {me: myAptitudes} = {}} = useQuery(gqlMyAptitudes);
+  const {data: {me: myExperiences} = {}, loading: loadingExperiences} = useQuery(gqlMyExperiences);
+  const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes);
 
   return (
     <>
@@ -75,76 +76,92 @@ export default function Cartography({} = {}) {
         <Grid container spacing={2}>
           <Grid item md={7}>
             <Typography variant="button" display="block" gutterBottom>{t("CARTONET.CARTOGRAPHY.EXPERIENCES")}</Typography>
-            <List dense>
-              {(myExperiences?.experiences?.edges || []).map(({node: experience}) => (
-                <React.Fragment key={experience.id}>
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <Choose>
-                          <When condition={experience.experienceType === "hobby"}>
-                            <HobbyIcon />
-                          </When>
-                          <When condition={experience.experienceType === "training"}>
-                            <TrainingIcon />
-                          </When>
-                          <Otherwise>
-                            <ExperienceIcon />
-                          </Otherwise>
-                        </Choose>
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={experience.title}
-                      secondary={
-                        <Grid container direction="row" alignItems="flex-start" spacing={1}>
-                          <Grid item>{dayjs(experience.startDate).format("L")}</Grid>
-                          <If condition={experience.endDate}>
-                            <Grid item>
-                              <ArrowIcon fontSize={"small"} />
+
+            <Choose>
+              <When condition={loadingExperiences}>
+                <CircularProgress />
+              </When>
+              <Otherwise>
+                <List dense>
+                  {(myExperiences?.experiences?.edges || []).map(({node: experience}) => (
+                    <React.Fragment key={experience.id}>
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar>
+                            <Choose>
+                              <When condition={experience.experienceType === "hobby"}>
+                                <HobbyIcon />
+                              </When>
+                              <When condition={experience.experienceType === "training"}>
+                                <TrainingIcon />
+                              </When>
+                              <Otherwise>
+                                <ExperienceIcon />
+                              </Otherwise>
+                            </Choose>
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={experience.title}
+                          secondary={
+                            <Grid container direction="row" alignItems="flex-start" spacing={1}>
+                              <Grid item>{dayjs(experience.startDate).format("L")}</Grid>
+                              <If condition={experience.endDate}>
+                                <Grid item>
+                                  <ArrowIcon fontSize={"small"} />
+                                </Grid>
+                                <Grid item>{dayjs(experience.endDate).format("L")}</Grid>
+                              </If>
                             </Grid>
-                            <Grid item>{dayjs(experience.endDate).format("L")}</Grid>
-                          </If>
-                        </Grid>
-                      }
-                    />
-                  </ListItem>
-                  <List disablePadding>
-                    <ListItem className={classes.experienceAptitudes}>
-                      <ListItemText>
-                        {experience.aptitudes.edges.map(({node: aptitude}) => (
-                          <Chip
-                            className={classes.experienceAptitude}
-                            key={aptitude.id}
-                            label={aptitude.skillLabel}
-                            variant={selectedAptitude?.id === aptitude.id ? "default" : "outlined"}
-                            size="small"
-                            onMouseEnter={() => setSelectedAptitude(aptitude)}
-                            onMouseLeave={() => setSelectedAptitude(null)}
-                          />
-                        ))}
-                      </ListItemText>
-                    </ListItem>
-                  </List>
-                </React.Fragment>
-              ))}
-            </List>
+                          }
+                        />
+                      </ListItem>
+                      <List disablePadding>
+                        <ListItem className={classes.experienceAptitudes}>
+                          <ListItemText>
+                            {experience.aptitudes.edges.map(({node: aptitude}) => (
+                              <Chip
+                                className={classes.experienceAptitude}
+                                key={aptitude.id}
+                                label={aptitude.skillLabel}
+                                variant={selectedAptitude?.id === aptitude.id ? "default" : "outlined"}
+                                size="small"
+                                onMouseEnter={() => setSelectedAptitude(aptitude)}
+                                onMouseLeave={() => setSelectedAptitude(null)}
+                              />
+                            ))}
+                          </ListItemText>
+                        </ListItem>
+                      </List>
+                    </React.Fragment>
+                  ))}
+                </List>
+              </Otherwise>
+            </Choose>
+
           </Grid>
           <Grid item md={5}>
             <Typography variant={"subtitle1"} variant="button" display="block" className={classes.categoryTitle}>
               {t("CARTONET.CARTOGRAPHY.APTITUDES")}
             </Typography>
 
-            {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
-              <Grid key={aptitude.id} container spacing={2} justify={"flex-end"} direction={"row"} className={clsx(classes.aptitude, {[classes.faded]: selectedAptitude && selectedAptitude.id !== aptitude.id})}>
-                <Grid item md={8}>
-                  {aptitude.skillLabel}
-                </Grid>
-                <Grid item md={4} className={classes.rating}>
-                  <Rating value={aptitude.rating?.value} size={"small"} readOnly />
-                </Grid>
-              </Grid>
-            ))}
+            <Choose>
+              <When condition={loadingExperiences}>
+                <CircularProgress />
+              </When>
+              <Otherwise>
+                {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
+                  <Grid key={aptitude.id} container spacing={2} justify={"flex-end"} direction={"row"} className={clsx(classes.aptitude, {[classes.faded]: selectedAptitude && selectedAptitude.id !== aptitude.id})}>
+                    <Grid item md={8}>
+                      {aptitude.skillLabel}
+                    </Grid>
+                    <Grid item md={4} className={classes.rating}>
+                      <Rating value={aptitude.rating?.value} size={"small"} readOnly />
+                    </Grid>
+                  </Grid>
+                ))}
+              </Otherwise>
+            </Choose>
           </Grid>
         </Grid>
       </DialogContent>

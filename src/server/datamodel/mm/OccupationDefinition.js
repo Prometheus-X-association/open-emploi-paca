@@ -51,17 +51,8 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
     return GraphQLTypeDefinition;
   }
 
-  /**
-   * @note skills are indexed in concept indexed, so we need filter them by type.
-   */
-  static getIndexFilters() {
-    return [
-      {
-        term: {
-          types: "https://ontologies.mindmatcher.org/carto/Occupation"
-        }
-      }
-    ];
+  static getIndexType() {
+    return "occupation";
   }
 
   /**

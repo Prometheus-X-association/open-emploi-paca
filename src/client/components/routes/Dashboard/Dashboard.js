@@ -5,6 +5,7 @@ import {Grid, Typography} from "@material-ui/core";
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {makeStyles} from "@material-ui/core/styles";
 import ProjectExcerpt from "../Project/ProjectExcerpt";
+import {OffersHistogram} from "../Market/OffersHistogram";
 
 const useStyles = makeStyles(theme => ({}));
 /**
@@ -34,7 +35,7 @@ export default function Dashboard({children} = {}) {
 
       <Grid item xs={12} md={6}>
         <BlockContainer title={t("DASHBOARD.JOBS")} expandable>
-          ...
+          <OffersHistogram />
         </BlockContainer>
       </Grid>
 

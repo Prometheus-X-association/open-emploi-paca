@@ -17,6 +17,7 @@
  */
 
 import {
+  FilterDefinition,
   GraphQLTypeDefinition,
   LabelDefinition,
   LinkDefinition,
@@ -27,6 +28,9 @@ import {
 import ExpectationDefinition from "../mm/ExpectationDefinition";
 import OccupationDefinition from "../mm/OccupationDefinition";
 import ApplyDefinition from "../mm/ApplyDefinition";
+import env from "env-var";
+import {OfferGraphQLDefinition} from "./graphql/OfferGraphQLDefinition";
+import JobAreaDefinition from "../oep/JobAreaDefinition";
 
 export default class OfferDefinition extends ModelDefinitionAbstract {
   /**
@@ -46,15 +50,15 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
   /**
    * @inheritDoc
    */
-  static getGraphQLDefinition() {
-    return GraphQLTypeDefinition;
+  static getIndexType() {
+    return ["offer-pe", "offer-apec"];
   }
 
   /**
    * @inheritDoc
    */
-  static getIndexType() {
-    return MnxOntologies.mnxTime.ModelDefinitions.DurationDefinition.getIndexType();
+  static getGraphQLDefinition() {
+    return OfferGraphQLDefinition;
   }
 
   /**
@@ -100,6 +104,12 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
     return [
       ...super.getLiterals(),
       new LiteralDefinition({
+        literalName: "creationDate",
+        pathInIndex: "dateCreation",
+        rdfDataProperty: "mm:creationDate",
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#dateTime"
+      }),
+      new LiteralDefinition({
         literalName: "expirationDate",
         rdfDataProperty: "mm:expirationDate",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#dateTime"
@@ -107,7 +117,12 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
       new LiteralDefinition({
         literalName: "income",
         rdfDataProperty: "mm:income",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
+        pathInIndex: "salaire",
+      }),
+      new LiteralDefinition({
+        literalName: "publicUrl",
+        rdfDataProperty: "mm:publicUrl",
+        pathInIndex: "offreURL"
       })
     ];
   }
@@ -120,11 +135,35 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
       ...super.getLabels(),
       new LabelDefinition({
         labelName: "title",
-        rdfDataProperty: "dct:title"
+        rdfDataProperty: "dct:title",
+        pathInIndex: "intitule"
       }),
       new LabelDefinition({
         labelName: "description",
         rdfDataProperty: "dct:description"
+      })
+    ];
+  }
+
+  /**
+   * @inheritDoc
+   */
+  static getFilters() {
+    return [
+      ...super.getFilters(),
+      new FilterDefinition({
+        filterName: "withinJobArea",
+        indexFilter: ( jobAreaId ) => ({
+          geo_shape: {
+            geoloc: {
+              indexed_shape: {
+                index: `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${JobAreaDefinition.getIndexType()}`,
+                id: jobAreaId,
+                path: JobAreaDefinition.getLiteral("asWKT").getPathInIndex()
+              }
+            }
+          }
+        })
       })
     ];
   }

@@ -44,6 +44,21 @@ dotenv.config();
 process.env.UUID = "index-data";
 process.env.RABBITMQ_RPC_TIMEOUT = "360000";
 
+const connectorsKnowMapping = {
+  "xsd:date": "date",
+  "xsd:dateTime": "date",
+  "xsd:int": "integer",
+  "xsd:long": "long",
+  "xsd:float": "float",
+  "xsd:double": "double",
+  "xsd:boolean": "boolean",
+};
+
+const typeMapping = {
+  ...connectorsKnowMapping,
+  "http://www.opengis.net/ont/geosparql#wktLiteral": "geo_shape"
+};
+
 export let indexData = async () => {
   let {
     includedTypes,
@@ -260,28 +275,10 @@ export let indexData = async () => {
               analyzed:
                 property instanceof LabelDefinition || property.isSearchable(),
               multivalued: multivalued,
-              datatype: [
-                "xsd:date",
-                "xsd:dateTime",
-                "xsd:int",
-                "xsd:long",
-                "xsd:float",
-                "xsd:double",
-                "xsd:boolean"
-              ].includes(dataType)
+              datatype: Object.keys(connectorsKnowMapping).includes(dataType)
                 ? dataType
                 : null
             });
-
-            const typeMapping = {
-              "xsd:date": "date",
-              "xsd:dateTime": "date",
-              "xsd:int": "integer",
-              "xsd:long": "long",
-              "xsd:float": "float",
-              "xsd:double": "double",
-              "xsd:boolean": "boolean"
-            };
 
             if (property.isSearchable()) {
               connector.mappings[fieldName] = {

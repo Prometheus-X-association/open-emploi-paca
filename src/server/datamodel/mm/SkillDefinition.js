@@ -48,17 +48,8 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
     return GraphQLTypeDefinition;
   }
 
-  /**
-   * @note skills are indexed in concept indexed, so we need filter them by type.
-   */
-  static getIndexFilters() {
-    return [
-      {
-        term: {
-          types: "https://ontologies.mindmatcher.org/carto/Skill"
-        }
-      }
-    ];
+  static getIndexType() {
+    return "skill";
   }
 
   /**
