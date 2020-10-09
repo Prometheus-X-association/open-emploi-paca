@@ -89,7 +89,7 @@ export function DefaultLayout({TitleComponent, children}) {
       text: "Projet"
     },
     {
-      path: ROUTES.JOBS,
+      path: ROUTES.MARKET,
       text: "Marché"
     },
     {

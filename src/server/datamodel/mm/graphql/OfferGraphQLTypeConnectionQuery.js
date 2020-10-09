@@ -4,10 +4,14 @@ import {
   getObjectsResolver,
   getObjectsCountResolver,
   generateConnectionArgs,
-  QueryFilter, PropertyFilter
+  QueryFilter, PropertyFilter, LinkFilter
 } from "@mnemotix/synaptix.js";
 import OfferDefinition from "../OfferDefinition";
 import dayjs from "dayjs";
+
+const esDateFormat = "dd/MM/YY";
+const dayjsDateFormat = "DD/MM/YY";
+
 
 export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery {
   /**
@@ -33,13 +37,22 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
       offersCount(jobAreaId:ID!): Int
     
       """
-       This service returns a list of offers aggregations filtered by a jobAreaId
+       This service returns a list of offers aggregations filtered by a jobAreaId splitted into occupations spread over time 
        
        Parameters :
          - jobAreaId: [REQUIRED] Job area id.
          - occupationIds: [REQUIRED] Occupation ids
       """
-      offersAggs(jobAreaId:ID! occupationIds:[ID!]!): String
+      offersByOccupationAggs(jobAreaId:ID! occupationIds:[ID!]!): String
+      
+      """
+       This service returns a list of offers aggregations filtered by an occupationId splitted into jobAreas spread over time
+       
+       Parameters :
+         - jobAreaIds: [REQUIRED] Job area ids.
+         - occupationId: [REQUIRED] Occupation id
+      """
+      offersByJobAreaAggs(jobAreaIds:[ID!]! occupationId:ID!): String
     `);
   }
 
@@ -89,11 +102,11 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             synaptixSession
           );
         },
-      offersAggs:
+      offersByOccupationAggs:
         /**
          * @param _
-         * @param {string} geonamesId
          * @param {string} jobAreaId
+         * @param {string[]} occupationIds
          * @param {SynaptixDatastoreSession} synaptixSession
          * @param {object} info
          */
@@ -109,7 +122,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             propertyFilters: [
               new PropertyFilter({
                 propertyDefinition: OfferDefinition.getProperty("creationDate"),
-                value:  dayjs().subtract(3, "year"),
+                value:  dayjs().subtract(3, "month"),
                 isGt: true
               })
             ],
@@ -120,11 +133,15 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
                   acc[occupationId] = {
                     filter: { term: { "occupation": occupationId } },
                     aggs: {
-                      "histogram" : {
+                      results : {
                         date_histogram: {
                           field: "dateCreation",
                           calendar_interval: "month",
-                          format: "MM/YYYY"
+                          format: esDateFormat,
+                          extended_bounds: {
+                            "min": dayjs().subtract(3, "month").format(dayjsDateFormat),
+                            "max": dayjs().format(dayjsDateFormat)
+                          }
                         }
                       }
                     }
@@ -137,8 +154,8 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             rawResult: true
           });
 
-          const aggs = Object.entries(result.aggregations).reduce((acc, [occupationId, {histogram}]) => {
-            for(const bucket of histogram.buckets){
+          const aggs = Object.entries(result.aggregations).reduce((acc, [occupationId, {results}]) => {
+            for(const bucket of results.buckets){
               if (!acc[bucket.key_as_string]){
                 acc[bucket.key_as_string] = {
                   label: bucket.key_as_string
@@ -146,6 +163,74 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
               }
 
               acc[bucket.key_as_string][occupationId] =  bucket.doc_count;
+            }
+
+            return acc;
+          }, {});
+
+          return JSON.stringify(Object.values(aggs));
+        },
+      offersByJobAreaAggs:
+        /**
+         * @param _
+         * @param {string[]} jobAreaIds
+         * @param {string[]} occupationIds
+         * @param {SynaptixDatastoreSession} synaptixSession
+         * @param {object} info
+         */
+        async (_, { jobAreaIds, occupationId, ...args }, synaptixSession, info) => {
+          const result = await synaptixSession.getIndexService().getNodes({
+            modelDefinition: OfferDefinition,
+            propertyFilters: [
+              new PropertyFilter({
+                propertyDefinition: OfferDefinition.getProperty("creationDate"),
+                value:  dayjs().subtract(3, "year"),
+                isGt: true
+              }),
+            ],
+            linkFilters: [
+              new LinkFilter({
+                linkDefinition: OfferDefinition.getLink("hasOccupation"),
+                id: occupationId
+              })
+            ],
+            limit: 0,
+            getExtraQuery: () => {
+              return {
+                aggs: Object.entries(jobAreaIds).reduce((acc, [index, jobAreaId]) => {
+                  acc[jobAreaId] = {
+                    filter: { term: { "zoneEmploi": jobAreaId } },
+                    aggs: {
+                      results : {
+                        date_histogram: {
+                          field: "dateCreation",
+                          calendar_interval: "month",
+                          format: esDateFormat,
+                          extended_bounds: {
+                            "min": dayjs().subtract(3, "month").format(dayjsDateFormat),
+                            "max": dayjs().format(dayjsDateFormat)
+                          }
+                        }
+                      }
+                    }
+                  };
+
+                  return acc;
+                }, {})
+              };
+            },
+            rawResult: true
+          });
+
+          const aggs = Object.entries(result.aggregations).reduce((acc, [jobAreaId, {results}]) => {
+            for(const bucket of results.buckets){
+              if (!acc[bucket.key_as_string]){
+                acc[bucket.key_as_string] = {
+                  label: bucket.key_as_string
+                };
+              }
+
+              acc[bucket.key_as_string][jobAreaId] =  bucket.doc_count;
             }
 
             return acc;

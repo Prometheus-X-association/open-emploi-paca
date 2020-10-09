@@ -113,6 +113,11 @@ export const fr = {
       PLACEHOLDER: 'Sélectionner...',
     },
   },
+  MARKET: {
+    TITLE: "Marché de l'emploi",
+    TIP_AGGS_OCCUPATIONS: "Les offres d'emploi relatives aux métiers que vous avez sélectionné.",
+    TIP_AGGS_JOB_AREAS: "Évolution des offres d'emploi par bassin d'emploi"
+  },
   ORGANIZATION:  {
     AUTOCOMPLETE: {
       NO_RESULT: 'Aucun résultat trouvé.',
@@ -142,7 +147,7 @@ export const fr = {
     YOUR_DASHBOARD: "Votre tableau de bord",
     YOUR_PROJECT: "Votre projet",
     ANALYSIS: "Analyse",
-    JOBS: "Marché de l'emploi",
+    MARKET: "Marché de l'emploi",
     INCOMES: "Salaires",
     SKILLS: "Compétences",
     TRAININGS: "Formations"

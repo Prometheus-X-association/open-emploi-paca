@@ -4,6 +4,7 @@ import {useTranslation} from "react-i18next";
 
 import {Container, Grid, Typography} from "@material-ui/core";
 import {DragHandle} from "@material-ui/icons";
+import clsx from "clsx";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,6 +20,11 @@ const useStyles = makeStyles(theme => ({
     width: theme.spacing(2.5),
     height: theme.spacing(2.5),
     color: theme.palette.text.mainBlue
+  },
+  empty: {
+    textAlign: "center",
+    height: "auto",
+    padding: theme.spacing(10, 0),
   }
 }));
 
@@ -26,15 +32,16 @@ const useStyles = makeStyles(theme => ({
  * @param children
  * @param title
  * @param expandable
+ * @param emptyHint
  * @return {JSX.Element}
  * @constructor
  */
-export function BlockContainer({children, title, expandable} = {}) {
+export function BlockContainer({children, title, expandable, emptyHint} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
 
   return (
-    <Container className={classes.root}>
+    <Container className={clsx(classes.root, {[classes.empty]: emptyHint})}>
       <Grid container spacing={1} className={classes.heading} alignItems={"center"}>
         <If condition={expandable}>
           <Grid item>

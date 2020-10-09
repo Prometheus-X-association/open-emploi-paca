@@ -29,10 +29,10 @@ export function JobAreaSelect({
   const {data: {me} = {}} = useQuery(gqlMyProfile);
 
   useEffect(() => {
-    if (!selectedJobAreaId && me?.jobArea?.id) {
-      selectJobArea(me.jobArea.id);
+    if (!selectedJobAreaId && me) {
+      selectJobArea(me.jobArea?.id || me.wishedJobAreas?.edges?.[0]?.node?.id);
     }
-  }, [me?.jobArea?.id]);
+  }, [me?.jobArea?.id, me?.wishedJobAreas.edges]);
 
   return (
     <Select className={clsx(className, classes.root, {[classes.gutter]: gutter})} value={selectedJobAreaId || ""}

@@ -21,6 +21,7 @@ const PasswordForgotten = loadable(() =>
 const Profile = loadable(() => import(/* webpackChunkName: "Profile" */ "./components/routes/Profile/Profile"));
 const Dashboard = loadable(() => import(/* webpackChunkName: "Dashboard" */ "./components/routes/Dashboard/Dashboard"));
 const Project = loadable(() => import(/* webpackChunkName: "Project" */ "./components/routes/Project/Project"));
+const Market = loadable(() => import(/* webpackChunkName: "Market" */ "./components/routes/Market/Market"));
 
 const EditExperience = loadable(() => import(/* webpackChunkName: "EditExperience" */ "./components/routes/Cartonet/Experience/EditExperience"));
 const EditAptitudes = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./components/routes/Cartonet/Aptitudes/EditAptitudes"));
@@ -71,6 +72,7 @@ export default function Application({} = {}) {
               <Route>
                 <DefaultLayout>
                   <Switch>
+                    <Route path={ROUTES.MARKET} component={Market} />
                     <Route path={ROUTES.PROJECT} component={Project} />
                     <Route path={ROUTES.PROFILE} component={Profile} />
                     <Route component={Dashboard} />

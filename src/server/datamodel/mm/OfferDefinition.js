@@ -78,6 +78,7 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
       }),
       new LinkDefinition({
         linkName: "hasOccupation",
+        pathInIndex: "occupation",
         rdfObjectProperty: "mm:hasOccupation",
         relatedModelDefinition: OccupationDefinition,
         isCascadingUpdated: true,
@@ -93,6 +94,13 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
         isCascadingRemoved: true,
         isPlural: true,
         graphQLInputName: "isOfferOfInputs"
+      }),
+      new LinkDefinition({
+        linkName: "hasJobArea",
+        pathInIndex: "zoneEmploi",
+        rdfObjectProperty: "mm:hasJobArea",
+        relatedModelDefinition: JobAreaDefinition,
+        graphQLInputName: "jobAreaInput"
       })
     ];
   }

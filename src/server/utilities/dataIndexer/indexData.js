@@ -422,7 +422,7 @@ INSERT DATA {
                   autocomplete_filter: {
                     type: "edge_ngram",
                     min_gram: 1,
-                    max_gram: 20
+                    max_gram: 60
                   }
                 },
                 analyzer: {
