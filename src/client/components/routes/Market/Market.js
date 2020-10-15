@@ -9,6 +9,7 @@ import {ROUTES} from "../../../routes";
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {OffersByOccupationWidget} from "./Widget/OffersByOccupationWidget";
 import {OffersByJobAreaWidget} from "./Widget/OffersByJobAreaWidget";
+import {OffersTopOrganizationsAggsWidget} from "./Widget/OffersTopOrganizationsAggsWidget";
 
 const useStyles = makeStyles(theme => ({
   empty: {
@@ -70,6 +71,32 @@ export default function Market({} = {}) {
                 </BlockContainer>
               </Grid>
             ))}
+          </When>
+          <Otherwise>
+            <BlockContainer emptyHint>
+              <ListItemText
+                className={classes.empty}
+                primary={t("PROJECT.WISHED_JOB_AREA.NONE")}
+                secondary={createLink({
+                  to: ROUTES.PROJECT,
+                  text: t("PROJECT.EDIT")
+                })}
+              />
+            </BlockContainer>
+          </Otherwise>
+        </Choose>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography variant={"subtitle1"}>{t("MARKET.TIP_AGGS_TOP_ORGANIZATIONS")}</Typography>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Choose>
+          <When condition={me?.wishedOccupations?.edges?.length > 0 && me?.wishedJobAreas?.edges?.length > 0}>
+            <BlockContainer>
+              <OffersTopOrganizationsAggsWidget />
+            </BlockContainer>
           </When>
           <Otherwise>
             <BlockContainer emptyHint>

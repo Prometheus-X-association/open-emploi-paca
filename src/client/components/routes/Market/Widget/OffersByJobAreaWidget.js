@@ -55,7 +55,7 @@ export function OffersByJobAreaWidget({occupation: forcedOccupation} = {}) {
               <ResponsiveContainer height={300}>
                 <LineChart data={JSON.parse(offersData?.offersByJobAreaAggs || '[]')}>
                   {jobAreaIds.map((jobAreaId, index)=> (
-                    <Line key={jobAreaId} dot={false} type="monotone" dataKey={jobAreaId} stroke={Colors[index]} />
+                    <Line key={jobAreaId} dot={false} type="linear" dataKey={jobAreaId} stroke={Colors[index]} />
                   ))}
                   <CartesianGrid stroke="#ccc" />
                   <XAxis dataKey="label" />

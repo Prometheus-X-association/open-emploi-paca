@@ -51,7 +51,10 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getIndexType() {
-    return ["offer-pe", "offer-apec"];
+    return [
+      "offer-pe",
+      /*"offer-apec"*/
+    ];
   }
 
   /**

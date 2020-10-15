@@ -8,9 +8,13 @@ import {
 } from "@mnemotix/synaptix.js";
 import OfferDefinition from "../OfferDefinition";
 import dayjs from "dayjs";
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+dayjs.extend(weekOfYear);
+dayjs.extend(advancedFormat)
 
-const esDateFormat = "dd/MM/YY";
-const dayjsDateFormat = "DD/MM/YY";
+const esDateFormat = "ww - MM/YY";
+const dayjsDateFormat = "ww - MM/YY";
 
 
 export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery {
@@ -53,6 +57,16 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          - occupationId: [REQUIRED] Occupation id
       """
       offersByJobAreaAggs(jobAreaIds:[ID!]! occupationId:ID!): String
+      
+      
+      """
+       This service returns a list of top 10 aggregated offers aggregations filtered by a list of occupationIds
+       
+       Parameters :
+         - occupationId: [REQUIRED] Occupation id
+         - jobAreaId:    [REQUIRED] Job area id
+      """
+      offersTopOrganizationsAggs(occupationId: ID! jobAreaId: ID!): String
     `);
   }
 
@@ -110,7 +124,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          * @param {SynaptixDatastoreSession} synaptixSession
          * @param {object} info
          */
-        async (_, { jobAreaId, occupationIds, ...args }, synaptixSession, info) => {
+        async (_, { jobAreaId, occupationIds }, synaptixSession, info) => {
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
             queryFilters: [
@@ -122,7 +136,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             propertyFilters: [
               new PropertyFilter({
                 propertyDefinition: OfferDefinition.getProperty("creationDate"),
-                value:  dayjs().subtract(3, "month"),
+                value:  getOffersLowerBoundDate(),
                 isGt: true
               })
             ],
@@ -130,22 +144,9 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             getExtraQuery: () => {
               return {
                 aggs: Object.entries(occupationIds).reduce((acc, [index, occupationId]) => {
-                  acc[occupationId] = {
-                    filter: { term: { "occupation": occupationId } },
-                    aggs: {
-                      results : {
-                        date_histogram: {
-                          field: "dateCreation",
-                          calendar_interval: "month",
-                          format: esDateFormat,
-                          extended_bounds: {
-                            "min": dayjs().subtract(3, "month").format(dayjsDateFormat),
-                            "max": dayjs().format(dayjsDateFormat)
-                          }
-                        }
-                      }
-                    }
-                  };
+                  acc[occupationId] = generateDateHistogram({
+                    filter: { term: { "occupation": occupationId } }
+                  });
 
                   return acc;
                 }, {})
@@ -178,13 +179,13 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          * @param {SynaptixDatastoreSession} synaptixSession
          * @param {object} info
          */
-        async (_, { jobAreaIds, occupationId, ...args }, synaptixSession, info) => {
+        async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
             propertyFilters: [
               new PropertyFilter({
                 propertyDefinition: OfferDefinition.getProperty("creationDate"),
-                value:  dayjs().subtract(3, "year"),
+                value:  getOffersLowerBoundDate(),
                 isGt: true
               }),
             ],
@@ -198,22 +199,9 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             getExtraQuery: () => {
               return {
                 aggs: Object.entries(jobAreaIds).reduce((acc, [index, jobAreaId]) => {
-                  acc[jobAreaId] = {
+                  acc[jobAreaId] = generateDateHistogram({
                     filter: { term: { "zoneEmploi": jobAreaId } },
-                    aggs: {
-                      results : {
-                        date_histogram: {
-                          field: "dateCreation",
-                          calendar_interval: "month",
-                          format: esDateFormat,
-                          extended_bounds: {
-                            "min": dayjs().subtract(3, "month").format(dayjsDateFormat),
-                            "max": dayjs().format(dayjsDateFormat)
-                          }
-                        }
-                      }
-                    }
-                  };
+                  });
 
                   return acc;
                 }, {})
@@ -237,9 +225,69 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
           }, {});
 
           return JSON.stringify(Object.values(aggs));
-        }
+        },
+      offersTopOrganizationsAggs: /**
+       * @param _
+       * @param {string} occupationsId
+       * @param {string} jobAreaId
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      async (_, { jobAreaId, occupationId } = {}, synaptixSession, info) => {
+        const result = await synaptixSession.getIndexService().getNodes({
+          modelDefinition: OfferDefinition,
+          queryFilters: [
+            new QueryFilter({
+              filterDefinition: OfferDefinition.getFilter("withinJobArea"),
+              filterGenerateParams: jobAreaId
+            })
+          ],
+          linkFilters: [
+            new LinkFilter({
+              linkDefinition: OfferDefinition.getLink("hasOccupation"),
+              id: occupationId
+            })
+          ],
+          limit: 0,
+          getExtraQuery: () => {
+            return {
+              aggs: {
+                organizations: {
+                  terms: {
+                    field: "entreprise.nom.keyword"
+                  }
+                }
+              }
+            };
+          },
+          rawResult: true
+        });
+
+        return JSON.stringify(result.aggregations.organizations.buckets);
+      },
     });
   }
 }
 
+function generateDateHistogram({filter}){
+  return {
+    filter,
+    aggs: {
+      results : {
+        date_histogram: {
+          field: "dateCreation",
+          calendar_interval: "week",
+          format: esDateFormat,
+          extended_bounds: {
+            "min": getOffersLowerBoundDate().format(dayjsDateFormat),
+            "max": dayjs().format(dayjsDateFormat)
+          }
+        }
+      }
+    }
+  }
+}
 
+function getOffersLowerBoundDate(){
+  return dayjs().subtract(5, "month");
+}
