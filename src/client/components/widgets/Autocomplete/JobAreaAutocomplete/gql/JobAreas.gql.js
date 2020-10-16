@@ -23,7 +23,7 @@ export const gqlJobAreas = gql`
  *
  * @return {{sortings: [], filters: [string], first: number}}
  */
-export function getGqlFiltersForQs({qs, first = 10} = {}) {
+export function getGqlFiltersForQs({qs, first = 18} = {}) {
   let filters = [],
     sortings = [];
 
@@ -34,7 +34,7 @@ export function getGqlFiltersForQs({qs, first = 10} = {}) {
   }
 
   return {
-    first: 10,
+    first,
     filters,
     sortings
   };
