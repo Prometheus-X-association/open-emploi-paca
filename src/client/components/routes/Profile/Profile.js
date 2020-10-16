@@ -17,14 +17,21 @@ import {JobAreaPickerField} from "../../widgets/Form/JobAreaPickerField";
 import {prepareMutation} from "../../../utilities/apollo/prepareMutation";
 import {gqlJobAreaFragment, gqlOccupationFragment} from "./gql/MyProfile.gql";
 import {createLink} from "../../../utilities/createLink";
-import {Switch} from "react-router";
 import {CartonetModal} from "../Cartonet/CartonetModal";
 import {ROUTES} from "../../../routes";
+import LogoMM from "../../../assets/logo-mm.png";
+import LogoWever from "../../../assets/logo-wever.png";
 
 const useStyles = makeStyles(theme => ({
   cartoNetSubHeader: {
     lineHeight: "initial",
     margin: [theme.spacing(1, 0)]
+  },
+  logoInsert: {
+    position: "absolute",
+    top: theme.spacing(2),
+    right:theme.spacing(2),
+    width: theme.spacing(10)
   }
 }));
 /**
@@ -86,10 +93,10 @@ export default function Profile({} = {}) {
                       </BlockContainer>
                     </Grid>
 
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12}>
                       <BlockContainer title={"Ma situation"}>
-                        <Grid container spacing={2} alignItems={"stretch"}>
-                          <Grid item xs={12}>
+                        <Grid container spacing={4} alignItems={"stretch"}>
+                          <Grid item xs={12} md={6}>
                             <TextField
                               name="income"
                               type={"number"}
@@ -100,15 +107,15 @@ export default function Profile({} = {}) {
                             />
                           </Grid>
 
-                          <Grid item xs={12}>
+                          <Grid item xs={12} md={6}>
                             <OccupationPickerField label={t("PROFILE.OCCUPATION")} name="occupation" multiple={false} />
                           </Grid>
 
-                          <Grid item xs={12}>
+                          <Grid item xs={12} md={6}>
                             <JobAreaPickerField label={t("PROFILE.JOB_AREA")} name="jobArea" multiple={false} />
                           </Grid>
 
-                          <Grid item xs={12}>
+                          <Grid item xs={12} md={6}>
                             <OccupationPickerField
                               label={t("PROFILE.SPOUSE_OCCUPATION")}
                               name="spouseOccupation"
@@ -120,7 +127,8 @@ export default function Profile({} = {}) {
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                      <BlockContainer title={"Carto.net"}>
+                      <BlockContainer title={"Mon profil de compétences (Carto.net)"}>
+                        <img src={LogoMM} alt={"Logo MM"} className={classes.logoInsert}/>
                         <List>
                           <ListSubheader disableGutters disableSticky className={classes.cartoNetSubHeader}>
                             {t("CARTONET.ACTIONS.EDITION")}
@@ -167,6 +175,14 @@ export default function Profile({} = {}) {
                         </List>
 
                         <CartonetModal />
+                      </BlockContainer>
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <BlockContainer title={"Mon profil de mobilité (WeDiag)"}>
+                        <img src={LogoWever} alt={"Logo Wever"} className={classes.logoInsert}/>
+
+                        A venir...
                       </BlockContainer>
                     </Grid>
 

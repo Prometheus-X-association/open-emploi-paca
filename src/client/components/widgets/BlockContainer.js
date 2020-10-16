@@ -8,6 +8,7 @@ import clsx from "clsx";
 
 const useStyles = makeStyles(theme => ({
   root: {
+    position: "relative",
     padding: theme.spacing(2),
     height: "100%"
   },
