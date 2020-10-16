@@ -87,10 +87,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
         validationSchema={object().shape({
           title: Yup.string().required("Required"),
           startDate: Yup.date().required("Required"),
-          organization: Yup.object().required(),
-          aptitudes: Yup.object().shape({
-            edges: Yup.array().min(1)
-          }),
+          organization: Yup.object().required()
         })}>
         {({errors, touched, isValid, dirty, resetForm, values}) => {
           const selectedOccupations = values.occupations;

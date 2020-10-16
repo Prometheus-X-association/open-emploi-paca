@@ -98,7 +98,23 @@ export function DefaultLayout({TitleComponent, children}) {
     },
     {
       path: ROUTES.SKILLS,
-      text: "Compétences"
+      text: "Compétences",
+      disabled: true
+    },
+    {
+      path: ROUTES.TRAININGS,
+      text: "Formations",
+      disabled: true
+    },
+    {
+      path: ROUTES.TRANSPORTS,
+      text: "Transport et logement",
+      disabled: true
+    },
+    {
+      path: ROUTES.LIFE_STYLE,
+      text: "cadre de vie",
+      disabled: true
     }
   ];
 
@@ -115,14 +131,16 @@ export function DefaultLayout({TitleComponent, children}) {
         <img className={classes.logo} src={Logo} alt={"Logo Région Sud"} />
         <Divider />
         <List>
-          {routes.map(({text, path}) => (
+          {routes.map(({text, path, disabled}) => (
             <ListItem
               alignItems="center"
               key={text}
               className={clsx(classes.menuItem)}
               button
-              component={Link}
-              to={path}>
+              component={disabled ? null : Link}
+              to={path}
+              disabled={disabled}
+            >
               <ListItemText
                 classes={{
                   root: classes.menuItemText,
