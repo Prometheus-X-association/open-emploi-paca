@@ -2,7 +2,16 @@ import React, {useState} from "react";
 import * as Yup from "yup";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {DialogActions, DialogContent, DialogTitle, Grid, Typography, Checkbox, FormControlLabel, Paper} from "@material-ui/core";
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  Typography,
+  Checkbox,
+  FormControlLabel,
+  Paper
+} from "@material-ui/core";
 import {useHistory} from "react-router";
 import {object} from "yup";
 import {useMutation, useQuery} from "@apollo/client";
@@ -18,6 +27,7 @@ import {prepareMutation} from "../../../../utilities/apollo/prepareMutation";
 import {gqlAptitudeFragment} from "../Aptitudes/gql/Aptitude.gql";
 import {gqlOrganizationFragment} from "../../../widgets/Autocomplete/OrganizationAutocomplete/gql/Organizations.gql";
 import {gqlMyExperiences} from "./gql/MyExperiences.gql";
+import clsx from "clsx";
 
 const useStyles = makeStyles(theme => ({
   categoryTitle: {
@@ -31,17 +41,24 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "center",
     marginTop: theme.spacing(2)
+  },
+  fullscreen: {
+    overflowY: "initial"
+  },
+  aptitudes: {
+    marginTop: theme.spacing(2)
   }
 }));
 
 /**
  * @param {string} experienceType (experience|training|hobby)
+ * @param {boolean} fullscreen
  * @return {JSX.Element}
  * @constructor
  */
-export default function EditExperience({experienceType = "experience"} = {}) {
-  if (!["experience", "training", "hobby"].includes(experienceType)){
-    throw new Error("experience type must be in [\"experience\", \"training\", \"hobby\"]");
+export default function EditExperience({experienceType = "experience", fullscreen} = {}) {
+  if (!["experience", "training", "hobby"].includes(experienceType)) {
+    throw new Error('experience type must be in ["experience", "training", "hobby"]');
   }
 
   const classes = useStyles();
@@ -54,16 +71,14 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   const [updateProfile, {loading: saving}] = useMutation(gqlUpdateProfile, {
     onCompleted: () => {
       enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
-      if (!saveAndResetForm){
+      if (!saveAndResetForm) {
         history.goBack();
       }
     }
   });
   return (
     <>
-      <DialogTitle>
-        {t(`CARTONET.${experienceType.toUpperCase()}.PAGE_TITLE`)}
-      </DialogTitle>
+      <DialogTitle>{t(`CARTONET.${experienceType.toUpperCase()}.PAGE_TITLE`)}</DialogTitle>
       <Formik
         initialValues={{
           title: "",
@@ -78,7 +93,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           await save(values);
           setSubmitting(false);
 
-          if(saveAndResetForm){
+          if (saveAndResetForm) {
             resetForm();
           }
         }}
@@ -93,43 +108,41 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           const selectedOccupations = values.occupations;
           return (
             <Form>
-              <DialogContent>
+              <DialogContent className={clsx({[classes.fullscreen]: fullscreen})}>
                 <Grid container spacing={6}>
-                  <Grid item xs={12} md={6}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <Typography variant={"overline"}> {t(`CARTONET.${experienceType.toUpperCase()}.FORM_DESCRIPTION_LABEL`)}</Typography>
-                        <TextField required name="title" label={t("CARTONET.EXPERIENCE.TITLE")} />
+                  <Grid item xs={12} md={6} container spacing={2}>
+                    <Grid item xs={12}>
+                      <Typography variant={"overline"}>
+                        {" "}
+                        {t(`CARTONET.${experienceType.toUpperCase()}.FORM_DESCRIPTION_LABEL`)}
+                      </Typography>
+                      <TextField required name="title" label={t("CARTONET.EXPERIENCE.TITLE")} />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField name="description" label={t("CARTONET.EXPERIENCE.DESCRIPTION")} multiline />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <OrganizationPickerField
+                        label={t(`CARTONET.${experienceType.toUpperCase()}.ORGANIZATION`)}
+                        name={"organization"}
+                        creatable={true}
+                      />
+                    </Grid>
+                    <Grid item xs={12} container>
+                      <Grid item xs={6}>
+                        <DatePickerField required name="startDate" label={t("CARTONET.EXPERIENCE.START_DATE")} />
                       </Grid>
-                      <Grid item xs={12}>
-                        <TextField name="description" label={t("CARTONET.EXPERIENCE.DESCRIPTION")} multiline />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <OrganizationPickerField label={t(`CARTONET.${experienceType.toUpperCase()}.ORGANIZATION`)} name={"organization"} creatable={true} />
-                      </Grid>
-                      <Grid item xs={12} container>
-                        <Grid item xs={6}>
-                          <DatePickerField required name="startDate" label={t("CARTONET.EXPERIENCE.START_DATE")} />
-                        </Grid>
-                        <Grid item xs={6}>
-                          <DatePickerField name="endDate" label={t("CARTONET.EXPERIENCE.END_DATE")} />
-                        </Grid>
-                      </Grid>
-
-                      <Grid item xs={12}>
-                        <Typography className={classes.categoryTitle} variant="overline" display="block">
-                          {t(`CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`)}
-                        </Typography>
-
-                        <WishedOccupations dense name={"occupations"} />
+                      <Grid item xs={6}>
+                        <DatePickerField name="endDate" label={t("CARTONET.EXPERIENCE.END_DATE")} />
                       </Grid>
                     </Grid>
-                  </Grid>
 
-                  <Grid item xs={12} md={6}>
-                    <Grid container spacing={2}>
+                    <Grid item xs={12} container spacing={2} className={classes.aptitudes}>
                       <Grid item xs={12}>
-                        <Typography variant={"overline"}> {t(`CARTONET.${experienceType.toUpperCase()}.FORM_APTITUDES_LABEL`)}</Typography>
+                        <Typography variant={"overline"}>
+                          {" "}
+                          {t(`CARTONET.${experienceType.toUpperCase()}.FORM_APTITUDES_LABEL`)}
+                        </Typography>
 
                         <Choose>
                           <When condition={selectedOccupations?.edges?.length > 0}>
@@ -150,11 +163,23 @@ export default function EditExperience({experienceType = "experience"} = {}) {
                       </Grid>
                     </Grid>
                   </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <Grid item xs={12}>
+                      <Typography className={classes.categoryTitle} variant="overline" display="block">
+                        {t(`CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`)}
+                      </Typography>
+
+                      <WishedOccupations dense name={"occupations"} />
+                    </Grid>
+                  </Grid>
                 </Grid>
               </DialogContent>
               <DialogActions>
                 <FormControlLabel
-                  control={<Checkbox checked={saveAndResetForm} onChange={(e) => setSaveAndResetForm(e.target.checked)} />}
+                  control={
+                    <Checkbox checked={saveAndResetForm} onChange={e => setSaveAndResetForm(e.target.checked)} />
+                  }
                   labelPlacement={"start"}
                   label={t("CARTONET.EXPERIENCE.SAVE_AND_ADD_NEW")}
                 />

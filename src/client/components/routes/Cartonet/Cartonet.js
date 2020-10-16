@@ -29,9 +29,9 @@ export default function Cartonet({} = {}) {
       <img src={LogoMM} alt={"Logo MM"} className={classes.logoInsert}/>
 
       <Switch>
-        <Route exact path={ROUTES.CARTONET_EDIT_EXPERIENCE} component={EditExperience}/>
-        <Route exact path={ROUTES.CARTONET_EDIT_TRAINING}   render={() => <EditExperience experienceType={"training"}/>}/>
-        <Route exact path={ROUTES.CARTONET_EDIT_HOBBY}      render={() => <EditExperience experienceType={"hobby"}/>}/>
+        <Route exact path={ROUTES.CARTONET_EDIT_EXPERIENCE} render={() => <EditExperience fullscreen />}/>
+        <Route exact path={ROUTES.CARTONET_EDIT_TRAINING}   render={() => <EditExperience fullscreen experienceType={"training"}/>}/>
+        <Route exact path={ROUTES.CARTONET_EDIT_HOBBY}      render={() => <EditExperience fullscreen experienceType={"hobby"}/>}/>
         <Route exact path={ROUTES.CARTONET_EDIT_APTITUDES}  component={EditAptitudes}/>
         <Route exact path={ROUTES.CARTONET_SHOW_PROFILE}    component={Cartography}/>
         <Route exact path={ROUTES.CARTONET_SHOW_JOBS} component={OccupationsMatching} />
