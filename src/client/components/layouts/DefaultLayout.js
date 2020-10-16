@@ -10,6 +10,7 @@ import {AppBar} from "./AppBar";
 import {useLocation} from "react-router";
 import clsx from "clsx";
 import {ROUTES} from "../../routes";
+import {Footer} from "./Footer";
 
 const drawerWidth = 240;
 
@@ -52,16 +53,7 @@ const useStyles = makeStyles(theme => ({
   },
   footer: {
     width: "100%",
-    background: grey["800"],
-    color: "white",
-    padding: theme.spacing(0, 2)
-  },
-  footerContent: {
-    height: theme.spacing(5)
-  },
-  version: {
-    textAlign: "right",
-    display: "block"
+    marginTop: theme.spacing(2)
   }
 }));
 
@@ -158,11 +150,7 @@ export function DefaultLayout({TitleComponent, children}) {
           {children}
         </main>
         <footer className={classes.footer}>
-          <Grid container direction="row" alignItems="center" justify="center" className={classes.footerContent}>
-            <Grid item xs={12}>
-              <Version className={classes.version} />
-            </Grid>
-          </Grid>
+          <Footer />
         </footer>
       </div>
     </div>

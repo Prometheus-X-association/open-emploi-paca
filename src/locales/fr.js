@@ -261,4 +261,7 @@ export const fr = {
       TITLE_ARIA: 'Afficher/Cacher les colonnes du tableau',
     },
   },
+  RESET_PASSWORD: {
+    CONFIRM: "Réinitialiser mon mot de passe"
+  }
 };

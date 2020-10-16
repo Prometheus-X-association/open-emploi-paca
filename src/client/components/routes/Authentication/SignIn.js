@@ -1,33 +1,19 @@
 import React from "react";
-import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import {makeStyles} from "@material-ui/core/styles";
 import {ROUTES} from "../../../routes";
 import {createLink} from "../../../utilities/createLink";
 import {getUserAuthenticationService} from "../../../services/UserAuthenticationService";
-import {Copyright} from "../../widgets/Copyright";
 import {Field, Form, Formik} from "formik";
 import {useTranslation} from "react-i18next";
 import {CheckboxWithLabel, TextField} from "formik-material-ui";
 import {useApolloClient} from "@apollo/client";
+import AuthLayout from "./AuthLayout";
 
 const useStyles = makeStyles(theme => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
-  },
   form: {
     width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1)
@@ -48,101 +34,93 @@ export default function SignIn() {
   const {login, globalErrorMessage} = userAuthenticationService.useLogin();
 
   return (
-    <Container component="main" maxWidth="xs">
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          {t("SIGN_IN.TITLE")}
-        </Typography>
-        <Formik
-          initialValues={{
-            email: localStorage.getItem("rememberMe") || "",
-            rememberMe: !!localStorage.getItem("rememberMe"),
-            password: ""
-          }}
-          validateOnChange={false}
-          validateOnBlur={false}
-          validationSchema={userAuthenticationService.getLoginValidationSchema()}
-          onSubmit={async (values, {setSubmitting, ...formikOptions}) => {
-            setSubmitting(true);
+    <AuthLayout>
+      <Typography component="h1" variant="h5">
+        {t("SIGN_IN.TITLE")}
+      </Typography>
+      <Formik
+        initialValues={{
+          email: localStorage.getItem("rememberMe") || "",
+          rememberMe: !!localStorage.getItem("rememberMe"),
+          password: ""
+        }}
+        validateOnChange={false}
+        validateOnBlur={false}
+        validationSchema={userAuthenticationService.getLoginValidationSchema()}
+        onSubmit={async (values, {setSubmitting, ...formikOptions}) => {
+          setSubmitting(true);
 
-            if (values.rememberMe) {
-              localStorage.setItem("rememberMe", values.email);
-            } else {
-              localStorage.removeItem("rememberMe");
-            }
+          if (values.rememberMe) {
+            localStorage.setItem("rememberMe", values.email);
+          } else {
+            localStorage.removeItem("rememberMe");
+          }
 
-            await login(values, {setSubmitting, ...formikOptions});
-          }}>
-          {({isSubmitting, values, errors}) => {
-            return (
-              <Form className={classes.form} noValidate>
-                <Field
-                  component={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label={t("SIGN_IN.EMAIL")}
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                />
-                <Field
-                  component={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label={t("SIGN_IN.PASSWORD")}
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                />
+          await login(values, {setSubmitting, ...formikOptions});
+        }}>
+        {({isSubmitting, values, errors}) => {
+          return (
+            <Form className={classes.form} noValidate>
+              <Field
+                component={TextField}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label={t("SIGN_IN.EMAIL")}
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <Field
+                component={TextField}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label={t("SIGN_IN.PASSWORD")}
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
 
-                <Field
-                  type="checkbox"
-                  component={CheckboxWithLabel}
-                  name="rememberMe"
-                  checked={values.rememberMe}
-                  color="primary"
-                  Label={{label: t("SIGN_IN.REMEMBER_ME")}}
-                />
+              <Field
+                type="checkbox"
+                component={CheckboxWithLabel}
+                name="rememberMe"
+                checked={values.rememberMe}
+                color="primary"
+                Label={{label: t("SIGN_IN.REMEMBER_ME")}}
+              />
 
-                <If condition={globalErrorMessage}>
-                  <Typography className={classes.error}>{t(globalErrorMessage)}</Typography>
-                </If>
+              <If condition={globalErrorMessage}>
+                <Typography className={classes.error}>{t(globalErrorMessage)}</Typography>
+              </If>
 
-                <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-                  {t("SIGN_IN.SUBMIT")}
-                </Button>
+              <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+                {t("SIGN_IN.SUBMIT")}
+              </Button>
 
-                {isSubmitting && <CircularProgress size={24} className={classes.buttonProgress} />}
+              {isSubmitting && <CircularProgress size={24} className={classes.buttonProgress} />}
 
-                <Grid container>
-                  <Grid item xs>
-                    {createLink({
-                      to: ROUTES.PASSWORD_FORGOTTEN,
-                      text: t("SIGN_IN.PASSWORD_FORGOTTEN"),
-                      variant: "body2"
-                    })}
-                  </Grid>
-                  <Grid item>
-                    {createLink({to: ROUTES.SIGN_UP, text: t("SIGN_IN.REDIRECT_SIGN_UP"), variant: "body2"})}
-                  </Grid>
+              <Grid container>
+                <Grid item xs>
+                  {createLink({
+                    to: ROUTES.PASSWORD_FORGOTTEN,
+                    text: t("SIGN_IN.PASSWORD_FORGOTTEN"),
+                    variant: "body2"
+                  })}
                 </Grid>
-              </Form>
-            );
-          }}
-        </Formik>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
+                <Grid item>
+                  {createLink({to: ROUTES.SIGN_UP, text: t("SIGN_IN.REDIRECT_SIGN_UP"), variant: "body2"})}
+                </Grid>
+              </Grid>
+            </Form>
+          );
+        }}
+      </Formik>
+    </AuthLayout>
   );
 }
