@@ -38,7 +38,16 @@ export function OccupationAutocomplete({
       placeholder={placeholder}
       gqlQuery={gqlOccupations}
       gqlEntitiesConnectionPath={"occupations"}
-      getGqlVariables={({qs}) => getGqlFiltersForQs({qs, excludeTopConcepts, vocabularyId: null})}
+      getGqlVariables={({qs}) => {
+        let variables = getGqlFiltersForQs({qs, excludeTopConcepts, vocabularyId: null});
+
+        variables.filters = [
+          ...variables.filters,
+          "hasSkill:*"
+        ];
+
+        return variables;
+      }}
       onSelectConcepts={onSelectConcepts}
       selectedConcepts={selectedConcepts}
       disabledConcepts={disabledConcepts}
