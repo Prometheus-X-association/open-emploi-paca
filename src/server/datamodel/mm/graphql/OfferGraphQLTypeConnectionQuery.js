@@ -67,6 +67,24 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          - jobAreaId:    [REQUIRED] Job area id
       """
       offersTopOrganizationsAggs(occupationId: ID! jobAreaId: ID!): String
+      
+      """
+       This service returns a list of incomes aggregations filtered by a jobAreaId splitted into occupations spread over time 
+       
+       Parameters :
+         - jobAreaId: [REQUIRED] Job area id.
+         - occupationIds: [REQUIRED] Occupation ids
+      """
+      incomesByOccupationAggs(jobAreaId:ID! occupationIds:[ID!]!): String
+      
+      """
+       This service returns a list of incomes aggregations filtered by an occupationId splitted into jobAreas spread over time
+       
+       Parameters :
+         - jobAreaIds: [REQUIRED] Job area ids.
+         - occupationId: [REQUIRED] Occupation id
+      """
+      incomesByJobAreaAggs(jobAreaIds:[ID!]! occupationId:ID!): String
     `);
   }
 
@@ -144,7 +162,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             getExtraQuery: () => {
               return {
                 aggs: Object.entries(occupationIds).reduce((acc, [index, occupationId]) => {
-                  acc[occupationId] = generateDateHistogram({
+                  acc[occupationId] = generateOffersCountDateHistogram({
                     filter: { term: { "occupation": occupationId } }
                   });
 
@@ -155,8 +173,8 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             rawResult: true
           });
 
-          const aggs = Object.entries(result.aggregations).reduce((acc, [occupationId, {results}]) => {
-            for(const bucket of results.buckets){
+          const aggs = Object.entries(result.aggregations).reduce((acc, [occupationId, {offersCountHistogram}]) => {
+            for(const bucket of offersCountHistogram.buckets){
               if (!acc[bucket.key_as_string]){
                 acc[bucket.key_as_string] = {
                   label: bucket.key_as_string
@@ -199,7 +217,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             getExtraQuery: () => {
               return {
                 aggs: Object.entries(jobAreaIds).reduce((acc, [index, jobAreaId]) => {
-                  acc[jobAreaId] = generateDateHistogram({
+                  acc[jobAreaId] = generateOffersCountDateHistogram({
                     filter: { term: { "zoneEmploi": jobAreaId } },
                   });
 
@@ -210,8 +228,8 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             rawResult: true
           });
 
-          const aggs = Object.entries(result.aggregations).reduce((acc, [jobAreaId, {results}]) => {
-            for(const bucket of results.buckets){
+          const aggs = Object.entries(result.aggregations).reduce((acc, [jobAreaId, {offersCountHistogram}]) => {
+            for(const bucket of offersCountHistogram.buckets){
               if (!acc[bucket.key_as_string]){
                 acc[bucket.key_as_string] = {
                   label: bucket.key_as_string
@@ -265,15 +283,125 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
 
         return JSON.stringify(result.aggregations.organizations.buckets);
       },
+      incomesByOccupationAggs:
+        /**
+         * @param _
+         * @param {string} jobAreaId
+         * @param {string[]} occupationIds
+         * @param {SynaptixDatastoreSession} synaptixSession
+         * @param {object} info
+         */
+        async (_, { jobAreaId, occupationIds }, synaptixSession, info) => {
+          const result = await synaptixSession.getIndexService().getNodes({
+            modelDefinition: OfferDefinition,
+            queryFilters: [
+              new QueryFilter({
+                filterDefinition: OfferDefinition.getFilter("withinJobArea"),
+                filterGenerateParams: jobAreaId
+              })
+            ],
+            propertyFilters: [
+              new PropertyFilter({
+                propertyDefinition: OfferDefinition.getProperty("creationDate"),
+                value:  getOffersLowerBoundDate(),
+                isGt: true
+              })
+            ],
+            limit: 0,
+            getExtraQuery: () => {
+              return {
+                aggs: Object.entries(occupationIds).reduce((acc, [index, occupationId]) => {
+                  acc[occupationId] = generateIncomesAvgHistogram({
+                    filter: { term: { "occupation": occupationId } }
+                  });
+
+                  return acc;
+                }, {})
+              };
+            },
+            rawResult: true
+          });
+
+          const aggs = Object.entries(result.aggregations).reduce((acc, [occupationId, {incomesHistogram}]) => {
+            for(const bucket of incomesHistogram.buckets){
+              if (!acc[bucket.key_as_string]){
+                acc[bucket.key_as_string] = {
+                  label: bucket.key_as_string
+                };
+              }
+
+              acc[bucket.key_as_string][occupationId] =  bucket.avgIncome.value || 0;
+            }
+
+            return acc;
+          }, {});
+
+          return JSON.stringify(Object.values(aggs));
+        },
+      incomesByJobAreaAggs:
+        /**
+         * @param _
+         * @param {string[]} jobAreaIds
+         * @param {string[]} occupationIds
+         * @param {SynaptixDatastoreSession} synaptixSession
+         * @param {object} info
+         */
+        async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
+          const result = await synaptixSession.getIndexService().getNodes({
+            modelDefinition: OfferDefinition,
+            propertyFilters: [
+              new PropertyFilter({
+                propertyDefinition: OfferDefinition.getProperty("creationDate"),
+                value:  getOffersLowerBoundDate(),
+                isGt: true
+              }),
+            ],
+            linkFilters: [
+              new LinkFilter({
+                linkDefinition: OfferDefinition.getLink("hasOccupation"),
+                id: occupationId
+              })
+            ],
+            limit: 0,
+            getExtraQuery: () => {
+              return {
+                aggs: Object.entries(jobAreaIds).reduce((acc, [index, jobAreaId]) => {
+                  acc[jobAreaId] = generateIncomesAvgHistogram({
+                    filter: { term: { "zoneEmploi": jobAreaId } },
+                  });
+
+                  return acc;
+                }, {})
+              };
+            },
+            rawResult: true
+          });
+
+          const aggs = Object.entries(result.aggregations).reduce((acc, [jobAreaId, {incomesHistogram}]) => {
+            for(const bucket of incomesHistogram.buckets){
+              if (!acc[bucket.key_as_string]){
+                acc[bucket.key_as_string] = {
+                  label: bucket.key_as_string
+                };
+              }
+
+              acc[bucket.key_as_string][jobAreaId] =  bucket.avgIncome.value || 0;
+            }
+
+            return acc;
+          }, {});
+
+          return JSON.stringify(Object.values(aggs));
+        },
     });
   }
 }
 
-function generateDateHistogram({filter}){
+function generateOffersCountDateHistogram({filter}){
   return {
     filter,
     aggs: {
-      results : {
+      offersCountHistogram : {
         date_histogram: {
           field: "dateCreation",
           calendar_interval: "week",
@@ -281,6 +409,34 @@ function generateDateHistogram({filter}){
           extended_bounds: {
             "min": getOffersLowerBoundDate().format(dayjsDateFormat),
             "max": dayjs().format(dayjsDateFormat)
+          }
+        }
+      }
+    }
+  }
+}
+
+
+function generateIncomesAvgHistogram({filter}){
+  return {
+    filter,
+    aggs: {
+      incomesHistogram : {
+        date_histogram: {
+          field: "dateCreation",
+          calendar_interval: "week",
+          format: esDateFormat,
+          extended_bounds: {
+            "min": getOffersLowerBoundDate().format(dayjsDateFormat),
+            "max": dayjs().format(dayjsDateFormat)
+          }
+        },
+        aggs: {
+          avgIncome: {
+            avg: {
+              field: "salaire",
+              missing: 0
+          }
           }
         }
       }

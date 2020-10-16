@@ -3,11 +3,10 @@ import {CircularProgress, Select, MenuItem, Grid} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useLazyQuery, useQuery} from "@apollo/client";
-import { gqlOffersByJobAreaAggs} from "./gql/OffersAggs.gql";
+import { gqlIncomesByJobAreaAggs} from "./gql/IncomesAggs.gql";
 import {LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip} from "recharts";
 import {JobAreasToggler} from "../../Dashboard/Widget/JobAreasToggler";
 import {Colors} from "../../Dashboard/Widget/Colors";
-import {JobAreaSelect} from "../../Dashboard/Widget/JobAreaSelect";
 import {OccupationSelect} from "../../Dashboard/Widget/OccupationSelect";
 
 const useStyles = makeStyles(theme => ({
@@ -20,16 +19,16 @@ const useStyles = makeStyles(theme => ({
 /**
  *
  */
-export function OffersByJobAreaWidget({occupation: forcedOccupation} = {}) {
+export function IncomesByJobAreaWidget({occupation: forcedOccupation} = {}) {
   const {t} = useTranslation();
   const [occupationId, setOccupationId] = useState(forcedOccupation?.id);
   const [jobAreaIds, setJobAreasIds] = useState([]);
-  const [getOffersAggs, {data: offersData}] = useLazyQuery(gqlOffersByJobAreaAggs);
+  const [getIncomesAggs, {data: incomesData}] = useLazyQuery(gqlIncomesByJobAreaAggs);
 
   useEffect(() => {
     if (occupationId && jobAreaIds.length > 0) {
 
-      getOffersAggs({
+      getIncomesAggs({
         variables: {
           jobAreaIds,
           occupationId
@@ -51,9 +50,9 @@ export function OffersByJobAreaWidget({occupation: forcedOccupation} = {}) {
         </Grid>
         <Grid item xs={8}>
           <Choose>
-            <When condition={offersData}>
+            <When condition={incomesData}>
               <ResponsiveContainer height={300}>
-                <LineChart data={JSON.parse(offersData?.offersByJobAreaAggs || '[]')}>
+                <LineChart data={JSON.parse(incomesData?.incomesByJobAreaAggs || '[]')}>
                   {jobAreaIds.map((jobAreaId, index)=> (
                     <Line key={jobAreaId} dot={false} type="monotone" dataKey={jobAreaId} stroke={Colors[index]} />
                   ))}

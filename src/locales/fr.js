@@ -116,7 +116,16 @@ export const fr = {
   MARKET: {
     TITLE: "Marché de l'emploi",
     TIP_AGGS_OCCUPATIONS: "Les offres d'emploi relatives aux métiers que vous avez sélectionné.",
-    TIP_AGGS_JOB_AREAS: "Évolution des offres d'emploi par bassin d'emploi",
+    TIP_AGGS_JOB_AREAS: "Évolution des offres d'emploi par bassin d'emploi (pour les métiers de votre sélection)",
+    TIP_AGGS_TOP_ORGANIZATIONS: "Liste des entreprises qui recrutent le plus pour un bassin d'emploi et un métié donné",
+    ORGANIZATION_OFFERS_COUNT: "{{count}} offre d'emploi",
+    ORGANIZATION_OFFERS_COUNT_plural: "{{count}} offres d'emploi",
+    ORGANIZATION_OFFERS_EMPTY: "Aucune entreprise ne recrute pour les critères sélectionnés..."
+  },
+  INCOMES: {
+    TITLE: "Salaires",
+    TIP_AGGS_OCCUPATIONS: "Les salaires moyens des métiers que vous avez sélectionné.",
+    TIP_AGGS_JOB_AREAS: "Évolution des salaires moyens par bassin d'emploi (pour les métiers de votre sélection)",
     TIP_AGGS_TOP_ORGANIZATIONS: "Liste des entreprises qui recrutent le plus pour un bassin d'emploi et un métié donné",
     ORGANIZATION_OFFERS_COUNT: "{{count}} offre d'emploi",
     ORGANIZATION_OFFERS_COUNT_plural: "{{count}} offres d'emploi",
