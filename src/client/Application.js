@@ -23,12 +23,8 @@ const Dashboard = loadable(() => import(/* webpackChunkName: "Dashboard" */ "./c
 const Project = loadable(() => import(/* webpackChunkName: "Project" */ "./components/routes/Project/Project"));
 const Market = loadable(() => import(/* webpackChunkName: "Market" */ "./components/routes/Market/Market"));
 const Incomes = loadable(() => import(/* webpackChunkName: "Incomes" */ "./components/routes/Incomes/Incomes"));
+const Cartonet = loadable(() => import(/* webpackChunkName: "Cartonet" */ "./components/routes/Cartonet/Cartonet"));
 
-
-const EditExperience = loadable(() => import(/* webpackChunkName: "EditExperience" */ "./components/routes/Cartonet/Experience/EditExperience"));
-const EditAptitudes = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./components/routes/Cartonet/Aptitudes/EditAptitudes"));
-const Cartography = loadable(() => import(/* webpackChunkName: "Cartography" */ "./components/routes/Cartonet/Cartography/Cartography"));
-const OccupationsMatching = loadable(() => import(/* webpackChunkName: "OccupationsMatching" */ "./components/routes/Cartonet/Recommendation/OccupationsMatching"));
 const gqlEnvironmentQuery = gql`
   query EnvironmentQuery {
     environment {
@@ -64,12 +60,7 @@ export default function Application({} = {}) {
         <When condition={isLogged}>
           <Suspense fallback={<LoadingSplashScreen />}>
             <Switch>
-              <Route exact path={ROUTES.CARTONET_EDIT_EXPERIENCE} component={EditExperience}/>
-              <Route exact path={ROUTES.CARTONET_EDIT_TRAINING}   render={() => <EditExperience experienceType={"training"}/>}/>
-              <Route exact path={ROUTES.CARTONET_EDIT_HOBBY}      render={() => <EditExperience experienceType={"hobby"}/>}/>
-              <Route exact path={ROUTES.CARTONET_EDIT_APTITUDES}  component={EditAptitudes}/>
-              <Route exact path={ROUTES.CARTONET_SHOW_PROFILE}    component={Cartography}/>
-              <Route exact path={ROUTES.CARTONET_SHOW_JOBS} component={OccupationsMatching} />
+              <Route path={"/cartonet"} component={Cartonet} />
 
               <Route>
                 <DefaultLayout>

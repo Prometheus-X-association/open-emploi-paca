@@ -5,6 +5,9 @@ import {Route, Switch} from "react-router";
 import {Dialog} from "@material-ui/core";
 import loadable from "@loadable/component";
 import {ROUTES} from "../../../routes";
+import LogoMM from "../../../assets/logo-mm.png";
+import {BlockContainer} from "../../widgets/BlockContainer";
+
 
 const EditExperience = loadable(() => import(/* webpackChunkName: "EditExperience" */ "./Experience/EditExperience"));
 const EditAptitudes = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./Aptitudes/EditAptitudes"));
@@ -12,7 +15,14 @@ const Cartography = loadable(() => import(/* webpackChunkName: "Cartography" */ 
 const OccupationsMatching = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./Recommendation/OccupationsMatching"));
 
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles(theme => ({
+  logoInsert: {
+    position: "absolute",
+    top: theme.spacing(2),
+    right:theme.spacing(2),
+    width: theme.spacing(12)
+  }
+}));
 
 /**
  *
@@ -24,6 +34,8 @@ export function CartonetModal({} = {}) {
   return (
     <Route path={`${ROUTES.PROFILE}/cartonet`}>
       <Dialog open={true} maxWidth={"lg"} scroll={"paper"}  fullWidth disableBackdropClick disableEscapeKeyDown>
+        <img src={LogoMM} alt={"Logo MM"} className={classes.logoInsert}/>
+
         <Switch>
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_EXPERIENCE}`} component={EditExperience} />
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_TRAINING}`} render={() => <EditExperience experienceType={"training"}/>} />
