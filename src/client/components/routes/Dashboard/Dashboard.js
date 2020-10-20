@@ -10,6 +10,7 @@ import {OffersByJobAreaWidget} from "../Market/Widget/OffersByJobAreaWidget";
 import {useQuery} from "@apollo/client";
 import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
 import {IncomesByOccupationWidget} from "../Incomes/Widget/IncomesByOccupationWidget";
+import {TrainingsByOccupationWidget} from "../Trainings/Widget/TrainingsByOccupationWidget";
 
 const useStyles = makeStyles(theme => ({}));
 /**
@@ -47,13 +48,13 @@ export default function Dashboard({children} = {}) {
       </Grid>
 
       <Grid item xs={12} md={6}>
-        <BlockContainer title={t("DASHBOARD.SKILLS")} expandable>
-          ...
+        <BlockContainer title={t("DASHBOARD.TRAININGS")} expandable>
+          <TrainingsByOccupationWidget />
         </BlockContainer>
       </Grid>
 
       <Grid item xs={12} md={6}>
-        <BlockContainer title={t("DASHBOARD.TRAININGS")} expandable>
+        <BlockContainer title={t("DASHBOARD.SKILLS")} expandable>
           ...
         </BlockContainer>
       </Grid>

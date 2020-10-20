@@ -41,6 +41,8 @@ export function JobAreasToggler({className, onSelectJobAreaIds = () => []} = {})
   const classes = useStyles();
   const {t} = useTranslation();
   const [selectedJobAreaIds, setSelectedJobAreaIds] = useState([]);
+  const [jobAreaIds, setJobAreaIds] = useState([]);
+
   const {data: {me} = {}} = useQuery(gqlMyProfile);
 
   useEffect(() => {
@@ -50,6 +52,7 @@ export function JobAreasToggler({className, onSelectJobAreaIds = () => []} = {})
         jobAreaIds.unshift(me?.jobArea?.id);
       }
       selectJobAreaIds(jobAreaIds);
+      setJobAreaIds(jobAreaIds);
     }
   }, [me]);
 
@@ -100,8 +103,8 @@ export function JobAreasToggler({className, onSelectJobAreaIds = () => []} = {})
     selectJobAreaIds([...selectedJobAreaIds]);
   }
 
-  function selectJobAreaIds(jobAreaIds) {
-    setSelectedJobAreaIds(jobAreaIds);
-    onSelectJobAreaIds(jobAreaIds);
+  function selectJobAreaIds(selectedJobAreaIds) {
+    setSelectedJobAreaIds(selectedJobAreaIds);
+    onSelectJobAreaIds(selectedJobAreaIds, jobAreaIds);
   }
 }

@@ -1,0 +1,300 @@
+import {
+  GraphQLTypeConnectionQuery,
+  SynaptixDatastoreSession,
+  getObjectsResolver,
+  getObjectsCountResolver,
+  generateConnectionArgs,
+  QueryFilter, PropertyFilter, LinkFilter
+} from "@mnemotix/synaptix.js";
+import TrainingDefinition from "../TrainingDefinition";
+import dayjs from "dayjs";
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+dayjs.extend(weekOfYear);
+dayjs.extend(advancedFormat)
+
+const esDateFormat = "ww - MM/YY";
+const dayjsDateFormat = "ww - MM/YY";
+
+
+export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery {
+  /**
+   * @inheritdoc
+   */
+  generateType(modelDefinition) {
+    const graphQLType = modelDefinition.getGraphQLType();
+    return this._wrapQueryType(`
+      """
+       This service returns a list of trainings filtered by a jobAreaId
+       
+       Parameters :
+         - jobAreaId: [REQUIRED] Job area id.
+      """
+      trainings(jobAreaId:ID! ${generateConnectionArgs()}): ${graphQLType}Connection
+      
+      """
+       This service returns a count of trainings filtered by a jobAreaId
+       
+       Parameters :
+         - jobAreaId: [REQUIRED] Job area id.
+      """
+      trainingsCount(jobAreaId:ID!): Int
+    
+      """
+       This service returns a list of trainings aggregations filtered by a jobAreaId splitted into occupations spread over time 
+       
+       Parameters :
+         - jobAreaId: [REQUIRED] Job area id.
+         - occupationIds: [REQUIRED] Occupation ids
+      """
+      trainingsByOccupationAggs(jobAreaId:ID! occupationIds:[ID!]!): String
+      
+      """
+       This service returns a list of trainings aggregations filtered by an occupationId splitted into jobAreas spread over time
+       
+       Parameters :
+         - jobAreaIds: [REQUIRED] Job area ids.
+         - occupationId: [REQUIRED] Occupation id
+      """
+      trainingsByJobAreaAggs(jobAreaIds:[ID!]! occupationId:ID!): String
+      
+      
+      """
+       This service returns a list of top 10 aggregated trainings aggregations filtered by a list of occupationIds
+       
+       Parameters :
+         - occupationId: [REQUIRED] Occupation id
+         - jobAreaId:    [REQUIRED] Job area id
+      """
+      trainingsTopOrganizationsAggs(occupationId: ID! jobAreaId: ID!): String
+    `);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  generateResolver(modelDefinition) {
+    return this._wrapQueryResolver({
+      trainings:
+        /**
+         * @param _
+         * @param {string} geonamesId
+         * @param {string} jobAreaId
+         * @param {SynaptixDatastoreSession} synaptixSession
+         * @param {object} info
+         */
+        async (_, { jobAreaId, ...args }, synaptixSession, info) => {
+          args.filters = [].concat(args.filters || [], [
+            `hasJobArea:${jobAreaId}`
+          ]);
+
+          return getObjectsResolver(
+            TrainingDefinition,
+            _,
+            args,
+            synaptixSession,
+            info
+          );
+        },
+      trainingsCount:
+        /**
+         * @param _
+         * @param {string} geonamesId
+         * @param {string} jobAreaId
+         * @param {SynaptixDatastoreSession} synaptixSession
+         * @param {object} info
+         */
+        async (_, { jobAreaId, ...args }, synaptixSession, info) => {
+          args.filters = [].concat(args.filters || [], [
+            `hasJobArea:${jobAreaId}`
+          ]);
+
+          return getObjectsCountResolver(
+            TrainingDefinition,
+            _,
+            args,
+            synaptixSession
+          );
+        },
+      trainingsByOccupationAggs:
+        /**
+         * @param _
+         * @param {string} jobAreaId
+         * @param {string[]} occupationIds
+         * @param {SynaptixDatastoreSession} synaptixSession
+         * @param {object} info
+         */
+        async (_, { jobAreaId, occupationIds }, synaptixSession, info) => {
+          jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
+          occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
+
+          const result = await synaptixSession.getIndexService().getNodes({
+            modelDefinition: TrainingDefinition,
+            propertyFilters: [
+              new PropertyFilter({
+                propertyDefinition: TrainingDefinition.getProperty("startDate"),
+                value:  getTrainingsLowerBoundDate(),
+                isGt: true
+              })
+            ],
+            linkFilters: [
+              new LinkFilter({
+                linkDefinition: TrainingDefinition.getLink("hasJobArea"),
+                id: jobAreaId
+              })
+            ],
+            limit: 0,
+            getExtraQuery: () => {
+              return {
+                aggs: Object.entries(occupationIds).reduce((acc, [index, occupationId]) => {
+                  acc[occupationId] = generateTrainingsCountDateHistogram({
+                    filter: { term: { "occupation": occupationId } }
+                  });
+
+                  return acc;
+                }, {})
+              };
+            },
+            rawResult: true
+          });
+
+          const aggs = Object.entries(result.aggregations).reduce((acc, [occupationId, {trainingsCountHistogram}]) => {
+            for(const bucket of trainingsCountHistogram.buckets){
+              if (!acc[bucket.key_as_string]){
+                acc[bucket.key_as_string] = {
+                  label: bucket.key_as_string
+                };
+              }
+
+              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: occupationId})] =  bucket.doc_count;
+            }
+
+            return acc;
+          }, {});
+
+          return JSON.stringify(Object.values(aggs));
+        },
+      trainingsByJobAreaAggs:
+        /**
+         * @param _
+         * @param {string[]} jobAreaIds
+         * @param {string[]} occupationIds
+         * @param {SynaptixDatastoreSession} synaptixSession
+         * @param {object} info
+         */
+        async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
+          jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
+          occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
+
+          const result = await synaptixSession.getIndexService().getNodes({
+            modelDefinition: TrainingDefinition,
+            propertyFilters: [
+              new PropertyFilter({
+                propertyDefinition: TrainingDefinition.getProperty("startDate"),
+                value:  getTrainingsLowerBoundDate(),
+                isGt: true
+              }),
+            ],
+            linkFilters: [
+              new LinkFilter({
+                linkDefinition: TrainingDefinition.getLink("hasOccupation"),
+                id: occupationId
+              })
+            ],
+            limit: 0,
+            getExtraQuery: () => {
+              return {
+                aggs: Object.entries(jobAreaIds).reduce((acc, [index, jobAreaId]) => {
+                  acc[jobAreaId] = generateTrainingsCountDateHistogram({
+                    filter: { term: { "zoneEmploi": jobAreaId } },
+                  });
+
+                  return acc;
+                }, {})
+              };
+            },
+            rawResult: true
+          });
+
+          const aggs = Object.entries(result.aggregations).reduce((acc, [jobAreaId, {trainingsCountHistogram}]) => {
+            for(const bucket of trainingsCountHistogram.buckets){
+              if (!acc[bucket.key_as_string]){
+                acc[bucket.key_as_string] = {
+                  label: bucket.key_as_string
+                };
+              }
+
+              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: jobAreaId})] =  bucket.doc_count;
+            }
+
+            return acc;
+          }, {});
+
+          return JSON.stringify(Object.values(aggs));
+        },
+      trainingsTopOrganizationsAggs: /**
+       * @param _
+       * @param {string} occupationsId
+       * @param {string} jobAreaId
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      async (_, { jobAreaId, occupationId } = {}, synaptixSession, info) => {
+        occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
+        jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
+
+        const result = await synaptixSession.getIndexService().getNodes({
+          modelDefinition: TrainingDefinition,
+          linkFilters: [
+            new LinkFilter({
+              linkDefinition: TrainingDefinition.getLink("hasOccupation"),
+              id: occupationId
+            }),
+            new LinkFilter({
+              linkDefinition: TrainingDefinition.getLink("hasJobArea"),
+              id: jobAreaId
+            })
+          ],
+          limit: 0,
+          getExtraQuery: () => {
+            return {
+              aggs: {
+                organizations: {
+                  terms: {
+                    field: "entreprise.nom.keyword"
+                  }
+                }
+              }
+            };
+          },
+          rawResult: true
+        });
+
+        return JSON.stringify(result.aggregations.organizations.buckets);
+      }
+    });
+  }
+}
+
+function generateTrainingsCountDateHistogram({filter}){
+  return {
+    filter,
+    aggs: {
+      trainingsCountHistogram : {
+        date_histogram: {
+          field: "dateCreation",
+          calendar_interval: "week",
+          format: esDateFormat,
+          extended_bounds: {
+            "min": getTrainingsLowerBoundDate().format(dayjsDateFormat),
+            "max": dayjs().format(dayjsDateFormat)
+          }
+        }
+      }
+    }
+  }
+}
+
+function getTrainingsLowerBoundDate(){
+  return dayjs().subtract(5, "month");
+}

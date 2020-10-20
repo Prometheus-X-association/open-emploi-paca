@@ -143,6 +143,9 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          * @param {object} info
          */
         async (_, { jobAreaId, occupationIds }, synaptixSession, info) => {
+          jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
+          occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
+
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
             queryFilters: [
@@ -181,7 +184,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
                 };
               }
 
-              acc[bucket.key_as_string][occupationId] =  bucket.doc_count;
+              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: occupationId})] =  bucket.doc_count;
             }
 
             return acc;
@@ -198,6 +201,9 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          * @param {object} info
          */
         async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
+          jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
+          occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
+
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
             propertyFilters: [
@@ -236,7 +242,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
                 };
               }
 
-              acc[bucket.key_as_string][jobAreaId] =  bucket.doc_count;
+              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: jobAreaId})] =  bucket.doc_count;
             }
 
             return acc;
@@ -257,13 +263,13 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
           queryFilters: [
             new QueryFilter({
               filterDefinition: OfferDefinition.getFilter("withinJobArea"),
-              filterGenerateParams: jobAreaId
+              filterGenerateParams: synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
             })
           ],
           linkFilters: [
             new LinkFilter({
               linkDefinition: OfferDefinition.getLink("hasOccupation"),
-              id: occupationId
+              id:  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
             })
           ],
           limit: 0,
@@ -292,6 +298,9 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          * @param {object} info
          */
         async (_, { jobAreaId, occupationIds }, synaptixSession, info) => {
+          jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
+          occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
+
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
             queryFilters: [
@@ -330,7 +339,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
                 };
               }
 
-              acc[bucket.key_as_string][occupationId] =  bucket.avgIncome.value || 0;
+              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: occupationId})] =  bucket.avgIncome.value || 0;
             }
 
             return acc;
@@ -347,6 +356,9 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          * @param {object} info
          */
         async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
+          jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
+          occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
+
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
             propertyFilters: [
@@ -385,7 +397,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
                 };
               }
 
-              acc[bucket.key_as_string][jobAreaId] =  bucket.avgIncome.value || 0;
+              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: jobAreaId})] =  bucket.avgIncome.value || 0;
             }
 
             return acc;

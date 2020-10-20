@@ -27,6 +27,7 @@ import SkillGroupDefinition from "./SkillGroupDefinition.js";
 import TrainingDefinition from "./TrainingDefinition.js";
 import PersonDefinition from "../mnx/PersonDefinition";
 import JobAreaDefinition from "./JobAreaDefinition";
+import AddressDefinition from "../mnx/AddressDefinition";
 
 export let OepModelDefinitions = {
   CertifinfoDefinition,
@@ -38,8 +39,10 @@ export let OepModelDefinitions = {
   RncpDefinition,
   SkillGroupDefinition,
   TrainingDefinition,
-  PersonDefinition
+  PersonDefinition,
+  AddressDefinition
 };
+
 
 export let oepDataModel = new DataModel({
   modelDefinitions: OepModelDefinitions

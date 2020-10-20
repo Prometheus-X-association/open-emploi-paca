@@ -23,6 +23,8 @@ const Dashboard = loadable(() => import(/* webpackChunkName: "Dashboard" */ "./c
 const Project = loadable(() => import(/* webpackChunkName: "Project" */ "./components/routes/Project/Project"));
 const Market = loadable(() => import(/* webpackChunkName: "Market" */ "./components/routes/Market/Market"));
 const Incomes = loadable(() => import(/* webpackChunkName: "Incomes" */ "./components/routes/Incomes/Incomes"));
+const Trainings = loadable(() => import(/* webpackChunkName: "Trainings" */ "./components/routes/Trainings/Trainings"));
+
 const Cartonet = loadable(() => import(/* webpackChunkName: "Cartonet" */ "./components/routes/Cartonet/Cartonet"));
 
 const gqlEnvironmentQuery = gql`
@@ -69,6 +71,7 @@ export default function Application({} = {}) {
                     <Route path={ROUTES.PROJECT} component={Project} />
                     <Route path={ROUTES.MARKET} component={Market} />
                     <Route path={ROUTES.INCOMES} component={Incomes} />
+                    <Route path={ROUTES.TRAININGS} component={Trainings} />
                     <Route component={Dashboard} />
                   </Switch>
                 </DefaultLayout>

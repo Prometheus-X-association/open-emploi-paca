@@ -131,6 +131,15 @@ export const fr = {
     ORGANIZATION_OFFERS_COUNT_plural: "{{count}} offres d'emploi",
     ORGANIZATION_OFFERS_EMPTY: "Aucune entreprise ne recrute pour les critères sélectionnés..."
   },
+  TRAININGS: {
+    TITLE: "Formations",
+    TIP_AGGS_OCCUPATIONS: "Les formations pour les métiers que vous avez sélectionné.",
+    TIP_AGGS_JOB_AREAS: "Évolution des formations par bassin d'emploi (pour les métiers de votre sélection)",
+    TIP_AGGS_TOP_ORGANIZATIONS: "Liste des organisations qui forment le plus pour un bassin d'emploi et un métié donné",
+    ORGANIZATION_TRAININGS_COUNT: "{{count}} formation",
+    ORGANIZATION_TRAININGS_COUNT_plural: "{{count}} formations",
+    ORGANIZATION_TRAININGS_EMPTY: "Aucune organisation ne donne de formation pour les critères sélectionnés..."
+  },
   ORGANIZATION:  {
     AUTOCOMPLETE: {
       NO_RESULT: 'Aucun résultat trouvé.',

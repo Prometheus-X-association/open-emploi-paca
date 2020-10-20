@@ -41,6 +41,9 @@ export let commonMapping = {
   },
   query: {
     type: "percolator"
+  },
+  geoloc: {
+    type: "geo_point"
   }
 }
 

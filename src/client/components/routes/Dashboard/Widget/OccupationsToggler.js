@@ -41,6 +41,8 @@ export function OccupationsToggler({className, onSelectOccupationIds = () => []}
   const classes = useStyles();
   const {t} = useTranslation();
   const [selectedOccupationIds, setSelectedOccupationIds] = useState([]);
+  const [occupationIds, setOccupationIds] = useState([]);
+
   const {data: {me} = {}} = useQuery(gqlMyProfile);
 
   useEffect(() => {
@@ -50,6 +52,7 @@ export function OccupationsToggler({className, onSelectOccupationIds = () => []}
         occupationIds.unshift(me?.occupation.id);
       }
       selectOccupationIds(occupationIds);
+      setOccupationIds(occupationIds);
     }
   }, [me]);
 
@@ -104,8 +107,8 @@ export function OccupationsToggler({className, onSelectOccupationIds = () => []}
     selectOccupationIds([...selectedOccupationIds]);
   }
 
-  function selectOccupationIds(occupationIds) {
-    setSelectedOccupationIds(occupationIds);
-    onSelectOccupationIds(occupationIds);
+  function selectOccupationIds(selectedOccupationIds) {
+    setSelectedOccupationIds(selectedOccupationIds);
+    onSelectOccupationIds(selectedOccupationIds, setOccupationIds);
   }
 }

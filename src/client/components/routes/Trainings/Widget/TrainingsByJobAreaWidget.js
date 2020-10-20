@@ -3,11 +3,12 @@ import {CircularProgress, Select, MenuItem, Grid} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useLazyQuery, useQuery} from "@apollo/client";
-import {gqlOffersByOccupationAggs} from "./gql/OffersAggs.gql";
+import { gqlTrainingsByJobAreaAggs} from "./gql/TrainingsAggs.gql";
 import {LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip} from "recharts";
-import {JobAreaSelect} from "../../Dashboard/Widget/JobAreaSelect";
-import {OccupationsToggler} from "../../Dashboard/Widget/OccupationsToggler";
+import {JobAreasToggler} from "../../Dashboard/Widget/JobAreasToggler";
 import {Colors} from "../../Dashboard/Widget/Colors";
+import {JobAreaSelect} from "../../Dashboard/Widget/JobAreaSelect";
+import {OccupationSelect} from "../../Dashboard/Widget/OccupationSelect";
 
 const useStyles = makeStyles(theme => ({
   jobAreaSelector: {
@@ -19,43 +20,42 @@ const useStyles = makeStyles(theme => ({
 /**
  *
  */
-export function OffersByOccupationWidget({jobArea: forcedJobArea} = {}) {
+export function TrainingsByJobAreaWidget({occupation: forcedOccupation} = {}) {
   const {t} = useTranslation();
-  const [jobAreaId, setJobAreaId] = useState(forcedJobArea?.id);
-  const [occupationIds, setOccupationsIds] = useState([]);
-  const [getOffersAggs, {data: offersData}] = useLazyQuery(gqlOffersByOccupationAggs);
+  const [occupationId, setOccupationId] = useState(forcedOccupation?.id);
+  const [jobAreaIds, setJobAreasIds] = useState([]);
+  const [getTrainingsAggs, {data: trainingsData}] = useLazyQuery(gqlTrainingsByJobAreaAggs);
 
   useEffect(() => {
-    if (jobAreaId && occupationIds.length > 0) {
-      getOffersAggs({
+    if (occupationId && jobAreaIds.length > 0) {
+
+      getTrainingsAggs({
         variables: {
-          jobAreaId: jobAreaId,
-          occupationIds: occupationIds
+          jobAreaIds,
+          occupationId
         }
       });
     }
-  }, [jobAreaId, occupationIds]);
+  }, [jobAreaIds]);
 
   return (
     <>
       <Grid container>
-        <If condition={!forcedJobArea}>
+        <If condition={!forcedOccupation}>
           <Grid item xs={12}>
-            <JobAreaSelect onSelectJobAreaId={setJobAreaId}/>
+            <OccupationSelect onSelectOccupationId={setOccupationId}/>
           </Grid>
         </If>
         <Grid item xs={4}>
-          <OccupationsToggler onSelectOccupationIds={(selectedOccupationIds) => {
-            setOccupationsIds(selectedOccupationIds)
-          }}/>
+          <JobAreasToggler onSelectJobAreaIds={setJobAreasIds}/>
         </Grid>
         <Grid item xs={8}>
           <Choose>
-            <When condition={offersData}>
+            <When condition={trainingsData}>
               <ResponsiveContainer height={300}>
-                <LineChart data={JSON.parse(offersData?.offersByOccupationAggs || "[]")}>
-                  {occupationIds.map((occupationId, index)=> (
-                    <Line key={occupationId} dot={false} type="monotone" dataKey={occupationId} stroke={Colors[index]} />
+                <LineChart data={JSON.parse(trainingsData?.trainingsByJobAreaAggs || '[]')}>
+                  {jobAreaIds.map((jobAreaId, index)=> (
+                    <Line key={jobAreaId} dot={false} type="monotone" dataKey={jobAreaId} stroke={Colors[index]} />
                   ))}
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="label" />

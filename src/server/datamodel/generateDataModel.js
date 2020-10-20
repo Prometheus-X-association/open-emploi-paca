@@ -20,6 +20,7 @@ import { DataModel, MnxDatamodels } from "@mnemotix/synaptix.js";
 import { mmDataModel } from "./mm";
 import { oepDataModel } from "./oep";
 import PersonDefinition from "./mnx/PersonDefinition";
+
 /**
  * This is an instance of the datamodel.
  * @see https://gitlab.com/mnemotix/synaptix.js#datamodel

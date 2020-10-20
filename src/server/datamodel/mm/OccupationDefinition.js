@@ -76,6 +76,13 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: SkillDefinition,
         isPlural: true,
         graphQLInputName: "skillInputs"
+      }),
+      new LinkDefinition({
+        linkName: "hasRelatedOccupation",
+        rdfObjectProperty: "skos:related",
+        relatedModelDefinition: OccupationDefinition,
+        isPlural: true,
+        graphQLInputName: "relatedOccupationInputs"
       })
     ];
   }

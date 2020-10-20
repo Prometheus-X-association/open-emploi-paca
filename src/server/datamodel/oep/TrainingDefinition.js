@@ -1,30 +1,14 @@
-/*
- * Copyright (C) 2013-2018 MNEMOTIX <http://www.mnemotix.com/> and/or its affiliates
- * and other contributors as indicated by the @author tags.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
 import {
   ModelDefinitionAbstract,
   LiteralDefinition,
   LabelDefinition,
   LinkDefinition,
-  GraphQLTypeDefinition,
-  MnxOntologies
+  MnxOntologies, LinkPath
 } from "@mnemotix/synaptix.js";
 import OccupationDefinition from "../mm/OccupationDefinition";
+import JobAreaDefinition from "./JobAreaDefinition";
+import AddressDefinition from "../mnx/AddressDefinition";
+import {TrainingGraphQLDefinition} from "./graphql/TrainingGraphQLDefinition";
 
 export default class TrainingDefinition extends ModelDefinitionAbstract {
   /**
@@ -45,7 +29,7 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getGraphQLDefinition() {
-    return GraphQLTypeDefinition;
+    return TrainingGraphQLDefinition;
   }
 
   /**
@@ -59,29 +43,50 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getLinks() {
+    const hasOrganizationLink = new LinkDefinition({
+      linkName: "hasOrganization",
+      pathInIndex: "organization",
+      rdfObjectProperty: "oep:isProvidedBy",
+      relatedModelDefinition:
+      MnxOntologies.mnxAgent.ModelDefinitions.OrganizationDefinition,
+      isPlural: true,
+      graphQLPropertyName: "organizations",
+      graphQLInputName: "organizationInputs"
+    });
+
+    const hasOccupationLink =  new LinkDefinition({
+      linkName: "hasMainOccupation",
+      pathInIndex: "mainOccupation",
+      rdfObjectProperty: "mm:hasOccupation",
+      relatedModelDefinition: OccupationDefinition,
+      graphQLPropertyName: "mainOccupation",
+      graphQLInputName: "mainOccupationInput"
+    });
+
     return [
       ...super.getLinks(),
+      hasOrganizationLink,
+      hasOccupationLink,
       new LinkDefinition({
-        linkName: "isProvidedBy",
-        pathInIndex: "isProvidedBy",
-        rdfObjectProperty: "mnx:isProvidedBy",
-        relatedModelDefinition:
-          MnxOntologies.mnxAgent.ModelDefinitions.OrganizationDefinition,
-        isCascadingUpdated: true,
-        isCascadingRemoved: true,
-        isPlural: true,
-        graphQLInputName: "isProvidedByInputs"
+        linkName: "hasJobArea",
+        pathInIndex: "jobArea",
+        linkPath: new LinkPath()
+          .step({ linkDefinition: hasOrganizationLink })
+          .step({ linkDefinition: MnxOntologies.mnxAgent.ModelDefinitions.OrganizationDefinition.getLink("hasAddress") })
+          .step({ linkDefinition: AddressDefinition.getLink("hasJobArea") }),
+        relatedModelDefinition: JobAreaDefinition,
+        inIndexOnly: true
       }),
       new LinkDefinition({
         linkName: "hasOccupation",
-        pathInIndex: "hasOccupation",
-        rdfObjectProperty: "mm:hasOccupation",
-        relatedModelDefinition: OccupationDefinition,
-        isCascadingUpdated: true,
-        isCascadingRemoved: true,
+        pathInIndex: "occupations",
+        linkPath: new LinkPath()
+          .step({ linkDefinition: hasOccupationLink })
+          .step({ linkDefinition: OccupationDefinition.getLink("hasRelatedOccupation") }),
+        relatedModelDefinition: JobAreaDefinition,
         isPlural: true,
-        graphQLInputName: "hasOccupationInputs"
-      })
+        inIndexOnly: true
+      }),
     ];
   }
 
@@ -98,11 +103,11 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
       }),
       new LabelDefinition({
         labelName: "title",
-        rdfDataProperty: "dct:title"
+        rdfDataProperty: "dc:title"
       }),
       new LabelDefinition({
         labelName: "description",
-        rdfDataProperty: "dct:description"
+        rdfDataProperty: "dc:description"
       })
     ];
   }
@@ -137,6 +142,10 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
         literalName: "totalHour",
         rdfDataProperty: "oep:totalHour",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
+      }),
+      new LiteralDefinition({
+        literalName: "homepage",
+        rdfDataProperty: "foaf:homepage",
       })
     ];
   }

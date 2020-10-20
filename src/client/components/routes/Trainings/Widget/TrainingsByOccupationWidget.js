@@ -3,7 +3,7 @@ import {CircularProgress, Select, MenuItem, Grid} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useLazyQuery, useQuery} from "@apollo/client";
-import {gqlOffersByOccupationAggs} from "./gql/OffersAggs.gql";
+import {gqlTrainingsByOccupationAggs} from "./gql/TrainingsAggs.gql";
 import {LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip} from "recharts";
 import {JobAreaSelect} from "../../Dashboard/Widget/JobAreaSelect";
 import {OccupationsToggler} from "../../Dashboard/Widget/OccupationsToggler";
@@ -19,15 +19,15 @@ const useStyles = makeStyles(theme => ({
 /**
  *
  */
-export function OffersByOccupationWidget({jobArea: forcedJobArea} = {}) {
+export function TrainingsByOccupationWidget({jobArea: forcedJobArea} = {}) {
   const {t} = useTranslation();
   const [jobAreaId, setJobAreaId] = useState(forcedJobArea?.id);
   const [occupationIds, setOccupationsIds] = useState([]);
-  const [getOffersAggs, {data: offersData}] = useLazyQuery(gqlOffersByOccupationAggs);
+  const [getTrainingsAggs, {data: trainingsData}] = useLazyQuery(gqlTrainingsByOccupationAggs);
 
   useEffect(() => {
     if (jobAreaId && occupationIds.length > 0) {
-      getOffersAggs({
+      getTrainingsAggs({
         variables: {
           jobAreaId: jobAreaId,
           occupationIds: occupationIds
@@ -45,15 +45,13 @@ export function OffersByOccupationWidget({jobArea: forcedJobArea} = {}) {
           </Grid>
         </If>
         <Grid item xs={4}>
-          <OccupationsToggler onSelectOccupationIds={(selectedOccupationIds) => {
-            setOccupationsIds(selectedOccupationIds)
-          }}/>
+          <OccupationsToggler onSelectOccupationIds={setOccupationsIds}/>
         </Grid>
         <Grid item xs={8}>
           <Choose>
-            <When condition={offersData}>
+            <When condition={trainingsData}>
               <ResponsiveContainer height={300}>
-                <LineChart data={JSON.parse(offersData?.offersByOccupationAggs || "[]")}>
+                <LineChart data={JSON.parse(trainingsData?.trainingsByOccupationAggs || "[]")}>
                   {occupationIds.map((occupationId, index)=> (
                     <Line key={occupationId} dot={false} type="monotone" dataKey={occupationId} stroke={Colors[index]} />
                   ))}
