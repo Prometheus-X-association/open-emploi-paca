@@ -48,7 +48,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       new LinkDefinition({
         linkName: "hasOccupation",
         description: "Métier actuel",
-        rdfObjectProperty: "oep:hasOccupation",
+        rdfObjectProperty: "oper:hasOccupation",
         relatedModelDefinition: OccupationDefinition,
         isPlural: false,
         graphQLPropertyName: "occupation",
@@ -57,7 +57,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       new LinkDefinition({
         linkName: "hasSpouseOccupation",
         description: "Métier actuel du conjoint",
-        rdfObjectProperty: "oep:hasSpouseOccupation",
+        rdfObjectProperty: "oper:hasSpouseOccupation",
         relatedModelDefinition: OccupationDefinition,
         isPlural: false,
         graphQLPropertyName: "spouseOccupation",
@@ -66,7 +66,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       new LinkDefinition({
         linkName: "hasWishedOccupation",
         description: "Liste des métiers souhaités",
-        rdfObjectProperty: "oep:hasWishedOccupation",
+        rdfObjectProperty: "oper:hasWishedOccupation",
         relatedModelDefinition: OccupationDefinition,
         isPlural: true,
         graphQLPropertyName: "wishedOccupations",
@@ -75,7 +75,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       new LinkDefinition({
         linkName: "hasJobArea",
         description: "Bassin d'emploi actuel",
-        rdfObjectProperty: "oep:hasJobArea",
+        rdfObjectProperty: "oper:hasJobArea",
         relatedModelDefinition: JobAreaDefinition,
         isPlural: false,
         graphQLPropertyName: "jobArea",
@@ -84,7 +84,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       new LinkDefinition({
         linkName: "hasWishedJobArea",
         description: "Liste des bassins d'emploi souhaités",
-        rdfObjectProperty: "oep:hasWishedJobArea",
+        rdfObjectProperty: "oper:hasWishedJobArea",
         relatedModelDefinition: JobAreaDefinition,
         isPlural: true,
         graphQLPropertyName: "wishedJobAreas",
@@ -123,19 +123,19 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       new LiteralDefinition({
         literalName: "income",
         description: "Salaire actuel en € brut mensuel",
-        rdfDataProperty: "oep:income",
+        rdfDataProperty: "oper:income",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       }),
       new LiteralDefinition({
         literalName: "wishedMinIncome",
         description: "Salaire souhaité minimum en € brut mensuel",
-        rdfDataProperty: "oep:wishedMinIncome",
+        rdfDataProperty: "oper:wishedMinIncome",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       }),
       new LiteralDefinition({
         literalName: "wishedMaxIncome",
         description: "Salaire souhaité maximim en € brut mensuel",
-        rdfDataProperty: "oep:wishedMaxIncome",
+        rdfDataProperty: "oper:wishedMaxIncome",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       })
     ];

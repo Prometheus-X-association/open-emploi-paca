@@ -37,7 +37,7 @@ export default class FormaCodeDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oep:FormaCode";
+    return "oper:FormaCode";
   }
 
   /**

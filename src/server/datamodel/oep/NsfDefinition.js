@@ -37,7 +37,7 @@ export default class NsfDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oep:Nsf";
+    return "oper:Nsf";
   }
 
   /**

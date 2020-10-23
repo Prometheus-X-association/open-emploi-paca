@@ -37,7 +37,7 @@ export default class RncpDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oep:Rncp";
+    return "oper:Rncp";
   }
 
   /**

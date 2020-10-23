@@ -33,7 +33,8 @@ export default {
       dct: "http://purl.org/dc/terms/",
       mnx: "http://ns.mnemotix.com/ontologies/2019/8/generic-model/",
       mm: "https://ontologies.mindmatcher.org/carto/",
-      oep: "http://ontology.datasud.fr/openemploi/",
+      oep: "http://openemploi.datasud.fr/ontology/",
+      oper: "http://ontology.datasud.fr/openemploi/"
     }),
     defaultValueInProduction: true
   },

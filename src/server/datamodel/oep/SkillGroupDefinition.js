@@ -37,7 +37,7 @@ export default class SkillGroupDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oep:SkillGroup";
+    return "oper:SkillGroup";
   }
 
   /**

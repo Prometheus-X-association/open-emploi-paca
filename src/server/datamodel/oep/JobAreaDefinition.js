@@ -35,7 +35,7 @@ export default class JobAreaDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oep:JobArea";
+    return "oper:JobArea";
   }
 
   /**

@@ -37,7 +37,7 @@ export default class CertifinfoDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oep:Certifinfo";
+    return "oper:Certifinfo";
   }
 
   /**

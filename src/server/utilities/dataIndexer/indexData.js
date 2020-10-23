@@ -56,6 +56,7 @@ const connectorsKnowMapping = {
 
 const typeMapping = {
   ...connectorsKnowMapping,
+  "xsd:dateTimeStamp": "date",
   "http://www.opengis.net/ont/geosparql#wktLiteral": "geo_shape"
 };
 
@@ -280,7 +281,7 @@ export let indexData = async () => {
                 : null
             });
 
-            if (property.isSearchable()) {
+            if (property instanceof LabelDefinition ||  property.isSearchable()) {
               connector.mappings[fieldName] = {
                 type: "text",
                 analyzer: "autocomplete",

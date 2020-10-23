@@ -45,7 +45,7 @@ export default class KnowledgeDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oep:Knowledge";
+    return "oper:Knowledge";
   }
 
   /**
@@ -64,7 +64,7 @@ export default class KnowledgeDefinition extends ModelDefinitionAbstract {
       new LinkDefinition({
         linkName: "hasPrereq",
         pathInIndex: "hasPrereq",
-        rdfObjectProperty: "oep:hasPrereq",
+        rdfObjectProperty: "oper:hasPrereq",
         relatedModelDefinition: PrerequisiteDefinition,
         isCascadingUpdated: true,
         isCascadingRemoved: true,

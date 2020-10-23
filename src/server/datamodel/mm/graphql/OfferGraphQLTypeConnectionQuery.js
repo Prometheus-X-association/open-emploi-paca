@@ -13,8 +13,11 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 dayjs.extend(weekOfYear);
 dayjs.extend(advancedFormat)
 
-const esDateFormat = "ww - MM/YY";
-const dayjsDateFormat = "ww - MM/YY";
+const offersESDateFormat = "ww - MM/YY";
+const offersDayJSDateFormat = offersESDateFormat;
+
+const incomesESDateFormat = "MM/YY";
+const incomesDayJSDateFormat = incomesESDateFormat;
 
 
 export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery {
@@ -258,6 +261,9 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
        * @param {object} info
        */
       async (_, { jobAreaId, occupationId } = {}, synaptixSession, info) => {
+        jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId});
+        occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId});
+
         const result = await synaptixSession.getIndexService().getNodes({
           modelDefinition: OfferDefinition,
           queryFilters: [
@@ -417,10 +423,10 @@ function generateOffersCountDateHistogram({filter}){
         date_histogram: {
           field: "dateCreation",
           calendar_interval: "week",
-          format: esDateFormat,
+          format: offersESDateFormat,
           extended_bounds: {
-            "min": getOffersLowerBoundDate().format(dayjsDateFormat),
-            "max": dayjs().format(dayjsDateFormat)
+            "min": getOffersLowerBoundDate().format(offersDayJSDateFormat),
+            "max": "now"
           }
         }
       }
@@ -436,11 +442,11 @@ function generateIncomesAvgHistogram({filter}){
       incomesHistogram : {
         date_histogram: {
           field: "dateCreation",
-          calendar_interval: "week",
-          format: esDateFormat,
+          calendar_interval: "month",
+          format: incomesESDateFormat,
           extended_bounds: {
-            "min": getOffersLowerBoundDate().format(dayjsDateFormat),
-            "max": dayjs().format(dayjsDateFormat)
+            "min": getOffersLowerBoundDate().format(incomesDayJSDateFormat),
+            "max": "now"
           }
         },
         aggs: {
@@ -448,7 +454,7 @@ function generateIncomesAvgHistogram({filter}){
             avg: {
               field: "salaire",
               missing: 0
-          }
+            }
           }
         }
       }

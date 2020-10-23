@@ -22,7 +22,7 @@ export default class AddressDefinition extends ModelDefinitionAbstract {
       new LinkDefinition({
         linkName: "hasJobArea",
         description: "Bassin d'emploi",
-        rdfObjectProperty: "oep:hasZoneEmploi",
+        rdfObjectProperty: "oper:hasZoneEmploi",
         relatedModelDefinition: JobAreaDefinition,
         graphQLPropertyName: "jobArea",
         graphQLInputName: "jobAreaInput"

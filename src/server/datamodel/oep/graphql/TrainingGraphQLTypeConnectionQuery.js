@@ -13,9 +13,8 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 dayjs.extend(weekOfYear);
 dayjs.extend(advancedFormat)
 
-const esDateFormat = "ww - MM/YY";
-const dayjsDateFormat = "ww - MM/YY";
-
+const esDateFormat = "MM/YY";
+const dayjsDateFormat = "MM/YY";
 
 export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery {
   /**
@@ -141,6 +140,10 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
               new LinkFilter({
                 linkDefinition: TrainingDefinition.getLink("hasJobArea"),
                 id: jobAreaId
+              }),
+              new LinkFilter({
+                linkDefinition: TrainingDefinition.getLink("hasMainOccupation"),
+                id: occupationIds
               })
             ],
             limit: 0,
@@ -148,7 +151,7 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
               return {
                 aggs: Object.entries(occupationIds).reduce((acc, [index, occupationId]) => {
                   acc[occupationId] = generateTrainingsCountDateHistogram({
-                    filter: { term: { "occupation": occupationId } }
+                    filter: { term: { [TrainingDefinition.getLink("hasMainOccupation").getPathInIndex()]: occupationId } }
                   });
 
                   return acc;
@@ -197,8 +200,12 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
             ],
             linkFilters: [
               new LinkFilter({
-                linkDefinition: TrainingDefinition.getLink("hasOccupation"),
+                linkDefinition: TrainingDefinition.getLink("hasMainOccupation"),
                 id: occupationId
+              }),
+              new LinkFilter({
+                linkDefinition: TrainingDefinition.getLink("hasJobArea"),
+                id: jobAreaIds
               })
             ],
             limit: 0,
@@ -206,7 +213,7 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
               return {
                 aggs: Object.entries(jobAreaIds).reduce((acc, [index, jobAreaId]) => {
                   acc[jobAreaId] = generateTrainingsCountDateHistogram({
-                    filter: { term: { "zoneEmploi": jobAreaId } },
+                    filter: { term: { [TrainingDefinition.getLink("hasJobArea").getPathInIndex()]: jobAreaId } },
                   });
 
                   return acc;
@@ -247,7 +254,7 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
           modelDefinition: TrainingDefinition,
           linkFilters: [
             new LinkFilter({
-              linkDefinition: TrainingDefinition.getLink("hasOccupation"),
+              linkDefinition: TrainingDefinition.getLink("hasMainOccupation"),
               id: occupationId
             }),
             new LinkFilter({
@@ -261,7 +268,7 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
               aggs: {
                 organizations: {
                   terms: {
-                    field: "entreprise.nom.keyword"
+                    field: "organizationName.keyword"
                   }
                 }
               }
@@ -282,12 +289,12 @@ function generateTrainingsCountDateHistogram({filter}){
     aggs: {
       trainingsCountHistogram : {
         date_histogram: {
-          field: "dateCreation",
-          calendar_interval: "week",
+          field: "startDate",
+          calendar_interval: "month",
           format: esDateFormat,
           extended_bounds: {
             "min": getTrainingsLowerBoundDate().format(dayjsDateFormat),
-            "max": dayjs().format(dayjsDateFormat)
+            "max": "now"
           }
         }
       }
@@ -296,5 +303,5 @@ function generateTrainingsCountDateHistogram({filter}){
 }
 
 function getTrainingsLowerBoundDate(){
-  return dayjs().subtract(5, "month");
+  return dayjs().subtract(1, "year");
 }

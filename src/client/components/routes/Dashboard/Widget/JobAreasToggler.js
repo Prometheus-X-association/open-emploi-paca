@@ -51,19 +51,24 @@ export function JobAreasToggler({className, onSelectJobAreaIds = () => []} = {})
       if(me?.jobArea?.id){
         jobAreaIds.unshift(me?.jobArea?.id);
       }
-      selectJobAreaIds(jobAreaIds);
       setJobAreaIds(jobAreaIds);
     }
   }, [me]);
 
+  useEffect(() => {
+    if(me && jobAreaIds.length > 0){
+      selectJobAreaIds([...jobAreaIds]);
+    }
+  }, [jobAreaIds]);
+
   return (
     <List dense className={classes.root}>
       <If condition={me?.jobArea}>
-        <ListSubheader className={classes.subheader}>{t("PROFILE.JOB_AREA")}</ListSubheader>
+        <ListSubheader disableSticky className={classes.subheader}>{t("PROFILE.JOB_AREA")}</ListSubheader>
         {renderJobAreaItem({jobArea: me.jobArea, index: 0})}
       </If>
       <If condition={(me?.wishedJobAreas?.edges || []).length > 0}>
-        <ListSubheader className={classes.subheader}>{t("PROJECT.WISHED_JOB_AREA.TITLE")}</ListSubheader>
+        <ListSubheader disableSticky className={classes.subheader}>{t("PROJECT.WISHED_JOB_AREA.TITLE")}</ListSubheader>
         {me.wishedJobAreas.edges.map(({node: jobArea}, index) =>
           renderJobAreaItem({jobArea, index: index + 1})
         )}
@@ -105,6 +110,6 @@ export function JobAreasToggler({className, onSelectJobAreaIds = () => []} = {})
 
   function selectJobAreaIds(selectedJobAreaIds) {
     setSelectedJobAreaIds(selectedJobAreaIds);
-    onSelectJobAreaIds(selectedJobAreaIds, jobAreaIds);
+    onSelectJobAreaIds([jobAreaIds, selectedJobAreaIds]);
   }
 }

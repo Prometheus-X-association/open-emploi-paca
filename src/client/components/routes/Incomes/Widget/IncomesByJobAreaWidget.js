@@ -8,6 +8,7 @@ import {LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Toolt
 import {JobAreasToggler} from "../../Dashboard/Widget/JobAreasToggler";
 import {Colors} from "../../Dashboard/Widget/Colors";
 import {OccupationSelect} from "../../Dashboard/Widget/OccupationSelect";
+import {ChartWidget} from "../../Dashboard/Widget/ChartWidget";
 
 const useStyles = makeStyles(theme => ({
   jobAreaSelector: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 export function IncomesByJobAreaWidget({occupation: forcedOccupation} = {}) {
   const {t} = useTranslation();
   const [occupationId, setOccupationId] = useState(forcedOccupation?.id);
-  const [jobAreaIds, setJobAreasIds] = useState([]);
+  const [[jobAreaIds, selectedJobAreaIds], setJobAreasIds] = useState([[], []]);
   const [getIncomesAggs, {data: incomesData}] = useLazyQuery(gqlIncomesByJobAreaAggs);
 
   useEffect(() => {
@@ -51,16 +52,11 @@ export function IncomesByJobAreaWidget({occupation: forcedOccupation} = {}) {
         <Grid item xs={8}>
           <Choose>
             <When condition={incomesData}>
-              <ResponsiveContainer height={300}>
-                <LineChart data={JSON.parse(incomesData?.incomesByJobAreaAggs || '[]')}>
-                  {jobAreaIds.map((jobAreaId, index)=> (
-                    <Line key={jobAreaId} dot={false} type="monotone" dataKey={jobAreaId} stroke={Colors[index]} />
-                  ))}
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="label" />
-                  <YAxis />
-                </LineChart>
-              </ResponsiveContainer>
+              <ChartWidget
+                data={JSON.parse(incomesData?.incomesByJobAreaAggs || '[]')}
+                yAxisKeys={jobAreaIds}
+                yAxisVisibleKeys={selectedJobAreaIds}
+              />
             </When>
             <Otherwise>
               <CircularProgress />

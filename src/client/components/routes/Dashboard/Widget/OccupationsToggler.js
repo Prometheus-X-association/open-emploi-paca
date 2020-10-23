@@ -48,29 +48,45 @@ export function OccupationsToggler({className, onSelectOccupationIds = () => []}
   useEffect(() => {
     if (me && selectedOccupationIds.length === 0) {
       let occupationIds = me.wishedOccupations.edges.map(({node: occupation}) => occupation.id);
-      if(me?.occupation?.id){
-        occupationIds.unshift(me?.occupation.id);
+      if(me.occupation?.id){
+        occupationIds.unshift(me.occupation.id);
       }
-      selectOccupationIds(occupationIds);
+
+      if(me.spouseOccupation?.id) {
+        occupationIds.push(me.spouseOccupation.id);
+      }
+
       setOccupationIds(occupationIds);
     }
   }, [me]);
 
+  useEffect(() => {
+    if (me && occupationIds.length > 0) {
+      let selectedOccupationIds = [...occupationIds];
+
+      if (me.spouseOccupation?.id) {
+        selectedOccupationIds.pop();
+      }
+
+      selectOccupationIds(selectedOccupationIds);
+    }
+  }, [occupationIds])
+
   return (
     <List dense className={classes.root}>
       <If condition={me?.occupation}>
-        <ListSubheader className={classes.subheader}>{t("PROFILE.OCCUPATION")}</ListSubheader>
+        <ListSubheader disableSticky className={classes.subheader}>{t("PROFILE.OCCUPATION")}</ListSubheader>
         {renderOccupationItem({occupation: me.occupation, index: 0})}
       </If>
       <If condition={(me?.wishedOccupations?.edges || []).length > 0}>
-        <ListSubheader className={classes.subheader}>{t("PROJECT.WISHED_OCCUPATION.TITLE")}</ListSubheader>
+        <ListSubheader disableSticky className={classes.subheader}>{t("PROJECT.WISHED_OCCUPATION.TITLE")}</ListSubheader>
         {me.wishedOccupations.edges.map(({node: occupation}, index) =>
           renderOccupationItem({occupation, index: index + 1})
         )}
       </If>
       <If condition={me?.spouseOccupation}>
-        <ListSubheader className={classes.subheader}>{t("PROFILE.SPOUSE_OCCUPATION")}</ListSubheader>
-        {renderOccupationItem({occupation: me.spouseOccupation, index: 5})}
+        <ListSubheader disableSticky className={classes.subheader}>{t("PROFILE.SPOUSE_OCCUPATION")}</ListSubheader>
+        {renderOccupationItem({occupation: me.spouseOccupation, index: (me?.wishedOccupations?.edges || []).length + 1})}
       </If>
     </List>
   );
@@ -109,6 +125,6 @@ export function OccupationsToggler({className, onSelectOccupationIds = () => []}
 
   function selectOccupationIds(selectedOccupationIds) {
     setSelectedOccupationIds(selectedOccupationIds);
-    onSelectOccupationIds(selectedOccupationIds, setOccupationIds);
+    onSelectOccupationIds([occupationIds, selectedOccupationIds]);
   }
 }

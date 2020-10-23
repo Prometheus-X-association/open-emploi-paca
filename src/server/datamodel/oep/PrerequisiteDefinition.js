@@ -38,7 +38,7 @@ export default class PrerequisiteDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oep:Prerequisite";
+    return "oper:Prerequisite";
   }
 
   /**
@@ -57,7 +57,7 @@ export default class PrerequisiteDefinition extends ModelDefinitionAbstract {
       new LinkDefinition({
         linkName: "isMadeOf",
         pathInIndex: "isMadeOf",
-        rdfObjectProperty: "oep:isMadeOf",
+        rdfObjectProperty: "oper:isMadeOf",
         relatedModelDefinition: KnowledgeDefinition,
         isCascadingUpdated: true,
         isCascadingRemoved: true,
@@ -74,7 +74,7 @@ export default class PrerequisiteDefinition extends ModelDefinitionAbstract {
       ...super.getLiterals(),
       new LiteralDefinition({
         literalName: "isMandatory",
-        rdfDataProperty: "oep:isMandatory",
+        rdfDataProperty: "oper:isMandatory",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
       })
     ];

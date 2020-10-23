@@ -8,6 +8,7 @@ import {LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Toolt
 import {JobAreaSelect} from "../../Dashboard/Widget/JobAreaSelect";
 import {OccupationsToggler} from "../../Dashboard/Widget/OccupationsToggler";
 import {Colors} from "../../Dashboard/Widget/Colors";
+import {ChartWidget} from "../../Dashboard/Widget/ChartWidget";
 
 const useStyles = makeStyles(theme => ({
   jobAreaSelector: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 export function TrainingsByOccupationWidget({jobArea: forcedJobArea} = {}) {
   const {t} = useTranslation();
   const [jobAreaId, setJobAreaId] = useState(forcedJobArea?.id);
-  const [occupationIds, setOccupationsIds] = useState([]);
+  const [[occupationIds, selectedOccupationIds], setOccupationsIds] = useState([[], []]);
   const [getTrainingsAggs, {data: trainingsData}] = useLazyQuery(gqlTrainingsByOccupationAggs);
 
   useEffect(() => {
@@ -50,16 +51,11 @@ export function TrainingsByOccupationWidget({jobArea: forcedJobArea} = {}) {
         <Grid item xs={8}>
           <Choose>
             <When condition={trainingsData}>
-              <ResponsiveContainer height={300}>
-                <LineChart data={JSON.parse(trainingsData?.trainingsByOccupationAggs || "[]")}>
-                  {occupationIds.map((occupationId, index)=> (
-                    <Line key={occupationId} dot={false} type="monotone" dataKey={occupationId} stroke={Colors[index]} />
-                  ))}
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="label" />
-                  <YAxis />
-                </LineChart>
-              </ResponsiveContainer>
+              <ChartWidget
+                data={JSON.parse(trainingsData?.trainingsByOccupationAggs || "[]")}
+                yAxisKeys={occupationIds}
+                yAxisVisibleKeys={selectedOccupationIds}
+              />
             </When>
             <Otherwise>
               <CircularProgress />

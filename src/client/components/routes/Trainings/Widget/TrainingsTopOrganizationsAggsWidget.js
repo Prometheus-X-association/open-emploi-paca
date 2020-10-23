@@ -53,14 +53,14 @@ export function TrainingsTopOrganizationsAggsWidget({forcedOccupation, forcedJob
               <List>
                 {aggregations.map(({key: organizationName, doc_count: count}) => (
                   <ListItem key={organizationName}>
-                    <ListItemText primary={organizationName} secondary={t("TRAININGS.ORGANIZATION_OFFERS_COUNT", {count})} />
+                    <ListItemText primary={organizationName} secondary={t("TRAININGS.ORGANIZATION_TRAININGS_COUNT", {count})} />
                   </ListItem>
                 ))}
               </List>
             </When>
             <Otherwise>
               <div className={classes.empty}>
-                {t("TRAININGS.ORGANIZATION_OFFERS_EMPTY")}
+                {t("TRAININGS.ORGANIZATION_TRAININGS_EMPTY")}
               </div>
             </Otherwise>
           </Choose>

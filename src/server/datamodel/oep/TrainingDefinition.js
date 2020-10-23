@@ -3,12 +3,13 @@ import {
   LiteralDefinition,
   LabelDefinition,
   LinkDefinition,
-  MnxOntologies, LinkPath
+  MnxOntologies,
+  LinkPath
 } from "@mnemotix/synaptix.js";
 import OccupationDefinition from "../mm/OccupationDefinition";
 import JobAreaDefinition from "./JobAreaDefinition";
 import AddressDefinition from "../mnx/AddressDefinition";
-import {TrainingGraphQLDefinition} from "./graphql/TrainingGraphQLDefinition";
+import { TrainingGraphQLDefinition } from "./graphql/TrainingGraphQLDefinition";
 
 export default class TrainingDefinition extends ModelDefinitionAbstract {
   /**
@@ -22,7 +23,7 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oep:Training";
+    return "oper:Training";
   }
 
   /**
@@ -46,15 +47,15 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
     const hasOrganizationLink = new LinkDefinition({
       linkName: "hasOrganization",
       pathInIndex: "organization",
-      rdfObjectProperty: "oep:isProvidedBy",
+      rdfObjectProperty: "oper:isProvidedBy",
       relatedModelDefinition:
-      MnxOntologies.mnxAgent.ModelDefinitions.OrganizationDefinition,
+        MnxOntologies.mnxAgent.ModelDefinitions.OrganizationDefinition,
       isPlural: true,
       graphQLPropertyName: "organizations",
       graphQLInputName: "organizationInputs"
     });
 
-    const hasOccupationLink =  new LinkDefinition({
+    const hasOccupationLink = new LinkDefinition({
       linkName: "hasMainOccupation",
       pathInIndex: "mainOccupation",
       rdfObjectProperty: "mm:hasOccupation",
@@ -72,7 +73,11 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
         pathInIndex: "jobArea",
         linkPath: new LinkPath()
           .step({ linkDefinition: hasOrganizationLink })
-          .step({ linkDefinition: MnxOntologies.mnxAgent.ModelDefinitions.OrganizationDefinition.getLink("hasAddress") })
+          .step({
+            linkDefinition: MnxOntologies.mnxAgent.ModelDefinitions.OrganizationDefinition.getLink(
+              "hasAddress"
+            )
+          })
           .step({ linkDefinition: AddressDefinition.getLink("hasJobArea") }),
         relatedModelDefinition: JobAreaDefinition,
         inIndexOnly: true
@@ -82,11 +87,13 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
         pathInIndex: "occupations",
         linkPath: new LinkPath()
           .step({ linkDefinition: hasOccupationLink })
-          .step({ linkDefinition: OccupationDefinition.getLink("hasRelatedOccupation") }),
+          .step({
+            linkDefinition: OccupationDefinition.getLink("hasRelatedOccupation")
+          }),
         relatedModelDefinition: JobAreaDefinition,
         isPlural: true,
         inIndexOnly: true
-      }),
+      })
     ];
   }
 
@@ -99,7 +106,7 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
       new LabelDefinition({
         labelName: "objective",
         pathInIndex: "objectives",
-        rdfDataProperty: "oep:objective"
+        rdfDataProperty: "oper:objective"
       }),
       new LabelDefinition({
         labelName: "title",
@@ -108,6 +115,18 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
       new LabelDefinition({
         labelName: "description",
         rdfDataProperty: "dc:description"
+      }),
+      new LabelDefinition({
+        labelName: "organizationName",
+        linkPath: new LinkPath()
+          .step({ linkDefinition: this.getLink("hasOrganization") })
+          .property({
+            propertyDefinition: MnxOntologies.mnxAgent.ModelDefinitions.OrganizationDefinition.getProperty(
+              "name"
+            ),
+            rdfDataPropertyAlias: "mnx:name"
+          }),
+        inIndexOnly: true
       })
     ];
   }
@@ -120,32 +139,32 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
       ...super.getLiterals(),
       new LiteralDefinition({
         literalName: "classroomHour",
-        rdfDataProperty: "oep:classroomHour",
+        rdfDataProperty: "oper:classroomHour",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       }),
       new LiteralDefinition({
         literalName: "companyHour",
-        rdfDataProperty: "oep:companyHour",
+        rdfDataProperty: "oper:companyHour",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       }),
       new LiteralDefinition({
         literalName: "disableAccessibility",
-        rdfDataProperty: "oep:disableAccessibility",
+        rdfDataProperty: "oper:disableAccessibility",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
       }),
       new LiteralDefinition({
         literalName: "isCpfEligible",
-        rdfDataProperty: "oep:isCpfEligible",
+        rdfDataProperty: "oper:isCpfEligible",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
       }),
       new LiteralDefinition({
         literalName: "totalHour",
-        rdfDataProperty: "oep:totalHour",
+        rdfDataProperty: "oper:totalHour",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       }),
       new LiteralDefinition({
         literalName: "homepage",
-        rdfDataProperty: "foaf:homepage",
+        rdfDataProperty: "foaf:homepage"
       })
     ];
   }

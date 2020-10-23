@@ -1,24 +1,21 @@
 {
   "EntityInterface": [
-    "AccessPolicy",
-    "UserAccount",
-    "Person",
-    "ExternalLink",
     "Tagging",
-    "Comment",
-    "Concept",
-    "Creation",
-    "Update",
-    "Deletion",
-    "Vocabulary",
-    "Collection",
-    "Scheme",
+    "UserAccount",
+    "AccessPolicy",
+    "Person",
     "EmailAccount",
     "Phone",
     "Address",
+    "Geometry",
+    "JobArea",
     "Affiliation",
     "Organization",
     "Occupation",
+    "Vocabulary",
+    "Concept",
+    "Scheme",
+    "Collection",
     "Award",
     "Qualification",
     "Skill",
@@ -31,15 +28,20 @@
     "Experience",
     "SkillGroup",
     "UserGroup",
+    "Comment",
     "Location",
+    "Point",
     "GroupMembership",
     "Partnership",
     "Certifinfo",
     "FormaCode",
     "Nsf",
     "Rncp",
-    "Training",
-    "Point"
+    "Training"
+  ],
+  "OnlineContributionInterface": [
+    "Tagging",
+    "Comment"
   ],
   "ActionInterface": [
     "Creation",
@@ -53,36 +55,9 @@
   "PersonInterface": [
     "Person"
   ],
-  "OnlineContributionInterface": [
-    "Tagging",
-    "Comment"
-  ],
-  "InstantInterface": [
-    "Tagging",
-    "Comment"
-  ],
-  "ConceptInterface": [
-    "Concept",
-    "Occupation",
-    "Qualification",
-    "Skill",
-    "SkillGroup",
-    "Certifinfo",
-    "FormaCode",
-    "Nsf",
-    "Rncp"
-  ],
-  "SKOSElementInterface": [
-    "Vocabulary",
-    "Collection",
-    "Scheme"
-  ],
-  "LocationInterface": [
-    "Address",
-    "Location"
-  ],
-  "GeometryInterface": [
-    "Point"
+  "AgentInterface": [
+    "Person",
+    "Organization"
   ],
   "SpatialEntityInterface": [
     "Address",
@@ -94,25 +69,44 @@
     "Experience",
     "Training"
   ],
-  "AgentInterface": [
-    "Person",
-    "Organization"
+  "TemporalEntityInterface": [
+    "Tagging",
+    "Affiliation",
+    "Offer",
+    "Experience",
+    "Comment",
+    "Training"
   ],
   "OrganizationInterface": [
     "Organization"
+  ],
+  "ConceptInterface": [
+    "Occupation",
+    "Concept",
+    "Qualification",
+    "Skill",
+    "SkillGroup",
+    "Certifinfo",
+    "FormaCode",
+    "Nsf",
+    "Rncp"
+  ],
+  "SkosElementInterface": [
+    "Vocabulary",
+    "Scheme",
+    "Collection"
   ],
   "KnowledgeInterface": [
     "Skill",
     "SkillGroup"
   ],
-  "TemporalEntityInterface": [
-    "Offer",
-    "Experience",
-    "Training"
-  ],
   "AccessPriviledgeInterface": [
     "ReadPriviledge",
     "WritePriviledge"
+  ],
+  "InstantInterface": [
+    "Tagging",
+    "Comment"
   ],
   "GroupInterface": []
 }
