@@ -37,7 +37,7 @@ export default class RncpDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oper:Rncp";
+    return "http://ontology.datasud.fr/openemploi/Rncp";
   }
 
   /**

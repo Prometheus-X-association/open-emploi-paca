@@ -22,7 +22,7 @@ export default class AddressDefinition extends ModelDefinitionAbstract {
       new LinkDefinition({
         linkName: "hasJobArea",
         description: "Bassin d'emploi",
-        rdfObjectProperty: "oper:hasZoneEmploi",
+        rdfObjectProperty: "http://ontology.datasud.fr/openemploi/hasZoneEmploi",
         relatedModelDefinition: JobAreaDefinition,
         graphQLPropertyName: "jobArea",
         graphQLInputName: "jobAreaInput"

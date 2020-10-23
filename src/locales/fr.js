@@ -187,8 +187,8 @@ export const fr = {
     YOUR_PROJECT: "Votre projet",
     EDIT: "Editer votre projet",
     WISHED_INCOME: "Salaire mensuel souhaité",
-    WISHED_MAX_INCOME: "Maximum",
-    WISHED_MIN_INCOME: "Mininum",
+    WISHED_MAX_INCOME: "Maximum souhaité",
+    WISHED_MIN_INCOME: "Mininum souhaité",
     WISHED_OCCUPATION: {
       TITLE: "Métiers recherchés",
       TIP: "Vous pouvez sélectionner 4 métiers",

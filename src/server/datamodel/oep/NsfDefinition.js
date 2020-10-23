@@ -37,7 +37,7 @@ export default class NsfDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oper:Nsf";
+    return "http://ontology.datasud.fr/openemploi/Nsf";
   }
 
   /**

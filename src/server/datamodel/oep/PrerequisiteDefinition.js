@@ -38,7 +38,7 @@ export default class PrerequisiteDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oper:Prerequisite";
+    return "http://ontology.datasud.fr/openemploi/Prerequisite";
   }
 
   /**
@@ -57,7 +57,7 @@ export default class PrerequisiteDefinition extends ModelDefinitionAbstract {
       new LinkDefinition({
         linkName: "isMadeOf",
         pathInIndex: "isMadeOf",
-        rdfObjectProperty: "oper:isMadeOf",
+        rdfObjectProperty: "http://ontology.datasud.fr/openemploi/isMadeOf",
         relatedModelDefinition: KnowledgeDefinition,
         isCascadingUpdated: true,
         isCascadingRemoved: true,
@@ -74,7 +74,7 @@ export default class PrerequisiteDefinition extends ModelDefinitionAbstract {
       ...super.getLiterals(),
       new LiteralDefinition({
         literalName: "isMandatory",
-        rdfDataProperty: "oper:isMandatory",
+        rdfDataProperty: "http://ontology.datasud.fr/openemploi/isMandatory",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
       })
     ];

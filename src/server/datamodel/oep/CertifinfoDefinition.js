@@ -37,7 +37,7 @@ export default class CertifinfoDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oper:Certifinfo";
+    return "http://ontology.datasud.fr/openemploi/Certifinfo";
   }
 
   /**

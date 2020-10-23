@@ -45,7 +45,7 @@ export default class KnowledgeDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oper:Knowledge";
+    return "http://ontology.datasud.fr/openemploi/Knowledge";
   }
 
   /**
@@ -64,7 +64,7 @@ export default class KnowledgeDefinition extends ModelDefinitionAbstract {
       new LinkDefinition({
         linkName: "hasPrereq",
         pathInIndex: "hasPrereq",
-        rdfObjectProperty: "oper:hasPrereq",
+        rdfObjectProperty: "http://ontology.datasud.fr/openemploi/hasPrereq",
         relatedModelDefinition: PrerequisiteDefinition,
         isCascadingUpdated: true,
         isCascadingRemoved: true,

@@ -345,7 +345,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
                 };
               }
 
-              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: occupationId})] =  bucket.avgIncome.value || 0;
+              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: occupationId})] =  (bucket.avgIncome.value || 0) / 12;
             }
 
             return acc;
@@ -403,7 +403,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
                 };
               }
 
-              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: jobAreaId})] =  bucket.avgIncome.value || 0;
+              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: jobAreaId})] =  (bucket.avgIncome.value || 0) / 12;
             }
 
             return acc;

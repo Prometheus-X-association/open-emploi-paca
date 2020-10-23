@@ -89,13 +89,13 @@ export function DefaultLayout({TitleComponent, children}) {
       text: "Salaires"
     },
     {
-      path: ROUTES.TRAININGS,
-      text: "Formations"
-    },
-    {
       path: ROUTES.SKILLS,
       text: "Compétences",
       disabled: true
+    },
+    {
+      path: ROUTES.TRAININGS,
+      text: "Formations"
     },
     {
       path: ROUTES.TRANSPORTS,

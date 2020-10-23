@@ -37,7 +37,7 @@ export default class SkillGroupDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oper:SkillGroup";
+    return "http://ontology.datasud.fr/openemploi/SkillGroup";
   }
 
   /**

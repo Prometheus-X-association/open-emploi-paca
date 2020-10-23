@@ -23,7 +23,7 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oper:Training";
+    return "http://ontology.datasud.fr/openemploi/Training";
   }
 
   /**
@@ -47,7 +47,7 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
     const hasOrganizationLink = new LinkDefinition({
       linkName: "hasOrganization",
       pathInIndex: "organization",
-      rdfObjectProperty: "oper:isProvidedBy",
+      rdfObjectProperty: "http://ontology.datasud.fr/openemploi/isProvidedBy",
       relatedModelDefinition:
         MnxOntologies.mnxAgent.ModelDefinitions.OrganizationDefinition,
       isPlural: true,
@@ -61,7 +61,8 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
       rdfObjectProperty: "mm:hasOccupation",
       relatedModelDefinition: OccupationDefinition,
       graphQLPropertyName: "mainOccupation",
-      graphQLInputName: "mainOccupationInput"
+      graphQLInputName: "mainOccupationInput",
+      isPlural: true,
     });
 
     return [
@@ -106,7 +107,7 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
       new LabelDefinition({
         labelName: "objective",
         pathInIndex: "objectives",
-        rdfDataProperty: "oper:objective"
+        rdfDataProperty: "http://ontology.datasud.fr/openemploi/objective"
       }),
       new LabelDefinition({
         labelName: "title",
@@ -139,27 +140,27 @@ export default class TrainingDefinition extends ModelDefinitionAbstract {
       ...super.getLiterals(),
       new LiteralDefinition({
         literalName: "classroomHour",
-        rdfDataProperty: "oper:classroomHour",
+        rdfDataProperty: "http://ontology.datasud.fr/openemploi/classroomHour",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       }),
       new LiteralDefinition({
         literalName: "companyHour",
-        rdfDataProperty: "oper:companyHour",
+        rdfDataProperty: "http://ontology.datasud.fr/openemploi/companyHour",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       }),
       new LiteralDefinition({
         literalName: "disableAccessibility",
-        rdfDataProperty: "oper:disableAccessibility",
+        rdfDataProperty: "http://ontology.datasud.fr/openemploi/disableAccessibility",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
       }),
       new LiteralDefinition({
         literalName: "isCpfEligible",
-        rdfDataProperty: "oper:isCpfEligible",
+        rdfDataProperty: "http://ontology.datasud.fr/openemploi/isCpfEligible",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
       }),
       new LiteralDefinition({
         literalName: "totalHour",
-        rdfDataProperty: "oper:totalHour",
+        rdfDataProperty: "http://ontology.datasud.fr/openemploi/totalHour",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       }),
       new LiteralDefinition({

@@ -42,6 +42,10 @@ export let commonMapping = {
   query: {
     type: "percolator"
   },
+  percoLabel : {
+    "type": "text",
+    "analyzer": "standard"
+  },
   geoloc: {
     type: "geo_point"
   }

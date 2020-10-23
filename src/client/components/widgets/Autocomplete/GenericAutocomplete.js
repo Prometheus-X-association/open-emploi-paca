@@ -75,11 +75,15 @@ export function GenericAutocomplete({
     }
   }, [qs])
 
+  const options = get(data, `${gqlEntitiesConnectionPath}.edges`, []).map(({node: entity}) => entity);
+
+  if(data) console.log(options.map(({prefLabel}) => prefLabel));
+
   return (
     <Autocomplete
       className={className}
       noOptionsText={t("AUTOCOMPLETE.NO_RESULT")}
-      options={get(data, `${gqlEntitiesConnectionPath}.edges`, []).map(({node: entity}) => entity)}
+      options={options}
       getOptionLabel={entity => {
         return entity?.[gqlEntityLabelPath] || "";
       }}
@@ -105,18 +109,16 @@ export function GenericAutocomplete({
         />
       )}
       filterOptions={(options, params) => {
-        const filtered = filter(options, params);
-
         // Suggest the creation of a new value
         if (creatable && params.inputValue !== '') {
-          filtered.push({
+          options.push({
             inputValue: params.inputValue,
             [gqlEntityLabelPath]: t("AUTOCOMPLETE.ADD", {value: params.inputValue }),
             isCreation: true
           });
         }
 
-        return filtered;
+        return options;
       }}
       {...AutocompleteProps}
     />

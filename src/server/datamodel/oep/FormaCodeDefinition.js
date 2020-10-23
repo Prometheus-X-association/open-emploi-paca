@@ -37,7 +37,7 @@ export default class FormaCodeDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getRdfType() {
-    return "oper:FormaCode";
+    return "http://ontology.datasud.fr/openemploi/FormaCode";
   }
 
   /**

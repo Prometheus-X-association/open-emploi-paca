@@ -5,7 +5,7 @@ import {Colors} from "./Colors";
 /**
  *
  */
-export function ChartWidget({data = [], xAxisLabelKey = "label", yAxisKeys = [], yAxisVisibleKeys = []} = {}) {
+export function ChartWidget({data = [], xAxisLabelKey = "label", yAxisKeys = [], yAxisVisibleKeys = [], children} = {}) {
   return (
     <ResponsiveContainer height={300}>
       <LineChart data={data}>
@@ -24,6 +24,7 @@ export function ChartWidget({data = [], xAxisLabelKey = "label", yAxisKeys = [],
         <XAxis dataKey={xAxisLabelKey} />
         <YAxis />
         <Brush />
+        {children}
       </LineChart>
     </ResponsiveContainer>
   );
