@@ -1,6 +1,6 @@
 import React from "react";
 import {useTranslation} from "react-i18next";
-import {Grid, Typography} from "@material-ui/core";
+import {Grid, ListItemText, Typography} from "@material-ui/core";
 
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {makeStyles} from "@material-ui/core/styles";
@@ -11,6 +11,8 @@ import {useQuery} from "@apollo/client";
 import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
 import {IncomesByOccupationWidget} from "../Incomes/Widget/IncomesByOccupationWidget";
 import {TrainingsByOccupationWidget} from "../Trainings/Widget/TrainingsByOccupationWidget";
+import {createLink} from "../../../utilities/createLink";
+import {ROUTES} from "../../../routes";
 
 const useStyles = makeStyles(theme => ({}));
 /**
@@ -20,6 +22,7 @@ export default function Dashboard({children} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const {data: {me} = {}} = useQuery(gqlMyProfile);
+  const dashboardReady = (me?.wishedOccupations?.edges || []).length > 0;
 
   return (
     <Grid container spacing={3}>
@@ -37,19 +40,34 @@ export default function Dashboard({children} = {}) {
 
       <Grid item xs={12} md={6}>
         <BlockContainer title={t("DASHBOARD.MARKET")} expandable>
-          <OffersByOccupationWidget />
+          <Choose>
+            <When condition={dashboardReady}>
+              <OffersByOccupationWidget />
+            </When>
+            <Otherwise>{renderFillYourProjectSuggestion()}</Otherwise>
+          </Choose>
         </BlockContainer>
       </Grid>
 
       <Grid item xs={12} md={6}>
         <BlockContainer title={t("DASHBOARD.INCOMES")} expandable>
-          <IncomesByOccupationWidget />
+          <Choose>
+            <When condition={dashboardReady}>
+              <IncomesByOccupationWidget />
+            </When>
+            <Otherwise>{renderFillYourProjectSuggestion()}</Otherwise>
+          </Choose>
         </BlockContainer>
       </Grid>
 
       <Grid item xs={12} md={6}>
         <BlockContainer title={t("DASHBOARD.TRAININGS")} expandable>
-          <TrainingsByOccupationWidget />
+          <Choose>
+            <When condition={dashboardReady}>
+              <TrainingsByOccupationWidget />
+            </When>
+            <Otherwise>{renderFillYourProjectSuggestion()}</Otherwise>
+          </Choose>
         </BlockContainer>
       </Grid>
 
@@ -60,4 +78,19 @@ export default function Dashboard({children} = {}) {
       </Grid>
     </Grid>
   );
+
+  function renderFillYourProjectSuggestion() {
+    return (
+      <BlockContainer emptyHint>
+        <ListItemText
+          className={classes.empty}
+          primary={t("PROJECT.WISHED_OCCUPATION.NONE")}
+          secondary={createLink({
+            to: ROUTES.PROJECT,
+            text: t("PROJECT.EDIT")
+          })}
+        />
+      </BlockContainer>
+    );
+  }
 }

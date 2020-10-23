@@ -13,7 +13,7 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 dayjs.extend(weekOfYear);
 dayjs.extend(advancedFormat)
 
-const offersESDateFormat = "ww - MM/YY";
+const offersESDateFormat = "MM/YY";
 const offersDayJSDateFormat = offersESDateFormat;
 
 const incomesESDateFormat = "MM/YY";
@@ -422,10 +422,10 @@ function generateOffersCountDateHistogram({filter}){
       offersCountHistogram : {
         date_histogram: {
           field: "dateCreation",
-          calendar_interval: "week",
+          calendar_interval: "month",
           format: offersESDateFormat,
           extended_bounds: {
-            "min": getOffersLowerBoundDate().format(offersDayJSDateFormat),
+            "min": "now-5M",
             "max": "now"
           }
         }
@@ -445,7 +445,7 @@ function generateIncomesAvgHistogram({filter}){
           calendar_interval: "month",
           format: incomesESDateFormat,
           extended_bounds: {
-            "min": getOffersLowerBoundDate().format(incomesDayJSDateFormat),
+            "min": "now-5M",
             "max": "now"
           }
         },

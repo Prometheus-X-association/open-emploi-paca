@@ -10,29 +10,32 @@ import {JobAreaAutocomplete} from "../../widgets/Autocomplete/JobAreaAutocomplet
 const useStyles = makeStyles(theme => ({
   jobAreaAutocomplete: {
     width: "100%",
+    marginTop: theme.spacing(2)
   }
 }));
 
-export function WishedJobAreas({currentJobArea, name = "wishedJobAreas"} = {}) {
+export function WishedJobAreas({currentJobArea, name = "wishedJobAreas", dense = false} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const formikContext = useFormikContext();
-  const existingJobAreaEdges = [...formikContext.getFieldProps(name).value?.edges || []];
+  const existingJobAreaEdges = [...(formikContext.getFieldProps(name).value?.edges || [])];
   const inputEl = useRef();
 
   let disabledJobAreas = existingJobAreaEdges.map(({node}) => node);
 
-  if(currentJobArea){
+  if (currentJobArea) {
     disabledJobAreas.push(currentJobArea);
   }
 
   return (
-    <List>
-      <ListItem>
-        <ListItemText primary={currentJobArea?.title} secondary={t("PROFILE.JOB_AREA")} />
-      </ListItem>
+    <List dense={dense}>
+      <If condition={currentJobArea}>
+        <ListItem>
+          <ListItemText primary={currentJobArea?.title} secondary={t("PROFILE.JOB_AREA")} />
+        </ListItem>
+      </If>
 
-      {existingJobAreaEdges.map(({node : jobArea}) => (
+      {existingJobAreaEdges.map(({node: jobArea}) => (
         <ListItem key={jobArea.id}>
           <ListItemText primary={jobArea?.title} />
           <ListItemSecondaryAction>

@@ -134,6 +134,11 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
                 propertyDefinition: TrainingDefinition.getProperty("startDate"),
                 value:  getTrainingsLowerBoundDate(),
                 isGt: true
+              }),
+              new PropertyFilter({
+                propertyDefinition: TrainingDefinition.getProperty("startDate"),
+                value:  getTrainingsUpperBoundDate(),
+                isLt: true
               })
             ],
             linkFilters: [
@@ -197,6 +202,11 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
                 value:  getTrainingsLowerBoundDate(),
                 isGt: true
               }),
+              new PropertyFilter({
+                propertyDefinition: TrainingDefinition.getProperty("startDate"),
+                value:  getTrainingsUpperBoundDate(),
+                isLt: true
+              })
             ],
             linkFilters: [
               new LinkFilter({
@@ -293,8 +303,8 @@ function generateTrainingsCountDateHistogram({filter}){
           calendar_interval: "month",
           format: esDateFormat,
           extended_bounds: {
-            "min": getTrainingsLowerBoundDate().format(dayjsDateFormat),
-            "max": "now"
+            "min": "now-1y",
+            "max": "now+6M"
           }
         }
       }
@@ -304,4 +314,8 @@ function generateTrainingsCountDateHistogram({filter}){
 
 function getTrainingsLowerBoundDate(){
   return dayjs().subtract(1, "year");
+}
+
+function getTrainingsUpperBoundDate(){
+  return dayjs().add(6, "month");
 }
