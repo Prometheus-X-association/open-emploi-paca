@@ -67,10 +67,11 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
 
           for(let aptitude of aptitudes){
             const rating = aptitude[AptitudeDefinition.getProperty("ratingValue").getPropertyName()] || 0;
+            const isTop5  = aptitude[AptitudeDefinition.getProperty("isTop5").getPropertyName()];
             const skill  = aptitude[AptitudeDefinition.getLink("hasSkill").getLinkName()];
 
             if (rating > 0){
-              [...Array(rating)].map(() => {
+              [...Array(isTop5 ? rating * 2: rating)].map(() => {
                 skillsIds.push(skill.id);
               })
             }
@@ -99,7 +100,7 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
               "script_score": {
                 "query": query,
                 "script": {
-                  "source": "_score / (10 + _score)"
+                  "source": "_score / (20 + _score)"
                 }
               },
 

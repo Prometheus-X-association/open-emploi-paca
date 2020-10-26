@@ -43,7 +43,7 @@ export function OccupationAutocomplete({
 
         variables.filters = [
           ...variables.filters,
-          "inScheme:http://ontology.datasud.fr/openemploi/data/scheme/2"
+          "inScheme:http://ontology.datasud.fr/openemploi/data/scheme/1"
         ];
 
         return variables;

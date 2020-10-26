@@ -18,7 +18,7 @@
 
 import {
   GraphQLTypeDefinition,
-  LinkDefinition,
+  LinkDefinition, LinkPath,
   ModelDefinitionAbstract
 } from "@mnemotix/synaptix.js";
 import AptitudeDefinition from "../mm/AptitudeDefinition";
@@ -56,15 +56,17 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getLinks() {
+    const occupationLink =  new LinkDefinition({
+      linkName: "hasOccupation",
+      rdfObjectProperty: "mm:hasOccupation",
+      relatedModelDefinition: OccupationDefinition,
+      isPlural: true,
+      graphQLInputName: "occupationInputs"
+    });
+
     return [
       ...super.getLinks(),
-      new LinkDefinition({
-        linkName: "hasOccupation",
-        rdfObjectProperty: "mm:hasOccupation",
-        relatedModelDefinition: OccupationDefinition,
-        isPlural: true,
-        graphQLInputName: "occupationInputs"
-      }),
+      occupationLink,
       new LinkDefinition({
         linkName: "isSkillOf",
         rdfObjectProperty: "mm:isSkillOf",
@@ -78,7 +80,16 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: SkillGroupDefinition,
         isPlural: true,
         graphQLInputName: "skillGroupInputs"
-      })
+      }),
+      new LinkDefinition({
+        linkName: "hasOccupationCategory",
+        linkPath:  new LinkPath()
+          .step({linkDefinition: occupationLink})
+          .step({linkDefinition: OccupationDefinition.getLink("hasRelatedOccupation")}),
+        relatedModelDefinition: OccupationDefinition,
+        isPlural: true,
+        inIndexOnly: true
+      }),
     ];
   }
 }

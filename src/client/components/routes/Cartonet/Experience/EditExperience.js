@@ -238,7 +238,6 @@ export default function EditExperience({experienceType = "experience", fullscree
           name: "occupations",
           isPlural: true,
           inputName: "occupationInputs",
-          deleteInputName: "occupationsInputsToDelete",
           targetFragment: gqlOccupationFragment
         },
         {

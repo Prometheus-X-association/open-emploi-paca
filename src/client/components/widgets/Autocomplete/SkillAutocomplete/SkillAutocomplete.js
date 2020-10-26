@@ -49,7 +49,7 @@ export function SkillAutocomplete({
         }
 
         if(filterByRelatedOccupationIds?.length > 0) {
-          filters.push(`hasOccupation: ${JSON.stringify(filterByRelatedOccupationIds)}`)
+          filters.push(`hasOccupationCategory: ${JSON.stringify(filterByRelatedOccupationIds)}`)
         }
 
         return {
