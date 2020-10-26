@@ -116,8 +116,8 @@ export const fr = {
   MARKET: {
     TITLE: "Marché de l'emploi",
     TIP_AGGS_OCCUPATIONS: "Les offres d'emploi relatives aux métiers que vous avez sélectionné.",
-    TIP_AGGS_JOB_AREAS: "Évolution des offres d'emploi par bassin d'emploi (pour les métiers de votre sélection)",
-    TIP_AGGS_TOP_ORGANIZATIONS: "Liste des entreprises qui recrutent le plus pour un bassin d'emploi et un métié donné",
+    TIP_AGGS_JOB_AREAS: "Évolution des offres d'emploi par zone d'emploi (pour les métiers de votre sélection)",
+    TIP_AGGS_TOP_ORGANIZATIONS: "Liste des entreprises qui recrutent le plus pour une zone d'emploi et un métier donné",
     ORGANIZATION_OFFERS_COUNT: "{{count}} offre d'emploi",
     ORGANIZATION_OFFERS_COUNT_plural: "{{count}} offres d'emploi",
     ORGANIZATION_OFFERS_EMPTY: "Aucune entreprise ne recrute pour les critères sélectionnés..."
@@ -125,8 +125,8 @@ export const fr = {
   INCOMES: {
     TITLE: "Salaires",
     TIP_AGGS_OCCUPATIONS: "Les salaires moyens des métiers que vous avez sélectionné.",
-    TIP_AGGS_JOB_AREAS: "Évolution des salaires moyens par bassin d'emploi (pour les métiers de votre sélection)",
-    TIP_AGGS_TOP_ORGANIZATIONS: "Liste des entreprises qui recrutent le plus pour un bassin d'emploi et un métié donné",
+    TIP_AGGS_JOB_AREAS: "Évolution des salaires moyens par zone d'emploi (pour les métiers de votre sélection)",
+    TIP_AGGS_TOP_ORGANIZATIONS: "Liste des entreprises qui recrutent le plus pour une zone d'emploi et un métier donné",
     ORGANIZATION_OFFERS_COUNT: "{{count}} offre d'emploi",
     ORGANIZATION_OFFERS_COUNT_plural: "{{count}} offres d'emploi",
     ORGANIZATION_OFFERS_EMPTY: "Aucune entreprise ne recrute pour les critères sélectionnés..."
@@ -134,8 +134,8 @@ export const fr = {
   TRAININGS: {
     TITLE: "Formations",
     TIP_AGGS_OCCUPATIONS: "Les formations pour les métiers que vous avez sélectionné.",
-    TIP_AGGS_JOB_AREAS: "Évolution des formations par bassin d'emploi (pour les métiers de votre sélection)",
-    TIP_AGGS_TOP_ORGANIZATIONS: "Liste des organisations qui forment le plus pour un bassin d'emploi et un métié donné",
+    TIP_AGGS_JOB_AREAS: "Évolution des formations par zone d'emploi (pour les métiers de votre sélection)",
+    TIP_AGGS_TOP_ORGANIZATIONS: "Liste des organisations qui forment le plus pour une zone d'emploi et un métier donné",
     ORGANIZATION_TRAININGS_COUNT: "{{count}} formation",
     ORGANIZATION_TRAININGS_COUNT_plural: "{{count}} formations",
     ORGANIZATION_TRAININGS_EMPTY: "Aucune organisation ne donne de formation pour les critères sélectionnés..."
@@ -181,7 +181,7 @@ export const fr = {
     INCOME: "Salaire actuel",
     OCCUPATION: "Métier actuel",
     SPOUSE_OCCUPATION: "Métier du conjoint",
-    JOB_AREA: "Bassin d'emploi actuel"
+    JOB_AREA: "Zone d'emploi actuelle"
   },
   PROJECT: {
     YOUR_PROJECT: "Votre projet",
@@ -197,11 +197,11 @@ export const fr = {
       NONE: "Aucun métier sélectionné"
     },
     WISHED_JOB_AREA: {
-      TITLE: "Bassins d'emplois recherchés",
-      TIP: "Vous pouvez sélectionner 4 bassins d'emploi",
+      TITLE: "Zones d'emplois recherchées",
+      TIP: "Vous pouvez sélectionner 4 zones d'emploi",
       CURRENT: "Actuel",
-      ADD: "Ajouter un bassin d'emploi...",
-      NONE: "Aucun bassin sélectionné"
+      ADD: "Ajouter une zone d'emploi...",
+      NONE: "Aucune zone d'emploi sélectionné"
     }
   },
   FORM_ERRORS: {

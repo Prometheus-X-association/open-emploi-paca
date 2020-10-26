@@ -21,7 +21,7 @@ export default class AddressDefinition extends ModelDefinitionAbstract {
       ...super.getLinks(),
       new LinkDefinition({
         linkName: "hasJobArea",
-        description: "Bassin d'emploi",
+        description: "Zone d'emploi",
         rdfObjectProperty: "http://ontology.datasud.fr/openemploi/hasZoneEmploi",
         relatedModelDefinition: JobAreaDefinition,
         graphQLPropertyName: "jobArea",

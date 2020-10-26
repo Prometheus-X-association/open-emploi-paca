@@ -87,7 +87,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       }),
       new LinkDefinition({
         linkName: "hasJobArea",
-        description: "Bassin d'emploi actuel",
+        description: "Zone d'emploi actuelle",
         rdfObjectProperty: "oep:hasJobArea",
         relatedModelDefinition: JobAreaDefinition,
         isPlural: false,
@@ -96,7 +96,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       }),
       new LinkDefinition({
         linkName: "hasWishedJobArea",
-        description: "Liste des bassins d'emploi souhaités",
+        description: "Liste des zones d'emploi souhaitées",
         rdfObjectProperty: "oep:hasWishedJobArea",
         relatedModelDefinition: JobAreaDefinition,
         isPlural: true,
