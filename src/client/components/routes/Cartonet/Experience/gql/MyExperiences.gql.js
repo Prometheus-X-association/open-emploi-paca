@@ -16,7 +16,7 @@ export const gqlMyExperiencesFragment = gql`
 `;
 
 export const gqlMyExperiences = gql`
-  query Me {
+  query Me($includeNestedSkill: Boolean! = false) {
     me {
       id
       ...MyExperiencesFragment

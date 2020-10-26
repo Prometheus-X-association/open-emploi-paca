@@ -11,6 +11,10 @@ import omitBy from "lodash/omitBy";
  */
 export function normalizeMutationInput({entity, values, links, inputNames, optimistic}){
   return Object.entries(values).reduce((objectInput, [name, value]) => {
+    if(["id", "__typename"].includes(name)) {
+      return objectInput;
+    }
+
     if (!!value?.toISOString) {
       objectInput[name] = value.toISOString();
     } else if ((typeof value !== "object" && (inputNames.length === 0 || inputNames.includes(name)))){
@@ -100,7 +104,7 @@ function normalizePluralLinkInput({link, entity, targetConnection}){
   }
 
   if (edgesToDelete.length > 0) {
-    objectInput[link.deleteInputName] = edgesToDelete.map(edge => edge.node.id);
+    objectInput[link.deleteInputName || `${link.inputName}ToDelete`] = edgesToDelete.map(edge => edge.node.id);
   }
 
   return objectInput;

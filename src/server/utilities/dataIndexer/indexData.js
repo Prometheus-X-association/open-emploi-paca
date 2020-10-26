@@ -570,7 +570,7 @@ function linkPathToPropertyChain({ linkPath, synaptixSession }) {
     if (step instanceof LinkStep) {
       let objectProperty =
         step.getLinkDefinition().getRdfObjectProperty() ||
-        link.getSymmetricLinkDefinition()?.getRdfReversedObjectProperty();
+        step.getLinkDefinition().getSymmetricLinkDefinition()?.getRdfReversedObjectProperty();
 
       if (objectProperty) {
         propertyChain.push(

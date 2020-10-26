@@ -17,18 +17,21 @@ import {
   CircularProgress
 } from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
-
+import clsx from "clsx";
+import dayjs from "dayjs";
+import {generatePath, useHistory} from "react-router";
+import {useQuery} from "@apollo/client";
 import ExperienceIcon from "@material-ui/icons/Work";
 import HobbyIcon from "@material-ui/icons/BeachAccess";
 import TrainingIcon from "@material-ui/icons/School";
 import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
+import {createLink} from "../../../../utilities/createLink";
+import {ROUTES} from "../../../../routes";
 
-import {useHistory} from "react-router";
-import {useQuery} from "@apollo/client";
 import {gqlMyExperiences} from "../Experience/gql/MyExperiences.gql";
-import dayjs from "dayjs";
 import {gqlMyAptitudes} from "../Aptitudes/gql/MyAptitudes.gql";
-import clsx from "clsx";
+
+
 
 const useStyles = makeStyles(theme => ({
   experienceAptitudes: {
@@ -66,8 +69,12 @@ export default function Cartography({} = {}) {
   const history = useHistory();
   const [selectedAptitude, setSelectedAptitude] = useState();
 
-  const {data: {me: myExperiences} = {}, loading: loadingExperiences} = useQuery(gqlMyExperiences);
-  const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes);
+  const {data: {me: myExperiences} = {}, loading: loadingExperiences} = useQuery(gqlMyExperiences, {
+    fetchPolicy: "no-cache"
+  });
+  const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes, {
+    fetchPolicy: "no-cache"
+  });
 
   return (
     <>
@@ -102,7 +109,15 @@ export default function Cartography({} = {}) {
                           </Avatar>
                         </ListItemAvatar>
                         <ListItemText
-                          primary={experience.title}
+                          primary={createLink({
+                            to: generatePath(
+                              `${ROUTES.PROFILE}${experience.experienceType === "hobby" ?
+                              ROUTES.CARTONET_EDIT_HOBBY : experience.experienceType === "training" ?
+                                ROUTES.CARTONET_EDIT_TRAINING : ROUTES.CARTONET_EDIT_EXPERIENCE}`, {
+                                id: experience.id
+                              }),
+                            text: experience.title
+                          })}
                           secondary={
                             <Grid container direction="row" alignItems="flex-start" spacing={1}>
                               <Grid item>{dayjs(experience.startDate).format("L")}</Grid>

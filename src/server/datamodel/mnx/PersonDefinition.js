@@ -20,12 +20,14 @@ import {
   LiteralDefinition,
   LinkDefinition,
   GraphQLTypeDefinition,
-  MnxOntologies
+  MnxOntologies,
+  LinkPath
 } from "@mnemotix/synaptix.js";
 import OccupationDefinition from "../mm/OccupationDefinition";
 import JobAreaDefinition from "../oep/JobAreaDefinition";
 import ExperienceDefinition from "../mm/ExperienceDefinition";
 import AptitudeDefinition from "../mm/AptitudeDefinition";
+import SkillDefinition from "../mm/SkillDefinition";
 
 export default class PersonDefinition extends ModelDefinitionAbstract {
   /**
@@ -43,6 +45,17 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
   }
 
   static getLinks() {
+    const aptitudeLink = new LinkDefinition({
+      linkName: "hasAptitude",
+      symmetricLinkName: "hasPerson",
+      description: "Compétences",
+      rdfObjectProperty: "mm:hasAptitude",
+      relatedModelDefinition: AptitudeDefinition,
+      isPlural: true,
+      graphQLPropertyName: "aptitudes",
+      graphQLInputName: "aptitudeInputs"
+    });
+
     return [
       ...super.getLinks(),
       new LinkDefinition({
@@ -100,16 +113,17 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         graphQLPropertyName: "experiences",
         graphQLInputName: "experienceInputs"
       }),
+      aptitudeLink,
       new LinkDefinition({
-        linkName: "hasAptitude",
-        symmetricLinkName: "hasPerson",
-        description: "Compétences",
-        rdfReversedObjectProperty: "mm:hasCreator",
-        relatedModelDefinition: AptitudeDefinition,
+        linkName: "hasSkill",
+        pathInIndex: "hasSkill",
+        linkPath: new LinkPath()
+          .step({ linkDefinition: aptitudeLink })
+          .step({linkDefinition: AptitudeDefinition.getLink("hasSkill")}),
+        relatedModelDefinition: SkillDefinition,
         isPlural: true,
-        graphQLPropertyName: "aptitudes",
-        graphQLInputName: "aptitudeInputs"
-      }),
+        inIndexOnly: true
+      })
     ];
   }
 

@@ -11,6 +11,8 @@ import {useLocation} from "react-router";
 import clsx from "clsx";
 import {ROUTES} from "../../routes";
 import {Footer} from "./Footer";
+import {Gauge} from "../widgets/Gauge";
+import {BlockContainer} from "../widgets/BlockContainer";
 
 const drawerWidth = 240;
 

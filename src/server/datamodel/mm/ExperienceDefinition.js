@@ -123,11 +123,11 @@ export default class ExperienceDefinition extends ModelDefinitionAbstract {
       ...super.getLabels(),
       new LabelDefinition({
         labelName: "title",
-        rdfDataProperty: "dct:title"
+        rdfDataProperty: "dc:title"
       }),
       new LabelDefinition({
         labelName: "description",
-        rdfDataProperty: "dct:description"
+        rdfDataProperty: "dc:description"
       })
     ];
   }

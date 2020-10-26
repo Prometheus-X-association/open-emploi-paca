@@ -1,5 +1,6 @@
 
 import {gql} from "@apollo/client";
+import {gqlMyExperiencesFragment} from "./MyExperiences.gql";
 
 export const gqlExperienceFragment = gql`
 fragment ExperienceFragment on Experience{
@@ -26,8 +27,23 @@ fragment ExperienceFragment on Experience{
       node{
         id
         skillLabel
+        skill @include(if: $includeNestedSkill){
+          id
+          prefLabel
+        }
       }
     }
   }
 }
+`;
+
+export const gqlExperience = gql`
+  query Experience($id: ID! $includeNestedSkill: Boolean! = true) {
+    experience(id: $id) {
+      id
+      ...ExperienceFragment
+    }
+  }
+
+  ${gqlExperienceFragment}
 `;

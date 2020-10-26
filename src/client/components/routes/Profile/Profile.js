@@ -21,6 +21,7 @@ import {CartonetModal} from "../Cartonet/CartonetModal";
 import {ROUTES} from "../../../routes";
 import LogoMM from "../../../assets/logo-mm.png";
 import LogoWever from "../../../assets/logo-wever.png";
+import {generatePath} from "react-router";
 
 const useStyles = makeStyles(theme => ({
   cartoNetSubHeader: {
@@ -136,19 +137,19 @@ export default function Profile({} = {}) {
                           <ListItem>
                             {createLink({
                               text: t("CARTONET.ACTIONS.ADD_EXPERIENCE"),
-                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_EXPERIENCE}`
+                              to: generatePath(`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_EXPERIENCE}`)
                             })}
                           </ListItem>
                           <ListItem>
                             {createLink({
                               text: t("CARTONET.ACTIONS.ADD_TRAINING"),
-                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_TRAINING}`
+                              to: generatePath(`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_TRAINING}`)
                             })}
                           </ListItem>
                           <ListItem>
                             {createLink({
                               text: t("CARTONET.ACTIONS.ADD_HOBBY"),
-                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_HOBBY}`
+                              to: generatePath(`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_HOBBY}`)
                             })}
                           </ListItem>
                           <ListItem>

@@ -1,12 +1,11 @@
 import React from "react";
 import {useTranslation} from "react-i18next";
-import {Grid, ListItemText, Typography} from "@material-ui/core";
+import {Grid, ListItemText, Typography, CircularProgess} from "@material-ui/core";
 
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {makeStyles} from "@material-ui/core/styles";
 import ProjectExcerpt from "../Project/ProjectExcerpt";
 import {OffersByOccupationWidget} from "../Market/Widget/OffersByOccupationWidget";
-import {OffersByJobAreaWidget} from "../Market/Widget/OffersByJobAreaWidget";
 import {useQuery} from "@apollo/client";
 import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
 import {IncomesByOccupationWidget} from "../Incomes/Widget/IncomesByOccupationWidget";
@@ -73,7 +72,6 @@ export default function Dashboard({children} = {}) {
 
       <Grid item xs={12} md={6}>
         <BlockContainer title={t("DASHBOARD.SKILLS")} expandable>
-          ...
         </BlockContainer>
       </Grid>
     </Grid>

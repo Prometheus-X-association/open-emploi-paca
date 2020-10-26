@@ -17,13 +17,17 @@
  */
 
 import {
-  GraphQLTypeDefinition,
-  LinkDefinition,
+  FilterDefinition, LabelDefinition,
+  LinkDefinition, LinkPath,
   MnxOntologies,
   ModelDefinitionAbstract
 } from "@mnemotix/synaptix.js";
 import AwardDefinition from "../mm/AwardDefinition";
 import SkillDefinition from "./SkillDefinition";
+import {OccupationGraphQLDefinition} from "./graphql/OccupationGraphQLDefinition";
+import env from "env-var";
+import JobAreaDefinition from "../oep/JobAreaDefinition";
+import PersonDefinition from "../mnx/PersonDefinition";
 
 export default class OccupationDefinition extends ModelDefinitionAbstract {
   /**
@@ -48,7 +52,7 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getGraphQLDefinition() {
-    return GraphQLTypeDefinition;
+    return OccupationGraphQLDefinition;
   }
 
   static getIndexType() {
@@ -83,6 +87,52 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: OccupationDefinition,
         isPlural: true,
         graphQLInputName: "relatedOccupationInputs"
+      })
+    ];
+  }
+
+
+  static getLabels(){
+    const superLabels = super.getLabels();
+    const prefLabel  = superLabels.find(label => label.getLabelName() === "prefLabel")
+    return [
+      ...superLabels,
+      new LabelDefinition({
+        labelName: "relatedOccupationName",
+        inIndexOnly: true,
+        linkPath: new LinkPath()
+          .step({ linkDefinition: this.getLink("hasRelatedOccupation") })
+          .property({
+            propertyDefinition : prefLabel,
+            rdfDataPropertyAlias: "skos:prefLabel"
+          })
+      })
+    ]
+  }
+  /**
+   * @inheritDoc
+   */
+  static getFilters() {
+    return [
+      ...super.getFilters(),
+      new FilterDefinition({
+        filterName: "moreLikeThisPersonSkillsFilter",
+        indexFilter: ( {skillsIds} ) => ({
+          more_like_this: {
+            "fields": [
+              this.getLink("hasSkill").getPathInIndex()
+            ],
+            "like": [
+              {
+                "doc": {
+                  [this.getLink("hasSkill").getPathInIndex()] : skillsIds
+                }
+              }
+            ],
+            "min_term_freq": 1,
+            "max_query_terms": 500
+          }
+        })
       })
     ];
   }

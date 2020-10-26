@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import * as Yup from "yup";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
@@ -12,9 +12,9 @@ import {
   FormControlLabel,
   Paper
 } from "@material-ui/core";
-import {useHistory} from "react-router";
+import {useHistory, useParams} from "react-router";
 import {object} from "yup";
-import {useMutation, useQuery} from "@apollo/client";
+import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
 import {useSnackbar} from "notistack";
 
@@ -27,7 +27,10 @@ import {prepareMutation} from "../../../../utilities/apollo/prepareMutation";
 import {gqlAptitudeFragment} from "../Aptitudes/gql/Aptitude.gql";
 import {gqlOrganizationFragment} from "../../../widgets/Autocomplete/OrganizationAutocomplete/gql/Organizations.gql";
 import {gqlMyExperiences} from "./gql/MyExperiences.gql";
+import {gqlExperience} from "./gql/Experience.gql";
+
 import clsx from "clsx";
+import {gqlUpdateExperience} from "./gql/UpdateExperience.gql";
 
 const useStyles = makeStyles(theme => ({
   categoryTitle: {
@@ -61,6 +64,9 @@ export default function EditExperience({experienceType = "experience", fullscree
     throw new Error('experience type must be in ["experience", "training", "hobby"]');
   }
 
+  let {id} = useParams();
+  id = decodeURIComponent(id);
+
   const classes = useStyles();
   const {t} = useTranslation();
   const {enqueueSnackbar} = useSnackbar();
@@ -68,19 +74,34 @@ export default function EditExperience({experienceType = "experience", fullscree
   const [saveAndResetForm, setSaveAndResetForm] = useState(false);
 
   const {data: {me} = {}} = useQuery(gqlMyExperiences);
-  const [updateProfile, {loading: saving}] = useMutation(gqlUpdateProfile, {
-    onCompleted: () => {
-      enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
-      if (!saveAndResetForm) {
-        history.goBack();
-      }
-    }
+  const [getExperience, {data: {experience} = {}}] = useLazyQuery(gqlExperience);
+
+  const [updateProfile, {loading: savingProfile}] = useMutation(gqlUpdateProfile, {
+    onCompleted: handleSaveCompleted
   });
+
+  const [updateExperience, {loading: savingExperience}] = useMutation(gqlUpdateExperience, {
+    onCompleted: handleSaveCompleted
+  });
+
+  const saving = savingProfile || savingExperience;
+
+  useEffect(() => {
+    if(id){
+      getExperience({
+        variables: {
+          id
+        }
+      })
+    }
+  }, [id]);
+
   return (
     <>
       <DialogTitle>{t(`CARTONET.${experienceType.toUpperCase()}.PAGE_TITLE`)}</DialogTitle>
       <Formik
-        initialValues={{
+        enableReinitialize={true}
+        initialValues={experience || {
           title: "",
           description: "",
           startDate: null,
@@ -205,6 +226,7 @@ export default function EditExperience({experienceType = "experience", fullscree
 
   async function save(values) {
     const {objectInput} = prepareMutation({
+      entity: experience,
       values,
       links: [
         {
@@ -252,15 +274,33 @@ export default function EditExperience({experienceType = "experience", fullscree
 
     objectInput.experienceType = experienceType;
 
-    await updateProfile({
-      variables: {
-        input: {
-          objectId: me.id,
-          objectInput: {
-            experienceInputs: [objectInput]
+    if(id){
+      await updateExperience({
+        variables: {
+          input: {
+            objectId: id,
+            objectInput
           }
         }
-      }
-    });
+      })
+    } else {
+      await updateProfile({
+        variables: {
+          input: {
+            objectId: me.id,
+            objectInput: {
+              experienceInputs: [objectInput]
+            }
+          }
+        }
+      });
+    }
+  }
+
+  function handleSaveCompleted(){
+    enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
+    if (!saveAndResetForm) {
+      history.goBack();
+    }
   }
 }

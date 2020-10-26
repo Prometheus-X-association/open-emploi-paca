@@ -77,8 +77,6 @@ export function GenericAutocomplete({
 
   const options = get(data, `${gqlEntitiesConnectionPath}.edges`, []).map(({node: entity}) => entity);
 
-  if(data) console.log(options.map(({prefLabel}) => prefLabel));
-
   return (
     <Autocomplete
       className={className}
