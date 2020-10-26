@@ -65,7 +65,10 @@ export default function EditExperience({experienceType = "experience", fullscree
   }
 
   let {id} = useParams();
-  id = decodeURIComponent(id);
+
+  if(id){
+    id = decodeURIComponent(id);
+  }
 
   const classes = useStyles();
   const {t} = useTranslation();
@@ -273,7 +276,7 @@ export default function EditExperience({experienceType = "experience", fullscree
 
     objectInput.experienceType = experienceType;
 
-    if(id){
+    if(!!id){
       await updateExperience({
         variables: {
           input: {

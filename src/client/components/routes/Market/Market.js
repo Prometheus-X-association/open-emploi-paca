@@ -36,6 +36,14 @@ export default function Market({} = {}) {
       <Grid item container xs={12} spacing={3}>
         <Choose>
           <When condition={me?.wishedJobAreas?.edges?.length > 0}>
+            <If condition={me?.jobArea}>
+              <Grid item xs={6}>
+                <BlockContainer title={me.jobArea.title} expandable>
+                  <OffersByOccupationWidget jobArea={me.jobArea} />
+                </BlockContainer>
+              </Grid>
+            </If>
+
             {me.wishedJobAreas.edges.map(({node: jobArea}) => (
               <Grid key={jobArea.id}  item xs={6}>
                 <BlockContainer title={jobArea.title} expandable>
