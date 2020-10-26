@@ -153,7 +153,7 @@ export const fr = {
     REDIRECT_SIGN_UP: "Créer un compte",
     REMEMBER_ME: "Se souvenir de moi.",
     SUBMIT: "Se connecter",
-    TITLE: "Se connecter"
+    TITLE: "Plateforme Open Emploi"
   },
   SIGN_UP: {
     EMAIL: "Adresse mail",
