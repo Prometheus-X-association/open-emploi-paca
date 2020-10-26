@@ -152,6 +152,11 @@ export default function Profile({} = {}) {
                               to: generatePath(`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_HOBBY}`)
                             })}
                           </ListItem>
+                          <ListItem disabled>
+                            {createLink({
+                              text: t("CARTONET.ACTIONS.EXTRACT_SKILLS_FROM_CV"),
+                            })}
+                          </ListItem>
                           <ListItem>
                             {createLink({
                               text: t("CARTONET.ACTIONS.EDIT_APTITUDES"),
@@ -167,12 +172,18 @@ export default function Profile({} = {}) {
                               to: `${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_PROFILE}`
                             })}
                           </ListItem>
+                          <ListItem disabled>
+                            {createLink({
+                              text: t("CARTONET.ACTIONS.PRINT_PROFILE"),
+                            })}
+                          </ListItem>
                           <ListItem>
                             {createLink({
                               text: t("CARTONET.ACTIONS.SHOW_JOBS"),
                               to: `${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_JOBS}`
                             })}
                           </ListItem>
+
                         </List>
 
                         <CartonetModal />

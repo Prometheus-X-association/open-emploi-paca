@@ -48,8 +48,10 @@ export const fr = {
       EDIT_APTITUDES: "Éditer ses compétences",
       SHOW_JOBS: "Voir les métiers suggérés",
       SHOW_PROFILE: "Voir son profil",
+      PRINT_PROFILE: "Imprimer son profil",
       RESTITUTION: "Restitution de profil",
-      EDITION: "Édition de profil"
+      EDITION: "Édition de profil",
+      EXTRACT_SKILLS_FROM_CV: "Extraire les compétences d'un CV"
     },
     EXPERIENCE: {
       PAGE_TITLE: "Édition d'expérience professionnelle",
