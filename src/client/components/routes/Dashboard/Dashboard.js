@@ -60,6 +60,12 @@ export default function Dashboard({children} = {}) {
       </Grid>
 
       <Grid item xs={12} md={6}>
+        <BlockContainer title={t("DASHBOARD.SKILLS")} expandable>
+          A venir...
+        </BlockContainer>
+      </Grid>
+
+      <Grid item xs={12} md={6}>
         <BlockContainer title={t("DASHBOARD.TRAININGS")} expandable>
           <Choose>
             <When condition={dashboardReady}>
@@ -67,11 +73,6 @@ export default function Dashboard({children} = {}) {
             </When>
             <Otherwise>{renderFillYourProjectSuggestion()}</Otherwise>
           </Choose>
-        </BlockContainer>
-      </Grid>
-
-      <Grid item xs={12} md={6}>
-        <BlockContainer title={t("DASHBOARD.SKILLS")} expandable>
         </BlockContainer>
       </Grid>
     </Grid>
