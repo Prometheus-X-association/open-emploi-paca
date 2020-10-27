@@ -110,7 +110,7 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
               script_score: {
                 query: query,
                 script: {
-                  source: "_score / (20 + _score)"
+                  source: "_score / (40 + _score)"
                 }
               }
             }),
