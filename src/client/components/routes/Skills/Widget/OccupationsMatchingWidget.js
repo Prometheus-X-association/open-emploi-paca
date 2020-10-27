@@ -19,14 +19,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-/**
- *
- */
-export function OccupationsMatchingWidget({} = {}) {
-  const classes = useStyles();
-  const {t} = useTranslation();
-  const [occupations, setOccupations] = useState([]);
+
+export function useOccupationMatchings(){
   const {data: {me} = {}} = useQuery(gqlMyProfile);
+  const [occupations, setOccupations] = useState([]);
   const [getOccupationsMatching, {data, loading}] = useLazyQuery(gqlOccupationsMatching, {fetchPolicy: "no-cache"});
 
   useEffect(() => {
@@ -63,6 +59,16 @@ export function OccupationsMatchingWidget({} = {}) {
       });
     }
   });
+
+  return [occupationMatchings, {loading}];
+}
+/**
+ *
+ */
+export function OccupationsMatchingWidget({} = {}) {
+  const classes = useStyles();
+  const {t} = useTranslation();
+  let [occupationMatchings, {loading}] = useOccupationMatchings();
 
   return (
     <Choose>

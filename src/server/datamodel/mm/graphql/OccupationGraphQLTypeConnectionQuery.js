@@ -88,7 +88,7 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
 
           const hasRelatedOccupationPath = OccupationDefinition.getLink("hasRelatedOccupation").getPathInIndex();
           const relatedOccupationLabelPath = OccupationDefinition.getProperty("relatedOccupationName").getPathInIndex();
-          const occupationLabelPath = OccupationDefinition.getProperty("relatedOccupationName").getPathInIndex();
+          const occupationLabelPath = OccupationDefinition.getProperty("prefLabel").getPathInIndex();
 
 
           const result = await synaptixSession.getIndexService().getNodes({
@@ -123,7 +123,7 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
                     occupationLabelPath,
                   ]
                 },
-                sort: ["_score", "prefLabel.keyword"]
+                sort: ["_score", `${occupationLabelPath}.keyword`]
               };
             }
           });

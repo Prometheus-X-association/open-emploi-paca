@@ -92,8 +92,7 @@ export function DefaultLayout({TitleComponent, children}) {
     },
     {
       path: ROUTES.SKILLS,
-      text: "Compétences",
-      disabled: true
+      text: "Compétences"
     },
     {
       path: ROUTES.TRAININGS,

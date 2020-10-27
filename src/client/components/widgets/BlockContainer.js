@@ -45,13 +45,13 @@ export function BlockContainer({children, title, expandable, emptyHint} = {}) {
     <Container className={clsx(classes.root, {[classes.empty]: emptyHint})}>
       <Grid container spacing={1} className={classes.heading} alignItems={"center"}>
         <If condition={expandable}>
-          <Grid item>
+          <Grid item xs={1}>
             <DragHandle className={classes.dragIcon} />
           </Grid>
         </If>
         <If condition={title}>
-          <Grid item>
-            <Typography className={classes.title} variant="h6" gutterBottom>
+          <Grid item zeroMinWidth xs={11}>
+            <Typography noWrap className={classes.title} variant="h6" gutterBottom>
               {title}
             </Typography>
           </Grid>

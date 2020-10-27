@@ -24,6 +24,7 @@ const Project = loadable(() => import(/* webpackChunkName: "Project" */ "./compo
 const Market = loadable(() => import(/* webpackChunkName: "Market" */ "./components/routes/Market/Market"));
 const Incomes = loadable(() => import(/* webpackChunkName: "Incomes" */ "./components/routes/Incomes/Incomes"));
 const Trainings = loadable(() => import(/* webpackChunkName: "Trainings" */ "./components/routes/Trainings/Trainings"));
+const Skills = loadable(() => import(/* webpackChunkName: "Skills" */ "./components/routes/Skills/Skills"));
 
 const Cartonet = loadable(() => import(/* webpackChunkName: "Cartonet" */ "./components/routes/Cartonet/Cartonet"));
 
@@ -72,6 +73,7 @@ export default function Application({} = {}) {
                     <Route path={ROUTES.MARKET} component={Market} />
                     <Route path={ROUTES.INCOMES} component={Incomes} />
                     <Route path={ROUTES.TRAININGS} component={Trainings} />
+                    <Route path={ROUTES.SKILLS} component={Skills} />
                     <Route component={Dashboard} />
                   </Switch>
                 </DefaultLayout>

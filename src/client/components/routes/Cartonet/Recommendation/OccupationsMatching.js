@@ -23,17 +23,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-/**
- *
- */
-export default function OccupationsMatching({} = {}) {
-  const classes = useStyles();
-  const {t} = useTranslation();
-  const history = useHistory();
-  const [expanded, setExpanded] = React.useState(false);
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+export function useSuggestedOccupationsMatchings(){
   const {user} = useLoggedUser();
   const [getOccupationsMatching, {data, loading}] = useLazyQuery(gqlOccupationsMatching, {fetchPolicy: "no-cache"});
 
@@ -47,6 +37,22 @@ export default function OccupationsMatching({} = {}) {
 
   const occupations = JSON.parse(data?.occupationsMatching || "[]");
 
+  return [occupations, {loading}]
+}
+
+/**
+ *
+ */
+export default function OccupationsMatching({} = {}) {
+  const classes = useStyles();
+  const {t} = useTranslation();
+  const history = useHistory();
+  const [expanded, setExpanded] = React.useState(false);
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+  const [occupations, {loading}] = useSuggestedOccupationsMatchings();
+
   return (
     <>
       <DialogTitle>{t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE")}</DialogTitle>
@@ -58,17 +64,17 @@ export default function OccupationsMatching({} = {}) {
           <Otherwise>
 
             {occupations.map(occupation => (
-              <Accordion key={occupation.categoryName} expanded={expanded === occupation.categoryName} onChange={handleChange(occupation.categoryName)}>
+              <Accordion key={occupation.categoryId} expanded={expanded === occupation.categoryId} onChange={handleChange(occupation.categoryId)}>
                 <AccordionSummary classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}} expandIcon={<ExpandMoreIcon />} >
                   <Gauge value={occupation.score * 100}/>
                   <Typography className={classes.categoryHeaderTitle}>{occupation.categoryName}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <If condition={expanded === occupation.categoryName}>
+                  <If condition={expanded === occupation.categoryId}>
                     <List dense>
-                      {occupation.subOccupations.map((occupation) => (
-                        <ListItem key={occupation}>
-                          <ListItemText primary={occupation.prefLabel} />
+                      {occupation.subOccupations.map((subOccupation) => (
+                        <ListItem key={subOccupation.id}>
+                          <ListItemText primary={subOccupation.prefLabel} />
                         </ListItem>
                       ))}
                     </List>

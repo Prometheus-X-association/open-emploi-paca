@@ -17,7 +17,6 @@
  */
 
 import {
-  GraphQLTypeDefinition,
   LinkDefinition, LinkPath,
   ModelDefinitionAbstract
 } from "@mnemotix/synaptix.js";
@@ -25,6 +24,7 @@ import AptitudeDefinition from "../mm/AptitudeDefinition";
 import KnowledgeDefinition from "../oep/KnowledgeDefinition";
 import SkillGroupDefinition from "../oep/SkillGroupDefinition";
 import OccupationDefinition from "./OccupationDefinition";
+import {SkillGraphQLDefinition} from "./graphql/SkillGraphQLDefinition";
 
 export default class SkillDefinition extends ModelDefinitionAbstract {
   /**
@@ -45,7 +45,7 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getGraphQLDefinition() {
-    return GraphQLTypeDefinition;
+    return SkillGraphQLDefinition;
   }
 
   static getIndexType() {
