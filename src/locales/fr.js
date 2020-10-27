@@ -142,6 +142,9 @@ export const fr = {
     ORGANIZATION_TRAININGS_COUNT_plural: "{{count}} formations",
     ORGANIZATION_TRAININGS_EMPTY: "Aucune organisation ne donne de formation pour les critères sélectionnés..."
   },
+  SKILLS: {
+    OCCUPATIONS_MATCHING_TIP: "Adéquation entre vos compétences et les métiers sélectionnés"
+  },
   ORGANIZATION:  {
     AUTOCOMPLETE: {
       NO_RESULT: 'Aucun résultat trouvé.',

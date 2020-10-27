@@ -117,7 +117,7 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
       ...super.getFilters(),
       new FilterDefinition({
         filterName: "moreLikeThisPersonSkillsFilter",
-        indexFilter: ( {skillsIds} ) => ({
+        indexFilter: ( {skillsIds, boost} ) => ({
           more_like_this: {
             "fields": [
               this.getLink("hasSkill").getPathInIndex()
@@ -130,7 +130,8 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
               }
             ],
             "min_term_freq": 1,
-            "max_query_terms": 500
+            "max_query_terms": 500,
+            "boost": boost
           }
         })
       })

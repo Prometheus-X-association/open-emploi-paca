@@ -12,6 +12,7 @@ import {IncomesByOccupationWidget} from "../Incomes/Widget/IncomesByOccupationWi
 import {TrainingsByOccupationWidget} from "../Trainings/Widget/TrainingsByOccupationWidget";
 import {createLink} from "../../../utilities/createLink";
 import {ROUTES} from "../../../routes";
+import {OccupationsMatchingWidget} from "../Skills/Widget/OccupationsMatchingWidget";
 
 const useStyles = makeStyles(theme => ({}));
 /**
@@ -61,7 +62,7 @@ export default function Dashboard({children} = {}) {
 
       <Grid item xs={12} md={6}>
         <BlockContainer title={t("DASHBOARD.SKILLS")} expandable>
-          A venir...
+          <OccupationsMatchingWidget />
         </BlockContainer>
       </Grid>
 

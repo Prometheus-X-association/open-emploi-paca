@@ -1,9 +1,10 @@
 import {
+  generateConnectionArgs,
   GraphQLTypeConnectionQuery,
   LinkFilter,
+  mergeResolvers,
   QueryFilter,
-  SynaptixDatastoreSession,
-  mergeResolvers, generateConnectionArgs
+  SynaptixDatastoreSession
 } from "@mnemotix/synaptix.js";
 import OccupationDefinition from "../OccupationDefinition";
 import PersonDefinition from "../../mnx/PersonDefinition";
@@ -45,10 +46,10 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
          * @param {SynaptixDatastoreSession} synaptixSession
          * @param {object} info
          */
-        async (_, { personId, occupationIds, args }, synaptixSession, info) => {
+        async (_, {personId, occupationIds, args}, synaptixSession, info) => {
           if (occupationIds) {
             occupationIds = occupationIds.map(occupationId =>
-              synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+              synaptixSession.normalizeAbsoluteUri({uri: occupationId})
             );
           }
 
@@ -63,77 +64,97 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
             linkDefinition: PersonDefinition.getLink("hasAptitude")
           });
 
-          let skillsIds = [];
+          let skillsGroups = {};
 
           for(let aptitude of aptitudes){
             const rating = aptitude[AptitudeDefinition.getProperty("ratingValue").getPropertyName()] || 0;
             const isTop5  = aptitude[AptitudeDefinition.getProperty("isTop5").getPropertyName()];
             const skill  = aptitude[AptitudeDefinition.getLink("hasSkill").getLinkName()];
 
-            if (rating > 0){
-              [...Array(isTop5 ? rating * 2: rating)].map(() => {
-                skillsIds.push(skill.id);
-              })
+            if (rating > 0) {
+              const boost = isTop5 ? 2 : (1 + 1/6 * rating)
+
+              if (!skillsGroups[boost]) {
+                skillsGroups[boost] = [];
+              }
+
+              skillsGroups[boost].push(skill.id);
             }
           }
 
+          const hasRelatedOccupationPath = OccupationDefinition.getLink("hasRelatedOccupation").getPathInIndex();
+          const relatedOccupationLabelPath = OccupationDefinition.getProperty("relatedOccupationName").getPathInIndex();
+          const occupationLabelPath = OccupationDefinition.getProperty("relatedOccupationName").getPathInIndex();
+
+
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OccupationDefinition,
-            queryFilters: [
-              new QueryFilter({
-                filterDefinition: OccupationDefinition.getFilter(
-                  "moreLikeThisPersonSkillsFilter"
-                ),
-                filterGenerateParams: { skillsIds }
-              })
-            ],
-            linkFilters: [
-              new LinkFilter({
-                linkDefinition: OccupationDefinition.getLink("hasSkill"),
-                any: true
-              })
-            ],
+            queryFilters: Object.entries(skillsGroups).map(
+              ([boost, skillsIds]) =>
+                new QueryFilter({
+                  filterDefinition: OccupationDefinition.getFilter(
+                    "moreLikeThisPersonSkillsFilter"
+                  ),
+                  filterGenerateParams: {skillsIds, boost},
+                  isStrict: false
+                })
+            ),
             rawResult: true,
             limit: 1000,
             ...args,
-            getRootQueryWrapper: ({ query }) => ({
-              "script_score": {
-                "query": query,
-                "script": {
-                  "source": "_score / (20 + _score)"
+            getRootQueryWrapper: ({query}) => ({
+              script_score: {
+                query: query,
+                script: {
+                  source: "_score / (20 + _score)"
                 }
-              },
-
+              }
             }),
             getExtraQuery: () => {
               return {
-                "_source": {"includes": ["relatedOccupationName", "prefLabel"]},
-                "sort" : ["_score", "prefLabel.keyword"]
+                _source: {
+                  includes: [
+                    hasRelatedOccupationPath,
+                    relatedOccupationLabelPath,
+                    occupationLabelPath,
+                  ]
+                },
+                sort: ["_score", "prefLabel.keyword"]
               };
-            },
+            }
           });
 
           /**
            * After a bit of testing it
            * @type {number}
            */
-          const matching = result.hits.reduce((acc, { _id, _score, _source }) => {
-            if (!acc[_source.relatedOccupationName]){
-              acc[_source.relatedOccupationName] = {
-                categoryName: _source.relatedOccupationName,
-                score: _score,
-                subOccupations: []
+          const matching = result.hits.reduce(
+            (acc, {_id, _score, _source}) => {
+              if(occupationIds && !occupationIds.includes(_source[hasRelatedOccupationPath])){
+                return acc;
               }
-            }
 
-            acc[_source.relatedOccupationName].subOccupations.push({
-              id: _id,
-              score: _score,
-              prefLabel : Array.isArray( _source.prefLabel) ?  _source.prefLabel[0] : _source.prefLabel
-            });
+              if (!acc[_source[relatedOccupationLabelPath]]) {
+                acc[_source[relatedOccupationLabelPath]] = {
+                  categoryName: _source[relatedOccupationLabelPath],
+                  categoryId: _source[hasRelatedOccupationPath],
+                  score: _score,
+                  subOccupations: []
+                };
+              }
 
-            return acc;
-          }, {});
+              acc[_source[relatedOccupationLabelPath]].subOccupations.push({
+                id: _id,
+                score: _score,
+                prefLabel: Array.isArray(_source[occupationLabelPath])
+                  ? _source[occupationLabelPath][0]
+                  : _source[occupationLabelPath]
+              });
+
+              return acc;
+            },
+            {}
+          );
 
           return JSON.stringify(Object.values(matching));
         }
