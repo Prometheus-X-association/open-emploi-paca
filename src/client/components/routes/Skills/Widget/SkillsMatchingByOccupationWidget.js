@@ -2,17 +2,19 @@ import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useLazyQuery, useQuery} from "@apollo/client";
-import {gqlOccupationsMatching} from "../../Cartonet/Recommendation/gql/OccupationsMatching.gql";
 import {gqlMyProfile} from "../../Profile/gql/MyProfile.gql";
 import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
-import {List, ListItem, ListItemText, ListItemIcon, Typography} from "@material-ui/core";
+import {List, ListItem, ListItemText, ListItemIcon, ListSubheader} from "@material-ui/core";
 import {Gauge} from "../../../widgets/Gauge";
 import {gqlSkillsMatchingByOccupation} from "./gql/SkillsMatchingByOccupation";
 
 const useStyles = makeStyles(theme => ({
   list: {
+    paddingTop: 0,
+    position: 'relative',
     maxHeight: theme.spacing(50),
-    overflow: "auto"
+    overflow: "auto",
+    background: "white"
   }
 }));
 
@@ -36,7 +38,15 @@ export function SkillsMatchingByOccupationWidget({occupationId} = {}) {
     }
   }, [me]);
 
-  let skillsMatching = JSON.parse(data?.skillsMatchingByOccupation || "[]");
+  const skillMatchings = JSON.parse(data?.skillsMatchingByOccupation || "[]");
+  const [mySkillMatchings, otherSkillMatchings] = skillMatchings.reduce(([mySkillMatchings, otherSkillMatchings], skillMatching) => {
+    if(skillMatching.score > 0){
+      mySkillMatchings.push(skillMatching);
+    } else {
+      otherSkillMatchings.push(skillMatching)
+    }
+    return [mySkillMatchings, otherSkillMatchings];
+  }, [[], []]);
 
   return (
     <Choose>
@@ -45,16 +55,32 @@ export function SkillsMatchingByOccupationWidget({occupationId} = {}) {
       </When>
       <Otherwise>
         <List dense className={classes.list}>
-          {skillsMatching.map(skill => (
-            <ListItem key={skill.id}>
-              <ListItemIcon>
-                <Gauge value={skill.score * 100} />
-              </ListItemIcon>
-              <ListItemText primary={skill.prefLabel} />
-            </ListItem>
-          ))}
+          <If condition={mySkillMatchings.length > 0}>
+            <ListSubheader>
+              {t("SKILLS.MY_SKILLS")}
+            </ListSubheader>
+            {renderSkillMatching(mySkillMatchings)}
+          </If>
+          <If condition={otherSkillMatchings.length > 0}>
+            <ListSubheader>
+              {t("SKILLS.OTHER_SKILLS")}
+            </ListSubheader>
+            {renderSkillMatching(otherSkillMatchings)}
+          </If>
+
         </List>
       </Otherwise>
     </Choose>
   );
+
+  function renderSkillMatching(skillsMatching){
+    return skillsMatching.map(skill => (
+      <ListItem key={skill.id}>
+        <ListItemIcon>
+          <Gauge value={skill.score * 100} />
+        </ListItemIcon>
+        <ListItemText primary={skill.prefLabel} />
+      </ListItem>
+    ))
+  }
 }

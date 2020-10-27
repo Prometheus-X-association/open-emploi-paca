@@ -146,7 +146,10 @@ export const fr = {
     TITLE: "Compétences",
     TIP_AGGS_OCCUPATIONS: "Les deltas de compétences pour les métiers que vous avez sélectionnés.",
     OCCUPATIONS_MATCHING_TIP: "Adéquation entre vos compétences et les métiers sélectionnés",
-    TIP_AGGS_SUGGESTED_OCCUPATIONS: "Adéquation entre vos compétences et les métiers suggérés"
+    TIP_AGGS_SUGGESTED_OCCUPATIONS: "Adéquation entre vos compétences et les métiers suggérés",
+    NO_SUGGESTED_OCCUPATIONS: "Aucun autre métier suggéré pour vos compétences",
+    MY_SKILLS: "Mes compétences",
+    OTHER_SKILLS: "Les compétences qu'il vous manque..."
   },
   ORGANIZATION:  {
     AUTOCOMPLETE: {
