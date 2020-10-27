@@ -71,15 +71,19 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
             const isTop5  = aptitude[AptitudeDefinition.getProperty("isTop5").getPropertyName()];
             const skill  = aptitude[AptitudeDefinition.getLink("hasSkill").getLinkName()];
 
-            if (rating > 0) {
-              const boost = isTop5 ? 2 : (1 + 1/6 * rating)
+            // Boost is computed with this following serie :
+            // Rate 0 => Boost 0.8
+            //      1 =>       1
+            //      ...
+            //      5 =>       1.8
+            //      6 =>       2  (is top 5)
+            const boost = isTop5 ? 2 : (1 + 1/5 * (rating - 1))
 
-              if (!skillsGroups[boost]) {
-                skillsGroups[boost] = [];
-              }
-
-              skillsGroups[boost].push(skill.id);
+            if (!skillsGroups[boost]) {
+              skillsGroups[boost] = [];
             }
+
+            skillsGroups[boost].push(skill.id);
           }
 
           const hasRelatedOccupationPath = OccupationDefinition.getLink("hasRelatedOccupation").getPathInIndex();
