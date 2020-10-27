@@ -1,8 +1,7 @@
 import React, {useState} from "react";
-import {LineChart, CartesianGrid, Line, ResponsiveContainer, XAxis, YAxis, Brush} from "recharts";
+import {LineChart, CartesianGrid, Line, ResponsiveContainer, XAxis, YAxis, Brush, BarChart, Bar} from "recharts";
 import {Colors} from "./Colors";
 import {makeStyles} from "@material-ui/core/styles";
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 import clsx from "clsx";
 
@@ -23,35 +22,62 @@ export function ChartWidget({
   xAxisLabelKey = "label",
   yAxisKeys = [],
   yAxisVisibleKeys = [],
-  children
+  children,
+  type = "line"
 } = {}) {
   const classes = useStyles();
   const [yAxisKeyHover, setAxisKeyHover] = useState();
 
   return (
-    <ClickAwayListener onClickAway={() => setAxisKeyHover()}>
-      <ResponsiveContainer height={300}>
-        <LineChart data={data}>
-          {yAxisKeys.map((yAxisKey, index) => (
-            <Line
-              strokeWidth={yAxisVisibleKeys.includes(yAxisKey) ? 1 : 0}
-              connectNulls
+    <ResponsiveContainer height={300}>{type === "bar" ? renderBarChart() : renderLineChart()}</ResponsiveContainer>
+  );
+
+  function renderLineChart() {
+    return (
+      <LineChart data={data} onMouseLeave={() => setAxisKeyHover()}>
+        {yAxisKeys.map((yAxisKey, index) => (
+          <Line
+            strokeWidth={yAxisVisibleKeys.includes(yAxisKey) ? 1 : 0}
+            connectNulls
+            key={yAxisKey}
+            dot={false}
+            type="monotone"
+            dataKey={yAxisKey}
+            stroke={Colors[index]}
+            onMouseOver={() => setAxisKeyHover(yAxisKey)}
+            className={clsx(classes.line, {[classes.fade]: yAxisKeyHover && yAxisKeyHover !== yAxisKey})}
+          />
+        ))}
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey={xAxisLabelKey} />
+        <YAxis />
+        <Brush />
+        {children}
+      </LineChart>
+    );
+  }
+
+  function renderBarChart() {
+    return (
+      <BarChart data={data} onMouseLeave={() => setAxisKeyHover()}>
+        {yAxisKeys.map((yAxisKey, index) => (
+          <If condition={yAxisVisibleKeys.includes(yAxisKey)}>
+            <Bar
               key={yAxisKey}
-              dot={false}
-              type="monotone"
               dataKey={yAxisKey}
-              stroke={Colors[index]}
+              stackId="a"
+              fill={Colors[index]}
               onMouseOver={() => setAxisKeyHover(yAxisKey)}
               className={clsx(classes.line, {[classes.fade]: yAxisKeyHover && yAxisKeyHover !== yAxisKey})}
             />
-          ))}
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey={xAxisLabelKey} />
-          <YAxis />
-          <Brush />
-          {children}
-        </LineChart>
-      </ResponsiveContainer>
-    </ClickAwayListener>
-  );
+          </If>
+        ))}
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey={xAxisLabelKey} />
+        <YAxis />
+        <Brush />
+        {children}
+      </BarChart>
+    );
+  }
 }

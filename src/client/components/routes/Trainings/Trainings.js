@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useQuery} from "@apollo/client";
@@ -20,10 +20,11 @@ const useStyles = makeStyles(theme => ({
 /**
  *
  */
-export default function Market({} = {}) {
+export default function Trainings({} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const {data: {me} = {}} = useQuery(gqlMyProfile);
+  const [yReference, setYReference] = useState();
 
   return (
     <Grid container spacing={3}>
@@ -39,7 +40,7 @@ export default function Market({} = {}) {
             <If condition={me?.jobArea}>
               <Grid item xs={6}>
                 <BlockContainer title={me.jobArea.title} expandable>
-                  <TrainingsByOccupationWidget jobArea={me.jobArea} />
+                  <TrainingsByOccupationWidget jobArea={me.jobArea} yReference={yReference}/>
                 </BlockContainer>
               </Grid>
             </If>

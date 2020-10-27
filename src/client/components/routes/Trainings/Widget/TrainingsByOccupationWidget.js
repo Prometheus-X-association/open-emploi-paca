@@ -55,6 +55,7 @@ export function TrainingsByOccupationWidget({jobArea: forcedJobArea} = {}) {
                 data={JSON.parse(trainingsData?.trainingsByOccupationAggs || "[]")}
                 yAxisKeys={occupationIds}
                 yAxisVisibleKeys={selectedOccupationIds}
+                type={"bar"}
               />
             </When>
             <Otherwise>
