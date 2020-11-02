@@ -33,15 +33,15 @@ export function AnalysisExcerpt({} = {}) {
     <>
       <Grid container spacing={2}>
         <Grid item md={2} xs={6} className={classes.analysis}>
-          <Gauge value={40} big label={"MOYEN"} />
+          <Gauge value={20} big label={"FAIBLE"} />
           <Typography className={classes.analysisTitle}>{t("DASHBOARD.MARKET")}</Typography>
         </Grid>
         <Grid item md={2} xs={6} className={classes.analysis}>
-          <Gauge value={80} big label={"BON"} />
+          <Gauge value={40} big label={"MOYEN"} />
           <Typography className={classes.analysisTitle}>{t("DASHBOARD.INCOMES")}</Typography>
         </Grid>
         <Grid item md={2} xs={6} className={classes.analysis}>
-          <Gauge value={20} big label={"FAIBLE"} />
+          <Gauge value={80} big label={"BON"} />
           <Typography className={classes.analysisTitle}>{t("DASHBOARD.SKILLS")}</Typography>
         </Grid>
         <Grid item md={2} xs={6} className={classes.analysis}>
