@@ -13,8 +13,13 @@ import {TrainingsByOccupationWidget} from "../Trainings/Widget/TrainingsByOccupa
 import {createLink} from "../../../utilities/createLink";
 import {ROUTES} from "../../../routes";
 import {OccupationsMatchingWidget} from "../Skills/Widget/OccupationsMatchingWidget";
+import {AnalysisExcerpt} from "../Analysis/AnalysisExcerpt";
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles(theme => ({
+  analysis: {
+    marginTop: theme.spacing(-2)
+  }
+}));
 /**
  *
  */
@@ -35,6 +40,12 @@ export default function Dashboard({children} = {}) {
       <Grid item xs={12}>
         <BlockContainer title={t("DASHBOARD.YOUR_PROJECT")}>
           <ProjectExcerpt />
+        </BlockContainer>
+      </Grid>
+
+      <Grid item xs={12} className={classes.analysis}>
+        <BlockContainer title={t("DASHBOARD.ANALYSIS")}>
+          <AnalysisExcerpt />
         </BlockContainer>
       </Grid>
 

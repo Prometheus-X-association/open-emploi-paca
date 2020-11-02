@@ -153,8 +153,12 @@ export const fr = {
     OCCUPATIONS_MATCHING_TIP: "Adéquation entre vos compétences et les métiers sélectionnés",
     TIP_AGGS_SUGGESTED_OCCUPATIONS: "Adéquation entre vos compétences et les métiers suggérés",
     NO_SUGGESTED_OCCUPATIONS: "Aucun autre métier suggéré pour vos compétences",
-    MY_SKILLS: "Mes compétences",
+    MY_SKILLS: "Vos compétences",
     OTHER_SKILLS: "Les compétences qu'il vous manque..."
+  },
+  ANALYSIS: {
+    TITLE: "Analyses",
+    TIP: "% d'adéquation par thématique selon votre projet, votre profil et vos priorités",
   },
   ORGANIZATION:  {
     AUTOCOMPLETE: {
@@ -188,7 +192,9 @@ export const fr = {
     MARKET: "Marché de l'emploi",
     INCOMES: "Salaires",
     SKILLS: "Compétences",
-    TRAININGS: "Formations"
+    TRAININGS: "Formations",
+    TRANSPORTS: "Transport et logement",
+    LIFE: "Cadre de vie"
   },
   PROFILE: {
     YOUR_PROFILE: "Votre profil",
