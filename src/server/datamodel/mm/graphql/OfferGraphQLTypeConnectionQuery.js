@@ -10,6 +10,7 @@ import OfferDefinition from "../OfferDefinition";
 import dayjs from "dayjs";
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
+import OccupationDefinition from "../OccupationDefinition";
 dayjs.extend(weekOfYear);
 dayjs.extend(advancedFormat)
 
@@ -70,6 +71,14 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          - jobAreaId:    [REQUIRED] Job area id
       """
       offersTopOrganizationsAggs(occupationId: ID! jobAreaId: ID!): String
+      
+      """
+       This service returns a list of top 10 aggregated occupations aggregations filtered by a job area id
+       
+       Parameters :
+         - jobAreaId:    [REQUIRED] Job area id
+      """
+      offersTopOccupationsAggs(jobAreaId: ID!): String
       
       """
        This service returns a list of incomes aggregations filtered by a jobAreaId splitted into occupations spread over time 
@@ -295,6 +304,64 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
 
         return JSON.stringify(result.aggregations.organizations.buckets);
       },
+
+
+      offersTopOccupationsAggs: /**
+       * @param _
+       * @param {string} jobAreaId
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      async (_, { jobAreaId } = {}, synaptixSession, info) => {
+        jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId});
+
+        const result = await synaptixSession.getIndexService().getNodes({
+          modelDefinition: OfferDefinition,
+          queryFilters: [
+            new QueryFilter({
+              filterDefinition: OfferDefinition.getFilter("withinJobArea"),
+              filterGenerateParams: synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
+            })
+          ],
+          limit: 0,
+          getExtraQuery: () => {
+            return {
+              aggs: {
+                occupations: {
+                  terms: {
+                    field: OfferDefinition.getLink("hasOccupation").getPathInIndex()
+                  }
+                }
+              }
+            };
+          },
+          rawResult: true
+        });
+
+        const occupationIds = (result?.aggregations?.occupations?.buckets || []).slice(0, 9).map(({key}) => key)
+
+        const occupations = await synaptixSession.getIndexService().getNodes({
+          modelDefinition: OccupationDefinition,
+          idsFilters: occupationIds
+        });
+
+        let buckets = [];
+
+        for(let bucket of (result?.aggregations?.occupations?.buckets || [])){
+          const occupation = occupations.find(occupation => occupation.id === bucket.key);
+          if (occupation){
+            bucket.prefLabel = await synaptixSession.getLocalizedLabelFor({
+              object: occupation,
+              labelDefinition: OccupationDefinition.getLabel("prefLabel")
+            });
+            buckets.push(bucket);
+          }
+        }
+
+        return JSON.stringify(buckets);
+      },
+
+
       incomesByOccupationAggs:
         /**
          * @param _

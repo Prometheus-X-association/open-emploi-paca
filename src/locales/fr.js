@@ -122,7 +122,12 @@ export const fr = {
     TIP_AGGS_TOP_ORGANIZATIONS: "Liste des entreprises qui recrutent le plus pour une zone d'emploi et un métier donné",
     ORGANIZATION_OFFERS_COUNT: "{{count}} offre d'emploi",
     ORGANIZATION_OFFERS_COUNT_plural: "{{count}} offres d'emploi",
-    ORGANIZATION_OFFERS_EMPTY: "Aucune entreprise ne recrute pour les critères sélectionnés..."
+    ORGANIZATION_OFFERS_EMPTY: "Aucune entreprise ne recrute pour les critères sélectionnés...",
+    TIP_AGGS_TOP_OCCUPATIONS: "Top 10 des métiers pour une zone d'emploi donnée",
+    OCCUPATIONS_COUNT: "{{count}} offre d'emploi",
+    OCCUPATIONS_COUNT_plural: "{{count}} offres d'emploi",
+    OCCUPATION_EMPTY: "Aucune métier pour cette zoné d'emploi...",
+
   },
   INCOMES: {
     TITLE: "Salaires",

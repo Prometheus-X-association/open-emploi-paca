@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Grid, List, ListItem, ListItemText, ListItemAvatar} from "@material-ui/core";
+import {Grid, List, ListItem, ListItemText} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useLazyQuery} from "@apollo/client";
-import {gqlOffersTopOrganizationsAggs} from "./gql/OffersAggs.gql";
+import {gqlOffersTopOccupationsAggs} from "./gql/OffersAggs.gql";
 import {JobAreaSelect} from "../../Dashboard/Widget/JobAreaSelect";
-import {OccupationSelect} from "../../Dashboard/Widget/OccupationSelect";
+import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
 
 const useStyles = makeStyles(theme => ({
   empty: {
@@ -18,49 +18,47 @@ const useStyles = makeStyles(theme => ({
 /**
  *
  */
-export function OffersTopOrganizationsAggsWidget({forcedOccupation, forcedJobArea} = {}) {
+export function OffersTopOccupationsAggsWidget({forcedJobArea} = {}) {
   const {t} = useTranslation();
   const classes = useStyles();
-  const [occupationId, setOccupationId] = useState(forcedOccupation?.id);
   const [jobAreaId, setJobAreaId] = useState(forcedJobArea?.id);
-  const [getOffersTopOrganizations, {data: offersData}] = useLazyQuery(gqlOffersTopOrganizationsAggs);
+  const [getOffersTopOccupations, {data: offersData, loading}] = useLazyQuery(gqlOffersTopOccupationsAggs);
 
   useEffect(() => {
-    if (occupationId && jobAreaId) {
-      getOffersTopOrganizations({
+    if (jobAreaId) {
+      getOffersTopOccupations({
         variables: {
-          occupationId,
           jobAreaId
         }
       });
     }
-  }, [occupationId, jobAreaId]);
+  }, [jobAreaId]);
 
-  const aggregations = JSON.parse(offersData?.offersTopOrganizationsAggs || "[]");
+  const aggregations = JSON.parse(offersData?.offersTopOccupationsAggs || "[]");
 
   return (
     <>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <OccupationSelect onSelectOccupationId={setOccupationId}/>
-        </Grid>
-        <Grid item xs={6}>
           <JobAreaSelect onSelectJobAreaId={setJobAreaId}/>
         </Grid>
         <Grid item xs={12}>
           <Choose>
+            <When condition={loading}>
+              <LoadingSplashScreen />
+            </When>
             <When condition={aggregations.length > 0}>
               <List dense>
-                {aggregations.map(({key: organizationName, doc_count: count}) => (
-                  <ListItem key={organizationName}>
-                    <ListItemText primary={organizationName} secondary={t("MARKET.ORGANIZATION_OFFERS_COUNT", {count})} />
+                {aggregations.map(({key, prefLabel, doc_count: count}) => (
+                  <ListItem key={key}>
+                    <ListItemText primary={prefLabel} secondary={t("MARKET.OCCUPATIONS_COUNT", {count})} />
                   </ListItem>
                 ))}
               </List>
             </When>
             <Otherwise>
               <div className={classes.empty}>
-                {t("MARKET.ORGANIZATION_OFFERS_EMPTY")}
+                {t("MARKET.OCCUPATIONS_EMPTY")}
               </div>
             </Otherwise>
           </Choose>

@@ -42,8 +42,6 @@ export function OrganizationPickerField({label, name, organization, creatable} =
   );
 
   function handleSelectOrganizations(organization) {
-    console.log(organization)
-
     // New organization
     if (organization?.isCreation){
       organization = {

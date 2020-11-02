@@ -17,3 +17,9 @@ export const gqlOffersTopOrganizationsAggs = gql`
     offersTopOrganizationsAggs(occupationId: $occupationId jobAreaId: $jobAreaId)
   }
 `;
+
+export const gqlOffersTopOccupationsAggs = gql`
+  query OffersTopOccupationsAggs($jobAreaId: ID!){
+    offersTopOccupationsAggs(jobAreaId: $jobAreaId)
+  }
+`;
