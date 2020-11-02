@@ -8,16 +8,17 @@ import {
   logError,
   SSOApiClient
 } from "@mnemotix/synaptix.js";
+import {generatePath} from "react-router";
 
 import {ROUTES} from "../../client/routes";
 
 const resourceTypesMapping = {
-  'edit_experience': ROUTES.CARTONET_EDIT_EXPERIENCE,
-  'edit_training': ROUTES.CARTONET_EDIT_TRAINING,
-  'edit_hobby': ROUTES.CARTONET_EDIT_HOBBY,
-  'edit_aptitudes': ROUTES.CARTONET_EDIT_APTITUDES,
-  'show_profile':  ROUTES.CARTONET_SHOW_PROFILE,
-  'show_jobs': ROUTES.CARTONET_SHOW_JOBS,
+  'edit_experience': generatePath(ROUTES.CARTONET_EDIT_EXPERIENCE),
+  'edit_training':  generatePath(ROUTES.CARTONET_EDIT_TRAINING),
+  'edit_hobby':  generatePath(ROUTES.CARTONET_EDIT_HOBBY),
+  'edit_aptitudes':  generatePath(ROUTES.CARTONET_EDIT_APTITUDES),
+  'show_profile':   generatePath(ROUTES.CARTONET_SHOW_PROFILE),
+  'show_jobs':  generatePath(ROUTES.CARTONET_SHOW_JOBS),
 }
 /**
  * Serves AddViseo redirection pages
