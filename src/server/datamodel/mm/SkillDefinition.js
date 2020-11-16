@@ -25,6 +25,7 @@ import KnowledgeDefinition from "../oep/KnowledgeDefinition";
 import SkillGroupDefinition from "../oep/SkillGroupDefinition";
 import OccupationDefinition from "./OccupationDefinition";
 import {SkillGraphQLDefinition} from "./graphql/SkillGraphQLDefinition";
+import PersonDefinition from "../mnx/PersonDefinition";
 
 export default class SkillDefinition extends ModelDefinitionAbstract {
   /**
@@ -64,16 +65,18 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
       graphQLInputName: "occupationInputs"
     });
 
+    const aptitudeLink = new LinkDefinition({
+      linkName: "isSkillOf",
+      rdfObjectProperty: "mm:isSkillOf",
+      relatedModelDefinition: AptitudeDefinition,
+      isPlural: true,
+      graphQLInputName: "aptitudeInputs"
+    });
+
     return [
       ...super.getLinks(),
       occupationLink,
-      new LinkDefinition({
-        linkName: "isSkillOf",
-        rdfObjectProperty: "mm:isSkillOf",
-        relatedModelDefinition: AptitudeDefinition,
-        isPlural: true,
-        graphQLInputName: "aptitudeInputs"
-      }),
+      aptitudeLink,
       new LinkDefinition({
         linkName: "isMemberOf",
         rdfObjectProperty: "ami:memberOf",
@@ -87,6 +90,15 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
           .step({linkDefinition: occupationLink})
           .step({linkDefinition: OccupationDefinition.getLink("hasRelatedOccupation")}),
         relatedModelDefinition: OccupationDefinition,
+        isPlural: true,
+        inIndexOnly: true
+      }),
+      new LinkDefinition({
+        linkName: "hasPerson",
+        linkPath:  new LinkPath()
+          .step({linkDefinition: aptitudeLink})
+          .step({linkDefinition: AptitudeDefinition.getLink("hasPerson")}),
+        relatedModelDefinition: PersonDefinition,
         isPlural: true,
         inIndexOnly: true
       }),

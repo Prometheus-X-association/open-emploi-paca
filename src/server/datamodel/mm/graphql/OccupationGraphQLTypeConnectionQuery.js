@@ -134,7 +134,11 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
            */
           const matching = result.hits.reduce(
             (acc, {_id, _score, _source}) => {
-              if(occupationIds && !occupationIds.includes(_source[hasRelatedOccupationPath])){
+              if(occupationIds && (!occupationIds.includes(_source[hasRelatedOccupationPath]))){
+                return acc;
+              }
+
+              if(Array.isArray(_source[hasRelatedOccupationPath])){
                 return acc;
               }
 

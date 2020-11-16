@@ -64,6 +64,7 @@ export const fr = {
       FORM_DESCRIPTION_LABEL: "Description de l'expérience",
       FORM_OCCUPATIONS_LABEL: "Métiers sélectionnés pour l'expérience",
       FORM_APTITUDES_LABEL: "Compétences sélectionnés pour l'expérience",
+      FORM_EXISTING_APTITUDES_LABEL: "Compétences liées aux métiers sélectionnés",
       SAVE_AND_ADD_NEW: "Ajouter une nouvelle expérience après enregistrement",
       PLEASE_SELECT_OCCUPATIONS: "Sélectionner des métiers pour pouvoir choisir des compétences associées"
     },
@@ -82,7 +83,10 @@ export const fr = {
       FORM_APTITUDES_LABEL: "Compétences sélectionnés pour l'expérience extra-professionnelle",
     },
     SKILL: {
-      ADD: "Ajouter une compétence"
+      ADD: "Chercher une compétence",
+      NONE: "Aucune compétence sélectionnée",
+      YOURS: "Vos compétences existances",
+      OTHERS: "Compétences pour ce métier",
     },
     APTITUDES: {
       PAGE_TITLE: "Édition de compétences",

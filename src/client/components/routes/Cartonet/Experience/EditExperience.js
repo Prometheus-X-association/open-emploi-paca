@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import * as Yup from "yup";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
@@ -20,7 +20,7 @@ import {useSnackbar} from "notistack";
 
 import {DatePickerField, FormButtons, TextField, OrganizationPickerField} from "../../../widgets/Form";
 import {WishedOccupations} from "../../Project/WishedOccupations";
-import {AptitudePicker} from "../../../widgets/Form/AptitudePicker";
+import {AptitudePicker} from "../Aptitudes/AptitudePicker";
 import {gqlOccupationFragment} from "../../Profile/gql/MyProfile.gql";
 import {gqlUpdateProfile} from "../../Profile/gql/UpdateProfile.gql";
 import {prepareMutation} from "../../../../utilities/apollo/prepareMutation";
@@ -75,6 +75,7 @@ export default function EditExperience({experienceType = "experience", fullscree
   const {enqueueSnackbar} = useSnackbar();
   const history = useHistory();
   const [saveAndResetForm, setSaveAndResetForm] = useState(false);
+  const selectedAptitudeRefContainer = useRef(null);
 
   const {data: {me} = {}} = useQuery(gqlMyExperiences);
   const [getExperience, {data: {experience} = {}}] = useLazyQuery(gqlExperience);
@@ -168,22 +169,8 @@ export default function EditExperience({experienceType = "experience", fullscree
                           {t(`CARTONET.${experienceType.toUpperCase()}.FORM_APTITUDES_LABEL`)}
                         </Typography>
 
-                        <Choose>
-                          <When condition={selectedOccupations?.edges?.length > 0}>
-                            <AptitudePicker
-                              dense
-                              name={"aptitudes"}
-                              filterByRelatedOccupationIds={selectedOccupations.edges.map(
-                                ({node: occupation}) => occupation.id
-                              )}
-                            />
-                          </When>
-                          <Otherwise>
-                            <Paper variant="outlined" className={classes.empty}>
-                              {t("CARTONET.EXPERIENCE.PLEASE_SELECT_OCCUPATIONS")}
-                            </Paper>
-                          </Otherwise>
-                        </Choose>
+                        <div ref={selectedAptitudeRefContainer}>
+                        </div>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -195,6 +182,30 @@ export default function EditExperience({experienceType = "experience", fullscree
                       </Typography>
 
                       <WishedOccupations dense name={"occupations"} />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Typography variant={"overline"}>
+                        {" "}
+                        {t(`CARTONET.${experienceType.toUpperCase()}.FORM_EXISTING_APTITUDES_LABEL`)}
+                      </Typography>
+
+                      <Choose>
+                        <When condition={selectedOccupations?.edges?.length > 0}>
+                          <AptitudePicker
+                            dense
+                            name={"aptitudes"}
+                            filterByRelatedOccupationIds={selectedOccupations.edges.map(
+                              ({node: occupation}) => occupation.id
+                            )}
+                            selectedAptitudeRefContainer={selectedAptitudeRefContainer}
+                          />
+                        </When>
+                        <Otherwise>
+                          <Paper variant="outlined" className={classes.empty}>
+                            {t("CARTONET.EXPERIENCE.PLEASE_SELECT_OCCUPATIONS")}
+                          </Paper>
+                        </Otherwise>
+                      </Choose>
                     </Grid>
                   </Grid>
                 </Grid>

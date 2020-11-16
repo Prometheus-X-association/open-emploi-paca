@@ -38,6 +38,7 @@ export const gqlMeQuery = gql`
   query Me {
     me {
       id
+      uri
       avatar
       firstName
       lastName

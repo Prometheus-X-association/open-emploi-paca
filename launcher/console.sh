@@ -159,7 +159,7 @@ start(){
     ) && exit 1
   fi
 
-  docker-compose -f $(join " -f " ${compose_files[@]}) up -d
+  docker-compose -f $(join " -f " ${compose_files[@]}) up -d --remove-orphans
 }
 
 restart(){
