@@ -36,15 +36,6 @@ const useStyles = makeStyles(theme => ({
   categoryTitle: {
     marginTop: theme.spacing(2)
   },
-  empty: {
-    height: "100%",
-    textAlign: "center",
-    color: theme.palette.text.emptyHint,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: theme.spacing(2)
-  },
   fullscreen: {
     overflowY: "initial"
   },
@@ -189,23 +180,14 @@ export default function EditExperience({experienceType = "experience", fullscree
                         {t(`CARTONET.${experienceType.toUpperCase()}.FORM_EXISTING_APTITUDES_LABEL`)}
                       </Typography>
 
-                      <Choose>
-                        <When condition={selectedOccupations?.edges?.length > 0}>
-                          <AptitudePicker
-                            dense
-                            name={"aptitudes"}
-                            filterByRelatedOccupationIds={selectedOccupations.edges.map(
-                              ({node: occupation}) => occupation.id
-                            )}
-                            selectedAptitudeRefContainer={selectedAptitudeRefContainer}
-                          />
-                        </When>
-                        <Otherwise>
-                          <Paper variant="outlined" className={classes.empty}>
-                            {t("CARTONET.EXPERIENCE.PLEASE_SELECT_OCCUPATIONS")}
-                          </Paper>
-                        </Otherwise>
-                      </Choose>
+                      <AptitudePicker
+                        dense
+                        name={"aptitudes"}
+                        filterByRelatedOccupationIds={selectedOccupations.edges.map(
+                          ({node: occupation}) => occupation.id
+                        )}
+                        selectedAptitudeRefContainer={selectedAptitudeRefContainer}
+                      />
                     </Grid>
                   </Grid>
                 </Grid>

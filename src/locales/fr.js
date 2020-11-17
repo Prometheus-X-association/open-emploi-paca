@@ -85,8 +85,10 @@ export const fr = {
     SKILL: {
       ADD: "Chercher une compétence",
       NONE: "Aucune compétence sélectionnée",
-      YOURS: "Vos compétences existances",
-      OTHERS: "Compétences pour ce métier",
+      YOURS: "Vos compétences existantes",
+      OTHERS: "Autres compétences pour ce métier",
+      MORE_OTHER: "+{{count}} autre compétence...",
+      MORE_OTHER_plural: "+{{count}} autres compétences..."
     },
     APTITUDES: {
       PAGE_TITLE: "Édition de compétences",

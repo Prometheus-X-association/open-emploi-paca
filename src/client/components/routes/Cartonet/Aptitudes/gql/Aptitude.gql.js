@@ -21,7 +21,8 @@ export const gqlSkillFragment = gql`
 `;
 
 export const gqlSkills = gql`
-  query Skills($qs: String, $first: Int, $mySkillsFilters: [String], $othersSkillsFilters: [String], $sortings: [SortingInput]) {
+  query Skills($qs: String, $first: Int, $mySkillsFilters: [String], $otherSkillsFilters: [String], $sortings: [SortingInput]) {
+    mySkillsCount: skillsCount(qs: $qs, filters: $mySkillsFilters)
     mySkills: skills(qs: $qs, first: $first, sortings: $sortings, filters: $mySkillsFilters) {
       edges {
         node {
@@ -29,7 +30,8 @@ export const gqlSkills = gql`
         }
       }
     }
-    otherSkills: skills(qs: $qs, first: $first, sortings: $sortings, filters: $othersSkillsFilters) {
+    otherSkillsCount: skillsCount(qs: $qs, filters: $otherSkillsFilters)
+    otherSkills: skills(qs: $qs, first: $first, sortings: $sortings, filters: $otherSkillsFilters) {
       edges {
         node {
           ...SkillFragment
