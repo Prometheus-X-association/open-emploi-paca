@@ -1,6 +1,6 @@
-FROM node:12.16.1-alpine3.11
+FROM node:15.2.1-alpine3.11
 
-RUN apk --update add --no-cache poppler antiword
+RUN apk --update add --no-cache poppler poppler-utils antiword
 
 ARG CI
 
