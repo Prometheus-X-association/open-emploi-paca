@@ -130,6 +130,11 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
     return [
       ...super.getLiterals(),
       new LiteralDefinition({
+        literalName: "isInCV",
+        rdfDataProperty: "mm:isInCV",
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
+      }),
+      new LiteralDefinition({
         literalName: "isTop5",
         rdfDataProperty: "mm:isTop5",
         rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"

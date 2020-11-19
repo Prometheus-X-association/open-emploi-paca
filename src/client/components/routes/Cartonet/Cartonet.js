@@ -9,7 +9,8 @@ import LogoMM from "../../../assets/logo-mm.png";
 const EditExperience = loadable(() => import(/* webpackChunkName: "EditExperience" */ "./Experience/EditExperience"));
 const EditAptitudes = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./Aptitudes/EditAptitudes"));
 const Cartography = loadable(() => import(/* webpackChunkName: "Cartography" */ "./Cartography/Cartography"));
-const OccupationsMatching = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./Recommendation/OccupationsMatching"));
+const OccupationsMatching = loadable(() => import(/* webpackChunkName: "OccupationsMatching" */ "./Recommendation/OccupationsMatching"));
+const ExtractAptitudesFromCV = loadable(() => import(/* webpackChunkName: "ExtractAptitudesFromCV" */ "./Aptitudes/ExtractAptitudesFromCV"));
 
 const useStyles = makeStyles(theme => ({
   logoInsert: {
@@ -35,6 +36,7 @@ export default function Cartonet({} = {}) {
         <Route exact path={ROUTES.CARTONET_EDIT_APTITUDES}  component={EditAptitudes}/>
         <Route exact path={ROUTES.CARTONET_SHOW_PROFILE}    component={Cartography}/>
         <Route exact path={ROUTES.CARTONET_SHOW_JOBS} component={OccupationsMatching} />
+        <Route exact path={ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV} render={() => <ExtractAptitudesFromCV />} />
       </Switch>
     </div>
   );

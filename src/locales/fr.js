@@ -73,7 +73,8 @@ export const fr = {
       ORGANIZATION: "Entreprise ou organisme de formation",
       FORM_DESCRIPTION_LABEL: "Description la formation",
       FORM_OCCUPATIONS_LABEL: "Métiers sélectionnés pour la formation",
-      FORM_APTITUDES_LABEL: "Compétences sélectionnés pour la formation",
+      FORM_APTITUDES_LABEL: "Compétences sélectionnés pour l'expérience",
+      FORM_EXISTING_APTITUDES_LABEL: "Compétences liées aux métiers sélectionnés",
     },
     HOBBY: {
       PAGE_TITLE: "Édition d'expérience extra-professionnelle",
@@ -81,6 +82,7 @@ export const fr = {
       FORM_DESCRIPTION_LABEL: "Description l'expérience extra-professionnelle",
       FORM_OCCUPATIONS_LABEL: "Métiers sélectionnés pour l'expérience extra-professionnelle",
       FORM_APTITUDES_LABEL: "Compétences sélectionnés pour l'expérience extra-professionnelle",
+      FORM_EXISTING_APTITUDES_LABEL: "Compétences liées aux métiers sélectionnés",
     },
     SKILL: {
       ADD: "Chercher une compétence",
@@ -88,7 +90,16 @@ export const fr = {
       YOURS: "Vos compétences existantes",
       OTHERS: "Autres compétences pour ce métier",
       MORE_OTHER: "+{{count}} autre compétence...",
-      MORE_OTHER_plural: "+{{count}} autres compétences..."
+      MORE_OTHER_plural: "+{{count}} autres compétences...",
+      SEARCH_NONE: "Aucune compétence trouvée pour ce(s) métier(s)...",
+    },
+    EXTRACT_APTITUDES_FROM_CV: {
+      PAGE_TITLE: "Extraction des compétences à partir du CV",
+      BUTTON: "Téléverser votre CV au format PDF",
+      MESSAGE: "Les compétences reconnues sont classées en fonction de leur proximité avec la liste de compétences du référentiel.",
+      SELECT_SKILL: "Ajouter cette compétence",
+      ACTION_SAVE: "Ajouter cette compétence à votre profil",
+      ACTION_SAVE_plural: "Ajouter ces {{count}} compétences à votre profil",
     },
     APTITUDES: {
       PAGE_TITLE: "Édition de compétences",

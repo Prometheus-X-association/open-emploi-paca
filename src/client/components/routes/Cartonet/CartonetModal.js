@@ -6,14 +6,13 @@ import {Dialog} from "@material-ui/core";
 import loadable from "@loadable/component";
 import {ROUTES} from "../../../routes";
 import LogoMM from "../../../assets/logo-mm.png";
-import {BlockContainer} from "../../widgets/BlockContainer";
 
 
 const EditExperience = loadable(() => import(/* webpackChunkName: "EditExperience" */ "./Experience/EditExperience"));
 const EditAptitudes = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./Aptitudes/EditAptitudes"));
 const Cartography = loadable(() => import(/* webpackChunkName: "Cartography" */ "./Cartography/Cartography"));
-const OccupationsMatching = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./Recommendation/OccupationsMatching"));
-
+const OccupationsMatching = loadable(() => import(/* webpackChunkName: "OccupationsMatching" */ "./Recommendation/OccupationsMatching"));
+const ExtractAptitudesFromCV = loadable(() => import(/* webpackChunkName: "ExtractAptitudesFromCV" */ "./Aptitudes/ExtractAptitudesFromCV"));
 
 const useStyles = makeStyles(theme => ({
   logoInsert: {
@@ -43,6 +42,7 @@ export function CartonetModal({} = {}) {
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_APTITUDES}`} render={() => <EditAptitudes />} />
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_PROFILE}`} render={() => <Cartography />} />
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_JOBS}`} render={() => <OccupationsMatching />} />
+          <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV}`} render={() => <ExtractAptitudesFromCV />} />
         </Switch>
       </Dialog>
     </Route>

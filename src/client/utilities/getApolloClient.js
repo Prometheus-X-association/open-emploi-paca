@@ -1,7 +1,9 @@
 import React from "react";
 import invariant from "invariant";
-import {ApolloClient, HttpLink, ApolloLink, concat, InMemoryCache} from "@apollo/client";
+import {ApolloClient, ApolloLink, concat, InMemoryCache} from "@apollo/client";
 import {onError} from "@apollo/client/link/error";
+import { createUploadLink } from 'apollo-upload-client';
+
 import {SnackErrorMessage} from "../components/widgets/Snackbar/SnackErrorMessage";
 
 export function getApolloClient({i18n, enqueueSnackbar, possibleTypes} = {}) {
@@ -24,7 +26,8 @@ export function getApolloClient({i18n, enqueueSnackbar, possibleTypes} = {}) {
     );
   }
 
-  const httpLink = new HttpLink({uri: "/graphql"});
+  const httpLink = createUploadLink({uri: "/graphql"});
+
 
   // middleware for language
   const languageMiddleware = new ApolloLink((operation, forward) => {

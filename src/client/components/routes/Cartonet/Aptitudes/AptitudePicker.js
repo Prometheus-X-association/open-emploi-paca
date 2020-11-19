@@ -140,6 +140,12 @@ export function AptitudePicker({
                   </ListItemText>
                 </ListItem>
               </If>
+
+              <If condition={otherSkillsCount === 0 && mySkillsCount === 0}>
+                <Paper variant="outlined" className={classes.empty}>
+                  {t("CARTONET.SKILL.SEARCH_NONE")}
+                </Paper>
+              </If>
             </div>
             <ListItem>
               <TextField

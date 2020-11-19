@@ -152,9 +152,10 @@ export default function Profile({} = {}) {
                               to: generatePath(`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_HOBBY}`)
                             })}
                           </ListItem>
-                          <ListItem disabled>
+                          <ListItem>
                             {createLink({
                               text: t("CARTONET.ACTIONS.EXTRACT_SKILLS_FROM_CV"),
+                              to: generatePath(`${ROUTES.PROFILE}${ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV}`)
                             })}
                           </ListItem>
                           <ListItem>

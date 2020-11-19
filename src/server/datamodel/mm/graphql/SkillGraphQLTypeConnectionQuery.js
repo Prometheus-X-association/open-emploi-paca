@@ -3,13 +3,14 @@ import {
   GraphQLTypeConnectionQuery,
   LinkFilter,
   mergeResolvers,
-  QueryFilter,
   SynaptixDatastoreSession
 } from "@mnemotix/synaptix.js";
+import textract from "textract";
+
 import SkillDefinition from "../SkillDefinition";
-import PersonDefinition from "../../mnx/PersonDefinition";
 import AptitudeDefinition from "../AptitudeDefinition";
 import OccupationDefinition from "../OccupationDefinition";
+import env from "env-var";
 
 export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery {
   /**
@@ -26,6 +27,25 @@ export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          - occupationId: [REQUIRED] Occupation id
       """
       skillsMatchingByOccupation(personId:ID! occupationId:ID!) : String
+      
+      
+      """
+       This service extract skills from a file.
+       
+       Parameters :
+         - file: [REQUIRED] CV file
+         - personId: [REQUIRED] Person id
+      """
+      extractSkillsFromFile(personId:ID! file: Upload ${generateConnectionArgs()}) : SkillConnection
+      
+       """
+       This service count extract skills from a file.
+       
+       Parameters :
+         - file: [REQUIRED] CV file
+         - personId: [REQUIRED] Person id
+      """
+      countExtractSkillsFromFile(personId:ID! file: Upload) : Int
     `);
     return `
       ${baseType}
@@ -46,7 +66,7 @@ export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          * @param {string} [occupationId]
          * @param {SynaptixDatastoreSession} synaptixSession
          */
-        async (_, {personId, occupationId}, synaptixSession) => {
+        async (_, { personId, occupationId }, synaptixSession) => {
           personId = synaptixSession.normalizeAbsoluteUri({
             uri: synaptixSession.extractIdFromGlobalId(personId)
           });
@@ -62,25 +82,33 @@ export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
                 new LinkFilter({
                   linkDefinition: AptitudeDefinition.getLink("hasPerson"),
                   id: personId
-                }),
+                })
               ]
             }
           });
 
           let skills = aptitudes.reduce((acc, aptitude) => {
-            acc[aptitude[AptitudeDefinition.getLink("hasSkill").getLinkName()].id] = (aptitude[AptitudeDefinition.getProperty("ratingValue").getPropertyName()] || 0) / 5;
+            acc[
+              aptitude[AptitudeDefinition.getLink("hasSkill").getLinkName()].id
+            ] =
+              (aptitude[
+                AptitudeDefinition.getProperty("ratingValue").getPropertyName()
+              ] || 0) / 5;
 
             return acc;
-          }, {})
+          }, {});
 
-          const skillLabelPath = OccupationDefinition.getProperty("prefLabel").getPathInIndex();
-
+          const skillLabelPath = OccupationDefinition.getProperty(
+            "prefLabel"
+          ).getPathInIndex();
 
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: SkillDefinition,
             linkFilters: [
               new LinkFilter({
-                linkDefinition: SkillDefinition.getLink("hasOccupationCategory"),
+                linkDefinition: SkillDefinition.getLink(
+                  "hasOccupationCategory"
+                ),
                 id: occupationId
               })
             ],
@@ -89,13 +117,11 @@ export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             getExtraQuery: () => {
               return {
                 _source: {
-                  includes: [
-                    skillLabelPath
-                  ]
+                  includes: [skillLabelPath]
                 },
                 sort: ["_score", `${skillLabelPath}.keyword`]
               };
-            },
+            }
           });
 
           /**
@@ -103,10 +129,10 @@ export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
            * @type {number}
            */
           const matching = result.hits.reduce(
-            (acc, {_id, _score, _source}) => {
+            (acc, { _id, _score, _source }) => {
               const score = skills[_id] || 0;
 
-              acc[score > 0 ? "unshift": "push"]({
+              acc[score > 0 ? "unshift" : "push"]({
                 id: _id,
                 score,
                 prefLabel: Array.isArray(_source[skillLabelPath])
@@ -120,9 +146,70 @@ export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
           );
 
           return JSON.stringify(Object.values(matching));
-        }
+        },
+      /**
+       * @param _
+       * @param {string} personId
+       * @param {File} file
+       * @param {object} args
+       * @param {SynaptixDatastoreSession} synaptixSession
+       */
+      extractSkillsFromFile:
+        async (_, { personId, file, ...args }, synaptixSession) => {
+          const percolatedSkills = await percolateSkillsFromFile({file, synaptixSession, args});
+
+          return synaptixSession.wrapObjectsIntoGraphQLConnection(percolatedSkills || [], args);
+        },
+      /**
+       * @param _
+       * @param {string} personId
+       * @param {File} file
+       * @param {SynaptixDatastoreSession} synaptixSession
+       */
+      countExtractSkillsFromFile: async (_, { personId, file }, synaptixSession) => {
+        return percolateSkillsFromFile({file, synaptixSession, justCount: true});
+      }
     });
 
     return mergeResolvers(baseResolver, extraResolver);
   }
+}
+
+
+/**
+ * @param {File} file
+ * @param {SynaptixDatastoreSession} synaptixSession
+ * @param {boolean} [justCount]
+ * @param {object} [args]
+ * @return {Model[]|number}
+ */
+async function percolateSkillsFromFile({file, justCount, synaptixSession, args}){
+  const { mimetype, createReadStream } = await file;
+  const fileStream = createReadStream();
+  const fileChunks = [];
+
+  for await (let chunk of fileStream) {
+    fileChunks.push(chunk);
+  }
+
+  const extractedText = await new Promise((done, fail) => {
+    textract.fromBufferWithMime(
+      mimetype,
+      Buffer.concat(fileChunks),
+      (error, text) => {
+        if (error) {
+          return fail(error);
+        }
+        done(text);
+      }
+    );
+  });
+
+  return synaptixSession.getIndexService().percolateNodes({
+    modelDefinition: SkillDefinition,
+    text: extractedText,
+    limit: synaptixSession.getLimitFromArgs(args),
+    offset: synaptixSession.getOffsetFromArgs(args),
+    justCount
+  });
 }

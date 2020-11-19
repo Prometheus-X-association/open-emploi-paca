@@ -146,7 +146,7 @@ export default {
   },
   RABBITMQ_RPC_TIMEOUT: {
     description: "RPC timeout",
-    defaultValue: 10e3,
+    defaultValue: 30e3,
     defaultValueInProduction: true
   },
   INDEX_DISABLED: {

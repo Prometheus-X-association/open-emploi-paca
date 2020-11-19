@@ -16,7 +16,12 @@ const useStyles = makeStyles(theme => ({}));
 /**
  *
  */
-export default function EditAptitudes({} = {}) {
+export default function EditAptitudes({
+  gqlAptitudes = gqlMyAptitudes,
+  gqlConnectionPath = "me.aptitudes",
+  gqlCountPath = "me.aptitudesCount",
+  gqlVariables = {}
+} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const history = useHistory();
@@ -56,7 +61,7 @@ export default function EditAptitudes({} = {}) {
         customBodyRender: (_, {row: aptitude}) => {
           return (
             <Rating
-              value={aptitude.rating?.value|| 0}
+              value={aptitude.rating?.value || 0}
               name={`${aptitude.id}_rating`}
               onClick={e => e.stopPropagation()}
               onChange={(_, value) => handleUpdateAptitudeRating({aptitude, value})}
@@ -79,7 +84,7 @@ export default function EditAptitudes({} = {}) {
               checked={!!aptitude.isTop5}
               disabled={!aptitude.isTop5 && rowsSharedState?.top5Count === 5}
               onClick={e => e.stopPropagation()}
-              onChange={(e) => handleUpdateAptitudeRating({aptitude, isTop5: e.target.checked})}
+              onChange={e => handleUpdateAptitudeRating({aptitude, isTop5: e.target.checked})}
             />
           );
         }
@@ -93,18 +98,19 @@ export default function EditAptitudes({} = {}) {
       <DialogContent>
         <CollectionView
           columns={columns}
-          gqlConnectionPath={"me.aptitudes"}
-          gqlCountPath={"me.aptitudesCount"}
-          gqlQuery={gqlMyAptitudes}
+          gqlConnectionPath={gqlConnectionPath}
+          gqlCountPath={gqlCountPath}
+          gqlQuery={gqlAptitudes}
           gqlFilters={null}
           gqlSortings={[{sortBy: "skillLabel"}]}
+          gqlVariables={gqlVariables}
           availableDisplayMode={["table"]}
           searchEnabled={true}
           removalEnabled={true}
           getRowsSharedState={({rows}) => {
             return {
               top5Count: rows.filter(({isTop5}) => isTop5 === true).length
-            }
+            };
           }}
         />
       </DialogContent>
@@ -119,12 +125,12 @@ export default function EditAptitudes({} = {}) {
    * @param value
    * @param isTop5
    */
-  async function handleUpdateAptitudeRating({aptitude, value, isTop5} = {}){
-    if (isTop5 !== true){
+  async function handleUpdateAptitudeRating({aptitude, value, isTop5} = {}) {
+    if (isTop5 !== true) {
       isTop5 = null;
     }
 
-    if (!value){
+    if (!value) {
       value = aptitude.rating?.value || 0;
     }
 
@@ -156,6 +162,6 @@ export default function EditAptitudes({} = {}) {
           }
         }
       }
-    })
+    });
   }
 }
