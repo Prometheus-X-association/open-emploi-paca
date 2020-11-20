@@ -55,7 +55,7 @@ export default function ExtractAptitudesFromCV({} = {}) {
         variables: {
           file,
           personId: user.id,
-          first: 30
+          first: 50
         }
       });
     }

@@ -11,6 +11,7 @@ const EditAptitudes = loadable(() => import(/* webpackChunkName: "EditAptitudes"
 const Cartography = loadable(() => import(/* webpackChunkName: "Cartography" */ "./Cartography/Cartography"));
 const OccupationsMatching = loadable(() => import(/* webpackChunkName: "OccupationsMatching" */ "./Recommendation/OccupationsMatching"));
 const ExtractAptitudesFromCV = loadable(() => import(/* webpackChunkName: "ExtractAptitudesFromCV" */ "./Aptitudes/ExtractAptitudesFromCV"));
+const PrintProfile = loadable(() => import(/* webpackChunkName: "PrintProfile" */ "./Export/PrintProfile"));
 
 const useStyles = makeStyles(theme => ({
   logoInsert: {
@@ -37,6 +38,7 @@ export default function Cartonet({} = {}) {
         <Route exact path={ROUTES.CARTONET_SHOW_PROFILE}    component={Cartography}/>
         <Route exact path={ROUTES.CARTONET_SHOW_JOBS} component={OccupationsMatching} />
         <Route exact path={ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV} render={() => <ExtractAptitudesFromCV />} />
+        <Route exact path={ROUTES.CARTONET_PRINT_PROFILE} render={() => <PrintProfile />} />
       </Switch>
     </div>
   );

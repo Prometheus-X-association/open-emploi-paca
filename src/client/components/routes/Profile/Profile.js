@@ -173,9 +173,11 @@ export default function Profile({} = {}) {
                               to: `${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_PROFILE}`
                             })}
                           </ListItem>
-                          <ListItem disabled>
+                          <ListItem>
                             {createLink({
                               text: t("CARTONET.ACTIONS.PRINT_PROFILE"),
+                              to: `${ROUTES.CARTONET_PRINT_PROFILE}`,
+                              target: "_blank"
                             })}
                           </ListItem>
                           <ListItem>

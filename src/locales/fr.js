@@ -115,6 +115,9 @@ export const fr = {
     },
     OCCUPATION_MATCHING: {
       PAGE_TITLE: "Suggestion de métiers",
+    },
+    EXPORT: {
+      TITLE: "Mon profil Carto.net"
     }
   },
   AUTOCOMPLETE: {

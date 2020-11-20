@@ -13,6 +13,7 @@ const EditAptitudes = loadable(() => import(/* webpackChunkName: "EditAptitudes"
 const Cartography = loadable(() => import(/* webpackChunkName: "Cartography" */ "./Cartography/Cartography"));
 const OccupationsMatching = loadable(() => import(/* webpackChunkName: "OccupationsMatching" */ "./Recommendation/OccupationsMatching"));
 const ExtractAptitudesFromCV = loadable(() => import(/* webpackChunkName: "ExtractAptitudesFromCV" */ "./Aptitudes/ExtractAptitudesFromCV"));
+const PrintProfile = loadable(() => import(/* webpackChunkName: "PrintProfile" */ "./Export/PrintProfile"));
 
 const useStyles = makeStyles(theme => ({
   logoInsert: {
@@ -43,6 +44,7 @@ export function CartonetModal({} = {}) {
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_PROFILE}`} render={() => <Cartography />} />
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_JOBS}`} render={() => <OccupationsMatching />} />
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV}`} render={() => <ExtractAptitudesFromCV />} />
+          <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_PRINT_PROFILE}`} render={() => <PrintProfile />} />
         </Switch>
       </Dialog>
     </Route>
