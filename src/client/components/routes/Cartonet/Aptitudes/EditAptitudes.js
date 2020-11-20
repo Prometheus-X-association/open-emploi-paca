@@ -52,6 +52,26 @@ export default function EditAptitudes({
       }
     },
     {
+      name: "isInCV",
+      label: t("CARTONET.APTITUDES.IS_IN_CV"),
+      options: {
+        sort: true,
+        width: 100,
+        align: "center",
+        customBodyRender: (_, {row: aptitude}) => {
+          return (
+            <If condition={aptitude.isInCV}>
+              <Checkbox
+                name={`${aptitude.id}_isInCV`}
+                checked={true}
+                disabled={true}
+              />
+            </If>
+          );
+        }
+      }
+    },
+    {
       name: "ratingValue",
       label: t("CARTONET.APTITUDES.RATING"),
       options: {

@@ -107,6 +107,7 @@ export const fr = {
       EXPERIENCE_COUNT: "Nombre d'expériences associées",
       RATING: "Niveau de maîtrise",
       TOP_5: "Mettre en Top 5",
+      IS_IN_CV: "Dans le CV"
     },
     CARTOGRAPHY: {
       PAGE_TITLE: "Restitution du profil Carto.net",
