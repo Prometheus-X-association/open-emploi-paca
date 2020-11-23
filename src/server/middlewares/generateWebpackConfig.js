@@ -48,7 +48,7 @@ export function generateWebpackConfig({
   let mode = isDev ? "development" : "production";
 
   /** devtool **/
-  let devtool = isDev ? "cheap-module-source-map" : "";
+  let devtool = isDev ? "cheap-module-source-map" : false;
 
   /** entry **/
   let entry = [
@@ -84,14 +84,14 @@ export function generateWebpackConfig({
             chunkFilename: "[id].[hash].css"
           }),
           new CompressionPlugin({
-            filename: "[path].gz",
+            filename: "[path][base].gz",
             algorithm: "gzip",
             test: /\.js$|\.css$|\.html$/,
             threshold: 10240,
             minRatio: 0.8
           }),
           new CompressionPlugin({
-            filename: "[path].br",
+            filename: "[path][base].br",
             algorithm: "brotliCompress",
             test: /\.(js|css|html|svg)$/,
             compressionOptions: {
@@ -123,10 +123,10 @@ export function generateWebpackConfig({
   };
 
   if (isProd) {
+    optimization.minimize = true;
     optimization.minimizer = [
       new TerserPlugin({
         extractComments: true,
-        sourceMap: true
       })
     ];
   }
@@ -206,6 +206,9 @@ export function generateWebpackConfig({
     },
     cache: {
       type: 'filesystem'
+    },
+    performance: {
+      hints: false
     }
   };
 }
