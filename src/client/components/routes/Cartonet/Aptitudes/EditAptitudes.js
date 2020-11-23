@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Button, DialogActions, DialogContent, DialogTitle, Checkbox} from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
 import {useMutation} from "@apollo/client";
@@ -10,6 +10,7 @@ import {useHistory} from "react-router";
 import {CollectionView} from "../../../widgets/CollectionView/CollectionView";
 import {useSnackbar} from "notistack";
 import {gqlUpdateAptitude} from "./gql/UpdateAptitude.gql";
+import {LoadingButton} from "../../../widgets/Button/LoadingButton";
 
 const useStyles = makeStyles(theme => ({}));
 
@@ -26,10 +27,11 @@ export default function EditAptitudes({
   const {t} = useTranslation();
   const history = useHistory();
   const {enqueueSnackbar} = useSnackbar();
+  const [modifiedAptitudesCount, setModifiedAptitudesCount] = useState(0);
 
   const [updateAptitude, {loading: saving}] = useMutation(gqlUpdateAptitude, {
     onCompleted: () => {
-      enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
+      setModifiedAptitudesCount(modifiedAptitudesCount + 1);
     }
   });
 
@@ -84,7 +86,7 @@ export default function EditAptitudes({
               value={aptitude.rating?.value || 0}
               name={`${aptitude.id}_rating`}
               onClick={e => e.stopPropagation()}
-              onChange={(_, value) => handleUpdateAptitudeRating({aptitude, value})}
+              onChange={(_, value) => handleUpdateAptitudeRating({aptitude, isTop5: aptitude.isTop5, value})}
             />
           );
         }
@@ -104,7 +106,7 @@ export default function EditAptitudes({
               checked={!!aptitude.isTop5}
               disabled={!aptitude.isTop5 && rowsSharedState?.top5Count === 5}
               onClick={e => e.stopPropagation()}
-              onChange={e => handleUpdateAptitudeRating({aptitude, isTop5: e.target.checked})}
+              onChange={e => handleUpdateAptitudeRating({aptitude, value: aptitude.rating?.value || 0, isTop5: e.target.checked})}
             />
           );
         }
@@ -135,7 +137,13 @@ export default function EditAptitudes({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
+        <Button disabled={modifiedAptitudesCount === 0} variant="contained" color="primary" onClick={() => {
+          setTimeout(() => {
+            enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
+            history.goBack()
+          }, 500)
+        }}>{t("ACTIONS.SAVE")}</Button>
+        <Button onClick={() => history.goBack()}>{t("ACTIONS.CANCEL")}</Button>
       </DialogActions>
     </>
   );
