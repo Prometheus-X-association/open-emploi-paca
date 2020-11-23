@@ -64,7 +64,6 @@ export const SnackErrorMessage = React.forwardRef(({id, message, error}, ref) =>
 
   // ne marche pas
   const handleDismiss = () => {
-    console.log("handleDismiss", ref, id);
     closeSnackbar(id);
     // closeSnackbar(ref);
   };

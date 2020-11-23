@@ -431,6 +431,10 @@ INSERT DATA {
                     type: "custom",
                     tokenizer: "standard",
                     filter: ["lowercase", "autocomplete_filter"]
+                  },
+                  french: {
+                    type: "standard",
+                    stopwords: "_french_"
                   }
                 }
               }

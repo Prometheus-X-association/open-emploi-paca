@@ -44,7 +44,7 @@ export let commonMapping = {
   },
   percoLabel : {
     "type": "text",
-    "analyzer": "standard"
+    "analyzer": "french"
   },
   geoloc: {
     type: "geo_point"

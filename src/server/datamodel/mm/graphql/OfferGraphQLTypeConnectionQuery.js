@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import OccupationDefinition from "../OccupationDefinition";
+import env from "env-var";
 dayjs.extend(weekOfYear);
 dayjs.extend(advancedFormat)
 
@@ -97,6 +98,24 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          - occupationId: [REQUIRED] Occupation id
       """
       incomesByJobAreaAggs(jobAreaIds:[ID!]! occupationId:ID!): String
+      
+      """
+       This service  analyzes offers and returns a color result.
+       
+       Parameters :
+         - jobAreaIds: [REQUIRED] Job area ids.
+         - occupationId: [REQUIRED] Occupation id
+      """
+      analyzeOffers(jobAreaIds:[ID!]! occupationIds:[ID!]!): String
+      
+      """
+        This service  analyzes incomes and returns a color result.
+       
+       Parameters :
+         - jobAreaIds: [REQUIRED] Job area ids.
+         - occupationId: [REQUIRED] Occupation id
+      """
+      analyzeIncomes(jobAreaIds:[ID!]! occupationIds:[ID!]!): String
     `);
   }
 
@@ -420,15 +439,14 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
 
           return JSON.stringify(Object.values(aggs));
         },
-      incomesByJobAreaAggs:
-        /**
-         * @param _
-         * @param {string[]} jobAreaIds
-         * @param {string[]} occupationIds
-         * @param {SynaptixDatastoreSession} synaptixSession
-         * @param {object} info
-         */
-        async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
+      /**
+       * @param _
+       * @param {string[]} jobAreaIds
+       * @param {string[]} occupationIds
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      incomesByJobAreaAggs: async (_, { jobAreaIds, occupationIds }, synaptixSession, info) => {
           jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
           occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
 
@@ -478,6 +496,52 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
 
           return JSON.stringify(Object.values(aggs));
         },
+      /**
+       * @param _
+       * @param {string[]} jobAreaIds
+       * @param {string[]} occupationIds
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      analyzeOffers: async (_, { jobAreaIds, occupationIds }, synaptixSession) => {
+        jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
+        occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
+
+        const result = await synaptixSession.getIndexService()
+          .getIndexPublisher()
+          .publish("ami.analyze.offer.count.month", {
+            "offerIndex" : OfferDefinition.getIndexType().map(type => `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`),
+            "zoneEmploiUri" : jobAreaIds,
+            "occupationUri" : occupationIds,
+            "dategte" : getOffersLowerBoundDate().toISOString(),
+            "datelte" : dayjs().toISOString()
+          });
+
+          return result?.color;
+        },
+      /**
+       * @param _
+       * @param {string[]} jobAreaIds
+       * @param {string[]} occupationIds
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      analyzeIncomes: async (_, { jobAreaIds, occupationIds }, synaptixSession, info) => {
+        jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
+        occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
+
+        const result = await synaptixSession.getIndexService()
+          .getIndexPublisher()
+          .publish("ami.analyze.offer.salary.mean.month", {
+            "offerIndex" : OfferDefinition.getIndexType().map(type => `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`),
+            "zoneEmploiUri" : jobAreaIds,
+            "occupationUri" : occupationIds,
+            "dategte" : getOffersLowerBoundDate().toISOString(),
+            "datelte" : dayjs().toISOString()
+          });
+
+        return result?.color;
+      }
     });
   }
 }
@@ -529,6 +593,6 @@ function generateIncomesAvgHistogram({filter}){
   }
 }
 
-function getOffersLowerBoundDate(){
+export function getOffersLowerBoundDate(){
   return dayjs().subtract(5, "month");
 }

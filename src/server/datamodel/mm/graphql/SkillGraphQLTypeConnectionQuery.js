@@ -11,6 +11,9 @@ import SkillDefinition from "../SkillDefinition";
 import AptitudeDefinition from "../AptitudeDefinition";
 import OccupationDefinition from "../OccupationDefinition";
 import env from "env-var";
+import OfferDefinition from "../OfferDefinition";
+import dayjs from "dayjs";
+import {getOffersLowerBoundDate} from "./OfferGraphQLTypeConnectionQuery";
 
 export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery {
   /**
@@ -46,6 +49,16 @@ export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          - personId: [REQUIRED] Person id
       """
       countExtractSkillsFromFile(personId:ID! file: Upload) : Int
+      
+      """
+        This service  analyzes incomes and returns a color result.
+       
+       Parameters :
+         - jobAreaIds: [REQUIRED] Job area ids.
+         - skillIds: [REQUIRED] Skill ids
+      """
+      analyzeSkills(jobAreaIds:[ID!]! skillIds:[ID!]!): String
+      
     `);
     return `
       ${baseType}
@@ -168,7 +181,31 @@ export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
        */
       countExtractSkillsFromFile: async (_, { personId, file }, synaptixSession) => {
         return percolateSkillsFromFile({file, synaptixSession, justCount: true});
-      }
+      },
+      /**
+       * @param _
+       * @param {string[]} jobAreaIds
+       * @param {string[]} skillIds
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      analyzeSkills: async (_, { jobAreaIds, skillIds }, synaptixSession) => {
+        jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
+        skillIds = skillIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
+
+        const result = await synaptixSession.getIndexService()
+          .getIndexPublisher()
+          .publish("ami.analyze.user.skill.area", {
+            "offerIndex" : OfferDefinition.getIndexType().map(type => `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`),
+            "skillIndex" : [`${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${SkillDefinition.getIndexType()}`],
+            "skillUser" : skillIds,
+            "zoneEmploi" : jobAreaIds,
+            "gte" : getOffersLowerBoundDate().toISOString(),
+            "lte" : dayjs().toISOString()
+          });
+
+        return result?.color;
+      },
     });
 
     return mergeResolvers(baseResolver, extraResolver);

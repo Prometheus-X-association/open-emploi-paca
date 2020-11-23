@@ -180,6 +180,12 @@ export const fr = {
   ANALYSIS: {
     TITLE: "Analyses",
     TIP: "% d'adéquation par thématique selon votre projet, votre profil et vos priorités",
+    LABEL: {
+      ROUGE: "FAIBLE",
+      ORANGE: "MOYEN",
+      VERT: "BON",
+      LOADING: "..."
+    }
   },
   ORGANIZATION:  {
     AUTOCOMPLETE: {

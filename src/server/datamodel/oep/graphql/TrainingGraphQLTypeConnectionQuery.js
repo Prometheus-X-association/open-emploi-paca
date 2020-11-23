@@ -10,6 +10,8 @@ import TrainingDefinition from "../TrainingDefinition";
 import dayjs from "dayjs";
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
+import OfferDefinition from "../../mm/OfferDefinition";
+import env from "env-var";
 dayjs.extend(weekOfYear);
 dayjs.extend(advancedFormat)
 
@@ -66,6 +68,15 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
          - jobAreaId:    [REQUIRED] Job area id
       """
       trainingsTopOrganizationsAggs(occupationId: ID! jobAreaId: ID!): String
+
+      """
+        This service  analyzes trainings and returns a color result.
+       
+       Parameters :
+         - jobAreaIds: [REQUIRED] Job area ids.
+         - occupationId: [REQUIRED] Occupation id
+      """
+      analyzeTrainings(jobAreaIds:[ID!]! occupationIds:[ID!]!): String      
     `);
   }
 
@@ -74,15 +85,14 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
    */
   generateResolver(modelDefinition) {
     return this._wrapQueryResolver({
-      trainings:
-        /**
-         * @param _
-         * @param {string} geonamesId
-         * @param {string} jobAreaId
-         * @param {SynaptixDatastoreSession} synaptixSession
-         * @param {object} info
-         */
-        async (_, { jobAreaId, ...args }, synaptixSession, info) => {
+      /**
+       * @param _
+       * @param {string} geonamesId
+       * @param {string} jobAreaId
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      trainings: async (_, { jobAreaId, ...args }, synaptixSession, info) => {
           args.filters = [].concat(args.filters || [], [
             `hasJobArea:${jobAreaId}`
           ]);
@@ -95,15 +105,14 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
             info
           );
         },
-      trainingsCount:
-        /**
-         * @param _
-         * @param {string} geonamesId
-         * @param {string} jobAreaId
-         * @param {SynaptixDatastoreSession} synaptixSession
-         * @param {object} info
-         */
-        async (_, { jobAreaId, ...args }, synaptixSession, info) => {
+      /**
+       * @param _
+       * @param {string} geonamesId
+       * @param {string} jobAreaId
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      trainingsCount: async (_, { jobAreaId, ...args }, synaptixSession, info) => {
           args.filters = [].concat(args.filters || [], [
             `hasJobArea:${jobAreaId}`
           ]);
@@ -115,15 +124,14 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
             synaptixSession
           );
         },
-      trainingsByOccupationAggs:
-        /**
-         * @param _
-         * @param {string} jobAreaId
-         * @param {string[]} occupationIds
-         * @param {SynaptixDatastoreSession} synaptixSession
-         * @param {object} info
-         */
-        async (_, { jobAreaId, occupationIds }, synaptixSession, info) => {
+      /**
+       * @param _
+       * @param {string} jobAreaId
+       * @param {string[]} occupationIds
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      trainingsByOccupationAggs: async (_, { jobAreaId, occupationIds }, synaptixSession, info) => {
           jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
           occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
 
@@ -182,15 +190,14 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
 
           return JSON.stringify(Object.values(aggs));
         },
-      trainingsByJobAreaAggs:
-        /**
-         * @param _
-         * @param {string[]} jobAreaIds
-         * @param {string[]} occupationIds
-         * @param {SynaptixDatastoreSession} synaptixSession
-         * @param {object} info
-         */
-        async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
+      /**
+       * @param _
+       * @param {string[]} jobAreaIds
+       * @param {string[]} occupationIds
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      trainingsByJobAreaAggs: async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
           jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
           occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
 
@@ -249,14 +256,14 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
 
           return JSON.stringify(Object.values(aggs));
         },
-      trainingsTopOrganizationsAggs: /**
+      /**
        * @param _
        * @param {string} occupationsId
        * @param {string} jobAreaId
        * @param {SynaptixDatastoreSession} synaptixSession
        * @param {object} info
        */
-      async (_, { jobAreaId, occupationId } = {}, synaptixSession, info) => {
+      trainingsTopOrganizationsAggs: async (_, { jobAreaId, occupationId } = {}, synaptixSession, info) => {
         occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
         jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
 
@@ -288,7 +295,30 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
         });
 
         return JSON.stringify(result.aggregations.organizations.buckets);
-      }
+      },
+      /**
+       * @param _
+       * @param {string[]} jobAreaIds
+       * @param {string[]} occupationIds
+       * @param {SynaptixDatastoreSession} synaptixSession
+       * @param {object} info
+       */
+      analyzeTrainings: async (_, { jobAreaIds, occupationIds }, synaptixSession) => {
+        jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
+        occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
+
+        const result =  await synaptixSession.getIndexService()
+          .getIndexPublisher()
+          .publish("ami.analyze.training.count.month", {
+            "formationIndex" : [`${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${TrainingDefinition.getIndexType()}`],
+            "zoneEmploiUri" : jobAreaIds,
+            "occupationUri" : occupationIds,
+            "dategte" : getTrainingsLowerBoundDate().toISOString(),
+            "datelte" :getTrainingsUpperBoundDate().toISOString()
+          });
+
+        return result?.color;
+      },
     });
   }
 }

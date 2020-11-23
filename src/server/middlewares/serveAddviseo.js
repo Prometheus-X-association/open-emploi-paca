@@ -19,6 +19,7 @@ const resourceTypesMapping = {
   'edit_aptitudes':  generatePath(ROUTES.CARTONET_EDIT_APTITUDES),
   'show_profile':   generatePath(ROUTES.CARTONET_SHOW_PROFILE),
   'show_jobs':  generatePath(ROUTES.CARTONET_SHOW_JOBS),
+  'api': '/graphql'
 }
 /**
  * Serves AddViseo redirection pages

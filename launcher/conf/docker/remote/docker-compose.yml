@@ -72,6 +72,31 @@ services:
       - ES_CLUSTER_PWD=${ES_CLUSTER_PWD}
     networks:
       - resource
+
+  ami-analyzer:
+    image: registry.gitlab.com/ami-paca/ami-backend/ami-analyzer:0.1
+    container_name: ${COMPOSE_PROJECT_NAME}-analyzer
+    external_links:
+      - ${COMPOSE_PROJECT_NAME}-rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_PWD=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_DURABLE_MESSAGES=false
+      - RABBITMQ_TIMEOUT=${RABBITMQ_TIMEOUT}
+      - RABBITMQ_EXCHANGE_NAME=${COMPOSE_PROJECT_NAME}
+      - SYNAPTIX_LOG_LEVEL=${SYNAPTIX_LOG_LEVEL}
+      - ES_MASTER_URI=${ES_MASTER_URI}
+      - ES_INDEX_NAME=${ES_INDEX_NAME}
+      - ES_CLUSTER_USER=${ES_CLUSTER_USER}
+      - ES_CLUSTER_PWD=${ES_CLUSTER_PWD}
+    networks:
+      - resource
+
 networks:
   resource:
     driver: bridge
