@@ -6,12 +6,12 @@ import loadable from "@loadable/component";
 import {ROUTES} from "../../../routes";
 import LogoMM from "../../../assets/logo-mm.png";
 
-const EditExperience = loadable(() => import(/* webpackChunkName: "EditExperience" */ "./Experience/EditExperience"));
-const EditAptitudes = loadable(() => import(/* webpackChunkName: "EditAptitudes" */ "./Aptitudes/EditAptitudes"));
-const Cartography = loadable(() => import(/* webpackChunkName: "Cartography" */ "./Cartography/Cartography"));
-const OccupationsMatching = loadable(() => import(/* webpackChunkName: "OccupationsMatching" */ "./Recommendation/OccupationsMatching"));
-const ExtractAptitudesFromCV = loadable(() => import(/* webpackChunkName: "ExtractAptitudesFromCV" */ "./Aptitudes/ExtractAptitudesFromCV"));
-const PrintProfile = loadable(() => import(/* webpackChunkName: "PrintProfile" */ "./Export/PrintProfile"));
+const EditExperience = loadable(() => import("./Experience/EditExperience"));
+const EditAptitudes = loadable(() => import("./Aptitudes/EditAptitudes"));
+const Cartography = loadable(() => import("./Cartography/Cartography"));
+const OccupationsMatching = loadable(() => import("./Recommendation/OccupationsMatching"));
+const ExtractAptitudesFromCV = loadable(() => import("./Aptitudes/ExtractAptitudesFromCV"));
+const PrintProfile = loadable(() => import("./Export/PrintProfile"));
 
 const useStyles = makeStyles(theme => ({
   logoInsert: {

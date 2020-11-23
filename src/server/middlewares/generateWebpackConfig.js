@@ -3,7 +3,6 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 
 const env = require("env-var");
@@ -104,10 +103,10 @@ export function generateWebpackConfig({
         ]
       : []),
     new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.EnvironmentPlugin([
-      "NODE_ENV",
-      "SYNAPTIX_USER_SESSION_COOKIE_NAME"
-    ])
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: "development",
+      SYNAPTIX_USER_SESSION_COOKIE_NAME: "SNXID"
+    })
   ];
 
   /** optimization **/
@@ -128,8 +127,7 @@ export function generateWebpackConfig({
       new TerserPlugin({
         extractComments: true,
         sourceMap: true
-      }),
-      new OptimizeCSSAssetsPlugin({})
+      })
     ];
   }
 
@@ -138,6 +136,12 @@ export function generateWebpackConfig({
     rules: [
       {
         test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false
+        }
+      },
+      {
+        test: /\.js$/,
         exclude: /node_modules/,
         use: [
           {
@@ -200,14 +204,8 @@ export function generateWebpackConfig({
       ],
       alias: aliases
     },
-    stats: {
-      excludeAssets: [/favicon-plugin-icons-/],
-      colors: true,
-      hash: false,
-      timings: true,
-      chunks: false,
-      chunkModules: false,
-      modules: false
+    cache: {
+      type: 'filesystem'
     }
   };
 }

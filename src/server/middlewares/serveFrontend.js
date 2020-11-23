@@ -43,12 +43,6 @@ export function serveFrontend({ webpackConfig }) {
       const compiler = webpack(webpackConfig);
       const middleware = webpackMiddleware(compiler, {
         publicPath: webpackConfig.output.publicPath,
-        noInfo: true,
-        stats: webpackConfig.stats,
-        watchOptions: {
-          aggregateTimeout: 300,
-          poll: 1000
-        }
       });
 
       app.use(

@@ -442,11 +442,11 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
       /**
        * @param _
        * @param {string[]} jobAreaIds
-       * @param {string[]} occupationIds
+       * @param {string} occupationId
        * @param {SynaptixDatastoreSession} synaptixSession
        * @param {object} info
        */
-      incomesByJobAreaAggs: async (_, { jobAreaIds, occupationIds }, synaptixSession, info) => {
+      incomesByJobAreaAggs: async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
           jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
           occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
 

@@ -291,7 +291,8 @@ export let indexData = async () => {
                     type: typeMapping[dataType]
                   } : {
                     type: "keyword",
-                    ignore_above: 256
+                    ignore_above: 256,
+                    normalizer: "lowercase_no_accent"
                   }
                 }
               };
@@ -300,7 +301,8 @@ export let indexData = async () => {
                 type: typeMapping[dataType]
               } : {
                 type: "keyword",
-                ignore_above: 256
+                ignore_above: 256,
+                normalizer: "lowercase_no_accent"
               };
             }
           }
@@ -435,6 +437,12 @@ INSERT DATA {
                   french: {
                     type: "standard",
                     stopwords: "_french_"
+                  }
+                },
+                normalizer: {
+                  lowercase_no_accent: {
+                    "type": "custom",
+                    "filter": ["lowercase", "asciifolding"]
                   }
                 }
               }

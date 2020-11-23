@@ -38,7 +38,9 @@ export function AnalysisExcerpt({} = {}) {
   const [
     analyzeProfile,
     {data: {analyzeOffers, analyzeIncomes, analyzeTrainings, analyzeSkills} = {}, loading: loadingAnalysis}
-  ] = useLazyQuery(gqlAnalysis);
+  ] = useLazyQuery(gqlAnalysis, {
+    fetchPolicy: "no-cache"
+  });
 
   const loading = loadingProfile || loadingAptitudes || loadingAnalysis;
 

@@ -13,20 +13,20 @@ import {DefaultLayout} from "./components/layouts/DefaultLayout";
 import {LoadingSplashScreen} from "./components/widgets/LoadingSplashScreen";
 import favicon from "./assets/favicon.ico";
 
-const SignIn = loadable(() => import(/* webpackChunkName: "SignIn" */ "./components/routes/Authentication/SignIn"));
-const SignUp = loadable(() => import(/* webpackChunkName: "SignUp" */ "./components/routes/Authentication/SignUp"));
+const SignIn = loadable(() => import("./components/routes/Authentication/SignIn"));
+const SignUp = loadable(() => import("./components/routes/Authentication/SignUp"));
 const PasswordForgotten = loadable(() =>
-  import(/* webpackChunkName: "PasswordForgotten" */ "./components/routes/Authentication/PasswordForgotten")
+  import("./components/routes/Authentication/PasswordForgotten")
 );
-const Profile = loadable(() => import(/* webpackChunkName: "Profile" */ "./components/routes/Profile/Profile"));
-const Dashboard = loadable(() => import(/* webpackChunkName: "Dashboard" */ "./components/routes/Dashboard/Dashboard"));
-const Project = loadable(() => import(/* webpackChunkName: "Project" */ "./components/routes/Project/Project"));
-const Market = loadable(() => import(/* webpackChunkName: "Market" */ "./components/routes/Market/Market"));
-const Incomes = loadable(() => import(/* webpackChunkName: "Incomes" */ "./components/routes/Incomes/Incomes"));
-const Trainings = loadable(() => import(/* webpackChunkName: "Trainings" */ "./components/routes/Trainings/Trainings"));
-const Skills = loadable(() => import(/* webpackChunkName: "Skills" */ "./components/routes/Skills/Skills"));
+const Profile = loadable(() => import("./components/routes/Profile/Profile"));
+const Dashboard = loadable(() => import("./components/routes/Dashboard/Dashboard"));
+const Project = loadable(() => import("./components/routes/Project/Project"));
+const Market = loadable(() => import("./components/routes/Market/Market"));
+const Incomes = loadable(() => import("./components/routes/Incomes/Incomes"));
+const Trainings = loadable(() => import("./components/routes/Trainings/Trainings"));
+const Skills = loadable(() => import("./components/routes/Skills/Skills"));
 
-const Cartonet = loadable(() => import(/* webpackChunkName: "Cartonet" */ "./components/routes/Cartonet/Cartonet"));
+const Cartonet = loadable(() => import("./components/routes/Cartonet/Cartonet"));
 
 const gqlEnvironmentQuery = gql`
   query EnvironmentQuery {

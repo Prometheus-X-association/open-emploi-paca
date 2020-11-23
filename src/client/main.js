@@ -13,7 +13,7 @@ import {getApolloClient} from "./utilities/getApolloClient";
 import possibleTypes from "./gql/possibleTypes";
 import {theme} from "./theme";
 
-const Application = loadable(() => import(/* webpackChunkName: "Application" */ "./Application"));
+const Application = loadable(() => import("./Application"));
 
 let reactRootElement = document.getElementById("react-root");
 
