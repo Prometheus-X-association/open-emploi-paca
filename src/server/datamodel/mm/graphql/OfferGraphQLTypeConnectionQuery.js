@@ -507,17 +507,21 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
         jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
         occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
 
-        const result = await synaptixSession.getIndexService()
-          .getIndexPublisher()
-          .publish("ami.analyze.offer.count.month", {
-            "offerIndex" : OfferDefinition.getIndexType().map(type => `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`),
-            "zoneEmploiUri" : jobAreaIds,
-            "occupationUri" : occupationIds,
-            "dategte" : getOffersLowerBoundDate().toISOString(),
-            "datelte" : dayjs().toISOString()
-          });
+        try {
+          const result = await synaptixSession.getIndexService()
+            .getIndexPublisher()
+            .publish("ami.analyze.offer.count.month", {
+              "offerIndex": OfferDefinition.getIndexType().map(type => `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`),
+              "zoneEmploiUri": jobAreaIds,
+              "occupationUri": occupationIds,
+              "dategte": getOffersLowerBoundDate().toISOString(),
+              "datelte": dayjs().toISOString()
+            });
 
-          return result?.color;
+            return result?.color;
+          } catch (e){
+            return "ROUGE";
+          }
         },
       /**
        * @param _
@@ -530,17 +534,21 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
         jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
         occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
 
-        const result = await synaptixSession.getIndexService()
-          .getIndexPublisher()
-          .publish("ami.analyze.offer.salary.mean.month", {
-            "offerIndex" : OfferDefinition.getIndexType().map(type => `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`),
-            "zoneEmploiUri" : jobAreaIds,
-            "occupationUri" : occupationIds,
-            "dategte" : getOffersLowerBoundDate().toISOString(),
-            "datelte" : dayjs().toISOString()
-          });
+        try {
+          const result = await synaptixSession.getIndexService()
+            .getIndexPublisher()
+            .publish("ami.analyze.offer.salary.mean.month", {
+              "offerIndex": OfferDefinition.getIndexType().map(type => `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`),
+              "zoneEmploiUri": jobAreaIds,
+              "occupationUri": occupationIds,
+              "dategte": getOffersLowerBoundDate().toISOString(),
+              "datelte": dayjs().toISOString()
+            });
 
-        return result?.color;
+          return result?.color;
+        } catch (e) {
+          return "ORANGE";
+        }
       }
     });
   }

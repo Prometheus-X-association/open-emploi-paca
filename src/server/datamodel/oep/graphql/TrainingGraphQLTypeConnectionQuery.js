@@ -307,17 +307,21 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
         jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
         occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
 
-        const result =  await synaptixSession.getIndexService()
-          .getIndexPublisher()
-          .publish("ami.analyze.training.count.month", {
-            "formationIndex" : [`${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${TrainingDefinition.getIndexType()}`],
-            "zoneEmploiUri" : jobAreaIds,
-            "occupationUri" : occupationIds,
-            "dategte" : getTrainingsLowerBoundDate().toISOString(),
-            "datelte" :getTrainingsUpperBoundDate().toISOString()
-          });
+        try {
+          const result = await synaptixSession.getIndexService()
+            .getIndexPublisher()
+            .publish("ami.analyze.training.count.month", {
+              "formationIndex": [`${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${TrainingDefinition.getIndexType()}`],
+              "zoneEmploiUri": jobAreaIds,
+              "occupationUri": occupationIds,
+              "dategte": getTrainingsLowerBoundDate().toISOString(),
+              "datelte": getTrainingsUpperBoundDate().toISOString()
+            });
 
-        return result?.color;
+          return result?.color;
+        } catch (e) {
+          return "VERT";
+        }
       },
     });
   }

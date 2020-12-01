@@ -193,18 +193,22 @@ export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
         jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
         skillIds = skillIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
 
-        const result = await synaptixSession.getIndexService()
-          .getIndexPublisher()
-          .publish("ami.analyze.user.skill.area", {
-            "offerIndex" : OfferDefinition.getIndexType().map(type => `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`),
-            "skillIndex" : [`${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${SkillDefinition.getIndexType()}`],
-            "skillUser" : skillIds,
-            "zoneEmploi" : jobAreaIds,
-            "gte" : getOffersLowerBoundDate().toISOString(),
-            "lte" : dayjs().toISOString()
-          });
+        try {
+          const result = await synaptixSession.getIndexService()
+            .getIndexPublisher()
+            .publish("ami.analyze.user.skill.area", {
+              "offerIndex": OfferDefinition.getIndexType().map(type => `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`),
+              "skillIndex": [`${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${SkillDefinition.getIndexType()}`],
+              "skillUser": skillIds,
+              "zoneEmploi": jobAreaIds,
+              "gte": getOffersLowerBoundDate().toISOString(),
+              "lte": dayjs().toISOString()
+            });
 
-        return result?.color;
+          return result?.color;
+        } catch (e) {
+          return "VERT";
+        }
       },
     });
 
