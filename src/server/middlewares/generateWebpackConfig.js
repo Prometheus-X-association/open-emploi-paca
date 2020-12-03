@@ -7,29 +7,6 @@ const CompressionPlugin = require("compression-webpack-plugin");
 
 const env = require("env-var");
 
-const aliases = [
-  "@apollo",
-  "@material-ui/core",
-  "@material-ui/icons",
-  "@material-ui/styles",
-  "@material-ui/system",
-  "@material-ui/types",
-  "@material-ui/utils",
-  "@mnemotix",
-  "@apollo/client",
-  "formik",
-  "i18next",
-  "notistack",
-  "react",
-  "react-dom",
-  "react-i18next",
-  "react-router",
-  "react-router-dom"
-].reduce((acc, sharedLibrary) => {
-  acc[sharedLibrary] = path.resolve(`./node_modules/${sharedLibrary}`);
-  return acc;
-}, {});
-
 /**
  * @param {string} distPath
  * @param {string} htmlTemplatePath
@@ -145,7 +122,7 @@ export function generateWebpackConfig({
         exclude: /node_modules/,
         use: [
           {
-            loader: "babel-loader",
+            loader: require.resolve("babel-loader"),
             options: {
               rootMode: "upward"
             }
@@ -159,13 +136,13 @@ export function generateWebpackConfig({
          */
         test: /\.css$/i,
         include: /node_modules/,
-        use: ["style-loader", "css-loader"]
+        use: [require.resolve("style-loader"), require.resolve("css-loader")]
       },
       {
         test: /\.(woff|woff2|eot|ttf)$/,
         use: [
           {
-            loader: "url-loader",
+            loader: require.resolve("url-loader"),
             options: {
               limit: 4096
             }
@@ -175,7 +152,7 @@ export function generateWebpackConfig({
       {
         test: /\.(jpe?g|png|gif|svg|ico)$/i,
         use: {
-          loader: "file-loader",
+          loader: require.resolve("file-loader"),
           options: {
             name: "[path][name].[hash].[ext]"
           }
@@ -183,7 +160,7 @@ export function generateWebpackConfig({
       },
       {
         test: /\.md/,
-        use: "raw-loader"
+        use: require.resolve("raw-loader")
       }
     ]
   };
@@ -202,7 +179,12 @@ export function generateWebpackConfig({
         ".json" /* needed because some dependencies use { import './Package' } expecting to resolve Package.json */,
         ".css" /* for libraries shipping ES6 module to work */
       ],
-      alias: aliases
+      fallback: {
+        // This is to avoid the error "BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default."
+        "path": require.resolve("path-browserify"),
+        "url": require.resolve("url"),
+        "events": require.resolve("events")
+      }
     },
     cache: {
       type: 'filesystem'
