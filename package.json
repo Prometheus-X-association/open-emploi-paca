@@ -1,6 +1,6 @@
 {
   "name": "oep-application",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "license": "Apache-2.0",
   "description": "OpenEmploi PACA application",
   "repository": "https://gitlab.com/ami-paca/oep-application",
@@ -112,7 +112,6 @@
     "build:gql-fragments": "node ./bin/generateGqlFragments.js",
     "test": "jest __tests__ --passWithNoTests",
     "data:index": "node ./bin/indexData.js",
-    "version": "auto-changelog  -p -u -l 20 --ignore-commit-pattern yarn.lock && git add CHANGELOG.md",
-    "postversion": "git push && git push origin `git describe --abbrev=0 --tags`"
+    "release": "yarn test && PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]') && npx auto-changelog -v $PACKAGE_VERSION && git commit -a -m \"[ic] Releasing $PACKAGE_VERSION\" && git tag $PACKAGE_VERSION -m \"v$PACKAGE_VERSION\" && git push && git push origin $PACKAGE_VERSION"
   }
 }
