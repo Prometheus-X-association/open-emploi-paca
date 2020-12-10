@@ -9225,6 +9225,7 @@ fsevents@^1.2.7:
     react-use: ^13.12.2
     recharts: ^1.8.5
     regenerator-runtime: ^0.13.3
+    rimraf: ^3.0.2
     rxjs: ^6.5.2
     style-loader: ^2.0.0
     terser-webpack-plugin: ^5.0.3
