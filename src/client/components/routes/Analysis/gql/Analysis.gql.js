@@ -18,9 +18,17 @@ import {gql} from "@apollo/client";
 
 export const gqlAnalysis = gql`
   query Analysis($occupationIds: [ID!]! $jobAreaIds: [ID!]! $skillIds: [ID!]!){
-    analyzeIncomes(occupationIds: $occupationIds jobAreaIds: $jobAreaIds)
-    analyzeOffers(occupationIds: $occupationIds jobAreaIds: $jobAreaIds)
-    analyzeTrainings(occupationIds: $occupationIds jobAreaIds: $jobAreaIds)
-    analyzeSkills(jobAreaIds: $jobAreaIds skillIds: $skillIds)
+    analysis(occupationIds: $occupationIds jobAreaIds: $jobAreaIds skillIds: $skillIds){
+      incomesScore
+      offersScore
+      skillsScore
+      trainingsScore
+      jobArea{
+        title
+      }
+      occupation{
+        prefLabel
+      }
+    }
   }
 `

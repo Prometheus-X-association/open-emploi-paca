@@ -28,6 +28,7 @@ import TrainingDefinition from "./TrainingDefinition.js";
 import PersonDefinition from "../mnx/PersonDefinition";
 import JobAreaDefinition from "./JobAreaDefinition";
 import AddressDefinition from "../mnx/AddressDefinition";
+import {AnalysisDefinition} from "./AnalysisDefinition";
 
 export let OepModelDefinitions = {
   CertifinfoDefinition,
@@ -40,7 +41,8 @@ export let OepModelDefinitions = {
   SkillGroupDefinition,
   TrainingDefinition,
   PersonDefinition,
-  AddressDefinition
+  AddressDefinition,
+  AnalysisDefinition
 };
 
 

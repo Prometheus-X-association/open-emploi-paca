@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 const useStyles = makeStyles(theme => ({
   value: {
-    fontSize: theme.typography.pxToRem(10),
+    fontSize: theme.typography.pxToRem(8),
     color: "white",
     fontWeight: "bold"
   },

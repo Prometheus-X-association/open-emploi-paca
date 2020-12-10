@@ -346,10 +346,10 @@ function generateTrainingsCountDateHistogram({filter}){
   }
 }
 
-function getTrainingsLowerBoundDate(){
+export function getTrainingsLowerBoundDate(){
   return dayjs().subtract(1, "year");
 }
 
-function getTrainingsUpperBoundDate(){
+export function getTrainingsUpperBoundDate(){
   return dayjs().add(6, "month");
 }

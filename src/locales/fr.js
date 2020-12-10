@@ -179,7 +179,8 @@ export const fr = {
   },
   ANALYSIS: {
     TITLE: "Analyses",
-    TIP: "% d'adéquation par thématique selon votre projet, votre profil et vos priorités",
+    TIP_BEST: "Le meilleur % d'adéquation concernant votre profil est le métier de <b>{{occupation}}</b> dans la zone d'emploi <b>{{jobArea}}</b>",
+    TIP_SECOND_BEST: "En seconde analyse, le métier de <b>{{occupation}}</b> dans la zone d'emploi <b>{{jobArea}}</b> s'avère être porteur.",
     LABEL: {
       ROUGE: "FAIBLE",
       ORANGE: "MOYEN",
