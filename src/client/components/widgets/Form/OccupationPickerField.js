@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import React from "react";
-import {useFormikContext} from "formik";
+import { useFormikContext } from "formik";
 import {OccupationAutocomplete} from "../Autocomplete/OccupationAutocomplete/OccupationAutocomplete";
 
 /**

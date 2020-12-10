@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import {Checkbox, Table as MUITable, TableBody, TableCell, TableContainer, TableRow} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import get from "lodash/get";

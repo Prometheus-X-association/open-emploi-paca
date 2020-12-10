@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import { useState } from "react";
 import {LineChart, CartesianGrid, Line, ResponsiveContainer, XAxis, YAxis, Brush, BarChart, Bar} from "recharts";
 import {Colors} from "./Colors";
 import {makeStyles} from "@material-ui/core/styles";

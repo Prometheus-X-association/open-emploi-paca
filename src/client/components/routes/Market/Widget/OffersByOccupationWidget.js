@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import {CircularProgress, Select, MenuItem, Grid} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useLazyQuery, useQuery} from "@apollo/client";

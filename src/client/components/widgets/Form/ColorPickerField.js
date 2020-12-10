@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import { useState } from "react";
 import {useTranslation} from "react-i18next";
 import {Button, Dialog, DialogActions, DialogContent} from "@material-ui/core";
 import {ChromePicker} from "react-color";

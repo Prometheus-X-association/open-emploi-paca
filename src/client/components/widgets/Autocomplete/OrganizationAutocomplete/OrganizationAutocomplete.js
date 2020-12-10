@@ -1,5 +1,4 @@
 import {GenericAutocomplete} from "../GenericAutocomplete";
-import React from "react";
 import {useTranslation} from "react-i18next";
 import {gqlOrganizations} from "./gql/Organizations.gql";
 

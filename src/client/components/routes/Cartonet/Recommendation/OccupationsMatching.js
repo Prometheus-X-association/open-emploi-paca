@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import { useState, useEffect } from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {Button, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemText, ListItemSecondaryAction, ListSubheader, Accordion, AccordionDetails, AccordionSummary, Typography} from "@material-ui/core";
@@ -47,7 +47,7 @@ export default function OccupationsMatching({} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const history = useHistory();
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };

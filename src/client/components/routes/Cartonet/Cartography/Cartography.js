@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import { Fragment, useState } from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {
@@ -76,113 +76,111 @@ export default function Cartography({} = {}) {
     fetchPolicy: "no-cache"
   });
 
-  return (
-    <>
-      <DialogTitle>{t("CARTONET.CARTOGRAPHY.PAGE_TITLE")}</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item md={7}>
-            <Typography variant="button" display="block" gutterBottom>{t("CARTONET.CARTOGRAPHY.EXPERIENCES")}</Typography>
+  return <>
+    <DialogTitle>{t("CARTONET.CARTOGRAPHY.PAGE_TITLE")}</DialogTitle>
+    <DialogContent>
+      <Grid container spacing={2}>
+        <Grid item md={7}>
+          <Typography variant="button" display="block" gutterBottom>{t("CARTONET.CARTOGRAPHY.EXPERIENCES")}</Typography>
 
-            <Choose>
-              <When condition={loadingExperiences}>
-                <CircularProgress />
-              </When>
-              <Otherwise>
-                <List dense>
-                  {(myExperiences?.experiences?.edges || []).map(({node: experience}) => (
-                    <React.Fragment key={experience.id}>
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>
-                            <Choose>
-                              <When condition={experience.experienceType === "hobby"}>
-                                <HobbyIcon />
-                              </When>
-                              <When condition={experience.experienceType === "training"}>
-                                <TrainingIcon />
-                              </When>
-                              <Otherwise>
-                                <ExperienceIcon />
-                              </Otherwise>
-                            </Choose>
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={createLink({
-                            to: generatePath(
-                              `${ROUTES.PROFILE}${experience.experienceType === "hobby" ?
-                              ROUTES.CARTONET_EDIT_HOBBY : experience.experienceType === "training" ?
-                                ROUTES.CARTONET_EDIT_TRAINING : ROUTES.CARTONET_EDIT_EXPERIENCE}`, {
-                                id: experience.id
-                              }),
-                            text: experience.title
-                          })}
-                          secondary={
-                            <Grid container direction="row" alignItems="flex-start" spacing={1}>
-                              <Grid item>{dayjs(experience.startDate).format("L")}</Grid>
-                              <If condition={experience.endDate}>
-                                <Grid item>
-                                  <ArrowIcon fontSize={"small"} />
-                                </Grid>
-                                <Grid item>{dayjs(experience.endDate).format("L")}</Grid>
-                              </If>
-                            </Grid>
-                          }
-                        />
+          <Choose>
+            <When condition={loadingExperiences}>
+              <CircularProgress />
+            </When>
+            <Otherwise>
+              <List dense>
+                {(myExperiences?.experiences?.edges || []).map(({node: experience}) => (
+                  <Fragment key={experience.id}>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar>
+                          <Choose>
+                            <When condition={experience.experienceType === "hobby"}>
+                              <HobbyIcon />
+                            </When>
+                            <When condition={experience.experienceType === "training"}>
+                              <TrainingIcon />
+                            </When>
+                            <Otherwise>
+                              <ExperienceIcon />
+                            </Otherwise>
+                          </Choose>
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={createLink({
+                          to: generatePath(
+                            `${ROUTES.PROFILE}${experience.experienceType === "hobby" ?
+                            ROUTES.CARTONET_EDIT_HOBBY : experience.experienceType === "training" ?
+                              ROUTES.CARTONET_EDIT_TRAINING : ROUTES.CARTONET_EDIT_EXPERIENCE}`, {
+                              id: experience.id
+                            }),
+                          text: experience.title
+                        })}
+                        secondary={
+                          <Grid container direction="row" alignItems="flex-start" spacing={1}>
+                            <Grid item>{dayjs(experience.startDate).format("L")}</Grid>
+                            <If condition={experience.endDate}>
+                              <Grid item>
+                                <ArrowIcon fontSize={"small"} />
+                              </Grid>
+                              <Grid item>{dayjs(experience.endDate).format("L")}</Grid>
+                            </If>
+                          </Grid>
+                        }
+                      />
+                    </ListItem>
+                    <List disablePadding>
+                      <ListItem className={classes.experienceAptitudes}>
+                        <ListItemText>
+                          {experience.aptitudes.edges.map(({node: aptitude}) => (
+                            <Chip
+                              className={classes.experienceAptitude}
+                              key={aptitude.id}
+                              label={aptitude.skillLabel}
+                              variant={selectedAptitude?.id === aptitude.id ? "default" : "outlined"}
+                              size="small"
+                              onMouseEnter={() => setSelectedAptitude(aptitude)}
+                              onMouseLeave={() => setSelectedAptitude(null)}
+                            />
+                          ))}
+                        </ListItemText>
                       </ListItem>
-                      <List disablePadding>
-                        <ListItem className={classes.experienceAptitudes}>
-                          <ListItemText>
-                            {experience.aptitudes.edges.map(({node: aptitude}) => (
-                              <Chip
-                                className={classes.experienceAptitude}
-                                key={aptitude.id}
-                                label={aptitude.skillLabel}
-                                variant={selectedAptitude?.id === aptitude.id ? "default" : "outlined"}
-                                size="small"
-                                onMouseEnter={() => setSelectedAptitude(aptitude)}
-                                onMouseLeave={() => setSelectedAptitude(null)}
-                              />
-                            ))}
-                          </ListItemText>
-                        </ListItem>
-                      </List>
-                    </React.Fragment>
-                  ))}
-                </List>
-              </Otherwise>
-            </Choose>
-
-          </Grid>
-          <Grid item md={5}>
-            <Typography variant={"subtitle1"} variant="button" display="block" className={classes.categoryTitle}>
-              {t("CARTONET.CARTOGRAPHY.APTITUDES")}
-            </Typography>
-
-            <Choose>
-              <When condition={loadingExperiences}>
-                <CircularProgress />
-              </When>
-              <Otherwise>
-                {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
-                  <Grid key={aptitude.id} container spacing={2} justify={"flex-end"} direction={"row"} className={clsx(classes.aptitude, {[classes.faded]: selectedAptitude && selectedAptitude.id !== aptitude.id})}>
-                    <Grid item md={8}>
-                      {aptitude.skillLabel}
-                    </Grid>
-                    <Grid item md={4} className={classes.rating}>
-                      <Rating value={aptitude.rating?.value} size={"small"} readOnly />
-                    </Grid>
-                  </Grid>
+                    </List>
+                  </Fragment>
                 ))}
-              </Otherwise>
-            </Choose>
-          </Grid>
+              </List>
+            </Otherwise>
+          </Choose>
+
         </Grid>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
-      </DialogActions>
-    </>
-  );
+        <Grid item md={5}>
+          <Typography variant={"subtitle1"} variant="button" display="block" className={classes.categoryTitle}>
+            {t("CARTONET.CARTOGRAPHY.APTITUDES")}
+          </Typography>
+
+          <Choose>
+            <When condition={loadingExperiences}>
+              <CircularProgress />
+            </When>
+            <Otherwise>
+              {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
+                <Grid key={aptitude.id} container spacing={2} justify={"flex-end"} direction={"row"} className={clsx(classes.aptitude, {[classes.faded]: selectedAptitude && selectedAptitude.id !== aptitude.id})}>
+                  <Grid item md={8}>
+                    {aptitude.skillLabel}
+                  </Grid>
+                  <Grid item md={4} className={classes.rating}>
+                    <Rating value={aptitude.rating?.value} size={"small"} readOnly />
+                  </Grid>
+                </Grid>
+              ))}
+            </Otherwise>
+          </Choose>
+        </Grid>
+      </Grid>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
+    </DialogActions>
+  </>;
 }

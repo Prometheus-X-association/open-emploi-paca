@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import { Fragment, useEffect, useState } from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {generatePath, useHistory} from "react-router";
@@ -111,7 +111,7 @@ export default function PrintProfile({} = {}) {
             <Otherwise>
               <List dense>
                 {(myExperiences?.experiences?.edges || []).map(({node: experience}) => (
-                  <React.Fragment key={experience.id}>
+                  <Fragment key={experience.id}>
                     <ListItem>
                       <ListItemAvatar>
                         <Avatar>
@@ -158,7 +158,7 @@ export default function PrintProfile({} = {}) {
                         </ListItemText>
                       </ListItem>
                     </List>
-                  </React.Fragment>
+                  </Fragment>
                 ))}
               </List>
             </Otherwise>

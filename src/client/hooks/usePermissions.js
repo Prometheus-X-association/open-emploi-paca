@@ -1,7 +1,7 @@
-import React, {useContext} from "react";
+import { createContext, useContext } from "react";
 import {useLoggedUser} from "./useLoggedUser";
 
-export const PermissionsContext = React.createContext();
+export const PermissionsContext = createContext();
 
 export function usePermissions({} = {}) {
   const permissions = useContext(PermissionsContext);

@@ -1,4 +1,3 @@
-import React from "react";
 import {useTranslation} from "react-i18next";
 import {gqlOccupations} from "./gql/Occupations.gql";
 import {ConceptAutocomplete} from "../ConceptAutocomplete/ConceptAutocomplete";

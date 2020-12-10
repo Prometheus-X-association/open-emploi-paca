@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import { forwardRef, useState } from "react";
 import PropTypes from "prop-types";
 import classnames from "clsx";
 import {makeStyles} from "@material-ui/core/styles";
@@ -52,7 +52,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export const SnackErrorMessage = React.forwardRef(({id, message, error}, ref) => {
+export const SnackErrorMessage = forwardRef(({id, message, error}, ref) => {
   const classes = useStyles();
   const {closeSnackbar} = useSnackbar();
   const [expanded, setExpanded] = useState(false);

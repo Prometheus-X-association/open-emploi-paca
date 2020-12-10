@@ -1,4 +1,3 @@
-import React from "react";
 import get from "lodash/get";
 import {fade, makeStyles} from "@material-ui/core/styles";
 import {Link} from "react-router-dom";

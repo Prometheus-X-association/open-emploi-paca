@@ -4,7 +4,6 @@ module.exports = function(api) {
   const presets = [];
 
   const plugins = [
-    ['@babel/proposal-object-rest-spread'],
   ];
 
   return {

@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useRef } from "react";
 import {Button, ButtonGroup, ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper} from "@material-ui/core";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import {makeStyles} from "@material-ui/core/styles";
@@ -20,9 +20,9 @@ const useStyles = makeStyles(theme => ({
  */
 export default function SplitButton({disabled, variant, color, options = []} = {}) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleMenuItemClick = (option, index) => {
     setSelectedIndex(index);

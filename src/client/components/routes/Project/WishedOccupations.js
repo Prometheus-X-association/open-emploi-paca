@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {IconButton, List, ListItem, ListItemSecondaryAction, ListItemText} from "@material-ui/core";
@@ -18,7 +18,7 @@ export function WishedOccupations({currentOccupation, name = "wishedOccupations"
   const classes = useStyles();
   const {t} = useTranslation();
   const formikContext = useFormikContext();
-  const existingOccupationEdges = [...formikContext.getFieldProps(name).value?.edges || []];
+  const existingOccupationEdges = [...(formikContext.getFieldProps(name).value?.edges || [])];
   const inputEl = useRef();
 
   let disabledOccupations = existingOccupationEdges.map(({node}) => node);

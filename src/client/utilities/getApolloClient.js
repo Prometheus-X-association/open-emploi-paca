@@ -1,4 +1,3 @@
-import React from "react";
 import invariant from "invariant";
 import {ApolloClient, ApolloLink, concat, InMemoryCache} from "@apollo/client";
 import {onError} from "@apollo/client/link/error";

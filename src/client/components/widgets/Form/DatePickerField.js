@@ -2,7 +2,6 @@ import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/dayjs";
 import {Field} from "formik";
 import {KeyboardDatePicker, KeyboardDateTimePicker} from "formik-material-ui-pickers";
-import React from "react";
 import {locale} from "dayjs";
 
 /**

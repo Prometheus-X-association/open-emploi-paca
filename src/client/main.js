@@ -1,4 +1,4 @@
-import React from "react";
+import { Suspense } from "react";
 import ReactDOM from "react-dom";
 import {BrowserRouter} from "react-router-dom";
 import {ThemeProvider} from "@material-ui/core/styles";
@@ -28,11 +28,11 @@ I18nService().then(i18n => {
       <ThemeProvider theme={theme}>
         <SnackbarProvider maxSnack={3}>
           <ApolloContainer i18n={i18n} possibleTypes={possibleTypes}>
-            <React.Suspense fallback={<LoadingSplashScreen />}>
+            <Suspense fallback={<LoadingSplashScreen />}>
               <ErrorBoundary>
                 <Application theme={theme} />
               </ErrorBoundary>
-            </React.Suspense>
+            </Suspense>
           </ApolloContainer>
         </SnackbarProvider>
       </ThemeProvider>

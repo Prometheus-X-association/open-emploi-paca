@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {Avatar, CardHeader, Grid, Menu, MenuItem} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
  */
 export function AppBar({} = {}) {
   const {t} = useTranslation();
-  const [profileMenuAnchorEl, setProfileMenuAnchorEl] = React.useState(null);
+  const [profileMenuAnchorEl, setProfileMenuAnchorEl] = useState(null);
   const {user, useLogout} = useLoggedUser();
   const {logout} = useLogout();
   const classes = useStyles();

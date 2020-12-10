@@ -15,7 +15,6 @@
  */
 
 import {GenericAutocomplete} from "../GenericAutocomplete";
-import React from "react";
 import {useTranslation} from "react-i18next";
 import {getGqlFiltersForQs, gqlJobAreas} from "./gql/JobAreas.gql";
 

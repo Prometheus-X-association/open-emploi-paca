@@ -1,4 +1,3 @@
-import React from "react";
 import {useField} from "formik";
 import {FormControl, InputLabel, MenuItem, Select} from "@material-ui/core";
 

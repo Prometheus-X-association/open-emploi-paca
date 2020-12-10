@@ -1,6 +1,6 @@
-import React, {useContext} from "react";
+import { createContext, useContext } from "react";
 
-export const EnvironmentContext = React.createContext();
+export const EnvironmentContext = createContext();
 
 /**
  * @param {string} environmentName

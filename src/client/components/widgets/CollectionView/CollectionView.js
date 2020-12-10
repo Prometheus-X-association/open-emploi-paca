@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {useEffect, useState} from "react";
+import { useRef, useEffect, useState } from "react";
 import {useApolloClient, useMutation, useQuery} from "@apollo/client";
 import {useTranslation} from "react-i18next";
 import get from "lodash/get";
@@ -186,7 +186,7 @@ export function CollectionView({
     };
   }
 
-  let cachedData = React.useRef(undefined);
+  let cachedData = useRef(undefined);
   const {data, loading, error} = useQuery(gqlQuery, {
     fetchPolicy: "cache-and-network",
     // @see https://github.com/apollographql/apollo-client/issues/6760#issuecomment-668188727

@@ -1,4 +1,3 @@
-import React from "react";
 import Package from "../../../../package.json";
 import dayjs from "dayjs";
 

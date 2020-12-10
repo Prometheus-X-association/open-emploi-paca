@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import { cloneElement, useEffect, useRef, useState } from "react";
 import {useDebounce} from "use-debounce";
 import PropTypes from "prop-types";
 import IconButton from "@material-ui/core/IconButton";
@@ -167,7 +167,7 @@ function SearchBarCode(props) {
               disabled: classes.iconButtonDisabled
             }}
             disabled={disabled}>
-            {React.cloneElement(searchIcon, {
+            {cloneElement(searchIcon, {
               classes: {root: classes.icon}
             })}
           </IconButton>
@@ -180,7 +180,7 @@ function SearchBarCode(props) {
               disabled: classes.iconButtonDisabled
             }}
             disabled={disabled}>
-            {React.cloneElement(closeIcon, {
+            {cloneElement(closeIcon, {
               classes: {root: classes.icon}
             })}
           </IconButton>

@@ -1,4 +1,3 @@
-import React from "react";
 import {Button, Grid, Tooltip, Typography} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
 import {LoadingButton} from "../Button/LoadingButton";

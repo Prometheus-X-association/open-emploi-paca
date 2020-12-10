@@ -1,4 +1,3 @@
-import React from "react";
 import grey from "@material-ui/core/colors/grey";
 import {Link} from "react-router-dom";
 import {CssBaseline, Divider, Drawer, Grid, List, ListItem, ListItemText} from "@material-ui/core";

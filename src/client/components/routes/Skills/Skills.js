@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import { useEffect } from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {Grid, ListItemText, Typography} from "@material-ui/core";

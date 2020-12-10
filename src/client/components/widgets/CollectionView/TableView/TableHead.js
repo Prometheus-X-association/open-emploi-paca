@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {Checkbox, TableCell, TableHead as MUITableHead, TableRow, TableSortLabel} from "@material-ui/core";
 import {getCellProps} from "./Table";
