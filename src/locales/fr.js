@@ -47,7 +47,7 @@ export const fr = {
       ADD_HOBBY: "Ajouter une expérience extra-professionelle",
       EDIT_APTITUDES: "Éditer ses compétences",
       SHOW_JOBS: "Voir les métiers suggérés",
-      SHOW_PROFILE: "Voir son profil",
+      SHOW_PROFILE: "Editer son profil",
       PRINT_PROFILE: "Imprimer son profil",
       RESTITUTION: "Restitution de profil",
       EDITION: "Édition de profil",
