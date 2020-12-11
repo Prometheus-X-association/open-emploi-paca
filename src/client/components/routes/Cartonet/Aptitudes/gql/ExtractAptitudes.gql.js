@@ -35,13 +35,11 @@ export const gqlMyAptitudes = gql`
   query Me {
     me {
       id
-      ...on Person{
-        aptitudes(first: 300) {
-          edges {
-            node {
-              skillLabel
-              ratingValue
-            }
+      aptitudes(first: 300) {
+        edges {
+          node {
+            skillLabel
+            ratingValue
           }
         }
       }

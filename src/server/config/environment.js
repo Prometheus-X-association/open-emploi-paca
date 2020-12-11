@@ -55,11 +55,13 @@ export default {
   },
   OAUTH_BASE_URL: {
     description: "This is the OAUTH server host",
-    defaultValue: "http://localhost:8181"
+    defaultValue: "http://localhost:8181",
+    defaultValueInProduction: true
   },
   OAUTH_REALM: {
     description: "This is the OAUTH realm used for this app",
-    defaultValue: "oep"
+    defaultValue: "oep",
+    defaultValueInProduction: true
   },
   OAUTH_AUTH_URL: {
     description: "This is the OAUTH authentication URL",
@@ -81,22 +83,26 @@ export default {
   },
   OAUTH_REALM_CLIENT_ID: {
     description: "This is the OAUTH Realm client ",
-    defaultValue: "api"
+    defaultValue: "api",
+    defaultValueInProduction: true
   },
   OAUTH_REALM_CLIENT_SECRET: {
     description:
       "This is the OAUTH shared secret between this client app and OAuth2 server.",
     defaultValue: "e9a7be6b-5850-4d22-8740-a8d535e2880b",
-    obfuscate: true
+    obfuscate: true,
+    defaultValueInProduction: true
   },
   OAUTH_ADMIN_USERNAME: {
     description: "This is the OAUTH admin username",
-    defaultValue: "admin"
+    defaultValue: "admin",
+    defaultValueInProduction: true
   },
   OAUTH_ADMIN_PASSWORD: {
     description: "This is the OAUTH admin password",
     defaultValue: "rspwd!",
-    obfuscate: true
+    obfuscate: true,
+    defaultValueInProduction: true
   },
   OAUTH_ADMIN_TOKEN_URL: {
     description: "This is the OAUTH token validation URL for admin session",
@@ -112,32 +118,39 @@ export default {
   },
   APP_PORT: {
     description: "This is listening port of the application.",
-    defaultValue: 3034
+    defaultValue: 3034,
+    defaultValueInProduction: true
   },
   APP_URL: {
     description: "This is the base url of the application.",
-    defaultValue: () => `http://localhost:${process.env.APP_PORT}`
+    defaultValue: () => `http://localhost:${process.env.APP_PORT}`,
+    defaultValueInProduction: true
   },
   RABBITMQ_HOST: {
     description: "This is RabbitMQ host.",
-    defaultValue: "localhost"
+    defaultValue: "localhost",
+    defaultValueInProduction: true
   },
   RABBITMQ_PORT: {
     description: "This is RabbitMQ port.",
-    defaultValue: 5672
+    defaultValue: 5672,
+    defaultValueInProduction: true
   },
   RABBITMQ_LOGIN: {
     description: "This is RabbitMQ login.",
-    defaultValue: "guest"
+    defaultValue: "guest",
+    defaultValueInProduction: true
   },
   RABBITMQ_PASSWORD: {
     description: "This is RabbitMQ password.",
     defaultValue: "rspwd!",
-    obfuscate: true
+    obfuscate: true,
+    defaultValueInProduction: true
   },
   RABBITMQ_EXCHANGE_NAME: {
     description: "This is RabbitMQ exchange name.",
-    defaultValue: "local-oep"
+    defaultValue: "local-oep",
+    defaultValueInProduction: true
   },
   RABBITMQ_EXCHANGE_DURABLE: {
     description: "Is RabbitMQ exchange durable.",
@@ -156,7 +169,8 @@ export default {
   },
   INDEX_PREFIX_TYPES_WITH: {
     description: "Prefix all index types with a prefix",
-    defaultValue: "local-oep-"
+    defaultValue: "local-oep-",
+    defaultValueInProduction: true
   },
   RABBITMQ_LOG_LEVEL: {
     description: "RabbitMQ log level (DEBUG, ERROR or NONE)",
@@ -171,14 +185,17 @@ export default {
   },
   ADDVISEO_AUTH_LOGIN: {
     description: "This is addViseo X-Auth-Login",
-    obfuscate: true
+    obfuscate: true,
+    defaultValueInProduction: true
   },
   ADDVISEO_AUTH_TOKEN: {
     description: "This is addViseo X-Auth-Token",
-    obfuscate: true
+    obfuscate: true,
+    defaultValueInProduction: true
   },
   ADDVISEO_PASSWORD_SALT: {
     description: "This is addViseo password salt",
-    obfuscate: true
+    obfuscate: true,
+    defaultValueInProduction: true
   },
 };

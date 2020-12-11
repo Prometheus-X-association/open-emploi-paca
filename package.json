@@ -44,6 +44,7 @@
     "escape-html": "^1.0.3",
     "events": "^3.2.0",
     "express": "^4.17.1",
+    "express-static-gzip": "^2.1.0",
     "express-validator": "5.3.1",
     "file-loader": "^6.2.0",
     "formik": "2.1.4",
@@ -114,5 +115,8 @@
     "test": "jest __tests__ --passWithNoTests",
     "data:index": "node ./bin/indexData.js",
     "release": "yarn test && PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]') && npx auto-changelog -v $PACKAGE_VERSION && git commit -a -m \"[ic] Releasing $PACKAGE_VERSION\" && git tag -a $PACKAGE_VERSION -m \"v$PACKAGE_VERSION\" && git push && git push origin $PACKAGE_VERSION"
+  },
+  "resolutions": {
+    "@mnemotix/synaptix.js": "portal:/Users/mrogelja/Dev/mnx/Mnemotix/synaptix.js"
   }
 }

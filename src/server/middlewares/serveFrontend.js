@@ -17,11 +17,11 @@
  */
 
 import path from "path";
-import express from "express";
 import webpack from "webpack";
 import webpackMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
 import history from "connect-history-api-fallback";
+import expressStaticGzip from "express-static-gzip";
 
 import { ExpressApp, logInfo } from "@mnemotix/synaptix.js";
 
@@ -56,7 +56,10 @@ export function serveFrontend({ webpackConfig }) {
       let distDirectory = webpackConfig.output.path;
       let distIndex = path.resolve(distDirectory, "index.html");
 
-      app.use(express.static("./dist"), authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true}));
+      app.use(expressStaticGzip("./dist", {
+        enableBrotli: true,
+        orderPreference: ['br']
+      }), authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true}));
       app.get("*", authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true}), (req, res) => {
         res.sendFile(distIndex);
       });

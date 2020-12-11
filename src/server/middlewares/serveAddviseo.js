@@ -18,7 +18,9 @@ const resourceTypesMapping = {
   'edit_hobby':  generatePath(ROUTES.CARTONET_EDIT_HOBBY),
   'edit_aptitudes':  generatePath(ROUTES.CARTONET_EDIT_APTITUDES),
   'show_profile':   generatePath(ROUTES.CARTONET_SHOW_PROFILE),
+  'print_profile':  generatePath(ROUTES.CARTONET_PRINT_PROFILE),
   'show_jobs':  generatePath(ROUTES.CARTONET_SHOW_JOBS),
+  'upload_cv':  generatePath(ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV),
   'api': '/graphql'
 }
 /**
