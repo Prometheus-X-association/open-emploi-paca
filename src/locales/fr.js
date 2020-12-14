@@ -98,6 +98,8 @@ export const fr = {
       BUTTON: "Téléverser votre CV au format PDF",
       MESSAGE: "Les compétences reconnues sont classées en fonction de leur proximité avec la liste de compétences du référentiel.",
       SELECT_SKILL: "Ajouter cette compétence",
+      SKILL_SELECTED: "Annuler l'ajout",
+      SKILL_ALREADY_SELECTED: "Compétence déjà présente",
       ACTION_SAVE: "Ajouter cette compétence à votre profil",
       ACTION_SAVE_plural: "Ajouter ces {{count}} compétences à votre profil",
     },

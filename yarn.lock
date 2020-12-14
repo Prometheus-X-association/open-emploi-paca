@@ -2127,9 +2127,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mnemotix/synaptix.js@npm:^4.7.2":
-  version: 4.7.2
-  resolution: "@mnemotix/synaptix.js@npm:4.7.2"
+"@mnemotix/synaptix.js@npm:^4.7.3":
+  version: 4.7.3
+  resolution: "@mnemotix/synaptix.js@npm:4.7.3"
   dependencies:
     "@babel/plugin-proposal-class-properties": ^7.12.1
     amqplib: 0.6.0
@@ -2163,8 +2163,9 @@ __metadata:
     passport: 0.4.0
     passport-local: 1.0.0
     passport-oauth2: 1.4.0
-    passport-oauth2-middleware: "github:Mnemotix/passport-oauth2-middleware#add-client-secret-to-local-strategy"
+    passport-strategy: 1.0.0
     pixl-xml: 1.0.13
+    querystring: ^0.2.0
     rdflib: ^2.1.1
     readline-sync: ^1.4.10
     request: 2.88.0
@@ -2180,7 +2181,7 @@ __metadata:
   bin:
     check-datamodel: bin/checkDataModel.js
     generate-datamodel: bin/generateDataModel.js
-  checksum: 45e5bc6b93c789a8a522f5315d4240228b86eb01f27a2cd608fe57a41d99de7be8ec65623ba650144e9544447f614f968eba85db638025b3c82f751ec6003a8e
+  checksum: 0096c444ca14b1b457083c1aa384766c1e33dc9d895964246852e0cf73c6492e94caa97e009ab86a64da43c977934613670d6851bb950965a5daa08ba8c5328f
   languageName: node
   linkType: hard
 
@@ -4943,7 +4944,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:2.6.9, debug@npm:^2.1.0, debug@npm:^2.2.0, debug@npm:^2.3.3, debug@npm:~2.6.9":
+"debug@npm:2.6.9, debug@npm:^2.2.0, debug@npm:^2.3.3, debug@npm:~2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
   dependencies:
@@ -8763,13 +8764,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"moment@npm:^2.8.4":
-  version: 2.27.0
-  resolution: "moment@npm:2.27.0"
-  checksum: 72d9a7d8dba59e3d538440cdc0b59fa895b123361e370be231896478aaf157a484355ce32bd8daf6f731d6d1636d3a67ecb67531e536e093ca18b43e0cbae194
-  languageName: node
-  linkType: hard
-
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0"
@@ -9328,7 +9322,7 @@ fsevents@^1.2.7:
     "@material-ui/lab": ^4.0.0-alpha.56
     "@material-ui/pickers": ^3.2.10
     "@mnemotix/synaptix-client-toolkit": ^2.0.2
-    "@mnemotix/synaptix.js": ^4.7.2
+    "@mnemotix/synaptix.js": ^4.7.3
     "@types/react": ^16.9.0
     "@ungap/url-search-params": ^0.1.4
     apollo-upload-client: ^14.1.3
@@ -9718,18 +9712,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"passport-oauth2-middleware@github:Mnemotix/passport-oauth2-middleware#add-client-secret-to-local-strategy":
-  version: 1.0.3
-  resolution: "passport-oauth2-middleware@https://github.com/Mnemotix/passport-oauth2-middleware.git#commit=d5f86ee80b71f53744804f3bb2f194a0a0e06cb5"
-  dependencies:
-    debug: ^2.1.0
-    moment: ^2.8.4
-    passport-strategy: ^1.0.0
-    querystring: ^0.2.0
-  checksum: 6eadbe7c667fc9ed5da58c35393e756eca216bc7219377c00d1899b6709e43c86de598def73699690f4dee6a47feb0ac263bc6ae68b75233b136c2e3a56f97ce
-  languageName: node
-  linkType: hard
-
 "passport-oauth2@npm:1.4.0":
   version: 1.4.0
   resolution: "passport-oauth2@npm:1.4.0"
@@ -9742,7 +9724,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"passport-strategy@npm:1.x.x, passport-strategy@npm:^1.0.0":
+"passport-strategy@npm:1.0.0, passport-strategy@npm:1.x.x":
   version: 1.0.0
   resolution: "passport-strategy@npm:1.0.0"
   checksum: 4ad0b62fcb411df70484aef44a958bc545801170e27c46a8bc38776c370d9cc67df9a4a4046ac6146fbd95d6650e554468df72b282cde22e81a42369472e9cfc

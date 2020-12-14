@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {
   Button,
   DialogActions,
@@ -92,59 +92,36 @@ export default function ExtractAptitudesFromCV({} = {}) {
               );
 
               return (
-                <ListItem key={skill.id}>
+                <ListItem key={skill.id} disabled={existingAptitudeEdge}>
                   <ListItemText>{skill.prefLabel}</ListItemText>
                   <ListItemSecondaryAction>
-                    <Choose>
-                      <When condition={existingAptitudeEdge || indexOfSelected > -1}>
-                        <Grid container spacing={2}>
-                          <Grid item>
-                            <Rating
-                              disabled={existingAptitudeEdge}
-                              name={`rating_${skill.id}`}
-                              value={
-                                existingAptitudeEdge?.node?.ratingValue ||
-                                selectedSkills?.[indexOfSelected]?.ratingValue ||
-                                0
-                              }
-                              onChange={(e, ratingValue) => {
-                                selectedSkills.splice(indexOfSelected, 1, {
-                                  ...selectedSkills[indexOfSelected],
-                                  ratingValue
-                                });
-                                setSelectedSkills([...selectedSkills]);
-                              }}
-                            />
-                          </Grid>
-                          <Grid item>
-                            <IconButton
-                              disabled={existingAptitudeEdge}
-                              size={"small"}
-                              variant={"outlined"}
-                              onClick={() => {
-                                selectedSkills.splice(indexOfSelected, 1);
-                                setSelectedSkills([...selectedSkills]);
-                              }}>
-                              <ClearIcon />
-                            </IconButton>
-                          </Grid>
-                        </Grid>
-                      </When>
-                      <Otherwise>
-                        <Button
-                          size={"small"}
-                          onClick={() => {
-                            setSelectedSkills([
-                              ...selectedSkills,
-                              {
-                                id: skill.id
-                              }
-                            ]);
-                          }}>
-                          {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.SELECT_SKILL")}
-                        </Button>
-                      </Otherwise>
-                    </Choose>
+                    <Button
+                      disabled={existingAptitudeEdge}
+                      variant={indexOfSelected > -1 && "outlined"}
+                      size={"small"}
+                      onClick={() => {
+                        if (indexOfSelected > -1) {
+                          selectedSkills.splice(indexOfSelected, 1);
+                          setSelectedSkills([...selectedSkills]);
+                        } else {
+                          setSelectedSkills([
+                            ...selectedSkills,
+                            {
+                              id: skill.id
+                            }
+                          ]);
+                        }
+                      }}>
+                      <Choose>
+                        <When condition={existingAptitudeEdge}>
+                          {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.SKILL_ALREADY_SELECTED")}
+                        </When>
+                        <When condition={indexOfSelected > -1}>
+                          {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.SKILL_SELECTED")}
+                        </When>
+                        <Otherwise>{t("CARTONET.EXTRACT_APTITUDES_FROM_CV.SELECT_SKILL")}</Otherwise>
+                      </Choose>
+                    </Button>
                   </ListItemSecondaryAction>
                 </ListItem>
               );
@@ -186,7 +163,7 @@ export default function ExtractAptitudesFromCV({} = {}) {
                 id: skill.id
               },
               ratingInput: {
-                value: skill.ratingValue || 0,
+                value: 0,
                 range: 5
               }
             }))

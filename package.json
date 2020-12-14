@@ -25,7 +25,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
     "@mnemotix/synaptix-client-toolkit": "^2.0.2",
-    "@mnemotix/synaptix.js": "^4.7.2",
+    "@mnemotix/synaptix.js": "^4.7.3",
     "@types/react": "^16.9.0",
     "@ungap/url-search-params": "^0.1.4",
     "apollo-upload-client": "^14.1.3",
