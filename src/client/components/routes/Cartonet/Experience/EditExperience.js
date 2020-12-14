@@ -172,7 +172,7 @@ export default function EditExperience({experienceType = "experience", fullscree
                         {t(`CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`)}
                       </Typography>
 
-                      <WishedOccupations dense name={"occupations"} />
+                      <WishedOccupations dense name={"occupations"} includeLeafOccupations={true}/>
                     </Grid>
                     <Grid item xs={12}>
                       <Typography variant={"overline"}>

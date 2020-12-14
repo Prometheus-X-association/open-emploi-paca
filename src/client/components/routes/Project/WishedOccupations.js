@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export function WishedOccupations({currentOccupation, name = "wishedOccupations", dense } = {}) {
+export function WishedOccupations({currentOccupation, name = "wishedOccupations", dense, includeLeafOccupations } = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const formikContext = useFormikContext();
@@ -53,6 +53,7 @@ export function WishedOccupations({currentOccupation, name = "wishedOccupations"
           placeholder={t("PROJECT.WISHED_OCCUPATION.ADD")}
           multiple={false}
           onSelectConcepts={handleSelectOccupation}
+          includeLeafOccupations={includeLeafOccupations}
           AutocompleteProps={{
             size: "small",
             clearOnBlur: true

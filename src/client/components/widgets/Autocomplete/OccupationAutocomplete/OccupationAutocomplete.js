@@ -26,7 +26,8 @@ export function OccupationAutocomplete({
   multiple,
   AutocompleteProps,
   TextFieldProps,
-  className
+  className,
+  includeLeafOccupations = false
 } = {}) {
   const {t} = useTranslation();
 
@@ -42,9 +43,12 @@ export function OccupationAutocomplete({
 
         variables.filters = [
           ...variables.filters,
-          "inScheme:http://ontology.datasud.fr/openemploi/data/scheme/1",
           "hasSkill:*"
         ];
+
+        if (!includeLeafOccupations){
+          variables.filters.push("inScheme:http://ontology.datasud.fr/openemploi/data/scheme/1");
+        }
 
         return variables;
       }}
