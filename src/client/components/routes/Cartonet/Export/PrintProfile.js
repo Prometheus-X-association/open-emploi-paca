@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {generatePath, useHistory} from "react-router";
 import {useQuery} from "@apollo/client";
 import {gqlMyExperiences} from "../Experience/gql/MyExperiences.gql";
 import {gqlMyAptitudes} from "../Aptitudes/gql/MyAptitudes.gql";
@@ -21,13 +20,11 @@ import {
 import HobbyIcon from "@material-ui/icons/BeachAccess";
 import TrainingIcon from "@material-ui/icons/School";
 import ExperienceIcon from "@material-ui/icons/Work";
-import {createLink} from "../../../../utilities/createLink";
-import {ROUTES} from "../../../../routes";
 import dayjs from "dayjs";
 import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
-import clsx from "clsx";
 import {Rating} from "@material-ui/lab";
 import {gqlMyProfile} from "../../Profile/gql/MyProfile.gql";
+import OccupationsMatching from "../Recommendation/OccupationsMatching";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -187,6 +184,14 @@ export default function PrintProfile({} = {}) {
             </Otherwise>
           </Choose>
         </Grid>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography variant="button" display="block" className={classes.categoryTitle}>
+          {t("CARTONET.CARTOGRAPHY.SUGGETIONS")}
+        </Typography>
+
+        <OccupationsMatching print={true} />
       </Grid>
     </Box>
   );

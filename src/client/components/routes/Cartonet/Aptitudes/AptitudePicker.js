@@ -90,7 +90,7 @@ export function AptitudePicker({
           first: 100,
           sortings: !!qs ? [] : [{sortBy: "prefLabel"}],
           otherSkillsFilters: skillsFilters,
-          mySkillsFilters: [...skillsFilters, `hasPerson: ${user.uri}`]
+          mySkillsFilters: [/*...skillsFilters,*/ `hasPerson: ${user.uri}`]
         }
       });
     }

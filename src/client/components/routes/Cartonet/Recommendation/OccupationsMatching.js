@@ -43,7 +43,7 @@ export function useSuggestedOccupationsMatchings(){
 /**
  *
  */
-export default function OccupationsMatching({} = {}) {
+export default function OccupationsMatching({print} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const history = useHistory();
@@ -53,37 +53,43 @@ export default function OccupationsMatching({} = {}) {
   };
   const [occupations, {loading}] = useSuggestedOccupationsMatchings();
 
-  return (
+  function renderMatching(){
+    return (
+      <Choose>
+        <When condition={loading}>
+          <LoadingSplashScreen />
+        </When>
+        <Otherwise>
+
+          {occupations.map(occupation => (
+            <Accordion key={occupation.categoryId} expanded={expanded === occupation.categoryId} onChange={handleChange(occupation.categoryId)}>
+              <AccordionSummary classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}} expandIcon={<ExpandMoreIcon />} >
+                <Gauge value={occupation.score * 100}/>
+                <Typography className={classes.categoryHeaderTitle}>{occupation.categoryName}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <If condition={expanded === occupation.categoryId}>
+                  <List dense>
+                    {occupation.subOccupations.map((subOccupation) => (
+                      <ListItem key={subOccupation.id}>
+                        <ListItemText primary={subOccupation.prefLabel} />
+                      </ListItem>
+                    ))}
+                  </List>
+                </If>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </Otherwise>
+      </Choose>
+    )
+  }
+
+  return print ? renderMatching() : (
     <>
       <DialogTitle>{t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE")}</DialogTitle>
       <DialogContent>
-        <Choose>
-          <When condition={loading}>
-            <LoadingSplashScreen />
-          </When>
-          <Otherwise>
-
-            {occupations.map(occupation => (
-              <Accordion key={occupation.categoryId} expanded={expanded === occupation.categoryId} onChange={handleChange(occupation.categoryId)}>
-                <AccordionSummary classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}} expandIcon={<ExpandMoreIcon />} >
-                  <Gauge value={occupation.score * 100}/>
-                  <Typography className={classes.categoryHeaderTitle}>{occupation.categoryName}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <If condition={expanded === occupation.categoryId}>
-                    <List dense>
-                      {occupation.subOccupations.map((subOccupation) => (
-                        <ListItem key={subOccupation.id}>
-                          <ListItemText primary={subOccupation.prefLabel} />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </If>
-                </AccordionDetails>
-              </Accordion>
-            ))}
-          </Otherwise>
-        </Choose>
+        {renderMatching()}
       </DialogContent>
       <DialogActions>
         <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
