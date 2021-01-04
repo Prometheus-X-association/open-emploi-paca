@@ -67,6 +67,7 @@ export default function EditExperience({experienceType = "experience", fullscree
   const history = useHistory();
   const [saveAndResetForm, setSaveAndResetForm] = useState(false);
   const selectedAptitudeRefContainer = useRef(null);
+  const [onTheFlyExperiences, setOnTheFlyExperiences] = useState([]);
 
   const {data: {me} = {}} = useQuery(gqlMyExperiences);
   const [getExperience, {data: {experience} = {}}] = useLazyQuery(gqlExperience);
@@ -90,6 +91,12 @@ export default function EditExperience({experienceType = "experience", fullscree
       })
     }
   }, [id]);
+
+  useEffect(() => {
+    if(experience){
+      setOnTheFlyExperiences([experience]);
+    }
+  }, [experience]);
 
   return (
     <>
@@ -221,6 +228,7 @@ export default function EditExperience({experienceType = "experience", fullscree
   );
 
   async function save(values) {
+    console.log(values);
     const {objectInput} = prepareMutation({
       entity: experience,
       values,
@@ -255,14 +263,22 @@ export default function EditExperience({experienceType = "experience", fullscree
               inputName: "ratingInput"
             }
           ],
-          modifyValue: value => ({
-            ...value,
-            person: {id: me.id},
-            rating: {
-              range: 5,
-              value: 0
+          modifyValue: aptitude => {
+            if(aptitude.skill?.aptitudeId){
+              return {
+                id: aptitude.skill?.aptitudeId
+              }
+            } else {
+              return {
+                ...aptitude,
+                person: {id: me.id},
+                rating: {
+                  range: 5,
+                  value: 0
+                }
+              }
             }
-          })
+          }
         }
       ]
     });

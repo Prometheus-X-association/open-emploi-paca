@@ -7,11 +7,16 @@ import omitBy from "lodash/omitBy";
  * @param {string[]} [inputNames] - restrict field input names. Default to all simple field (not link) foundable in "values"
  * @param {GraphQLLinkDefinition[]} links - list of links to mutate.
  * @param {boolean} [optimistic=true] - is mutation optimistic ?
+ * @param {boolean} [preserveId=false] - Is Id preserved ?
  * @return {object}
  */
-export function normalizeMutationInput({entity, values, links, inputNames, optimistic}){
+export function normalizeMutationInput({entity, values, links, inputNames = [], optimistic = true, preserveId = false}){
   return Object.entries(values).reduce((objectInput, [name, value]) => {
-    if(["id", "__typename"].includes(name)) {
+    if(name === "__typename"){
+      return objectInput;
+    }
+
+    if(name === "id" && !preserveId){
       return objectInput;
     }
 
@@ -47,7 +52,7 @@ function normalizeSingleLinkInput({link, targetEntity}){
 
   if(targetEntity){
     if(link.nestedLinks?.length > 0){
-      targetEntity = normalizeMutationInput({values: targetEntity, links: link.nestedLinks});
+      targetEntity = normalizeMutationInput({values: targetEntity, links: link.nestedLinks, preserveId: true});
     }
 
     // If target entity has an ID, we have the choice to :

@@ -60,8 +60,7 @@ export default function OccupationsMatching({print} = {}) {
           <LoadingSplashScreen />
         </When>
         <Otherwise>
-
-          {occupations.map(occupation => (
+          {occupations.slice(0, print ? 10 : undefined).map(occupation => (
             <Accordion key={occupation.categoryId} expanded={expanded === occupation.categoryId} onChange={handleChange(occupation.categoryId)}>
               <AccordionSummary classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}} expandIcon={<ExpandMoreIcon />} >
                 <Gauge value={occupation.score * 100}/>

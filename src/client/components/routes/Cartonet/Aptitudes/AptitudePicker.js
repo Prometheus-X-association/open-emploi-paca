@@ -66,7 +66,7 @@ export function AptitudePicker({
   const {t} = useTranslation();
   const {user} = useLoggedUser();
   const [qs, setQs] = useState();
-  const [loadSkills, {loading, data: {mySkills, otherSkills, mySkillsCount, otherSkillsCount} = {}}] = useLazyQuery(gqlSkills);
+  const [loadSkills, {loading, data: {myAptitudes, otherSkills, myAptitudesCount, otherSkillsCount} = {}}] = useLazyQuery(gqlSkills);
 
   const throttledOnChange = throttle(
     event => {
@@ -90,7 +90,7 @@ export function AptitudePicker({
           first: 100,
           sortings: !!qs ? [] : [{sortBy: "prefLabel"}],
           otherSkillsFilters: skillsFilters,
-          mySkillsFilters: [/*...skillsFilters,*/ `hasPerson: ${user.uri}`]
+          myAptitudesFilters: [`hasPerson: ${user.uri}`]
         }
       });
     }
@@ -116,15 +116,19 @@ export function AptitudePicker({
               <LoadingSplashScreen/>
             </If>
             <div className={classes.skillsContainer}>
-              <If condition={(mySkills?.edges || []).length > 0}>
+              <If condition={(myAptitudes?.edges || []).length > 0}>
                 <ListSubheader className={classes.skillsSubHeader}>{t("CARTONET.SKILL.YOURS")}</ListSubheader>
 
-                {mySkills?.edges.map(({node: skill}) => renderSkill({skill}))}
+                {myAptitudes?.edges.map(({node: aptitude}) => renderSkill({skill: {
+                    prefLabel: aptitude.skillLabel,
+                    aptitudeId: aptitude.id,
+                    id: aptitude.id
+                  }}))}
 
-                <If condition={mySkillsCount > 100}>
+                <If condition={myAptitudesCount > 100}>
                   <ListItem disabled>
                     <ListItemText>
-                      {t("CARTONET.SKILL.MORE_OTHER", {count: mySkillsCount - 100})}
+                      {t("CARTONET.SKILL.MORE_OTHER", {count: myAptitudesCount - 100})}
                     </ListItemText>
                   </ListItem>
                 </If>
@@ -141,7 +145,7 @@ export function AptitudePicker({
                 </ListItem>
               </If>
 
-              <If condition={otherSkillsCount === 0 && mySkillsCount === 0}>
+              <If condition={otherSkillsCount === 0 && myAptitudesCount === 0}>
                 <Paper variant="outlined" className={classes.empty}>
                   {t("CARTONET.SKILL.SEARCH_NONE")}
                 </Paper>
@@ -209,6 +213,7 @@ export function AptitudePicker({
 
   function handleSelectSkill(skill) {
     const newAptitudeEdge = {
+      id: skill.aptitudeId,
       node: {skill}
     };
 
