@@ -66,7 +66,8 @@ export const fr = {
       FORM_APTITUDES_LABEL: "Compétences sélectionnés pour l'expérience",
       FORM_EXISTING_APTITUDES_LABEL: "Compétences liées aux métiers sélectionnés",
       SAVE_AND_ADD_NEW: "Ajouter une nouvelle expérience après enregistrement",
-      PLEASE_SELECT_OCCUPATIONS: "Sélectionner des métiers pour pouvoir choisir des compétences associées"
+      PLEASE_SELECT_OCCUPATIONS: "Sélectionner des métiers pour pouvoir choisir des compétences associées",
+      ON_THE_FLY_EXPERIENCES: "Expériences ajoutées :"
     },
     TRAINING: {
       PAGE_TITLE: "Édition de formation",

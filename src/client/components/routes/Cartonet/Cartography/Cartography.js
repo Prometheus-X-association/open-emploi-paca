@@ -64,7 +64,13 @@ const editLinkMapping = {
   experience: ROUTES.CARTONET_EDIT_EXPERIENCE
 };
 
-export function ExperienceItem({experience, onAptitudeMouseEnter = () => {}, onAptitudeMouseLeave = () => {}, selectedAptitude}) {
+export function ExperienceItem({
+  experience,
+  onAptitudeMouseEnter = () => {},
+  onAptitudeMouseLeave = () => {},
+  selectedAptitude,
+  onClickExperience
+}) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -87,8 +93,9 @@ export function ExperienceItem({experience, onAptitudeMouseEnter = () => {}, onA
           </Avatar>
         </ListItemAvatar>
         <ListItemText
+          onClick={onClickExperience ? () => onClickExperience(experience) : null}
           primary={createLink({
-            to: getEditLink({experience}),
+            to: onClickExperience ? null : getEditLink({experience}),
             text: experience.title
           })}
           secondary={
@@ -111,8 +118,8 @@ export function ExperienceItem({experience, onAptitudeMouseEnter = () => {}, onA
               <Chip
                 className={classes.experienceAptitude}
                 key={aptitude.id}
-                label={aptitude.skillLabel}
-                variant={selectedAptitude?.id === aptitude.id ? "default" : "outlined"}
+                label={aptitude.skillLabel || aptitude.skill?.prefLabel}
+                variant={selectedAptitude && selectedAptitude?.id === aptitude.id ? "default" : "outlined"}
                 size="small"
                 onMouseEnter={() => onAptitudeMouseEnter(aptitude)}
                 onMouseLeave={() => onAptitudeMouseLeave(null)}
@@ -203,7 +210,7 @@ export default function Cartography({} = {}) {
                       [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
                     })}>
                     <Grid item md={8}>
-                      {aptitude.skillLabel}
+                      {aptitude.skillLabel || aptitude.skill?.prefLabel}
                     </Grid>
                     <Grid item md={4} className={classes.rating}>
                       <Rating value={aptitude.rating?.value} size={"small"} readOnly />

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import * as Yup from "yup";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
@@ -12,7 +12,7 @@ import {
   FormControlLabel,
   Paper
 } from "@material-ui/core";
-import {useHistory, useParams} from "react-router";
+import {useHistory, useParams, generatePath} from "react-router";
 import {object} from "yup";
 import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
@@ -22,7 +22,6 @@ import {DatePickerField, FormButtons, TextField, OrganizationPickerField} from "
 import {WishedOccupations} from "../../Project/WishedOccupations";
 import {AptitudePicker} from "../Aptitudes/AptitudePicker";
 import {gqlOccupationFragment} from "../../Profile/gql/MyProfile.gql";
-import {gqlUpdateProfile} from "../../Profile/gql/UpdateProfile.gql";
 import {prepareMutation} from "../../../../utilities/apollo/prepareMutation";
 import {gqlAptitudeFragment} from "../Aptitudes/gql/Aptitude.gql";
 import {gqlOrganizationFragment} from "../../../widgets/Autocomplete/OrganizationAutocomplete/gql/Organizations.gql";
@@ -31,6 +30,9 @@ import {gqlExperience} from "./gql/Experience.gql";
 
 import clsx from "clsx";
 import {gqlUpdateExperience} from "./gql/UpdateExperience.gql";
+import {ExperienceItem} from "../Cartography/Cartography";
+import {gqlCreateExperience} from "./gql/CreateExperience.gql";
+import {ROUTES} from "../../../../routes";
 
 const useStyles = makeStyles(theme => ({
   categoryTitle: {
@@ -41,6 +43,9 @@ const useStyles = makeStyles(theme => ({
   },
   aptitudes: {
     marginTop: theme.spacing(2)
+  },
+  onTheFlyExperiences: {
+    padding: theme.spacing(2)
   }
 }));
 
@@ -57,7 +62,7 @@ export default function EditExperience({experienceType = "experience", fullscree
 
   let {id} = useParams();
 
-  if(id){
+  if (id) {
     id = decodeURIComponent(id);
   }
 
@@ -67,12 +72,15 @@ export default function EditExperience({experienceType = "experience", fullscree
   const history = useHistory();
   const [saveAndResetForm, setSaveAndResetForm] = useState(false);
   const selectedAptitudeRefContainer = useRef(null);
+  const [editingExperience, setEditingExperience] = useState(null);
   const [onTheFlyExperiences, setOnTheFlyExperiences] = useState([]);
 
   const {data: {me} = {}} = useQuery(gqlMyExperiences);
-  const [getExperience, {data: {experience} = {}}] = useLazyQuery(gqlExperience);
+  const [getExperience, {data: {experience} = {}, loading: loadingExperience}] = useLazyQuery(gqlExperience, {
+    fetchPolicy: "network-only"
+  });
 
-  const [updateProfile, {loading: savingProfile}] = useMutation(gqlUpdateProfile, {
+  const [createExperience, {loading: savingProfile}] = useMutation(gqlCreateExperience, {
     onCompleted: handleSaveCompleted
   });
 
@@ -83,40 +91,44 @@ export default function EditExperience({experienceType = "experience", fullscree
   const saving = savingProfile || savingExperience;
 
   useEffect(() => {
-    if(id){
+    if (id) {
       getExperience({
         variables: {
           id
         }
-      })
+      });
     }
   }, [id]);
 
   useEffect(() => {
-    if(experience){
-      setOnTheFlyExperiences([experience]);
+    console.log(experience);
+    if (editingExperience?.id !== experience?.id) {
+      setEditingExperience(experience);
     }
-  }, [experience]);
+  }, [experience?.id, loadingExperience]);
 
   return (
     <>
       <DialogTitle>{t(`CARTONET.${experienceType.toUpperCase()}.PAGE_TITLE`)}</DialogTitle>
       <Formik
         enableReinitialize={true}
-        initialValues={experience || {
-          title: "",
-          description: "",
-          startDate: null,
-          endDate: null,
-          occupations: {edges: []},
-          organization: null,
-          aptitudes: {edges: []}
-        }}
+        initialValues={
+          editingExperience || {
+            title: "",
+            description: "",
+            startDate: null,
+            endDate: null,
+            occupations: {edges: []},
+            organization: null,
+            aptitudes: {edges: []}
+          }
+        }
         onSubmit={async (values, {setSubmitting, resetForm}) => {
           await save(values);
           setSubmitting(false);
 
           if (saveAndResetForm) {
+            setEditingExperience(null);
             resetForm();
           }
         }}
@@ -167,8 +179,7 @@ export default function EditExperience({experienceType = "experience", fullscree
                           {t(`CARTONET.${experienceType.toUpperCase()}.FORM_APTITUDES_LABEL`)}
                         </Typography>
 
-                        <div ref={selectedAptitudeRefContainer}>
-                        </div>
+                        <div ref={selectedAptitudeRefContainer}></div>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -179,7 +190,7 @@ export default function EditExperience({experienceType = "experience", fullscree
                         {t(`CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`)}
                       </Typography>
 
-                      <WishedOccupations dense name={"occupations"} includeLeafOccupations={true}/>
+                      <WishedOccupations dense name={"occupations"} includeLeafOccupations={true} />
                     </Grid>
                     <Grid item xs={12}>
                       <Typography variant={"overline"}>
@@ -224,14 +235,28 @@ export default function EditExperience({experienceType = "experience", fullscree
           );
         }}
       </Formik>
+
+      <If condition={onTheFlyExperiences.length > 0}>
+        <Paper variant={"outlined"} className={classes.onTheFlyExperiences}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography>{t("CARTONET.EXPERIENCE.ON_THE_FLY_EXPERIENCES")}</Typography>
+            </Grid>
+            {onTheFlyExperiences.map(experience => (
+              <Grid item xs={12}>
+                <ExperienceItem experience={experience} key={experience.id} />
+              </Grid>
+            ))}
+          </Grid>
+        </Paper>
+      </If>
     </>
   );
 
-  async function save(values) {
-    console.log(values);
+  async function save(mutatingExperience) {
     const {objectInput} = prepareMutation({
       entity: experience,
-      values,
+      values: mutatingExperience,
       links: [
         {
           name: "organization",
@@ -264,10 +289,10 @@ export default function EditExperience({experienceType = "experience", fullscree
             }
           ],
           modifyValue: aptitude => {
-            if(aptitude.skill?.aptitudeId){
+            if (aptitude.skill?.aptitudeId) {
               return {
                 id: aptitude.skill?.aptitudeId
-              }
+              };
             } else {
               return {
                 ...aptitude,
@@ -276,7 +301,7 @@ export default function EditExperience({experienceType = "experience", fullscree
                   range: 5,
                   value: 0
                 }
-              }
+              };
             }
           }
         }
@@ -285,33 +310,61 @@ export default function EditExperience({experienceType = "experience", fullscree
 
     objectInput.experienceType = experienceType;
 
-    if(!!id){
+    if (!!editingExperience) {
       await updateExperience({
         variables: {
           input: {
-            objectId: id,
+            objectId: editingExperience.id,
             objectInput
           }
         }
-      })
+      });
+
+      mutatingExperience.id = editingExperience.id;
     } else {
-      await updateProfile({
+      const {data: {createExperience: {createdObject = {}} = {}} = {}} = await createExperience({
         variables: {
           input: {
-            objectId: me.id,
             objectInput: {
-              experienceInputs: [objectInput]
+              ...objectInput,
+              personInput: {
+                id: me.id
+              }
             }
           }
         }
       });
+
+      mutatingExperience.id = createdObject?.id;
+    }
+
+    saveOnTheFlyExperience(mutatingExperience);
+  }
+
+  function handleSaveCompleted() {
+    enqueueSnackbar(t("ACTIONS.SUCCESS"), {
+      variant: "success",
+      anchorOrigin: {horizontal: "right", vertical: "bottom"}
+    });
+    if (!saveAndResetForm) {
+      history.goBack();
+    } else {
+      history.push(generatePath(`${ROUTES.CARTONET_EDIT_EXPERIENCE}`));
     }
   }
 
-  function handleSaveCompleted(){
-    enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
-    if (!saveAndResetForm) {
-      history.goBack();
+  function saveOnTheFlyExperience(experience) {
+    const indexOf = onTheFlyExperiences.findIndex(onTheFlyExperience => onTheFlyExperience.id === experience.id);
+
+    if (indexOf >= 0) {
+      onTheFlyExperiences.splice(indexOf, 1, experience);
+    } else {
+      onTheFlyExperiences.push(experience);
+      onTheFlyExperiences.sort((experienceA, experienceB) => {
+        return 0;
+      });
     }
+
+    setOnTheFlyExperiences([...onTheFlyExperiences]);
   }
 }

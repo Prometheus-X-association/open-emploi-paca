@@ -67,13 +67,15 @@ export function FormButtons({label, errors, touched, isValid, dirty, saving, res
   return inDialog ? (
     <>
       {submitButton}
-      <Button onClick={resetForm || cancelAction}>{t("ACTIONS.CANCEL")}</Button>
+      <Button onClick={resetForm || cancelAction}>{dirty ? t("ACTIONS.CANCEL") : t("ACTIONS.GO_BACK")}</Button>
     </>
   ) : (
     <Grid container spacing={2} justify={"flex-end"}>
       <Grid item>{submitButton}</Grid>
       <If condition={cancelAction || (dirty && resetForm)}>
-        <Button onClick={resetForm || cancelAction}>{t("ACTIONS.CANCEL")}</Button>
+        <Button onClick={resetForm || cancelAction}>
+          {dirty ? t("ACTIONS.CANCEL") : t("ACTIONS.GO_BACK")}
+        </Button>
       </If>
     </Grid>
   );
