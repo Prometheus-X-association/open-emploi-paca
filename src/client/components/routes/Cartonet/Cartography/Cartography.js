@@ -68,8 +68,7 @@ export function ExperienceItem({
   experience,
   onAptitudeMouseEnter = () => {},
   onAptitudeMouseLeave = () => {},
-  selectedAptitude,
-  onClickExperience
+  selectedAptitude
 }) {
   const classes = useStyles();
   const history = useHistory();
@@ -93,9 +92,8 @@ export function ExperienceItem({
           </Avatar>
         </ListItemAvatar>
         <ListItemText
-          onClick={onClickExperience ? () => onClickExperience(experience) : null}
           primary={createLink({
-            to: onClickExperience ? null : getEditLink({experience}),
+            to: getEditLink({experience}),
             text: experience.title
           })}
           secondary={

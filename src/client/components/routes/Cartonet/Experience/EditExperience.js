@@ -12,7 +12,7 @@ import {
   FormControlLabel,
   Paper
 } from "@material-ui/core";
-import {useHistory, useParams, generatePath} from "react-router";
+import {useHistory, useParams, generatePath, matchPath} from "react-router";
 import {object} from "yup";
 import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
@@ -101,7 +101,6 @@ export default function EditExperience({experienceType = "experience", fullscree
   }, [id]);
 
   useEffect(() => {
-    console.log(experience);
     if (editingExperience?.id !== experience?.id) {
       setEditingExperience(experience);
     }
@@ -349,7 +348,7 @@ export default function EditExperience({experienceType = "experience", fullscree
     if (!saveAndResetForm) {
       history.goBack();
     } else {
-      history.push(generatePath(`${ROUTES.CARTONET_EDIT_EXPERIENCE}`));
+      history.push(getEditLink());
     }
   }
 
@@ -366,5 +365,21 @@ export default function EditExperience({experienceType = "experience", fullscree
     }
 
     setOnTheFlyExperiences([...onTheFlyExperiences]);
+  }
+
+  function getEditLink() {
+    let route = ROUTES.CARTONET_EDIT_EXPERIENCE;
+
+    if(!!matchPath(history.location.pathname, {path: ROUTES.CARTONET_EDIT_TRAINING, exact: false, strict: false})){
+      route = ROUTES.CARTONET_EDIT_TRAINING;
+    } else if(!!matchPath(history.location.pathname, {path: ROUTES.CARTONET_EDIT_HOBBY, exact: false, strict: false})) {
+      route = ROUTES.CARTONET_EDIT_HOBBY;
+    }
+
+    if (!!matchPath(history.location.pathname, {path: ROUTES.PROFILE, exact: false, strict: false})) {
+      route = `${ROUTES.PROFILE}${route}`;
+    }
+
+    return generatePath(route);
   }
 }
