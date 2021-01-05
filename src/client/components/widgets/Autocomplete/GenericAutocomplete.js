@@ -7,7 +7,7 @@ import get from "lodash/get";
 import invariant from "invariant";
 import {useTranslation} from "react-i18next";
 
-const filter = createFilterOptions();
+const strictOptionsFilter = createFilterOptions();
 
 /**
  * @param {gql} gqlEntitiesQuery
@@ -39,7 +39,8 @@ export function GenericAutocomplete({
   multiple,
   className,
   disableEntities = [],
-  creatable
+  creatable,
+  strictMode = false
 } = {}) {
   invariant(gqlEntitiesQuery, "gqlEntitiesQuery must be passed");
   invariant(gqlEntitiesConnectionPath, "gqlEntitiesConnectionPath must be passed");
@@ -107,8 +108,12 @@ export function GenericAutocomplete({
         />
       )}
       filterOptions={(options, params) => {
+        if(strictMode || creatable){
+          options = strictOptionsFilter(options, params);
+        }
+
         // Suggest the creation of a new value
-        if (creatable && params.inputValue !== '') {
+        if (creatable && params.inputValue !== '' && (options.length === 0 || !!options.find(option => option[gqlEntityLabelPath] !==  params.inputValue))) {
           options.push({
             inputValue: params.inputValue,
             [gqlEntityLabelPath]: t("AUTOCOMPLETE.ADD", {value: params.inputValue }),

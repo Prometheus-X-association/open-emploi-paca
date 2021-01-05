@@ -56,6 +56,7 @@ export function OrganizationAutocomplete({
         variant: "standard",
         ...TextFieldProps
       }}
+      strictMode
     />
   );
 }
