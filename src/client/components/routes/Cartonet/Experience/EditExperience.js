@@ -368,14 +368,17 @@ export default function EditExperience({experienceType = "experience", fullscree
   }
 
   function getEditLink() {
+    const location = history.location.pathname.replace(ROUTES.PROFILE, "");
+
     let route = ROUTES.CARTONET_EDIT_EXPERIENCE;
 
-    if(!!matchPath(history.location.pathname, {path: ROUTES.CARTONET_EDIT_TRAINING, exact: false, strict: false})){
+    if(!!matchPath(location, {path: ROUTES.CARTONET_EDIT_TRAINING, exact: false, strict: false})){
       route = ROUTES.CARTONET_EDIT_TRAINING;
-    } else if(!!matchPath(history.location.pathname, {path: ROUTES.CARTONET_EDIT_HOBBY, exact: false, strict: false})) {
+    } else if(!!matchPath(location, {path: ROUTES.CARTONET_EDIT_HOBBY, exact: false, strict: false})) {
       route = ROUTES.CARTONET_EDIT_HOBBY;
     }
 
+    // This is a hack to guess if we are in cartonet standalone mode or in openemploi.
     if (!!matchPath(history.location.pathname, {path: ROUTES.PROFILE, exact: false, strict: false})) {
       route = `${ROUTES.PROFILE}${route}`;
     }

@@ -132,6 +132,7 @@ export function ExperienceItem({
   function getEditLink({experience}) {
     let route = editLinkMapping[experience.experienceType] || editLinkMapping.experience;
 
+    // This is a hack to guess if we are in cartonet standalone mode or in openemploi.
     if (!!matchPath(history.location.pathname, {path: ROUTES.PROFILE, exact: false, strict: false})) {
       route = `${ROUTES.PROFILE}${route}`;
     }
