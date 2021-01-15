@@ -362,8 +362,7 @@ export default function EditExperience({experienceType = "experience", fullscree
 
   function handleSaveCompleted({message} = {}) {
     enqueueSnackbar(message || t("ACTIONS.SUCCESS"), {
-      variant: "success",
-      anchorOrigin: {horizontal: "right", vertical: "bottom"}
+      variant: "success"
     });
 
     setEditingExperience(null);
