@@ -140,10 +140,10 @@ export default function EditAptitudes({
         <Button disabled={modifiedAptitudesCount === 0} variant="contained" color="primary" onClick={() => {
           setTimeout(() => {
             enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
-            history.goBack()
-          }, 500)
+          }, 500);
+          setModifiedAptitudesCount(0);
         }}>{t("ACTIONS.SAVE")}</Button>
-        <Button onClick={() => history.goBack()}>{t("ACTIONS.CANCEL")}</Button>
+        <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
       </DialogActions>
     </>
   );
