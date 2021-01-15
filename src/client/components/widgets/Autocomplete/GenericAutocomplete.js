@@ -114,7 +114,7 @@ export function GenericAutocomplete({
 
         // Suggest the creation of a new value
         if (creatable && params.inputValue !== '' && (options.length === 0 || !!options.find(option => option[gqlEntityLabelPath] !==  params.inputValue))) {
-          options.push({
+          options.unshift({
             inputValue: params.inputValue,
             [gqlEntityLabelPath]: t("AUTOCOMPLETE.ADD", {value: params.inputValue }),
             isCreation: true
