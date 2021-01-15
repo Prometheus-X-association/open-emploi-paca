@@ -5,12 +5,13 @@ import {useTranslation} from "react-i18next";
 import {
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   Grid,
   Typography,
-  Checkbox,
-  FormControlLabel,
-  Paper
+  Button,
+  Paper,
+  Dialog
 } from "@material-ui/core";
 import {useHistory, useParams, generatePath, matchPath} from "react-router";
 import {object} from "yup";
@@ -33,6 +34,8 @@ import {gqlUpdateExperience} from "./gql/UpdateExperience.gql";
 import {ExperienceItem} from "../Cartography/Cartography";
 import {gqlCreateExperience} from "./gql/CreateExperience.gql";
 import {ROUTES} from "../../../../routes";
+import {gqlRemoveExperience} from "./gql/RemoveExperience.gql";
+import {LoadingButton} from "../../../widgets/Button/LoadingButton";
 
 const useStyles = makeStyles(theme => ({
   categoryTitle: {
@@ -71,6 +74,7 @@ export default function EditExperience({experienceType = "experience", fullscree
   const {enqueueSnackbar} = useSnackbar();
   const history = useHistory();
   const [saveAndResetForm, setSaveAndResetForm] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const selectedAptitudeRefContainer = useRef(null);
   const [editingExperience, setEditingExperience] = useState(null);
   const [onTheFlyExperiences, setOnTheFlyExperiences] = useState([]);
@@ -86,6 +90,10 @@ export default function EditExperience({experienceType = "experience", fullscree
 
   const [updateExperience, {loading: savingExperience}] = useMutation(gqlUpdateExperience, {
     onCompleted: handleSaveCompleted
+  });
+
+  const [removeExperience, {loading: removingExperience}] = useMutation(gqlRemoveExperience, {
+    onCompleted: handleRemoveCompleted
   });
 
   const saving = savingProfile || savingExperience;
@@ -125,11 +133,7 @@ export default function EditExperience({experienceType = "experience", fullscree
         onSubmit={async (values, {setSubmitting, resetForm}) => {
           await save(values);
           setSubmitting(false);
-
-          if (saveAndResetForm) {
-            setEditingExperience(null);
-            resetForm();
-          }
+          resetForm();
         }}
         validateOnChange={true}
         validateOnBlur={true}
@@ -210,6 +214,29 @@ export default function EditExperience({experienceType = "experience", fullscree
                 </Grid>
               </DialogContent>
               <DialogActions>
+                <If condition={editingExperience}>
+                  <Button variant={"contained"} color={"secondary"} onClick={() => setDeleteModalOpen(true)}>
+                    {t("ACTIONS.DELETE")}
+                  </Button>
+                  <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
+                    <DialogTitle>
+                      {t("CARTONET.EXPERIENCE.REMOVE")}
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        {t("CARTONET.EXPERIENCE.REMOVE_SURE", {name: experience.title})}
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <LoadingButton loading={removingExperience} variant={"contained"} color={"secondary"} onClick={handleRemove}>
+                        {t("ACTIONS.DELETE")}
+                      </LoadingButton>
+                      <Button  onClick={() => setDeleteModalOpen(false)}>
+                        {t("ACTIONS.CANCEL")}
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </If>
                 <FormButtons
                   inDialog
                   errors={errors}
@@ -333,16 +360,35 @@ export default function EditExperience({experienceType = "experience", fullscree
     saveOnTheFlyExperience(mutatingExperience);
   }
 
-  function handleSaveCompleted() {
-    enqueueSnackbar(t("ACTIONS.SUCCESS"), {
+  function handleSaveCompleted({message} = {}) {
+    enqueueSnackbar(message || t("ACTIONS.SUCCESS"), {
       variant: "success",
       anchorOrigin: {horizontal: "right", vertical: "bottom"}
     });
-    if (!saveAndResetForm) {
-      history.goBack();
-    } else {
-      history.push(getEditLink());
+
+    setEditingExperience(null);
+    history.replace(getEditLink());
+  }
+
+  function handleRemoveCompleted(){
+    handleSaveCompleted({
+      message: t("ACTIONS.SUCCESS_DELETE")
+    });
+  }
+
+
+  async function handleRemove(){
+    if(editingExperience){
+      await removeExperience({
+        variables: {
+          input: {
+            objectId: editingExperience.id
+          }
+        }
+      });
+      removeOnTheFlyExperience(editingExperience);
     }
+    setDeleteModalOpen(false);
   }
 
   function saveOnTheFlyExperience(experience) {
@@ -358,6 +404,15 @@ export default function EditExperience({experienceType = "experience", fullscree
     }
 
     setOnTheFlyExperiences([...onTheFlyExperiences]);
+  }
+
+  function removeOnTheFlyExperience(experience) {
+    const indexOf = onTheFlyExperiences.findIndex(onTheFlyExperience => onTheFlyExperience.id === experience.id);
+
+    if (indexOf >= 0) {
+      onTheFlyExperiences.splice(indexOf, 1);
+      setOnTheFlyExperiences([...onTheFlyExperiences]);
+    }
   }
 
   function getEditLink() {

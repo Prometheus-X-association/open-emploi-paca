@@ -7,7 +7,7 @@ export const fr = {
     CANCEL: "Annuler",
     CLOSE: "Fermer",
     CHANGE_IMAGE: "Modifier l'image",
-    DELETE: "Effacer",
+    DELETE: "Supprimer",
     GO_BACK: "Retour",
     ONE_VALUE_ONLY: "Une seule valeur possible",
     NO_RESULT: "Aucun résultat ne correspond à votre recherche",
@@ -16,6 +16,7 @@ export const fr = {
     REMOVE_IMAGE: "Supprimer",
     SAVE: "Enregistrer",
     SUCCESS: "Enregistré avec succès",
+    SUCCESS_DELETE: "Suppression confirmée",
     UPDATE: "Modifier",
     LOADING: "Chargement...",
     NEXT: "Suivante",
@@ -67,7 +68,9 @@ export const fr = {
       FORM_EXISTING_APTITUDES_LABEL: "Compétences à sélectionner pour l'expérience",
       SAVE_AND_ADD_NEW: "Ajouter une nouvelle expérience après enregistrement",
       PLEASE_SELECT_OCCUPATIONS: "Sélectionner des métiers pour pouvoir choisir des compétences associées",
-      ON_THE_FLY_EXPERIENCES: "Expériences ajoutées :"
+      ON_THE_FLY_EXPERIENCES: "Expériences ajoutées :",
+      REMOVE: "Supprimer l'expérience",
+      REMOVE_SURE: "Vous êtes sur le point de supprimer l'expérience \"{{name}}\"."
     },
     TRAINING: {
       PAGE_TITLE: "Édition de formation",
