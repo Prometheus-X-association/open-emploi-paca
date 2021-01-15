@@ -70,7 +70,7 @@ export default function EditExperience({experienceType = "experience", fullscree
   const {t} = useTranslation();
   const {enqueueSnackbar} = useSnackbar();
   const history = useHistory();
-  const [saveAndResetForm, setSaveAndResetForm] = useState(false);
+  const [saveAndResetForm, setSaveAndResetForm] = useState(true);
   const selectedAptitudeRefContainer = useRef(null);
   const [editingExperience, setEditingExperience] = useState(null);
   const [onTheFlyExperiences, setOnTheFlyExperiences] = useState([]);
@@ -210,13 +210,6 @@ export default function EditExperience({experienceType = "experience", fullscree
                 </Grid>
               </DialogContent>
               <DialogActions>
-                <FormControlLabel
-                  control={
-                    <Checkbox checked={saveAndResetForm} onChange={e => setSaveAndResetForm(e.target.checked)} />
-                  }
-                  labelPlacement={"start"}
-                  label={t("CARTONET.EXPERIENCE.SAVE_AND_ADD_NEW")}
-                />
                 <FormButtons
                   inDialog
                   errors={errors}
