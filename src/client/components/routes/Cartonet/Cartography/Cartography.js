@@ -14,7 +14,7 @@ import {
   Grid,
   Chip,
   Typography,
-  CircularProgress
+  CircularProgress,
 } from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
 import clsx from "clsx";
@@ -55,6 +55,13 @@ const useStyles = makeStyles(theme => ({
   },
   categoryTitle: {
     marginBottom: theme.spacing(2)
+  },
+  top5Chip: {
+    height: theme.spacing(2),
+    fontSize: 10,
+    "& > span": {
+      padding: theme.spacing(0, 0.5)
+    }
   }
 }));
 
@@ -156,7 +163,14 @@ export default function Cartography({} = {}) {
     fetchPolicy: "no-cache"
   });
   const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes, {
-    fetchPolicy: "no-cache"
+    fetchPolicy: "no-cache",
+    variables: {
+      sortings: [{
+        sortBy: "isTop5"
+      }, {
+        sortBy: "skillLabel"
+      }]
+    }
   });
 
   return (
@@ -208,7 +222,12 @@ export default function Cartography({} = {}) {
                     className={clsx(classes.aptitude, {
                       [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
                     })}>
-                    <Grid item md={8}>
+                    <Grid item md={1}>
+                      <If condition={aptitude.isTop5}>
+                        <Chip className={classes.top5Chip} label={"Top5"} color="primary" variant="outlined" size="small"/>
+                      </If>
+                    </Grid>
+                    <Grid item md={7}>
                       {aptitude.skillLabel || aptitude.skill?.prefLabel}
                     </Grid>
                     <Grid item md={4} className={classes.rating}>

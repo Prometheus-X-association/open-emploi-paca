@@ -64,6 +64,13 @@ const useStyles = makeStyles(theme => ({
   forcePrint: {
     colorAdjust: "exact",
     "-webkit-print-color-adjust": "exact"
+  },
+  top5Chip: {
+    height: theme.spacing(2.2),
+    fontSize: 12,
+    "& > span": {
+      padding: theme.spacing(0, 0.8)
+    }
   }
 }));
 /**
@@ -79,7 +86,14 @@ export default function PrintProfile({} = {}) {
     fetchPolicy: "no-cache"
   });
   const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes, {
-    fetchPolicy: "no-cache"
+    fetchPolicy: "no-cache",
+    variables: {
+      sortings: [{
+        sortBy: "isTop5"
+      }, {
+        sortBy: "skillLabel"
+      }]
+    }
   });
 
   useEffect(() => {
@@ -174,6 +188,11 @@ export default function PrintProfile({} = {}) {
               <List dense>
                 {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
                   <ListItem key={aptitude.id}>
+                    <ListItemAvatar>
+                      <If condition={aptitude.isTop5}>
+                        <Chip className={classes.top5Chip} label={"Top5"} color="primary" variant="outlined" size="small"/>
+                      </If>
+                    </ListItemAvatar>
                     <ListItemText>{aptitude.skillLabel}</ListItemText>
                     <ListItemSecondaryAction>
                       <Rating value={aptitude.rating?.value} size={"small"} readOnly />
