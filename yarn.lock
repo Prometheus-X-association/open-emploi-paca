@@ -2127,9 +2127,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mnemotix/synaptix.js@npm:^4.7.4":
-  version: 4.7.4
-  resolution: "@mnemotix/synaptix.js@npm:4.7.4"
+"@mnemotix/synaptix.js@npm:^4.7.10":
+  version: 4.7.10
+  resolution: "@mnemotix/synaptix.js@npm:4.7.10"
   dependencies:
     "@babel/plugin-proposal-class-properties": ^7.12.1
     amqplib: 0.6.0
@@ -2181,7 +2181,7 @@ __metadata:
   bin:
     check-datamodel: bin/checkDataModel.js
     generate-datamodel: bin/generateDataModel.js
-  checksum: a463d72640aa0799bb0e76e4616162705649216c1dfe4f1f5b6e126d10266e5b37001832720976543a0feff81799f85a8750848c79f396febe5427fdcb3cf00d
+  checksum: bd16db1859011e3a3c3c3f4c5664e4aa46c6fb48a819f7dd9e73f272299e005c441ea19500b35ad4c4e83b137a306a22f7cf826de716d2a3087a9f81a545af24
   languageName: node
   linkType: hard
 
@@ -9322,7 +9322,7 @@ fsevents@^1.2.7:
     "@material-ui/lab": ^4.0.0-alpha.56
     "@material-ui/pickers": ^3.2.10
     "@mnemotix/synaptix-client-toolkit": ^2.0.2
-    "@mnemotix/synaptix.js": ^4.7.4
+    "@mnemotix/synaptix.js": ^4.7.10
     "@types/react": ^16.9.0
     "@ungap/url-search-params": ^0.1.4
     apollo-upload-client: ^14.1.3
