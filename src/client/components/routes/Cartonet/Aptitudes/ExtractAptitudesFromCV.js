@@ -135,7 +135,7 @@ export default function ExtractAptitudesFromCV({} = {}) {
             {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.ACTION_SAVE", {count: selectedSkills?.length})}
           </LoadingButton>
         </If>
-        <Button onClick={() => history.goBack()}>{t("ACTIONS.CANCEL")}</Button>
+        <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
       </DialogActions>
     </>
   );
