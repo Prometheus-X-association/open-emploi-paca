@@ -134,6 +134,7 @@ export default function EditAptitudes({
               top5Count: rows.filter(({isTop5}) => isTop5 === true).length
             };
           }}
+          getRemoveConfirmText={({count}) => t("CARTONET.APTITUDES.REMOVE_TEXT", {count})}
         />
       </DialogContent>
       <DialogActions>

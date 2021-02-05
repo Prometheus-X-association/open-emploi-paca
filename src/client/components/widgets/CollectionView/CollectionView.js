@@ -107,6 +107,7 @@ export function CollectionView({
   availableDisplayMode = [],
   onDisplayModeChange,
   removalEnabled,
+  getRemoveConfirmText,
   searchEnabled,
   onSelectNodes,
   renderFilters,
@@ -278,7 +279,7 @@ export function CollectionView({
                 <Dialog open={removeConfirmDialogOpened} onClose={() => setRemoveConfirmDialogOpened(false)}>
                   <DialogContent>
                     <DialogContentText>
-                      {t("REMOTE_TABLE.ACTIONS.REMOVE_CONFIRM_TEXT", {count: selectedNodes.length})}
+                      {getRemoveConfirmText ? getRemoveConfirmText({count: selectedNodes.length}) : t("REMOTE_TABLE.ACTIONS.REMOVE_CONFIRM_TEXT", {count: selectedNodes.length})}
                     </DialogContentText>
                   </DialogContent>
                   <DialogActions>

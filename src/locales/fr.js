@@ -113,7 +113,9 @@ export const fr = {
       EXPERIENCE_COUNT: "Nombre d'expériences associées",
       RATING: "Niveau de maîtrise",
       TOP_5: "Mettre en Top 5",
-      IS_IN_CV: "Dans le CV"
+      IS_IN_CV: "Dans le CV",
+      REMOVE_TEXT: "Êtes-vous sûr de vouloir supprimer cette compétence ?",
+      REMOVE_TEXT_plural: "Êtes-vous sûr de vouloir supprimer ces {{count}} compétences ?"
     },
     CARTOGRAPHY: {
       PAGE_TITLE: "Restitution du profil Carto.net",
