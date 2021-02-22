@@ -42,6 +42,7 @@ export default function ExtractAptitudesFromCV({} = {}) {
   const {enqueueSnackbar} = useSnackbar();
   const [file, setFile] = useState();
   const {user} = useLoggedUser();
+  const [savedSkills, setSavedSkills] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([]);
 
   const {data: {me} = {}} = useQuery(gqlMyAptitudes);
@@ -50,19 +51,14 @@ export default function ExtractAptitudesFromCV({} = {}) {
   });
 
   useEffect(() => {
-    if (file) {
-      extractAptitudes({
-        variables: {
-          file,
-          personId: user.id,
-          first: 50
-        }
-      });
-    }
+    fetchExtractAptitudes();
   }, [file]);
 
   const [updateProfile, {loading: saving}] = useMutation(gqlUpdateProfile, {
     onCompleted: () => {
+      setSavedSkills([].concat(savedSkills, selectedSkills));
+      setSelectedSkills([]);
+
       enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
       history.goBack();
     }
@@ -96,7 +92,7 @@ export default function ExtractAptitudesFromCV({} = {}) {
                   <ListItemText>{skill.prefLabel}</ListItemText>
                   <ListItemSecondaryAction>
                     <Button
-                      disabled={existingAptitudeEdge}
+                      disabled={existingAptitudeEdge || savedSkills.find(({id}) => id === skill.id)}
                       variant={indexOfSelected > -1 && "outlined"}
                       size={"small"}
                       onClick={() => {
@@ -139,6 +135,18 @@ export default function ExtractAptitudesFromCV({} = {}) {
       </DialogActions>
     </>
   );
+
+  function fetchExtractAptitudes(){
+    if (file) {
+      extractAptitudes({
+        variables: {
+          file,
+          personId: user.id,
+          first: 50
+        }
+      });
+    }
+  }
 
   function onChange({
     target: {
