@@ -100,7 +100,6 @@ export function DefaultLayout({TitleComponent, children}) {
     {
       path: ROUTES.TRANSPORTS,
       text: "Transport et logement",
-      disabled: true
     },
     {
       path: ROUTES.LIFE_STYLE,

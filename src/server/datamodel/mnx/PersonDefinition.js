@@ -19,7 +19,6 @@ import {
   ModelDefinitionAbstract,
   LiteralDefinition,
   LinkDefinition,
-  GraphQLTypeDefinition,
   MnxOntologies,
   LinkPath
 } from "@mnemotix/synaptix.js";
@@ -28,6 +27,7 @@ import JobAreaDefinition from "../oep/JobAreaDefinition";
 import ExperienceDefinition from "../mm/ExperienceDefinition";
 import AptitudeDefinition from "../mm/AptitudeDefinition";
 import SkillDefinition from "../mm/SkillDefinition";
+import {PersonGraphQLDefinition} from "./graphql/PersonGraphQLDefinition";
 
 export default class PersonDefinition extends ModelDefinitionAbstract {
   /**
@@ -41,7 +41,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getGraphQLDefinition() {
-    return GraphQLTypeDefinition;
+    return PersonGraphQLDefinition;
   }
 
   static getLinks() {

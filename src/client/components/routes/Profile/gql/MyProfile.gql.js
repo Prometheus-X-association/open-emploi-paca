@@ -57,6 +57,11 @@ export const gqlMyProfile = gql`
       avatar
       firstName
       lastName
+      weverUser{
+        mapId
+        reportId
+        token
+      }
       ...MyProfileFragment
     }
   }

@@ -5,7 +5,7 @@ import {useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
 import {object, string} from "yup";
 import pick from "lodash/pick";
-
+import WeverCollector from "wever-collector"
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {FormButtons, OccupationPickerField, TextField} from "../../widgets/Form";
 
@@ -195,8 +195,7 @@ export default function Profile({} = {}) {
                     <Grid item xs={12} md={6}>
                       <BlockContainer title={"Mon profil de mobilité (WeDiag)"}>
                         <img src={LogoWever} alt={"Logo Wever"} className={classes.logoInsert}/>
-
-                        A venir...
+                        <WeverCollector {...me?.weverUser}/>
                       </BlockContainer>
                     </Grid>
 

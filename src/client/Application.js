@@ -25,6 +25,8 @@ const Market = loadable(() => import("./components/routes/Market/Market"));
 const Incomes = loadable(() => import("./components/routes/Incomes/Incomes"));
 const Trainings = loadable(() => import("./components/routes/Trainings/Trainings"));
 const Skills = loadable(() => import("./components/routes/Skills/Skills"));
+const Transports = loadable(() => import("./components/routes/Transports/Transports"));
+
 
 const Cartonet = loadable(() => import("./components/routes/Cartonet/Cartonet"));
 
@@ -74,6 +76,7 @@ export default function Application({} = {}) {
                     <Route path={ROUTES.INCOMES} component={Incomes} />
                     <Route path={ROUTES.TRAININGS} component={Trainings} />
                     <Route path={ROUTES.SKILLS} component={Skills} />
+                    <Route path={ROUTES.TRANSPORTS} component={Transports} />
                     <Route component={Dashboard} />
                   </Switch>
                 </DefaultLayout>

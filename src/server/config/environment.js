@@ -198,4 +198,14 @@ export default {
     obfuscate: true,
     defaultValueInProduction: true
   },
+  WEVER_APPLICATION_TOKEN: {
+    description: "Wever application token",
+    obfuscate: true
+  },
+  WEVER_API_ENDPOINT: {
+    description: "Wever application token",
+    obfuscate: true,
+    defaultValue: "https://api.preprod.wever.team",
+    defaultValueInProduction: true
+  }
 };

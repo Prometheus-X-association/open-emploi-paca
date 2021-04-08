@@ -233,6 +233,9 @@ export const fr = {
     TRANSPORTS: "Transport et logement",
     LIFE: "Cadre de vie"
   },
+  TRANSPORTS: {
+    TITLE:"Transport et logement"
+  },
   PROFILE: {
     YOUR_PROFILE: "Votre profil",
     FIRST_NAME: "Prénom",
