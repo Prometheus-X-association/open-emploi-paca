@@ -207,5 +207,10 @@ export default {
     obfuscate: true,
     defaultValue: "https://api.preprod.wever.team",
     defaultValueInProduction: true
+  },
+  GRECO_BASE_URL: {
+    description: "Greco base URL",
+    defaultValue: "/greco",
+    defaultValueInProduction: true
   }
 };

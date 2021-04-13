@@ -21,8 +21,8 @@ import dayjs from "dayjs";
 import {createCache} from "../Cache";
 import env from "env-var";
 
-// TTL = 1 day
-const cache = createCache({ttl: 86400});
+// TTL = 5 min
+const cache = createCache({ttl: 300});
 
 class WeverClient {
   /**
@@ -99,8 +99,10 @@ class WeverClient {
 
       return result;
     } catch (e) {
-      logError("There is an error while fetch Wever API :");
-      logError(e);
+      if(e.response?.statusCode >= 500){
+        logError("There is an error while fetch Wever API :");
+        logError(e);
+      }
       return {};
     }
   }

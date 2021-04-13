@@ -1,9 +1,15 @@
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import WeverMaps from "wever-maps";
 import {Grid, InputAdornment, List, ListItem, Typography, ListSubheader, Divider} from "@material-ui/core";
 import {useMutation, useQuery} from "@apollo/client";
 import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
+
+
+// import WeverMaps from "wever-maps";
+function WeverMaps({} = {}){
+  return "A venir...";
+}
+
 
 const useStyles = makeStyles(theme => ({}));
 

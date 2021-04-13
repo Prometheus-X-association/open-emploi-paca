@@ -64,6 +64,7 @@ export function AppBar({} = {}) {
               vertical: "top",
               horizontal: "center"
             }}>
+            <MenuItem onClick={() => location.assign("/greco")}>Accéder à GRECO</MenuItem>
             <MenuItem onClick={() => logout()}>{t("APP_BAR.MENU.SIGN_OUT")}</MenuItem>
           </Menu>
         </Grid>

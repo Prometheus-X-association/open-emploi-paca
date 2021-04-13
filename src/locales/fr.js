@@ -1,7 +1,8 @@
+import merge from "lodash/merge";
 import { frLocale as SynaptixClientToolkitFrLocale } from "@mnemotix/synaptix-client-toolkit";
+import { locales as grecoLocales } from "@mnemotix/koncept-greco/locales";
 
-export const fr = {
-  ...SynaptixClientToolkitFrLocale,
+export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
   ACTIONS: {
     ADD: "Ajouter",
     CANCEL: "Annuler",
@@ -335,4 +336,4 @@ export const fr = {
   RESET_PASSWORD: {
     CONFIRM: "Réinitialiser mon mot de passe"
   }
-};
+});

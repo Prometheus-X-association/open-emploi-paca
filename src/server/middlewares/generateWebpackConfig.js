@@ -4,19 +4,24 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const env = require("env-var");
 
 /**
  * @param {string} distPath
+ * @param {string} assetsPath
+ * @param {string} jsAssetsPath
  * @param {string} htmlTemplatePath
- * @param {string} mainJsPath
+ * @param {object} entries
  */
 export function generateWebpackConfig({
   distPath,
+  assetsPath = "a/",
+  jsAssetsPath = "js/",
   htmlTemplatePath,
-  mainJsPath
-}) {
+  entries
+} ) {
   let isDev = process.env.NODE_ENV !== "production";
   let isProd = !isDev;
   let isCI = !!process.env.CI;
@@ -28,29 +33,29 @@ export function generateWebpackConfig({
   let devtool = isDev ? "cheap-module-source-map" : false;
 
   /** entry **/
-  let entry = [
-    ...(isDev && env.get("HOT_RELOAD_DISABLED").asBool() !== true
-      ? ["webpack-hot-middleware/client?reload=true"]
-      : []),
-    mainJsPath
-  ];
+  let entry = entries.reduce((acc, {name, entry}) => {
+    acc[name] = entry;
+    return acc;
+  }, {});
 
   /** output **/
   let output = {
     path: distPath,
-    filename: isDev ? "[name].js" : "[name].[hash].js",
-    chunkFilename: isDev ? "[name].js" : "[name].[hash].js",
+    filename: jsAssetsPath + (isDev ? "[name].js" : "[name].[hash].js"),
+    chunkFilename: jsAssetsPath + (isDev ? "[name].js" : "[name].[hash].js"),
     publicPath: "/"
   };
 
   /** plugins **/
   let plugins = [
+    new CleanWebpackPlugin(),
     ...(!isCI ? [new webpack.ProgressPlugin()] : []),
-    new HtmlWebpackPlugin({
-      template: htmlTemplatePath,
-      inject: "body",
-      filename: "index.html"
-    }),
+    ...(entries.map(({html}) => (
+      new HtmlWebpackPlugin({
+        inject: "body",
+        ...html
+      })
+    ))),
     ...(isDev && env.get("HOT_RELOAD_DISABLED").asBool() !== true
       ? [new webpack.HotModuleReplacementPlugin()]
       : []),
@@ -90,8 +95,17 @@ export function generateWebpackConfig({
   let optimization = {
     splitChunks: {
       cacheGroups: {
+        greco: {
+          test: /[\\/]@mnemotix\/koncept-greco[\\/]/,
+          name: "greco",
+          chunks: "all"
+        },
         vendors: {
-          test: /[\\/]node_modules[\\/]/,
+          test(module) {
+            return (
+              module.resource && module.resource.includes(`.yarn/cache`)
+            );
+          },
           name: "vendors",
           chunks: "all"
         }
@@ -135,26 +149,15 @@ export function generateWebpackConfig({
          *
          */
         test: /\.css$/i,
-        include: /node_modules/,
         use: [require.resolve("style-loader"), require.resolve("css-loader")]
       },
       {
-        test: /\.(woff|woff2|eot|ttf)$/,
-        use: [
-          {
-            loader: require.resolve("url-loader"),
-            options: {
-              limit: 4096
-            }
-          }
-        ]
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg|ico)$/i,
+        test: /\.(jpe?g|png|gif|svg|ico|woff|woff2|eot|ttf)$/i,
         use: {
           loader: require.resolve("file-loader"),
           options: {
-            name: "[path][name].[hash].[ext]"
+            name:  "[name].[hash].[ext]",
+            outputPath: assetsPath
           }
         }
       },

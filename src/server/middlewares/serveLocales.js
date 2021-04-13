@@ -17,7 +17,7 @@
  */
 
 import merge from "lodash/merge";
-import { locales as defaultLocales } from "../../locales";
+import { locales } from "../../locales";
 
 /**
  * Serves localized labels for the application under the endpoint /locales/:lang
@@ -25,11 +25,7 @@ import { locales as defaultLocales } from "../../locales";
  * The locales are defined in the directory src/locales
  *
  */
-export function serveLocales({ locales } = {}) {
-  if (locales) {
-    locales = merge(locales, defaultLocales);
-  }
-
+export function serveLocales() {
   return ({ app }) => {
     app.get("/locales/:lang", async (req, res) => {
       let lang = req.params.lang;

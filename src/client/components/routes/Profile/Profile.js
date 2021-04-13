@@ -5,7 +5,6 @@ import {useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
 import {object, string} from "yup";
 import pick from "lodash/pick";
-import WeverCollector from "wever-collector"
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {FormButtons, OccupationPickerField, TextField} from "../../widgets/Form";
 
@@ -21,6 +20,12 @@ import {ROUTES} from "../../../routes";
 import LogoMM from "../../../assets/logo-mm.png";
 import LogoWever from "../../../assets/logo-wever.png";
 import {generatePath} from "react-router";
+
+
+// import WeverCollector from "wever-collector";
+function WeverCollector({} = {}){
+  return "A venir...";
+}
 
 const useStyles = makeStyles(theme => ({
   cartoNetSubHeader: {

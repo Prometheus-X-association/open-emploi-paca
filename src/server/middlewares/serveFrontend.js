@@ -20,7 +20,7 @@ import path from "path";
 import webpack from "webpack";
 import webpackMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
-import history from "connect-history-api-fallback";
+import env from "env-var";
 import expressStaticGzip from "express-static-gzip";
 
 import { ExpressApp, logInfo } from "@mnemotix/synaptix.js";
@@ -43,26 +43,23 @@ export function serveFrontend({ webpackConfig }) {
       const compiler = webpack(webpackConfig);
       const middleware = webpackMiddleware(compiler, {
         publicPath: webpackConfig.output.publicPath,
+        writeToDisk: true
       });
 
-      app.use(
-        history(),
-        authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true})
-      ); /* Redirects all GET requests, with type text/html, to index.html */
       app.use(middleware);
       app.use(webpackHotMiddleware(compiler));
-    } else {
-      /* Dist file frow webpack config */
-      let distDirectory = webpackConfig.output.path;
-      let distIndex = path.resolve(distDirectory, "index.html");
-
-      app.use(expressStaticGzip("./dist", {
-        enableBrotli: true,
-        orderPreference: ['br']
-      }), authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true}));
-      app.get("*", authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true}), (req, res) => {
-        res.sendFile(distIndex);
-      });
     }
+
+    app.use(expressStaticGzip("./dist", {
+      enableBrotli: true,
+      orderPreference: ['br']
+    }), authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true}));
+
+    const grecoBaseUrl = env.get("GRECO_BASE_URL").asString();
+
+    app.get("*", authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true}), (req, res) => {
+      const htmlFile = grecoBaseUrl && req.path.includes(grecoBaseUrl) ? "greco.html" : "index.html";
+      res.sendFile(path.resolve(webpackConfig.output.path, htmlFile));
+    });
   };
 }

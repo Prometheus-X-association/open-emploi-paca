@@ -19,6 +19,21 @@ const {generateWebpackConfig} = require("./src/server/middlewares/generateWebpac
 
 module.exports = generateWebpackConfig({
   distPath: path.resolve(__dirname, 'dist'),
-  htmlTemplatePath: path.resolve(__dirname, './src/client/index.tpl.html'),
-  mainJsPath:  path.resolve(__dirname, './src/client/main.js')
+  entries: [{
+    name: "main",
+    entry: path.resolve(__dirname, './src/client/main.js'),
+    html: {
+      template: path.resolve(__dirname, './src/client/index.tpl.html'),
+      excludeChunks: ["greco"],
+      filename: "index.html"
+    }
+  }, {
+    name: "greco",
+    entry: path.resolve(__dirname, './src/client/mainGreco.js'),
+    html: {
+      template: path.resolve(__dirname, './src/client/indexGreco.tpl.html'),
+      excludeChunks: ["main"],
+      filename: "greco.html"
+    }
+  }]
 });
