@@ -129,6 +129,7 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
         literalName: "income",
         rdfDataProperty: "mm:income",
         pathInIndex: "salaire",
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
       }),
       new LiteralDefinition({
         literalName: "publicUrl",

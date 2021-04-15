@@ -56,9 +56,6 @@ export function generateWebpackConfig({
         ...html
       })
     ))),
-    ...(isDev && env.get("HOT_RELOAD_DISABLED").asBool() !== true
-      ? [new webpack.HotModuleReplacementPlugin()]
-      : []),
     ...(isProd
       ? [
           new MiniCssExtractPlugin({
@@ -121,6 +118,12 @@ export function generateWebpackConfig({
       })
     ];
   }
+
+  // HMR
+  // if(isDev && env.get("HOT_RELOAD_DISABLED").asBool() !== true) {
+  //   entry.hmr = "webpack-hot-middleware/client";
+  //   plugins.push(new webpack.HotModuleReplacementPlugin());
+  // }
 
   /** modules **/
   let webpackModule = {
