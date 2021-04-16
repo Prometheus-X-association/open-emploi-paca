@@ -1,4 +1,5 @@
 import {makeStyles} from "@material-ui/core/styles";
+import loadable from "@loadable/component";
 import {useTranslation} from "react-i18next";
 import {Grid, InputAdornment, List, ListItem, Typography, ListSubheader, Divider} from "@material-ui/core";
 import {useMutation, useQuery} from "@apollo/client";
@@ -20,12 +21,10 @@ import {ROUTES} from "../../../routes";
 import LogoMM from "../../../assets/logo-mm.png";
 import LogoWever from "../../../assets/logo-wever.png";
 import {generatePath} from "react-router";
+import ErrorBoundary from "../../widgets/ErrorBoundary";
 
 
-// import WeverCollector from "wever-collector";
-function WeverCollector({} = {}){
-  return "A venir...";
-}
+const WeverCollector = loadable(() => import("./WeverCollector"));
 
 const useStyles = makeStyles(theme => ({
   cartoNetSubHeader: {
@@ -200,7 +199,9 @@ export default function Profile({} = {}) {
                     <Grid item xs={12} md={6}>
                       <BlockContainer title={"Mon profil de mobilité (WeDiag)"}>
                         <img src={LogoWever} alt={"Logo Wever"} className={classes.logoInsert}/>
-                        <WeverCollector {...me?.weverUser}/>
+                        <ErrorBoundary>
+                          <WeverCollector {...me?.weverUser}/>
+                        </ErrorBoundary>
                       </BlockContainer>
                     </Grid>
 
