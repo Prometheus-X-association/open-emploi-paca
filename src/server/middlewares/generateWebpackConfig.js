@@ -84,7 +84,8 @@ export function generateWebpackConfig({
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
-      SYNAPTIX_USER_SESSION_COOKIE_NAME: "SNXID"
+      SYNAPTIX_USER_SESSION_COOKIE_NAME: "SNXID",
+      THUMBOR_BASE_URL: ""
     })
   ];
 

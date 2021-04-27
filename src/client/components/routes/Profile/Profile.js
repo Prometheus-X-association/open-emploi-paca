@@ -200,7 +200,7 @@ export default function Profile({} = {}) {
                       <BlockContainer title={"Mon profil de mobilité (WeDiag)"}>
                         <img src={LogoWever} alt={"Logo Wever"} className={classes.logoInsert}/>
                         <ErrorBoundary>
-                          <WeverCollector {...me?.weverUser}/>
+                          <WeverCollector {...me?.weverUser} />
                         </ErrorBoundary>
                       </BlockContainer>
                     </Grid>
