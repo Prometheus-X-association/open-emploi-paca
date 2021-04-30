@@ -1,6 +1,6 @@
 {
   "name": "oep-application",
-  "version": "1.1.4-beta.4",
+  "version": "1.1.4-beta.5",
   "license": "Apache-2.0",
   "description": "OpenEmploi PACA application",
   "repository": "https://gitlab.com/ami-paca/oep-application",
@@ -24,8 +24,8 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
-    "@mnemotix/koncept-core": "^2.0.0-alpha.2",
-    "@mnemotix/koncept-greco": "^2.0.0-alpha.2",
+    "@mnemotix/koncept-core": "^2.0.0-alpha.5",
+    "@mnemotix/koncept-greco": "^2.0.0-alpha.6",
     "@mnemotix/synaptix-client-toolkit": "^2.2.2",
     "@mnemotix/synaptix.js": "^4.7.23",
     "@types/react": "^16.9.0",
