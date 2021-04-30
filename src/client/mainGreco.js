@@ -17,12 +17,10 @@ import React from "react";
 import {launchGreco} from "@mnemotix/koncept-greco";
 import {theme} from "./theme";
 import possibleTypes from "./gql/possibleTypes.json";
-import {GrecoAppBarTitle} from "./components/routes/Greco/GrecoAppBar";
 
 launchGreco({
   possibleTypes,
   theme,
   extensions : [],
   locationBaseUrl: "greco",
-  AppBarTitleComponent: GrecoAppBarTitle
 });

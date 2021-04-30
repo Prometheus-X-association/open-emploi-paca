@@ -1258,10 +1258,10 @@
     prop-types "^15.7.2"
     react-is "^17.0.0"
 
-"@mnemotix/koncept-core@^2.0.0-alpha.2":
-  version "2.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-core/-/koncept-core-2.0.0-alpha.2.tgz#482ebefb64f642e0d47c7f4b568749285285fee1"
-  integrity sha512-VkhVyySuX/O87RfCDSJXQMmTHvA5tnbNsGh4sBiZ+K7IjgTgjoJW+wHcGn/UReSISSkwq7f33FzyrR436sYcVg==
+"@mnemotix/koncept-core@^2.0.0-alpha.5":
+  version "2.0.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-core/-/koncept-core-2.0.0-alpha.5.tgz#01248ce0bd7bb0806e4dcbf713a386854df4678b"
+  integrity sha512-IojggVRcs8sXOC/81gjBiU9hdwzY+S/vQE6A6EfSK3VJIzMf1cIliiHT4Ip7ANR0+F1sr+9817/0ScbbP6HXLA==
   dependencies:
     "@babel/core" "^7.12.9"
     "@babel/register" "^7.12.10"
@@ -1353,10 +1353,10 @@
     webpack-dev-middleware "^4.1.0"
     webpack-hot-middleware "^2.25.0"
 
-"@mnemotix/koncept-greco@^2.0.0-alpha.2":
-  version "2.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-greco/-/koncept-greco-2.0.0-alpha.2.tgz#94dd76628a89fc218a71089f4eb9240192e90069"
-  integrity sha512-hxO4RRgJH/B/179izqCsTRVpzfCPpbDOtRyh3ERjY0mSQFbc2O1yssN1R2ATa/FZljbXhx4zFVZkfL/twY3Ygg==
+"@mnemotix/koncept-greco@^2.0.0-alpha.6":
+  version "2.0.0-alpha.6"
+  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-greco/-/koncept-greco-2.0.0-alpha.6.tgz#fda95bc5602ca7f856ba974d1084839092ba55d4"
+  integrity sha512-wg48nZGp/Vn3wn7SeKeOD641WgUk2nW2oHedJ30OIV5SdEYsomNsfOWGdoY5gOtjyXII1kqii8u3yGBDUdZeww==
   dependencies:
     "@babel/core" "^7.12.10"
     "@babel/plugin-syntax-dynamic-import" "^7.8.3"
