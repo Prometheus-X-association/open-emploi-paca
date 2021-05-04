@@ -208,6 +208,13 @@ export default {
     defaultValue: "https://api.preprod.wever.team",
     defaultValueInProduction: true
   },
+  WEVER_DIAG_ID: {
+    description: "Wever diag ID",
+    obfuscate: true,
+    defaultValue: 35,
+    defaultValueInProduction: true,
+    exposeInGraphQL: true
+  },
   GRECO_BASE_URL: {
     description: "Greco base URL",
     defaultValue: "/greco",
