@@ -11048,41 +11048,15 @@ webpack@^5.10.2, webpack@^5.22.0, webpack@^5.6.0:
     watchpack "^2.0.0"
     webpack-sources "^2.1.1"
 
-"wever-collector@git+https://public:jo7t7LpiHB47r5px-wCy@gitlab.com/wever-v2/wever-collector.git#6603b93fe5a6169837b6bb4800dc1d63fa6319e9":
+"wever-collector@git+https://public:jo7t7LpiHB47r5px-wCy@gitlab.com/wever-v2/wever-collector.git#stable":
   version "0.1.0"
-  resolved "git+https://public:jo7t7LpiHB47r5px-wCy@gitlab.com/wever-v2/wever-collector.git#6603b93fe5a6169837b6bb4800dc1d63fa6319e9"
+  resolved "git+https://public:jo7t7LpiHB47r5px-wCy@gitlab.com/wever-v2/wever-collector.git#2cf0ad8167a723c69da837452ad8f176611276b0"
   dependencies:
     leaflet "^1.7.1"
     react-beautiful-dnd "^13.0.0"
     react-bootstrap-slider "^3.0.0"
     react-leaflet "^2.7.0"
     wever-core "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#stable"
-
-"wever-core@git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#9bd5cbacd1130e31372b30b2bd014620f4963bcb":
-  version "0.1.0"
-  resolved "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#9bd5cbacd1130e31372b30b2bd014620f4963bcb"
-  dependencies:
-    "@fortawesome/fontawesome-svg-core" "^1.2.30"
-    "@fortawesome/free-solid-svg-icons" "^5.14.0"
-    "@fortawesome/react-fontawesome" "^0.1.11"
-    "@popperjs/core" "^2.9.2"
-    axios "^0.19.2"
-    classnames "^2.2.6"
-    formik "^2.1.4"
-    jwt-decode "^2.2.0"
-    moment "^2.24.0"
-    qs "^6.9.4"
-    react-content-loader "^5.1.0"
-    react-datetime "^2.16.3"
-    react-hot-keys "^2.6.0"
-    react-input-autosize "^2.2.2"
-    react-moment "^0.9.7"
-    react-monaco-editor "^0.40.0"
-    react-notifications-component "^2.4.0"
-    react-select "^3.1.0"
-    react-stepper-horizontal "^1.0.11"
-    reactstrap "^8.5.1"
-    yup "^0.29.1"
 
 "wever-core@git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#stable":
   version "0.1.0"
@@ -11110,11 +11084,11 @@ webpack@^5.10.2, webpack@^5.22.0, webpack@^5.6.0:
     reactstrap "^8.5.1"
     yup "^0.29.1"
 
-
-"wever-maps@git+https://public:8NdkS2Uy1CMdzs5vYthy@gitlab.com/wever-v2/wever-maps.git#77ad1c44fd7cb72fa84a3e7a24f17d543a730752":
+"wever-maps@git+https://public:8NdkS2Uy1CMdzs5vYthy@gitlab.com/wever-v2/wever-maps.git#stable":
   version "1.0.0"
-  resolved "git+https://public:8NdkS2Uy1CMdzs5vYthy@gitlab.com/wever-v2/wever-maps.git#77ad1c44fd7cb72fa84a3e7a24f17d543a730752"
+  resolved "git+https://public:8NdkS2Uy1CMdzs5vYthy@gitlab.com/wever-v2/wever-maps.git#428d75bc939ff8da9577125e513d205fb19a15de"
   dependencies:
+    leaflet "^1.7.1"
     react-leaflet "^2.7.0"
     react-minimal-pie-chart "^8.1.0"
     wever-core "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#stable"

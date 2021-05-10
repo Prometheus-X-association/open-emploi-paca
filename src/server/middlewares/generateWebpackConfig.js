@@ -148,12 +148,19 @@ export function generateWebpackConfig({
         ]
       },
       {
-        /*
-         * Also, CSS dependencies in node_modules are not used by this project
-         *
-         */
         test: /\.css$/i,
+        exclude: /node_modules\/wever/,
         use: [require.resolve("style-loader"), require.resolve("css-loader")]
+      },
+      {
+        test: /\.css$/i,
+        include: /node_modules\/wever/,
+        use: [require.resolve("style-loader"), {
+          loader: require.resolve("css-loader"),
+          options: {
+            url: false
+          }
+        }]
       },
       {
         test: /\.(jpe?g|png|gif|svg|ico|woff|woff2|eot|ttf)$/i,
