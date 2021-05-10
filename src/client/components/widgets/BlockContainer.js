@@ -9,7 +9,8 @@ const useStyles = makeStyles(theme => ({
   root: {
     position: "relative",
     padding: theme.spacing(2),
-    height: "100%"
+    height: "100%",
+    maxWidth: "100%"
   },
   title: {
     color: theme.palette.text.mainBlue,

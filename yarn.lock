@@ -1273,10 +1273,10 @@
     prop-types "^15.7.2"
     react-is "^17.0.0"
 
-"@mnemotix/koncept-core@^2.0.0-alpha.6":
-  version "2.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-core/-/koncept-core-2.0.0-alpha.6.tgz#d97e781b507034e1a81cf4cdee090a2ccc861215"
-  integrity sha512-f6GB6gHfuK0mJ5nJklyeeJiE8DvCWNDHmHEvusviXYlYRPoZ+0baVEBUx2O6mgxOMQTej2k9ExMCAi14XeYQVA==
+"@mnemotix/koncept-core@^2.0.0-alpha.7":
+  version "2.0.0-alpha.7"
+  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-core/-/koncept-core-2.0.0-alpha.7.tgz#e5ba2c39ef6aae19dbbb39a9eb35b38a2e1738a3"
+  integrity sha512-lCsdllLBBsIvZk+06k2kRxcJj2WbM7jE7pGwszeENBHABOJVdJrPQA40nOFF9TaPY7Vc0OsWxobK17Zmq2Zxhw==
   dependencies:
     "@babel/core" "^7.12.9"
     "@babel/register" "^7.12.10"
@@ -1414,10 +1414,10 @@
     rxjs "^6.4.0"
     yup "^0.27.0"
 
-"@mnemotix/synaptix.js@^4.7.24":
-  version "4.7.24"
-  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.7.24.tgz#1ddc639015f99ab29fad1c905f80a1dd46cd14e2"
-  integrity sha512-QS+WEAupboOn1BQQPWc0n0HRCdyeMkQtKeXMNNy5YRD2MlcSMPgLgVTWt3ZISKewUOeHZx0YKMGDG+rvbyHyIQ==
+"@mnemotix/synaptix.js@^4.7.26":
+  version "4.7.26"
+  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.7.26.tgz#64fe966a00e8a7d15650a081bfca44a4ac50b65a"
+  integrity sha512-sfk+0WnbkU08Q1cfMX/uIh/3yQEFx8TavVM1DYu60frtyfwbsBZk8F5WOyEaRqUZHSBB1p8CAix3J8bld12UnA==
   dependencies:
     "@elastic/elasticsearch" "^7.11.0"
     amqplib "0.6.0"
