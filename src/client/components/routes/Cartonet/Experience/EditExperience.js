@@ -36,8 +36,9 @@ import {gqlCreateExperience} from "./gql/CreateExperience.gql";
 import {ROUTES} from "../../../../routes";
 import {gqlRemoveExperience} from "./gql/RemoveExperience.gql";
 import {LoadingButton} from "../../../widgets/Button/LoadingButton";
+import {CartonetEditLayout} from "../CartonetEditLayout";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   categoryTitle: {
     marginTop: theme.spacing(2)
   },
@@ -115,8 +116,7 @@ export default function EditExperience({experienceType = "experience", fullscree
   }, [experience?.id, loadingExperience]);
 
   return (
-    <>
-      <DialogTitle>{t(`CARTONET.${experienceType.toUpperCase()}.PAGE_TITLE`)}</DialogTitle>
+    <CartonetEditLayout>
       <Formik
         enableReinitialize={true}
         initialValues={
@@ -219,21 +219,21 @@ export default function EditExperience({experienceType = "experience", fullscree
                     {t("ACTIONS.DELETE")}
                   </Button>
                   <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
-                    <DialogTitle>
-                      {t("CARTONET.EXPERIENCE.REMOVE")}
-                    </DialogTitle>
+                    <DialogTitle>{t("CARTONET.EXPERIENCE.REMOVE")}</DialogTitle>
                     <DialogContent>
                       <DialogContentText>
                         {t("CARTONET.EXPERIENCE.REMOVE_SURE", {name: experience.title})}
                       </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                      <LoadingButton loading={removingExperience} variant={"contained"} color={"secondary"} onClick={handleRemove}>
+                      <LoadingButton
+                        loading={removingExperience}
+                        variant={"contained"}
+                        color={"secondary"}
+                        onClick={handleRemove}>
                         {t("ACTIONS.DELETE")}
                       </LoadingButton>
-                      <Button  onClick={() => setDeleteModalOpen(false)}>
-                        {t("ACTIONS.CANCEL")}
-                      </Button>
+                      <Button onClick={() => setDeleteModalOpen(false)}>{t("ACTIONS.CANCEL")}</Button>
                     </DialogActions>
                   </Dialog>
                 </If>
@@ -261,7 +261,7 @@ export default function EditExperience({experienceType = "experience", fullscree
             <Grid item xs={12}>
               <Typography>{t("CARTONET.EXPERIENCE.ON_THE_FLY_EXPERIENCES")}</Typography>
             </Grid>
-            {onTheFlyExperiences.map(experience => (
+            {onTheFlyExperiences.map((experience) => (
               <Grid item xs={12}>
                 <ExperienceItem experience={experience} key={experience.id} />
               </Grid>
@@ -269,7 +269,7 @@ export default function EditExperience({experienceType = "experience", fullscree
           </Grid>
         </Paper>
       </If>
-    </>
+    </CartonetEditLayout>
   );
 
   async function save(mutatingExperience) {
@@ -307,7 +307,7 @@ export default function EditExperience({experienceType = "experience", fullscree
               inputName: "ratingInput"
             }
           ],
-          modifyValue: aptitude => {
+          modifyValue: (aptitude) => {
             if (aptitude.skill?.aptitudeId) {
               return {
                 id: aptitude.skill?.aptitudeId
@@ -369,15 +369,14 @@ export default function EditExperience({experienceType = "experience", fullscree
     history.replace(getEditLink());
   }
 
-  function handleRemoveCompleted(){
+  function handleRemoveCompleted() {
     handleSaveCompleted({
       message: t("ACTIONS.SUCCESS_DELETE")
     });
   }
 
-
-  async function handleRemove(){
-    if(editingExperience){
+  async function handleRemove() {
+    if (editingExperience) {
       await removeExperience({
         variables: {
           input: {
@@ -391,7 +390,7 @@ export default function EditExperience({experienceType = "experience", fullscree
   }
 
   function saveOnTheFlyExperience(experience) {
-    const indexOf = onTheFlyExperiences.findIndex(onTheFlyExperience => onTheFlyExperience.id === experience.id);
+    const indexOf = onTheFlyExperiences.findIndex((onTheFlyExperience) => onTheFlyExperience.id === experience.id);
 
     if (indexOf >= 0) {
       onTheFlyExperiences.splice(indexOf, 1, experience);
@@ -406,7 +405,7 @@ export default function EditExperience({experienceType = "experience", fullscree
   }
 
   function removeOnTheFlyExperience(experience) {
-    const indexOf = onTheFlyExperiences.findIndex(onTheFlyExperience => onTheFlyExperience.id === experience.id);
+    const indexOf = onTheFlyExperiences.findIndex((onTheFlyExperience) => onTheFlyExperience.id === experience.id);
 
     if (indexOf >= 0) {
       onTheFlyExperiences.splice(indexOf, 1);
@@ -419,9 +418,9 @@ export default function EditExperience({experienceType = "experience", fullscree
 
     let route = ROUTES.CARTONET_EDIT_EXPERIENCE;
 
-    if(!!matchPath(location, {path: ROUTES.CARTONET_EDIT_TRAINING, exact: false, strict: false})){
+    if (!!matchPath(location, {path: ROUTES.CARTONET_EDIT_TRAINING, exact: false, strict: false})) {
       route = ROUTES.CARTONET_EDIT_TRAINING;
-    } else if(!!matchPath(location, {path: ROUTES.CARTONET_EDIT_HOBBY, exact: false, strict: false})) {
+    } else if (!!matchPath(location, {path: ROUTES.CARTONET_EDIT_HOBBY, exact: false, strict: false})) {
       route = ROUTES.CARTONET_EDIT_HOBBY;
     }
 

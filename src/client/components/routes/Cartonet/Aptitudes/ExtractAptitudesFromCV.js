@@ -25,10 +25,25 @@ import Rating from "@material-ui/lab/Rating";
 import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
 import {gqlUpdateProfile} from "../../Profile/gql/UpdateProfile.gql";
 import {LoadingButton} from "../../../widgets/Button/LoadingButton";
+import {CartonetEditLayout} from "../CartonetEditLayout";
+import clsx from "clsx";
 
-const useStyles = makeStyles(theme => ({
-  uploadButton: {
-    marginBottom: theme.spacing(2)
+const useStyles = makeStyles((theme) => ({
+  uploadButton: {},
+  uploadButtonContainer: {
+    textAlign: "center",
+    margin: theme.spacing(30, 0)
+  },
+  fileSelected: {
+    margin: theme.spacing(4, 0)
+  },
+  message: {
+    padding: theme.spacing(2)
+  },
+  matchingSkillsList: {
+    borderTop: `solid 1px ${theme.palette.grey[200]}`,
+    maxHeight: "50vh",
+    overflow: "auto"
   }
 }));
 
@@ -65,78 +80,79 @@ export default function ExtractAptitudesFromCV({} = {}) {
   });
 
   return (
-    <>
-      <DialogTitle>{t("CARTONET.EXTRACT_APTITUDES_FROM_CV.PAGE_TITLE")}</DialogTitle>
-      <DialogContent>
+    <CartonetEditLayout
+      actions={
+        <>
+          <If condition={selectedSkills?.length > 0}>
+            <LoadingButton loading={saving} variant="contained" color="primary" onClick={handleSave}>
+              {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.ACTION_SAVE", {count: selectedSkills?.length})}
+            </LoadingButton>
+          </If>
+          <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
+        </>
+      }>
+      <div className={clsx(classes.uploadButtonContainer, {[classes.fileSelected]: file})}>
         <Button variant="contained" component="label" className={classes.uploadButton}>
           {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.BUTTON")}
           <input type="file" hidden onChange={onChange} />
         </Button>
+      </div>
 
-        <If condition={file}>
-          <Typography>{t("CARTONET.EXTRACT_APTITUDES_FROM_CV.MESSAGE")}</Typography>
+      <If condition={file}>
+        <Typography className={classes.message}>{t("CARTONET.EXTRACT_APTITUDES_FROM_CV.MESSAGE")}</Typography>
 
-          <If condition={loading}>
-            <LoadingSplashScreen />
-          </If>
+        <List dense className={classes.matchingSkillsList}>
+          {(skills?.edges || []).map(({node: skill}) => {
+            const indexOfSelected = selectedSkills.findIndex(({id}) => skill.id === id);
+            const existingAptitudeEdge = (me?.aptitudes.edges || []).find(
+              ({node: aptitude}) => aptitude.skillLabel === skill.prefLabel
+            );
 
-          <List dense>
-            {(skills?.edges || []).map(({node: skill}) => {
-              const indexOfSelected = selectedSkills.findIndex(({id}) => skill.id === id);
-              const existingAptitudeEdge = (me?.aptitudes.edges || []).find(
-                ({node: aptitude}) => aptitude.skillLabel === skill.prefLabel
-              );
+            return (
+              <ListItem key={skill.id} disabled={existingAptitudeEdge}>
+                <ListItemText>{skill.prefLabel}</ListItemText>
+                <ListItemSecondaryAction>
+                  <Button
+                    disabled={existingAptitudeEdge || savedSkills.find(({id}) => id === skill.id)}
+                    variant={indexOfSelected > -1 && "outlined"}
+                    size={"small"}
+                    onClick={() => {
+                      if (indexOfSelected > -1) {
+                        selectedSkills.splice(indexOfSelected, 1);
+                        setSelectedSkills([...selectedSkills]);
+                      } else {
+                        setSelectedSkills([
+                          ...selectedSkills,
+                          {
+                            id: skill.id
+                          }
+                        ]);
+                      }
+                    }}>
+                    <Choose>
+                      <When condition={existingAptitudeEdge}>
+                        {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.SKILL_ALREADY_SELECTED")}
+                      </When>
+                      <When condition={indexOfSelected > -1}>
+                        {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.SKILL_SELECTED")}
+                      </When>
+                      <Otherwise>{t("CARTONET.EXTRACT_APTITUDES_FROM_CV.SELECT_SKILL")}</Otherwise>
+                    </Choose>
+                  </Button>
+                </ListItemSecondaryAction>
+              </ListItem>
+            );
+          })}
+        </List>
 
-              return (
-                <ListItem key={skill.id} disabled={existingAptitudeEdge}>
-                  <ListItemText>{skill.prefLabel}</ListItemText>
-                  <ListItemSecondaryAction>
-                    <Button
-                      disabled={existingAptitudeEdge || savedSkills.find(({id}) => id === skill.id)}
-                      variant={indexOfSelected > -1 && "outlined"}
-                      size={"small"}
-                      onClick={() => {
-                        if (indexOfSelected > -1) {
-                          selectedSkills.splice(indexOfSelected, 1);
-                          setSelectedSkills([...selectedSkills]);
-                        } else {
-                          setSelectedSkills([
-                            ...selectedSkills,
-                            {
-                              id: skill.id
-                            }
-                          ]);
-                        }
-                      }}>
-                      <Choose>
-                        <When condition={existingAptitudeEdge}>
-                          {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.SKILL_ALREADY_SELECTED")}
-                        </When>
-                        <When condition={indexOfSelected > -1}>
-                          {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.SKILL_SELECTED")}
-                        </When>
-                        <Otherwise>{t("CARTONET.EXTRACT_APTITUDES_FROM_CV.SELECT_SKILL")}</Otherwise>
-                      </Choose>
-                    </Button>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              );
-            })}
-          </List>
+        <If condition={loading}>
+          <LoadingSplashScreen />
         </If>
-      </DialogContent>
-      <DialogActions>
-        <If condition={selectedSkills?.length > 0}>
-          <LoadingButton loading={saving} variant="contained" color="primary" onClick={handleSave}>
-            {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.ACTION_SAVE", {count: selectedSkills?.length})}
-          </LoadingButton>
-        </If>
-        <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
-      </DialogActions>
-    </>
+      </If>
+    </CartonetEditLayout>
   );
 
-  function fetchExtractAptitudes(){
+  function fetchExtractAptitudes() {
     if (file) {
       extractAptitudes({
         variables: {
@@ -165,7 +181,7 @@ export default function ExtractAptitudesFromCV({} = {}) {
         input: {
           objectId: user.id,
           objectInput: {
-            aptitudeInputs: selectedSkills.map(skill => ({
+            aptitudeInputs: selectedSkills.map((skill) => ({
               isInCV: true,
               skillInput: {
                 id: skill.id
