@@ -119,6 +119,7 @@ export default function EditAptitudes({
 
   return (
     <CartonetEditLayout
+      title={t("CARTONET.APTITUDES.PAGE_TITLE")}
       actions={
         <Choose>
           <When condition={modifiedAptitudesCount > 0}>
@@ -148,7 +149,11 @@ export default function EditAptitudes({
         gqlCountPath={gqlCountPath}
         gqlQuery={gqlAptitudes}
         gqlFilters={null}
-        gqlSortings={[{sortBy: "skillLabel"}]}
+        gqlSortings={[
+          // This inversion seems to be a bug in Synaptix.js
+          {sortBy: "ratingValue", isSortDescending: true},
+          {sortBy: "isTop5", isSortDescending: false}
+        ]}
         gqlVariables={gqlVariables}
         availableDisplayMode={["table"]}
         searchEnabled={true}
