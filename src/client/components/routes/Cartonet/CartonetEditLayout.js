@@ -5,6 +5,8 @@ import {DialogActions, DialogContent, DialogTitle, Grid, Paper} from "@material-
 import {createLink} from "../../../utilities/createLink";
 import {ROUTES} from "../../../routes";
 import {generatePath, matchPath, useHistory} from "react-router";
+import {generateCartonetPath} from "./utils/generateCartonetPath";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
   step: {
@@ -16,7 +18,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.fontSize * 7
   },
   content: {
-    marginTop: theme.spacing(4)
+    marginTop: theme.spacing(4),
+    height: "50vh",
+    overflow: "auto"
+  },
+  stepActive: {
+    textDecoration: "underline"
   }
 }));
 
@@ -28,6 +35,10 @@ export function CartonetEditLayout({title, description, children, actions} = {})
   const {t} = useTranslation();
   const history = useHistory();
 
+  const extractSkillsPath = generateCartonetPath({history, route: ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV});
+  const editExperiencePath = generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_EXPERIENCE});
+  const editAptitudePath = generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_APTITUDES});
+
   return (
     <>
       <DialogTitle>{t("CARTONET.EDIT_TITLE")}</DialogTitle>
@@ -35,8 +46,9 @@ export function CartonetEditLayout({title, description, children, actions} = {})
         <Grid container className={classes.navigation} alignItems={"center"} wrap={"nowrap"}>
           <Grid item className={classes.step}>
             {createLink({
-              to: "",
-              text: t("CARTONET.ACTIONS.EXTRACT_SKILLS_FROM_CV")
+              to: extractSkillsPath,
+              text: t("CARTONET.ACTIONS.EXTRACT_SKILLS_FROM_CV"),
+              className: clsx({[classes.stepActive]: matchPath(history.location.pathname, {path: extractSkillsPath})})
             })}
           </Grid>
           <Grid item>
@@ -44,8 +56,9 @@ export function CartonetEditLayout({title, description, children, actions} = {})
           </Grid>
           <Grid item className={classes.step}>
             {createLink({
-              to: "",
-              text: t("CARTONET.ACTIONS.ADD_EXPERIENCE")
+              to: editExperiencePath,
+              text: t("CARTONET.ACTIONS.ADD_EXPERIENCE"),
+              className: clsx({[classes.stepActive]: matchPath(history.location.pathname, {path: editExperiencePath})})
             })}
           </Grid>
           <Grid item>
@@ -53,8 +66,9 @@ export function CartonetEditLayout({title, description, children, actions} = {})
           </Grid>
           <Grid item className={classes.step}>
             {createLink({
-              to: "",
-              text: t("CARTONET.ACTIONS.EDIT_APTITUDES")
+              to: editAptitudePath,
+              text: t("CARTONET.ACTIONS.EDIT_APTITUDES"),
+              className: clsx({[classes.stepActive]: matchPath(history.location.pathname, {path: editAptitudePath})})
             })}
           </Grid>
         </Grid>

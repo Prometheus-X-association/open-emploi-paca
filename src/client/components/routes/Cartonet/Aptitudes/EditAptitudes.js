@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 import {Button, DialogActions, DialogContent, DialogTitle, Checkbox} from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
 import {useMutation} from "@apollo/client";
@@ -11,8 +11,9 @@ import {CollectionView} from "../../../widgets/CollectionView/CollectionView";
 import {useSnackbar} from "notistack";
 import {gqlUpdateAptitude} from "./gql/UpdateAptitude.gql";
 import {LoadingButton} from "../../../widgets/Button/LoadingButton";
+import {CartonetEditLayout} from "../CartonetEditLayout";
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles((theme) => ({}));
 
 /**
  *
@@ -63,11 +64,7 @@ export default function EditAptitudes({
         customBodyRender: (_, {row: aptitude}) => {
           return (
             <If condition={aptitude.isInCV}>
-              <Checkbox
-                name={`${aptitude.id}_isInCV`}
-                checked={true}
-                disabled={true}
-              />
+              <Checkbox name={`${aptitude.id}_isInCV`} checked={true} disabled={true} />
             </If>
           );
         }
@@ -85,7 +82,7 @@ export default function EditAptitudes({
             <Rating
               value={aptitude.rating?.value || 0}
               name={`${aptitude.id}_rating`}
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
               onChange={(_, value) => handleUpdateAptitudeRating({aptitude, isTop5: aptitude.isTop5, value})}
             />
           );
@@ -105,8 +102,10 @@ export default function EditAptitudes({
               name={`${aptitude.id}_isTop5`}
               checked={!!aptitude.isTop5}
               disabled={!aptitude.isTop5 && rowsSharedState?.top5Count === 5}
-              onClick={e => e.stopPropagation()}
-              onChange={e => handleUpdateAptitudeRating({aptitude, value: aptitude.rating?.value || 0, isTop5: e.target.checked})}
+              onClick={(e) => e.stopPropagation()}
+              onChange={(e) =>
+                handleUpdateAptitudeRating({aptitude, value: aptitude.rating?.value || 0, isTop5: e.target.checked})
+              }
             />
           );
         }
@@ -115,38 +114,40 @@ export default function EditAptitudes({
   ];
 
   return (
-    <>
-      <DialogTitle>{t("CARTONET.APTITUDES.PAGE_TITLE")}</DialogTitle>
-      <DialogContent>
-        <CollectionView
-          columns={columns}
-          gqlConnectionPath={gqlConnectionPath}
-          gqlCountPath={gqlCountPath}
-          gqlQuery={gqlAptitudes}
-          gqlFilters={null}
-          gqlSortings={[{sortBy: "skillLabel"}]}
-          gqlVariables={gqlVariables}
-          availableDisplayMode={["table"]}
-          searchEnabled={true}
-          removalEnabled={true}
-          getRowsSharedState={({rows}) => {
-            return {
-              top5Count: rows.filter(({isTop5}) => isTop5 === true).length
-            };
-          }}
-          getRemoveConfirmText={({count}) => t("CARTONET.APTITUDES.REMOVE_TEXT", {count})}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button disabled={modifiedAptitudesCount === 0} variant="contained" color="primary" onClick={() => {
-          setTimeout(() => {
-            enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
-          }, 500);
-          setModifiedAptitudesCount(0);
-        }}>{t("ACTIONS.SAVE")}</Button>
-        <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
-      </DialogActions>
-    </>
+    <CartonetEditLayout
+      actions={
+        <Button
+          disabled={modifiedAptitudesCount === 0}
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setTimeout(() => {
+              enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
+            }, 500);
+            setModifiedAptitudesCount(0);
+          }}>
+          {t("ACTIONS.SAVE")}
+        </Button>
+      }>
+      <CollectionView
+        columns={columns}
+        gqlConnectionPath={gqlConnectionPath}
+        gqlCountPath={gqlCountPath}
+        gqlQuery={gqlAptitudes}
+        gqlFilters={null}
+        gqlSortings={[{sortBy: "skillLabel"}]}
+        gqlVariables={gqlVariables}
+        availableDisplayMode={["table"]}
+        searchEnabled={true}
+        removalEnabled={true}
+        getRowsSharedState={({rows}) => {
+          return {
+            top5Count: rows.filter(({isTop5}) => isTop5 === true).length
+          };
+        }}
+        getRemoveConfirmText={({count}) => t("CARTONET.APTITUDES.REMOVE_TEXT", {count})}
+      />
+    </CartonetEditLayout>
   );
 
   /**

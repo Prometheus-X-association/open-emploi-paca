@@ -1,18 +1,5 @@
 import {useEffect, useState} from "react";
-import {
-  Button,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-  ListItemSecondaryAction,
-  IconButton
-} from "@material-ui/core";
-import ClearIcon from "@material-ui/icons/Clear";
+import {Button, List, ListItem, ListItemText, Typography, ListItemSecondaryAction} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 
@@ -21,28 +8,33 @@ import {useSnackbar} from "notistack";
 import {gqlExtractAptitudesFromCV, gqlMyAptitudes} from "./gql/ExtractAptitudes.gql";
 import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
-import Rating from "@material-ui/lab/Rating";
 import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
 import {gqlUpdateProfile} from "../../Profile/gql/UpdateProfile.gql";
 import {LoadingButton} from "../../../widgets/Button/LoadingButton";
 import {CartonetEditLayout} from "../CartonetEditLayout";
 import clsx from "clsx";
+import {generateCartonetPath} from "../utils/generateCartonetPath";
+import {ROUTES} from "../../../../routes";
 
 const useStyles = makeStyles((theme) => ({
   uploadButton: {},
   uploadButtonContainer: {
-    textAlign: "center",
-    margin: theme.spacing(30, 0)
+    display: "flex",
+    height: "100%",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center"
   },
   fileSelected: {
-    margin: theme.spacing(4, 0)
+    margin: theme.spacing(4, 0),
+    height: "auto"
   },
   message: {
     padding: theme.spacing(2)
   },
   matchingSkillsList: {
     borderTop: `solid 1px ${theme.palette.grey[200]}`,
-    maxHeight: "50vh",
+    maxHeight: "40vh",
     overflow: "auto"
   }
 }));
@@ -75,7 +67,7 @@ export default function ExtractAptitudesFromCV({} = {}) {
       setSelectedSkills([]);
 
       enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
-      history.goBack();
+      history.push(generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_EXPERIENCE}));
     }
   });
 
@@ -88,7 +80,6 @@ export default function ExtractAptitudesFromCV({} = {}) {
               {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.ACTION_SAVE", {count: selectedSkills?.length})}
             </LoadingButton>
           </If>
-          <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
         </>
       }>
       <div className={clsx(classes.uploadButtonContainer, {[classes.fileSelected]: file})}>
@@ -109,12 +100,12 @@ export default function ExtractAptitudesFromCV({} = {}) {
             );
 
             return (
-              <ListItem key={skill.id} disabled={existingAptitudeEdge}>
+              <ListItem key={skill.id} disabled={!!existingAptitudeEdge}>
                 <ListItemText>{skill.prefLabel}</ListItemText>
                 <ListItemSecondaryAction>
                   <Button
-                    disabled={existingAptitudeEdge || savedSkills.find(({id}) => id === skill.id)}
-                    variant={indexOfSelected > -1 && "outlined"}
+                    disabled={!!existingAptitudeEdge || savedSkills.find(({id}) => id === skill.id)}
+                    variant={indexOfSelected > -1 ? "outlined" : "text"}
                     size={"small"}
                     onClick={() => {
                       if (indexOfSelected > -1) {
