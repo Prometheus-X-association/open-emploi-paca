@@ -12,6 +12,9 @@ import {useSnackbar} from "notistack";
 import {gqlUpdateAptitude} from "./gql/UpdateAptitude.gql";
 import {LoadingButton} from "../../../widgets/Button/LoadingButton";
 import {CartonetEditLayout} from "../CartonetEditLayout";
+import {Link} from "react-router-dom";
+import {generateCartonetPath} from "../utils/generateCartonetPath";
+import {ROUTES} from "../../../../routes";
 
 const useStyles = makeStyles((theme) => ({}));
 
@@ -22,7 +25,8 @@ export default function EditAptitudes({
   gqlAptitudes = gqlMyAptitudes,
   gqlConnectionPath = "me.aptitudes",
   gqlCountPath = "me.aptitudesCount",
-  gqlVariables = {}
+  gqlVariables = {},
+  onClose = () => {}
 } = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
@@ -116,18 +120,27 @@ export default function EditAptitudes({
   return (
     <CartonetEditLayout
       actions={
-        <Button
-          disabled={modifiedAptitudesCount === 0}
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setTimeout(() => {
-              enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
-            }, 500);
-            setModifiedAptitudesCount(0);
-          }}>
-          {t("ACTIONS.SAVE")}
-        </Button>
+        <Choose>
+          <When condition={modifiedAptitudesCount > 0}>
+            <Button
+              disabled={modifiedAptitudesCount === 0}
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                setTimeout(() => {
+                  enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
+                }, 500);
+                setModifiedAptitudesCount(0);
+              }}>
+              {t("ACTIONS.SAVE")}
+            </Button>
+          </When>
+          <Otherwise>
+            <Button variant={"contained"} onClick={onClose}>
+              {t("ACTIONS.TERMINATE")}
+            </Button>
+          </Otherwise>
+        </Choose>
       }>
       <CollectionView
         columns={columns}

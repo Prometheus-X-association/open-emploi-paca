@@ -58,7 +58,7 @@ export default function Cartonet({} = {}) {
           path={ROUTES.CARTONET_EDIT_HOBBY}
           render={() => <EditExperience fullscreen experienceType={"hobby"} />}
         />
-        <Route exact path={ROUTES.CARTONET_EDIT_APTITUDES} component={EditAptitudes} />
+        <Route exact path={ROUTES.CARTONET_EDIT_APTITUDES} render={() => <EditAptitudes onClose={handleClose} />} />
         <Route exact path={ROUTES.CARTONET_SHOW_PROFILE} component={Cartography} />
         <Route exact path={ROUTES.CARTONET_SHOW_JOBS} component={OccupationsMatching} />
         <Route exact path={ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV} render={() => <ExtractAptitudesFromCV />} />

@@ -37,6 +37,8 @@ import {ROUTES} from "../../../../routes";
 import {gqlRemoveExperience} from "./gql/RemoveExperience.gql";
 import {LoadingButton} from "../../../widgets/Button/LoadingButton";
 import {CartonetEditLayout} from "../CartonetEditLayout";
+import {Link} from "react-router-dom";
+import {generateCartonetPath} from "../utils/generateCartonetPath";
 
 const useStyles = makeStyles((theme) => ({
   categoryTitle: {
@@ -116,7 +118,23 @@ export default function EditExperience({experienceType = "experience", fullscree
   }, [experience?.id, loadingExperience]);
 
   return (
-    <CartonetEditLayout>
+    <CartonetEditLayout
+      actions={
+        <>
+          <Button
+            variant={"contained"}
+            component={Link}
+            to={generateCartonetPath({history, route: ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV})}>
+            {t("ACTIONS.PREVIOUS")}
+          </Button>
+          <Button
+            variant={"contained"}
+            component={Link}
+            to={generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_APTITUDES})}>
+            {t("ACTIONS.NEXT")}
+          </Button>
+        </>
+      }>
       <Formik
         enableReinitialize={true}
         initialValues={

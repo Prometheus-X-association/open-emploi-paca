@@ -1,7 +1,7 @@
 import {makeStyles} from "@material-ui/core/styles";
 import {ChevronRight as ChevronRightIcon} from "@material-ui/icons";
 import {useTranslation} from "react-i18next";
-import {DialogActions, DialogContent, DialogTitle, Grid, Paper} from "@material-ui/core";
+import {DialogActions, DialogContent, DialogTitle, Grid, Paper, Typography} from "@material-ui/core";
 import {createLink} from "../../../utilities/createLink";
 import {ROUTES} from "../../../routes";
 import {generatePath, matchPath, useHistory} from "react-router";
@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
   },
   stepActive: {
     textDecoration: "underline"
+  },
+  title: {
+    padding: theme.spacing(2)
   }
 }));
 
@@ -81,7 +84,16 @@ export function CartonetEditLayout({title, description, children, actions} = {})
         </div>
 
         <Paper variant={"outlined"} className={classes.content}>
-          {children}
+          <Grid container wrap={"nowrap"} direction={"column"} style={{height: "100%"}}>
+            <If condition={title}>
+              <Grid item className={classes.title}>
+                <Typography variant={"h5"}>{title}</Typography>
+              </Grid>
+            </If>
+            <Grid xs item>
+              {children}
+            </Grid>
+          </Grid>
         </Paper>
       </DialogContent>
 
@@ -90,23 +102,4 @@ export function CartonetEditLayout({title, description, children, actions} = {})
       </If>
     </>
   );
-
-  function getEditLink() {
-    const location = history.location.pathname.replace(ROUTES.PROFILE, "");
-
-    let route = ROUTES.CARTONET_EDIT_EXPERIENCE;
-
-    if (!!matchPath(location, {path: ROUTES.CARTONET_EDIT_TRAINING, exact: false, strict: false})) {
-      route = ROUTES.CARTONET_EDIT_TRAINING;
-    } else if (!!matchPath(location, {path: ROUTES.CARTONET_EDIT_HOBBY, exact: false, strict: false})) {
-      route = ROUTES.CARTONET_EDIT_HOBBY;
-    }
-
-    // This is a hack to guess if we are in cartonet standalone mode or in openemploi.
-    if (!!matchPath(history.location.pathname, {path: ROUTES.PROFILE, exact: false, strict: false})) {
-      route = `${ROUTES.PROFILE}${route}`;
-    }
-
-    return generatePath(route);
-  }
 }

@@ -70,7 +70,10 @@ export function CartonetModal({} = {}) {
             path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_HOBBY}`}
             render={() => <EditExperience experienceType={"hobby"} />}
           />
-          <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_APTITUDES}`} render={() => <EditAptitudes />} />
+          <Route
+            path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_APTITUDES}`}
+            render={() => <EditAptitudes onClose={handleClose} />}
+          />
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_PROFILE}`} render={() => <Cartography />} />
           <Route path={`${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_JOBS}`} render={() => <OccupationsMatching />} />
           <Route

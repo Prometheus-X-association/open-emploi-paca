@@ -4,6 +4,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 
 import {useHistory} from "react-router";
+import {Link} from "react-router-dom";
 import {useSnackbar} from "notistack";
 import {gqlExtractAptitudesFromCV, gqlMyAptitudes} from "./gql/ExtractAptitudes.gql";
 import {useLoggedUser} from "../../../../hooks/useLoggedUser";
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center"
   },
   fileSelected: {
-    margin: theme.spacing(4, 0),
+    marginBottom: theme.spacing(2),
     height: "auto"
   },
   message: {
@@ -73,14 +74,23 @@ export default function ExtractAptitudesFromCV({} = {}) {
 
   return (
     <CartonetEditLayout
+      title={t("CARTONET.EXTRACT_APTITUDES_FROM_CV.PAGE_TITLE")}
       actions={
-        <>
-          <If condition={selectedSkills?.length > 0}>
+        <Choose>
+          <When condition={selectedSkills?.length > 0}>
             <LoadingButton loading={saving} variant="contained" color="primary" onClick={handleSave}>
               {t("CARTONET.EXTRACT_APTITUDES_FROM_CV.ACTION_SAVE", {count: selectedSkills?.length})}
             </LoadingButton>
-          </If>
-        </>
+          </When>
+          <Otherwise>
+            <Button
+              variant={"contained"}
+              component={Link}
+              to={generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_EXPERIENCE})}>
+              {t("ACTIONS.NEXT")}
+            </Button>
+          </Otherwise>
+        </Choose>
       }>
       <div className={clsx(classes.uploadButtonContainer, {[classes.fileSelected]: file})}>
         <Button variant="contained" component="label" className={classes.uploadButton}>

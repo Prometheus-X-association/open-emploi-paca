@@ -20,9 +20,10 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
     SUCCESS_DELETE: "Suppression confirmée",
     UPDATE: "Modifier",
     LOADING: "Chargement...",
-    NEXT: "Suivante",
-    PREVIOUS: "Précédente",
+    NEXT: "Suivant",
+    PREVIOUS: "Précédent",
     NOT_ALLOWED: "Vous n'avez pas accès à cette fonctionnalité.",
+    TERMINATE: "Terminer",
   },
   APOLLO: {
     ERROR: {
@@ -109,7 +110,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       SEARCH_NONE: "Aucune compétence trouvée pour ce(s) métier(s)...",
     },
     EXTRACT_APTITUDES_FROM_CV: {
-      PAGE_TITLE: "Importez vos compétences",
+      PAGE_TITLE: "Importez vos compétences depuis votre CV",
       BUTTON: "Importer vos compétences",
       MESSAGE:
         "Les compétences reconnues sont classées en fonction de leur proximité avec la liste de compétences du référentiel.",
