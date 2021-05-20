@@ -13,14 +13,8 @@ import {
 } from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
 import clsx from "clsx";
-import dayjs from "dayjs";
-import {generatePath, useHistory, matchPath} from "react-router";
+import {useHistory} from "react-router";
 import {useQuery} from "@apollo/client";
-import ExperienceIcon from "@material-ui/icons/Work";
-import HobbyIcon from "@material-ui/icons/BeachAccess";
-import TrainingIcon from "@material-ui/icons/School";
-import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
-import {createLink} from "../../../../utilities/createLink";
 import {ROUTES} from "../../../../routes";
 
 import {gqlMyAptitudes} from "../Aptitudes/gql/MyAptitudes.gql";
@@ -80,10 +74,11 @@ export default function Cartography({} = {}) {
     variables: {
       sortings: [
         {
-          sortBy: "isTop5"
+          sortBy: "ratingValue",
+          isSortDescending: true
         },
         {
-          sortBy: "skillLabel"
+          sortBy: "isTop5"
         }
       ]
     }
@@ -111,7 +106,7 @@ export default function Cartography({} = {}) {
             </Typography>
 
             <Choose>
-              <When condition={loadingExperiences}>
+              <When condition={loadingAptitudes}>
                 <CircularProgress />
               </When>
               <Otherwise>

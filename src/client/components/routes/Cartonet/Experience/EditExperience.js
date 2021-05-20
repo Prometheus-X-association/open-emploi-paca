@@ -10,7 +10,6 @@ import {
   Grid,
   Typography,
   Button,
-  Paper,
   Dialog,
   Tabs,
   Tab
@@ -28,10 +27,8 @@ import {gqlOccupationFragment} from "../../Profile/gql/MyProfile.gql";
 import {prepareMutation} from "../../../../utilities/apollo/prepareMutation";
 import {gqlAptitudeFragment} from "../Aptitudes/gql/Aptitude.gql";
 import {gqlOrganizationFragment} from "../../../widgets/Autocomplete/OrganizationAutocomplete/gql/Organizations.gql";
-import {gqlMyExperiences} from "./gql/MyExperiences.gql";
 import {gqlExperience} from "./gql/Experience.gql";
 
-import clsx from "clsx";
 import {gqlUpdateExperience} from "./gql/UpdateExperience.gql";
 import {gqlCreateExperience} from "./gql/CreateExperience.gql";
 import {ROUTES} from "../../../../routes";
@@ -65,10 +62,12 @@ const useStyles = makeStyles(theme => ({
   content: {
     height: "50vh"
   },
-  experiences: {
-    height: "50vh",
-    overflow: "auto",
+  experiencesContainer: {
     borderRight: `1px solid ${theme.palette.grey[200]}`
+  },
+  experiences: {
+    height: `calc(50vh - ${theme.spacing(7)}px)`,
+    overflow: "auto"
   },
   editor: {
     height: "50vh"
@@ -93,11 +92,10 @@ const useStyles = makeStyles(theme => ({
 
 /**
  * @param {string} experienceType (experience|training|hobby)
- * @param {boolean} fullscreen
  * @return {JSX.Element}
  * @constructor
  */
-export default function EditExperience({experienceType = "experience", fullscreen} = {}) {
+export default function EditExperience({experienceType = "experience"} = {}) {
   if (!["experience", "training", "hobby"].includes(experienceType)) {
     throw new Error('experience type must be in ["experience", "training", "hobby"]');
   }
@@ -112,7 +110,6 @@ export default function EditExperience({experienceType = "experience", fullscree
   const {t} = useTranslation();
   const {enqueueSnackbar} = useSnackbar();
   const history = useHistory();
-  const [saveAndResetForm, setSaveAndResetForm] = useState(true);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const selectedAptitudeRefContainer = useRef(null);
   const [editingExperience, setEditingExperience] = useState(null);
@@ -144,6 +141,8 @@ export default function EditExperience({experienceType = "experience", fullscree
           id
         }
       });
+    } else {
+      setEditingExperience(null);
     }
   }, [id]);
 
@@ -185,7 +184,10 @@ export default function EditExperience({experienceType = "experience", fullscree
             métier que vous indiquez.
           </p>
 
-          <Tabs value={experienceType} className={classes.tabs} onChange={handleNavigateTo}>
+          <Tabs
+            value={experienceType}
+            className={classes.tabs}
+            onChange={(e, experienceType) => handleNavigateTo(experienceType)}>
             <Tab value={"experience"} label={t(`CARTONET.EXPERIENCE.PAGE_TITLE`)} />
             <Tab value={"training"} label={t(`CARTONET.TRAINING.PAGE_TITLE`)} />
             <Tab value={"hobby"} label={t(`CARTONET.HOBBY.PAGE_TITLE`)} />
@@ -193,8 +195,15 @@ export default function EditExperience({experienceType = "experience", fullscree
         </>
       }>
       <Grid container className={classes.content}>
-        <Grid xs={3} item className={classes.experiences}>
-          <Experiences aptitudesDisabled experienceType={experienceType} />
+        <Grid xs={3} item container wrap={"nowrap"} direction={"column"} className={classes.experiencesContainer}>
+          <Grid xs item className={classes.experiences}>
+            <Experiences aptitudesDisabled />
+          </Grid>
+          <Grid item container className={classes.actions} justify={"center"}>
+            <Button variant={"contained"} color={"secondary"} onClick={() => handleNavigateTo(experienceType)}>
+              {t("CARTONET.ACTIONS.ADD_EXPERIENCE")}
+            </Button>
+          </Grid>
         </Grid>
         <Grid xs={9} item>
           <Formik
@@ -501,7 +510,7 @@ export default function EditExperience({experienceType = "experience", fullscree
     return generatePath(route);
   }
 
-  function handleNavigateTo(event, experienceType) {
-    history.push(ROUTES[`CARTONET_EDIT_${experienceType.toUpperCase()}`]);
+  function handleNavigateTo(experienceType) {
+    history.push(generatePath(ROUTES[`CARTONET_EDIT_${experienceType.toUpperCase()}`]));
   }
 }
