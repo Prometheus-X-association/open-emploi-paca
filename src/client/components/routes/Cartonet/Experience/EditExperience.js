@@ -11,7 +11,9 @@ import {
   Typography,
   Button,
   Paper,
-  Dialog
+  Dialog,
+  Tabs,
+  Tab
 } from "@material-ui/core";
 import {useHistory, useParams, generatePath, matchPath} from "react-router";
 import {object} from "yup";
@@ -31,7 +33,6 @@ import {gqlExperience} from "./gql/Experience.gql";
 
 import clsx from "clsx";
 import {gqlUpdateExperience} from "./gql/UpdateExperience.gql";
-import {ExperienceItem} from "../Cartography/Cartography";
 import {gqlCreateExperience} from "./gql/CreateExperience.gql";
 import {ROUTES} from "../../../../routes";
 import {gqlRemoveExperience} from "./gql/RemoveExperience.gql";
@@ -39,6 +40,8 @@ import {LoadingButton} from "../../../widgets/Button/LoadingButton";
 import {CartonetEditLayout} from "../CartonetEditLayout";
 import {Link} from "react-router-dom";
 import {generateCartonetPath} from "../utils/generateCartonetPath";
+import Experiences from "../Cartography/Experiences";
+import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 
 const useStyles = makeStyles(theme => ({
   categoryTitle: {
@@ -52,6 +55,39 @@ const useStyles = makeStyles(theme => ({
   },
   onTheFlyExperiences: {
     padding: theme.spacing(2)
+  },
+  tabs: {
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(-4),
+    border: `1px solid ${theme.palette.grey[200]}`,
+    borderBottom: 0
+  },
+  content: {
+    height: "50vh"
+  },
+  experiences: {
+    height: "50vh",
+    overflow: "auto",
+    borderRight: `1px solid ${theme.palette.grey[200]}`
+  },
+  editor: {
+    height: "50vh"
+  },
+  form: {
+    height: `calc(50vh - ${theme.spacing(7)}px)`,
+    padding: theme.spacing(2),
+    overflow: "auto"
+  },
+  actions: {
+    padding: theme.spacing(1),
+    flexBasis: theme.spacing(7),
+    background: "white",
+    zIndex: 3,
+    borderTop: `1px solid ${theme.palette.grey[200]}`,
+    margin: 0
+  },
+  button: {
+    marginRight: theme.spacing(1)
   }
 }));
 
@@ -82,7 +118,7 @@ export default function EditExperience({experienceType = "experience", fullscree
   const [editingExperience, setEditingExperience] = useState(null);
   const [onTheFlyExperiences, setOnTheFlyExperiences] = useState([]);
 
-  const {data: {me} = {}} = useQuery(gqlMyExperiences);
+  const {user: me} = useLoggedUser() || {};
   const [getExperience, {data: {experience} = {}, loading: loadingExperience}] = useLazyQuery(gqlExperience, {
     fetchPolicy: "network-only"
   });
@@ -148,160 +184,160 @@ export default function EditExperience({experienceType = "experience", fullscree
             saisies (extraites de votre CV ou déjà sélectionnées sur une expérience précédente) soit en lien avec un
             métier que vous indiquez.
           </p>
+
+          <Tabs value={experienceType} className={classes.tabs} onChange={handleNavigateTo}>
+            <Tab value={"experience"} label={t(`CARTONET.EXPERIENCE.PAGE_TITLE`)} />
+            <Tab value={"training"} label={t(`CARTONET.TRAINING.PAGE_TITLE`)} />
+            <Tab value={"hobby"} label={t(`CARTONET.HOBBY.PAGE_TITLE`)} />
+          </Tabs>
         </>
       }>
-      <Formik
-        enableReinitialize={true}
-        initialValues={
-          editingExperience || {
-            title: "",
-            description: "",
-            startDate: null,
-            endDate: null,
-            occupations: {edges: []},
-            organization: null,
-            aptitudes: {edges: []}
-          }
-        }
-        onSubmit={async (values, {setSubmitting, resetForm}) => {
-          await save(values);
-          setSubmitting(false);
-          resetForm();
-        }}
-        validateOnChange={true}
-        validateOnBlur={true}
-        validationSchema={object().shape({
-          title: Yup.string().required("Required"),
-          startDate: Yup.date().required("Required"),
-          organization: Yup.object().required()
-        })}>
-        {({errors, touched, isValid, dirty, resetForm, values}) => {
-          const selectedOccupations = values.occupations;
-          return (
-            <Form>
-              <DialogContent className={clsx({[classes.fullscreen]: fullscreen})}>
-                <Grid container spacing={6}>
-                  <Grid item xs={12} md={6} container spacing={2}>
-                    <Grid item xs={12}>
-                      <Typography variant={"overline"}>
-                        {" "}
-                        {t(`CARTONET.${experienceType.toUpperCase()}.FORM_DESCRIPTION_LABEL`)}
-                      </Typography>
-                      <TextField required name="title" label={t("CARTONET.EXPERIENCE.TITLE")} />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField name="description" label={t("CARTONET.EXPERIENCE.DESCRIPTION")} multiline />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <OrganizationPickerField
-                        label={t(`CARTONET.${experienceType.toUpperCase()}.ORGANIZATION`)}
-                        name={"organization"}
-                        creatable={true}
-                      />
-                    </Grid>
-                    <Grid item xs={12} container>
-                      <Grid item xs={6}>
-                        <DatePickerField required name="startDate" label={t("CARTONET.EXPERIENCE.START_DATE")} />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <DatePickerField name="endDate" label={t("CARTONET.EXPERIENCE.END_DATE")} />
-                      </Grid>
-                    </Grid>
+      <Grid container className={classes.content}>
+        <Grid xs={3} item className={classes.experiences}>
+          <Experiences aptitudesDisabled experienceType={experienceType} />
+        </Grid>
+        <Grid xs={9} item>
+          <Formik
+            enableReinitialize={true}
+            initialValues={
+              editingExperience || {
+                title: "",
+                description: "",
+                startDate: null,
+                endDate: null,
+                occupations: {edges: []},
+                organization: null,
+                aptitudes: {edges: []}
+              }
+            }
+            onSubmit={async (values, {setSubmitting, resetForm}) => {
+              await save(values);
+              setSubmitting(false);
+              resetForm();
+            }}
+            validateOnChange={true}
+            validateOnBlur={true}
+            validationSchema={object().shape({
+              title: Yup.string().required("Required"),
+              startDate: Yup.date().required("Required"),
+              organization: Yup.object().required()
+            })}>
+            {({errors, touched, isValid, dirty, resetForm, values}) => {
+              const selectedOccupations = values.occupations;
+              return (
+                <Form>
+                  <Grid container direction={"column"} wrap={"nowrap"} className={classes.editor}>
+                    <Grid xs item container spacing={6} className={classes.form}>
+                      <Grid item xs={12} md={6} container spacing={2}>
+                        <Grid item xs={12}>
+                          <Typography variant={"overline"}>
+                            {" "}
+                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_DESCRIPTION_LABEL`)}
+                          </Typography>
+                          <TextField required name="title" label={t("CARTONET.EXPERIENCE.TITLE")} />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <TextField name="description" label={t("CARTONET.EXPERIENCE.DESCRIPTION")} multiline />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <OrganizationPickerField
+                            label={t(`CARTONET.${experienceType.toUpperCase()}.ORGANIZATION`)}
+                            name={"organization"}
+                            creatable={true}
+                          />
+                        </Grid>
+                        <Grid item xs={12} container>
+                          <Grid item xs={6}>
+                            <DatePickerField required name="startDate" label={t("CARTONET.EXPERIENCE.START_DATE")} />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <DatePickerField name="endDate" label={t("CARTONET.EXPERIENCE.END_DATE")} />
+                          </Grid>
+                        </Grid>
 
-                    <Grid item xs={12} container spacing={2} className={classes.aptitudes}>
-                      <Grid item xs={12}>
-                        <Typography variant={"overline"}>
-                          {" "}
-                          {t(`CARTONET.${experienceType.toUpperCase()}.FORM_APTITUDES_LABEL`)}
-                        </Typography>
+                        <Grid item xs={12} container spacing={2} className={classes.aptitudes}>
+                          <Grid item xs={12}>
+                            <Typography variant={"overline"}>
+                              {" "}
+                              {t(`CARTONET.${experienceType.toUpperCase()}.FORM_APTITUDES_LABEL`)}
+                            </Typography>
 
-                        <div ref={selectedAptitudeRefContainer}></div>
+                            <div ref={selectedAptitudeRefContainer}></div>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <Grid item xs={12}>
+                          <Typography className={classes.categoryTitle} variant="overline" display="block">
+                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`)}
+                          </Typography>
+
+                          <WishedOccupations dense name={"occupations"} includeLeafOccupations={true} />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Typography variant={"overline"}>
+                            {" "}
+                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_EXISTING_APTITUDES_LABEL`)}
+                          </Typography>
+
+                          <AptitudePicker
+                            dense
+                            name={"aptitudes"}
+                            filterByRelatedOccupationIds={selectedOccupations.edges.map(
+                              ({node: occupation}) => occupation.id
+                            )}
+                            selectedAptitudeRefContainer={selectedAptitudeRefContainer}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <Grid item container className={classes.actions} justify={"flex-end"}>
+                      <If condition={editingExperience}>
+                        <Grid item className={classes.button}>
+                          <Button variant={"contained"} color={"secondary"} onClick={() => setDeleteModalOpen(true)}>
+                            {t("ACTIONS.DELETE")}
+                          </Button>
+                          <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
+                            <DialogTitle>{t("CARTONET.EXPERIENCE.REMOVE")}</DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>
+                                {t("CARTONET.EXPERIENCE.REMOVE_SURE", {name: editingExperience.title})}
+                              </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                              <LoadingButton
+                                loading={removingExperience}
+                                variant={"contained"}
+                                color={"secondary"}
+                                onClick={handleRemove}>
+                                {t("ACTIONS.DELETE")}
+                              </LoadingButton>
+                              <Button onClick={() => setDeleteModalOpen(false)}>{t("ACTIONS.CANCEL")}</Button>
+                            </DialogActions>
+                          </Dialog>
+                        </Grid>
+                      </If>
+                      <Grid item>
+                        <FormButtons
+                          inDialog
+                          errors={errors}
+                          touched={touched}
+                          isValid={isValid}
+                          dirty={dirty}
+                          saving={saving}
+                          resetForm={resetForm}
+                          buttonVariant={"contained"}
+                        />
                       </Grid>
                     </Grid>
                   </Grid>
-
-                  <Grid item xs={12} md={6}>
-                    <Grid item xs={12}>
-                      <Typography className={classes.categoryTitle} variant="overline" display="block">
-                        {t(`CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`)}
-                      </Typography>
-
-                      <WishedOccupations dense name={"occupations"} includeLeafOccupations={true} />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography variant={"overline"}>
-                        {" "}
-                        {t(`CARTONET.${experienceType.toUpperCase()}.FORM_EXISTING_APTITUDES_LABEL`)}
-                      </Typography>
-
-                      <AptitudePicker
-                        dense
-                        name={"aptitudes"}
-                        filterByRelatedOccupationIds={selectedOccupations.edges.map(
-                          ({node: occupation}) => occupation.id
-                        )}
-                        selectedAptitudeRefContainer={selectedAptitudeRefContainer}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </DialogContent>
-              <DialogActions>
-                <If condition={editingExperience}>
-                  <Button variant={"contained"} color={"secondary"} onClick={() => setDeleteModalOpen(true)}>
-                    {t("ACTIONS.DELETE")}
-                  </Button>
-                  <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
-                    <DialogTitle>{t("CARTONET.EXPERIENCE.REMOVE")}</DialogTitle>
-                    <DialogContent>
-                      <DialogContentText>
-                        {t("CARTONET.EXPERIENCE.REMOVE_SURE", {name: experience.title})}
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <LoadingButton
-                        loading={removingExperience}
-                        variant={"contained"}
-                        color={"secondary"}
-                        onClick={handleRemove}>
-                        {t("ACTIONS.DELETE")}
-                      </LoadingButton>
-                      <Button onClick={() => setDeleteModalOpen(false)}>{t("ACTIONS.CANCEL")}</Button>
-                    </DialogActions>
-                  </Dialog>
-                </If>
-                <FormButtons
-                  inDialog
-                  errors={errors}
-                  touched={touched}
-                  isValid={isValid}
-                  dirty={dirty}
-                  saving={saving}
-                  cancelAction={() => {
-                    resetForm();
-                    history.goBack();
-                  }}
-                />
-              </DialogActions>
-            </Form>
-          );
-        }}
-      </Formik>
-
-      <If condition={onTheFlyExperiences.length > 0}>
-        <Paper variant={"outlined"} className={classes.onTheFlyExperiences}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography>{t("CARTONET.EXPERIENCE.ON_THE_FLY_EXPERIENCES")}</Typography>
-            </Grid>
-            {onTheFlyExperiences.map(experience => (
-              <Grid item xs={12}>
-                <ExperienceItem experience={experience} key={experience.id} />
-              </Grid>
-            ))}
-          </Grid>
-        </Paper>
-      </If>
+                </Form>
+              );
+            }}
+          </Formik>
+        </Grid>
+      </Grid>
     </CartonetEditLayout>
   );
 
@@ -463,5 +499,9 @@ export default function EditExperience({experienceType = "experience", fullscree
     }
 
     return generatePath(route);
+  }
+
+  function handleNavigateTo(event, experienceType) {
+    history.push(ROUTES[`CARTONET_EDIT_${experienceType.toUpperCase()}`]);
   }
 }

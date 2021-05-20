@@ -27,6 +27,9 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     padding: theme.spacing(2)
+  },
+  dialogContent: {
+    position: "relative"
   }
 }));
 
@@ -40,12 +43,15 @@ export function CartonetEditLayout({title, description, children, actions} = {})
 
   const extractSkillsPath = generateCartonetPath({history, route: ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV});
   const editExperiencePath = generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_EXPERIENCE});
+  const editTrainingPath = generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_TRAINING});
+  const editHobbyPath = generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_HOBBY});
+
   const editAptitudePath = generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_APTITUDES});
 
   return (
     <>
       <DialogTitle>{t("CARTONET.EDIT_TITLE")}</DialogTitle>
-      <DialogContent>
+      <DialogContent className={classes.dialogContent}>
         <Grid container className={classes.navigation} alignItems={"center"} wrap={"nowrap"}>
           <Grid item className={classes.step}>
             {createLink({
@@ -61,7 +67,12 @@ export function CartonetEditLayout({title, description, children, actions} = {})
             {createLink({
               to: editExperiencePath,
               text: t("CARTONET.ACTIONS.ADD_EXPERIENCE"),
-              className: clsx({[classes.stepActive]: matchPath(history.location.pathname, {path: editExperiencePath})})
+              className: clsx({
+                [classes.stepActive]:
+                  matchPath(history.location.pathname, {path: editExperiencePath}) ||
+                  matchPath(history.location.pathname, {path: editTrainingPath}) ||
+                  matchPath(history.location.pathname, {path: editHobbyPath})
+              })
             })}
           </Grid>
           <Grid item>

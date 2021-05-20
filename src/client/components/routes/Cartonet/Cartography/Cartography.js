@@ -1,4 +1,4 @@
-import {Fragment, useState} from "react";
+import {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {
@@ -6,15 +6,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  List,
-  ListItem,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
   Grid,
   Chip,
   Typography,
-  CircularProgress,
+  CircularProgress
 } from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
 import clsx from "clsx";
@@ -28,8 +23,8 @@ import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
 import {createLink} from "../../../../utilities/createLink";
 import {ROUTES} from "../../../../routes";
 
-import {gqlMyExperiences} from "../Experience/gql/MyExperiences.gql";
 import {gqlMyAptitudes} from "../Aptitudes/gql/MyAptitudes.gql";
+import Experiences from "./Experiences";
 
 const useStyles = makeStyles(theme => ({
   experienceAptitudes: {
@@ -71,85 +66,6 @@ const editLinkMapping = {
   experience: ROUTES.CARTONET_EDIT_EXPERIENCE
 };
 
-export function ExperienceItem({
-  experience,
-  onAptitudeMouseEnter = () => {},
-  onAptitudeMouseLeave = () => {},
-  selectedAptitude
-}) {
-  const classes = useStyles();
-  const history = useHistory();
-
-  return (
-    <Fragment key={experience.id}>
-      <ListItem>
-        <ListItemAvatar>
-          <Avatar>
-            <Choose>
-              <When condition={experience.experienceType === "hobby"}>
-                <HobbyIcon />
-              </When>
-              <When condition={experience.experienceType === "training"}>
-                <TrainingIcon />
-              </When>
-              <Otherwise>
-                <ExperienceIcon />
-              </Otherwise>
-            </Choose>
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={createLink({
-            to: getEditLink({experience}),
-            text: experience.title
-          })}
-          secondary={
-            <Grid container direction="row" alignItems="flex-start" spacing={1}>
-              <Grid item>{dayjs(experience.startDate).format("L")}</Grid>
-              <If condition={experience.endDate}>
-                <Grid item>
-                  <ArrowIcon fontSize={"small"} />
-                </Grid>
-                <Grid item>{dayjs(experience.endDate).format("L")}</Grid>
-              </If>
-            </Grid>
-          }
-        />
-      </ListItem>
-      <List disablePadding>
-        <ListItem className={classes.experienceAptitudes}>
-          <ListItemText>
-            {experience.aptitudes.edges.map(({node: aptitude}) => (
-              <Chip
-                className={classes.experienceAptitude}
-                key={aptitude.id}
-                label={aptitude.skillLabel || aptitude.skill?.prefLabel}
-                variant={selectedAptitude && selectedAptitude?.id === aptitude.id ? "default" : "outlined"}
-                size="small"
-                onMouseEnter={() => onAptitudeMouseEnter(aptitude)}
-                onMouseLeave={() => onAptitudeMouseLeave(null)}
-              />
-            ))}
-          </ListItemText>
-        </ListItem>
-      </List>
-    </Fragment>
-  );
-
-  function getEditLink({experience}) {
-    let route = editLinkMapping[experience.experienceType] || editLinkMapping.experience;
-
-    // This is a hack to guess if we are in cartonet standalone mode or in openemploi.
-    if (!!matchPath(history.location.pathname, {path: ROUTES.PROFILE, exact: false, strict: false})) {
-      route = `${ROUTES.PROFILE}${route}`;
-    }
-
-    return generatePath(route, {
-      id: experience.id
-    });
-  }
-}
-
 /**
  *
  */
@@ -159,17 +75,17 @@ export default function Cartography({} = {}) {
   const history = useHistory();
   const [selectedAptitude, setSelectedAptitude] = useState();
 
-  const {data: {me: myExperiences} = {}, loading: loadingExperiences} = useQuery(gqlMyExperiences, {
-    fetchPolicy: "no-cache"
-  });
   const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes, {
     fetchPolicy: "no-cache",
     variables: {
-      sortings: [{
-        sortBy: "isTop5"
-      }, {
-        sortBy: "skillLabel"
-      }]
+      sortings: [
+        {
+          sortBy: "isTop5"
+        },
+        {
+          sortBy: "skillLabel"
+        }
+      ]
     }
   });
 
@@ -183,27 +99,14 @@ export default function Cartography({} = {}) {
               {t("CARTONET.CARTOGRAPHY.EXPERIENCES")}
             </Typography>
 
-            <Choose>
-              <When condition={loadingExperiences}>
-                <CircularProgress />
-              </When>
-              <Otherwise>
-                <List dense>
-                  {(myExperiences?.experiences?.edges || []).map(({node: experience}) => (
-                    <ExperienceItem
-                      key={experience.id}
-                      experience={experience}
-                      selectedAptitude={selectedAptitude}
-                      onAptitudeMouseEnter={setSelectedAptitude}
-                      onAptitudeMouseLeave={() => setSelectedAptitude(null)}
-                    />
-                  ))}
-                </List>
-              </Otherwise>
-            </Choose>
+            <Experiences
+              selectedAptitude={selectedAptitude}
+              onAptitudeMouseEnter={setSelectedAptitude}
+              onAptitudeMouseLeave={() => setSelectedAptitude(null)}
+            />
           </Grid>
           <Grid item md={5}>
-            <Typography variant={"subtitle1"} variant="button" display="block" className={classes.categoryTitle}>
+            <Typography variant={"subtitle1"} display="block" className={classes.categoryTitle}>
               {t("CARTONET.CARTOGRAPHY.APTITUDES")}
             </Typography>
 
@@ -224,7 +127,13 @@ export default function Cartography({} = {}) {
                     })}>
                     <Grid item md={1}>
                       <If condition={aptitude.isTop5}>
-                        <Chip className={classes.top5Chip} label={"Top5"} color="primary" variant="outlined" size="small"/>
+                        <Chip
+                          className={classes.top5Chip}
+                          label={"Top5"}
+                          color="primary"
+                          variant="outlined"
+                          size="small"
+                        />
                       </If>
                     </Grid>
                     <Grid item md={7}>
