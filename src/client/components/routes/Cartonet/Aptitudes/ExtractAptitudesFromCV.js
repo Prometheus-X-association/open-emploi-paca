@@ -17,7 +17,7 @@ import clsx from "clsx";
 import {generateCartonetPath} from "../utils/generateCartonetPath";
 import {ROUTES} from "../../../../routes";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   uploadButton: {},
   uploadButtonContainer: {
     display: "flex",
@@ -75,6 +75,15 @@ export default function ExtractAptitudesFromCV({} = {}) {
   return (
     <CartonetEditLayout
       title={t("CARTONET.EXTRACT_APTITUDES_FROM_CV.PAGE_TITLE")}
+      description={
+        <>
+          <p>Vous avez la possibilité d’extraire automatiquement des compétences de votre CV.</p>
+          <p>
+            Une fois extraites, vous pouvez indiquer celles qui vous correspondent et que vous souhaitez conserver sur
+            votre profil. Vous pourrez affecter ces compétences à des expériences par la suite.
+          </p>
+        </>
+      }
       actions={
         <Choose>
           <When condition={selectedSkills?.length > 0}>
@@ -182,7 +191,7 @@ export default function ExtractAptitudesFromCV({} = {}) {
         input: {
           objectId: user.id,
           objectInput: {
-            aptitudeInputs: selectedSkills.map((skill) => ({
+            aptitudeInputs: selectedSkills.map(skill => ({
               isInCV: true,
               skillInput: {
                 id: skill.id

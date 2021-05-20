@@ -8,7 +8,7 @@ import {generatePath, matchPath, useHistory} from "react-router";
 import {generateCartonetPath} from "./utils/generateCartonetPath";
 import clsx from "clsx";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   step: {
     fontSize: theme.typography.fontSize * 1.8,
     lineHeight: "initial",
@@ -76,12 +76,9 @@ export function CartonetEditLayout({title, description, children, actions} = {})
           </Grid>
         </Grid>
 
-        <div>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor
-          sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus
-          et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis
-          tellus mollis orci, sed rhoncus pronin sapien nunc accuan eget.
-        </div>
+        <If condition={description}>
+          <div>{description}</div>
+        </If>
 
         <Paper variant={"outlined"} className={classes.content}>
           <Grid container wrap={"nowrap"} direction={"column"} style={{height: "100%"}}>

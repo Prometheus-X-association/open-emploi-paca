@@ -16,7 +16,7 @@ import {Link} from "react-router-dom";
 import {generateCartonetPath} from "../utils/generateCartonetPath";
 import {ROUTES} from "../../../../routes";
 
-const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles(theme => ({}));
 
 /**
  *
@@ -86,7 +86,7 @@ export default function EditAptitudes({
             <Rating
               value={aptitude.rating?.value || 0}
               name={`${aptitude.id}_rating`}
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
               onChange={(_, value) => handleUpdateAptitudeRating({aptitude, isTop5: aptitude.isTop5, value})}
             />
           );
@@ -106,8 +106,8 @@ export default function EditAptitudes({
               name={`${aptitude.id}_isTop5`}
               checked={!!aptitude.isTop5}
               disabled={!aptitude.isTop5 && rowsSharedState?.top5Count === 5}
-              onClick={(e) => e.stopPropagation()}
-              onChange={(e) =>
+              onClick={e => e.stopPropagation()}
+              onChange={e =>
                 handleUpdateAptitudeRating({aptitude, value: aptitude.rating?.value || 0, isTop5: e.target.checked})
               }
             />
@@ -120,6 +120,24 @@ export default function EditAptitudes({
   return (
     <CartonetEditLayout
       title={t("CARTONET.APTITUDES.PAGE_TITLE")}
+      description={
+        <>
+          <p>
+            Afin de pouvoir vous suggérer au mieux des métiers qui vous correspondent il est indispensable de valoriser
+            vos compétences.
+          </p>
+          <p>
+            Cette valorisation consiste à affecter à chacune de vos compétences une à 5 étoiles (1 étoile indique que
+            vous avez une connaissance théorique, 2 étoiles une connaissance pratique récente, 3 étoiles une
+            connaissance pratique de plus de 2 ans, 4 étoiles que vous avez un niveau d’expertise établi, 5 étoiles que
+            vous en avez la maîtrise et la capacité à l’enseigner).
+          </p>
+          <p>
+            Vous pouvez sélectionner 5 compétences (Top5) pour indiquer les compétences que vous souhaitez mettre en
+            avant.
+          </p>
+        </>
+      }
       actions={
         <Choose>
           <When condition={modifiedAptitudesCount > 0}>

@@ -40,7 +40,7 @@ import {CartonetEditLayout} from "../CartonetEditLayout";
 import {Link} from "react-router-dom";
 import {generateCartonetPath} from "../utils/generateCartonetPath";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   categoryTitle: {
     marginTop: theme.spacing(2)
   },
@@ -133,6 +133,21 @@ export default function EditExperience({experienceType = "experience", fullscree
             to={generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_APTITUDES})}>
             {t("ACTIONS.NEXT")}
           </Button>
+        </>
+      }
+      description={
+        <>
+          <p>
+            Vous allez pouvoir saisir vos compétences et les affecter à des expériences. Ces expériences peuvent être
+            professionnelles (les différents emplois que vous avez occupés), des formations (scolaires ou non), ou
+            extra-professionnelles (associations, hobbies, …).
+          </p>
+          <p>
+            Dans tous les cas l’affectation de ces compétences à vos différentes expériences se fait en les
+            sélectionnant sur la partie droite de l’écran. Cette sélection se fait soit sur le pool de compétences déjà
+            saisies (extraites de votre CV ou déjà sélectionnées sur une expérience précédente) soit en lien avec un
+            métier que vous indiquez.
+          </p>
         </>
       }>
       <Formik
@@ -279,7 +294,7 @@ export default function EditExperience({experienceType = "experience", fullscree
             <Grid item xs={12}>
               <Typography>{t("CARTONET.EXPERIENCE.ON_THE_FLY_EXPERIENCES")}</Typography>
             </Grid>
-            {onTheFlyExperiences.map((experience) => (
+            {onTheFlyExperiences.map(experience => (
               <Grid item xs={12}>
                 <ExperienceItem experience={experience} key={experience.id} />
               </Grid>
@@ -325,7 +340,7 @@ export default function EditExperience({experienceType = "experience", fullscree
               inputName: "ratingInput"
             }
           ],
-          modifyValue: (aptitude) => {
+          modifyValue: aptitude => {
             if (aptitude.skill?.aptitudeId) {
               return {
                 id: aptitude.skill?.aptitudeId
@@ -408,7 +423,7 @@ export default function EditExperience({experienceType = "experience", fullscree
   }
 
   function saveOnTheFlyExperience(experience) {
-    const indexOf = onTheFlyExperiences.findIndex((onTheFlyExperience) => onTheFlyExperience.id === experience.id);
+    const indexOf = onTheFlyExperiences.findIndex(onTheFlyExperience => onTheFlyExperience.id === experience.id);
 
     if (indexOf >= 0) {
       onTheFlyExperiences.splice(indexOf, 1, experience);
@@ -423,7 +438,7 @@ export default function EditExperience({experienceType = "experience", fullscree
   }
 
   function removeOnTheFlyExperience(experience) {
-    const indexOf = onTheFlyExperiences.findIndex((onTheFlyExperience) => onTheFlyExperience.id === experience.id);
+    const indexOf = onTheFlyExperiences.findIndex(onTheFlyExperience => onTheFlyExperience.id === experience.id);
 
     if (indexOf >= 0) {
       onTheFlyExperiences.splice(indexOf, 1);
