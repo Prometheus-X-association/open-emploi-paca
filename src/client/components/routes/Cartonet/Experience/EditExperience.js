@@ -113,7 +113,6 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const selectedAptitudeRefContainer = useRef(null);
   const [editingExperience, setEditingExperience] = useState(null);
-  const [onTheFlyExperiences, setOnTheFlyExperiences] = useState([]);
 
   const {user: me} = useLoggedUser() || {};
   const [getExperience, {data: {experience} = {}, loading: loadingExperience}] = useLazyQuery(gqlExperience, {
@@ -355,9 +354,10 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   );
 
   async function save(mutatingExperience) {
-    const {objectInput} = prepareMutation({
+    const {objectInput, updateCache} = prepareMutation({
       entity: experience,
       values: mutatingExperience,
+      inputNames: ["title", "description", "startDate", "endDate"],
       links: [
         {
           name: "organization",
@@ -418,7 +418,8 @@ export default function EditExperience({experienceType = "experience"} = {}) {
             objectId: editingExperience.id,
             objectInput
           }
-        }
+        },
+        update: updateCache
       });
 
       mutatingExperience.id = editingExperience.id;
@@ -438,17 +439,12 @@ export default function EditExperience({experienceType = "experience"} = {}) {
 
       mutatingExperience.id = createdObject?.id;
     }
-
-    saveOnTheFlyExperience(mutatingExperience);
   }
 
   function handleSaveCompleted({message} = {}) {
     enqueueSnackbar(message || t("ACTIONS.SUCCESS"), {
       variant: "success"
     });
-
-    setEditingExperience(null);
-    history.replace(getEditLink());
   }
 
   function handleRemoveCompleted() {
@@ -466,33 +462,8 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           }
         }
       });
-      removeOnTheFlyExperience(editingExperience);
     }
     setDeleteModalOpen(false);
-  }
-
-  function saveOnTheFlyExperience(experience) {
-    const indexOf = onTheFlyExperiences.findIndex(onTheFlyExperience => onTheFlyExperience.id === experience.id);
-
-    if (indexOf >= 0) {
-      onTheFlyExperiences.splice(indexOf, 1, experience);
-    } else {
-      onTheFlyExperiences.push(experience);
-      onTheFlyExperiences.sort((experienceA, experienceB) => {
-        return 0;
-      });
-    }
-
-    setOnTheFlyExperiences([...onTheFlyExperiences]);
-  }
-
-  function removeOnTheFlyExperience(experience) {
-    const indexOf = onTheFlyExperiences.findIndex(onTheFlyExperience => onTheFlyExperience.id === experience.id);
-
-    if (indexOf >= 0) {
-      onTheFlyExperiences.splice(indexOf, 1);
-      setOnTheFlyExperiences([...onTheFlyExperiences]);
-    }
   }
 
   function getEditLink() {

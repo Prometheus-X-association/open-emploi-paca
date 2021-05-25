@@ -1,6 +1,13 @@
 import {Button, Grid, Tooltip, Typography} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
 import {LoadingButton} from "../Button/LoadingButton";
+import {makeStyles} from "@material-ui/core/styles";
+
+const useStyles = makeStyles(theme => ({
+  cancelButton: {
+    marginLeft: theme.spacing(1)
+  }
+}));
 
 /**
  * disabled or not a submit button of a form, display the reason with a tooltip
@@ -28,6 +35,7 @@ export function FormButtons({
   buttonVariant = "outlined"
 } = {}) {
   const {t} = useTranslation();
+  const classes = useStyles();
 
   let disabled = !isValid || !dirty;
   let submitButton;
@@ -80,7 +88,7 @@ export function FormButtons({
     <>
       {submitButton}
       <If condition={cancelAction || (dirty && resetForm)}>
-        <Button variant={buttonVariant} onClick={resetForm || cancelAction}>
+        <Button variant={buttonVariant} onClick={resetForm || cancelAction} className={classes.cancelButton}>
           {dirty ? t("ACTIONS.CANCEL") : t("ACTIONS.GO_BACK")}
         </Button>
       </If>
@@ -90,7 +98,7 @@ export function FormButtons({
       <Grid item>{submitButton}</Grid>
       <If condition={cancelAction || (dirty && resetForm)}>
         <Grid item>
-          <Button variant={buttonVariant} onClick={resetForm || cancelAction}>
+          <Button variant={buttonVariant} onClick={resetForm || cancelAction} className={classes.cancelButton}>
             {dirty ? t("ACTIONS.CANCEL") : t("ACTIONS.GO_BACK")}
           </Button>
         </Grid>
