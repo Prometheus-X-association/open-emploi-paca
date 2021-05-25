@@ -8991,6 +8991,13 @@ react-themeable@^1.1.0:
   dependencies:
     object-assign "^3.0.0"
 
+react-to-print@^2.12.4:
+  version "2.12.4"
+  resolved "https://registry.yarnpkg.com/react-to-print/-/react-to-print-2.12.4.tgz#d9ed1447719c321798896040b0945a5c73a8f0c1"
+  integrity sha512-OM0nttpZMv3NV+z9FDRyyJIPRHlz05NzlTFoUKPREq+Bq4CnojwzUtB2qNzpwYerXPFzgYXR4/IT1W1mk9s9HA==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-tracked@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/react-tracked/-/react-tracked-1.7.0.tgz#3dce497898db5efd091c81971859929ad2d9d79d"

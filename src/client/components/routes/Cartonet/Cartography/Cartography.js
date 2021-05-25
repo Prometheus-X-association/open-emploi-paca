@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useCallback, useRef, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {Button, Grid, Chip, Typography, CircularProgress} from "@material-ui/core";
@@ -13,8 +13,13 @@ import Experiences from "./Experiences";
 import {CartonetExploreLayout} from "../CartonetExploreLayout";
 import {Link} from "react-router-dom";
 import {generateCartonetPath} from "../utils/generateCartonetPath";
+import {useReactToPrint} from "react-to-print";
+import {Print as PrintIcon} from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    position: "relative"
+  },
   experienceAptitudes: {
     paddingLeft: theme.spacing(4),
     paddingTop: 0
@@ -32,7 +37,13 @@ const useStyles = makeStyles(theme => ({
   },
   aptitude: {
     transition: "all 0.5s",
-    marginBottom: theme.spacing(0.5)
+    marginBottom: theme.spacing(0.5),
+    width: "100%",
+    breakInside: "avoid"
+  },
+  aptitudeLabel: {
+    breakInside: "avoid",
+    paddingLeft: theme.spacing(1)
   },
   faded: {
     opacity: 0.1
@@ -50,7 +61,25 @@ const useStyles = makeStyles(theme => ({
   column: {
     height: "60vh",
     overflow: "auto",
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
+    "&:first-of-type": {
+      borderRight: `1px solid ${theme.palette.grey[200]}`
+    }
+  },
+  printButton: {
+    position: "absolute",
+    top: theme.spacing(2),
+    right: theme.spacing(2),
+    zIndex: 100
+  },
+  "@media print": {
+    cartography: {
+      margin: "auto",
+      padding: theme.spacing(2)
+    },
+    column: {
+      height: "auto"
+    }
   }
 }));
 
@@ -68,6 +97,21 @@ export default function Cartography({} = {}) {
   const {t} = useTranslation();
   const history = useHistory();
   const [selectedAptitude, setSelectedAptitude] = useState();
+
+  const componentRef = useRef(null);
+
+  const reactToPrintContent = useCallback(() => {
+    return componentRef.current;
+  }, [componentRef.current]);
+
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE"),
+    onBeforeGetContent: () => {},
+    onBeforePrint: () => {},
+    onAfterPrint: () => {},
+    removeAfterPrint: true
+  });
 
   const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes, {
     fetchPolicy: "no-cache",
@@ -94,60 +138,65 @@ export default function Cartography({} = {}) {
           {t("CARTONET.ACTIONS.EDIT_APTITUDES")}
         </Button>
       }>
-      <Grid container>
-        <Grid item md={6} className={classes.column}>
-          <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
-            {t("CARTONET.CARTOGRAPHY.EXPERIENCES")}
-          </Typography>
+      <div className={classes.root}>
+        <Button className={classes.printButton} onClick={handlePrint} endIcon={<PrintIcon />}>
+          {t("CARTONET.ACTIONS.PRINT")}
+        </Button>
+        <Grid container className={classes.cartography} ref={componentRef} wrap={"nowrap"}>
+          <Grid item xs={5} className={classes.column}>
+            <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+              {t("CARTONET.CARTOGRAPHY.EXPERIENCES")}
+            </Typography>
 
-          <Experiences
-            selectedAptitude={selectedAptitude}
-            onAptitudeMouseEnter={setSelectedAptitude}
-            onAptitudeMouseLeave={() => setSelectedAptitude(null)}
-          />
-        </Grid>
-        <Grid item md={6} className={classes.column}>
-          <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
-            {t("CARTONET.CARTOGRAPHY.APTITUDES")}
-          </Typography>
+            <Experiences
+              selectedAptitude={selectedAptitude}
+              onAptitudeMouseEnter={setSelectedAptitude}
+              onAptitudeMouseLeave={() => setSelectedAptitude(null)}
+            />
+          </Grid>
+          <Grid item xs={7} className={classes.column}>
+            <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+              {t("CARTONET.CARTOGRAPHY.APTITUDES")}
+            </Typography>
 
-          <Choose>
-            <When condition={loadingAptitudes}>
-              <CircularProgress />
-            </When>
-            <Otherwise>
-              {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
-                <Grid
-                  key={aptitude.id}
-                  container
-                  justify={"flex-end"}
-                  direction={"row"}
-                  className={clsx(classes.aptitude, {
-                    [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
-                  })}>
-                  <Grid item md={1}>
-                    <If condition={aptitude.isTop5}>
-                      <Chip
-                        className={classes.top5Chip}
-                        label={"Top5"}
-                        color="primary"
-                        variant="outlined"
-                        size="small"
-                      />
-                    </If>
+            <Choose>
+              <When condition={loadingAptitudes}>
+                <CircularProgress />
+              </When>
+              <Otherwise>
+                {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
+                  <Grid
+                    key={aptitude.id}
+                    container
+                    direction={"row"}
+                    className={clsx(classes.aptitude, {
+                      [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
+                    })}
+                    wrap={"nowrap"}>
+                    <Grid item xs={1}>
+                      <If condition={aptitude.isTop5}>
+                        <Chip
+                          className={classes.top5Chip}
+                          label={"Top5"}
+                          color="primary"
+                          variant="outlined"
+                          size="small"
+                        />
+                      </If>
+                    </Grid>
+                    <Grid item xs={6} className={classes.aptitudeLabel}>
+                      {aptitude.skillLabel || aptitude.skill?.prefLabel}
+                    </Grid>
+                    <Grid item xs={5} className={classes.rating} container justify={"flex-end"}>
+                      <Rating value={aptitude.rating?.value} size={"small"} readOnly />
+                    </Grid>
                   </Grid>
-                  <Grid item md={7}>
-                    {aptitude.skillLabel || aptitude.skill?.prefLabel}
-                  </Grid>
-                  <Grid item md={4} className={classes.rating}>
-                    <Rating value={aptitude.rating?.value} size={"small"} readOnly />
-                  </Grid>
-                </Grid>
-              ))}
-            </Otherwise>
-          </Choose>
+                ))}
+              </Otherwise>
+            </Choose>
+          </Grid>
         </Grid>
-      </Grid>
+      </div>
     </CartonetExploreLayout>
   );
 }

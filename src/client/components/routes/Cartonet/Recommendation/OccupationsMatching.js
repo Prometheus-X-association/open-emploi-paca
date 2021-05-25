@@ -1,24 +1,20 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useCallback, useRef} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
+import {useReactToPrint} from "react-to-print";
 import {
   Button,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   List,
   ListItem,
   ListItemText,
-  ListItemSecondaryAction,
-  ListSubheader,
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Typography
+  Typography,
+  Box
 } from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import {ExpandMore as ExpandMoreIcon, Print as PrintIcon} from "@material-ui/icons";
 
-import {useHistory} from "react-router";
 import {useLazyQuery} from "@apollo/client";
 import {gqlOccupationsMatching} from "./gql/OccupationsMatching.gql";
 import {useLoggedUser} from "../../../../hooks/useLoggedUser";
@@ -35,6 +31,27 @@ const useStyles = makeStyles(theme => ({
   },
   categoryHeaderTitle: {
     marginLeft: theme.spacing(2)
+  },
+  root: {
+    position: "relative"
+  },
+  categoryTitle: {
+    padding: theme.spacing(2)
+  },
+  occupation: {
+    breakInside: "avoid"
+  },
+  printButton: {
+    position: "absolute",
+    top: theme.spacing(2),
+    right: theme.spacing(2),
+    zIndex: 100
+  },
+  "@media print": {
+    occupations: {
+      margin: "auto",
+      padding: theme.spacing(5)
+    }
   }
 }));
 
@@ -61,46 +78,69 @@ export function useSuggestedOccupationsMatchings() {
 export default function OccupationsMatching({print} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
-  const history = useHistory();
   const [expanded, setExpanded] = useState(false);
   const handleChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
   const [occupations, {loading}] = useSuggestedOccupationsMatchings();
 
-  return print ? (
-    renderMatching()
-  ) : (
+  const componentRef = useRef(null);
+
+  const reactToPrintContent = useCallback(() => {
+    return componentRef.current;
+  }, [componentRef.current]);
+
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE"),
+    onBeforeGetContent: () => {},
+    onBeforePrint: () => {},
+    onAfterPrint: () => {},
+    removeAfterPrint: true
+  });
+
+  return (
     <CartonetExploreLayout>
       <Choose>
         <When condition={loading}>
           <LoadingSplashScreen />
         </When>
         <Otherwise>
-          {occupations.slice(0, print ? 10 : undefined).map(occupation => (
-            <Accordion
-              key={occupation.categoryId}
-              expanded={expanded === occupation.categoryId}
-              onChange={handleChange(occupation.categoryId)}>
-              <AccordionSummary
-                classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}}
-                expandIcon={<ExpandMoreIcon />}>
-                <Gauge value={occupation.score * 100} />
-                <Typography className={classes.categoryHeaderTitle}>{occupation.categoryName}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <If condition={expanded === occupation.categoryId}>
-                  <List dense>
-                    {occupation.subOccupations.map(subOccupation => (
-                      <ListItem key={subOccupation.id}>
-                        <ListItemText primary={subOccupation.prefLabel} />
-                      </ListItem>
-                    ))}
-                  </List>
-                </If>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+          <div className={classes.root}>
+            <Button className={classes.printButton} onClick={handlePrint} endIcon={<PrintIcon />}>
+              {t("CARTONET.ACTIONS.PRINT")}
+            </Button>
+            <Box className={classes.occupations} ref={componentRef}>
+              <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+                {t("CARTONET.OCCUPATION_MATCHING.SUBTITLE")}
+              </Typography>
+              {occupations.map(occupation => (
+                <Accordion
+                  key={occupation.categoryId}
+                  expanded={expanded === occupation.categoryId}
+                  onChange={handleChange(occupation.categoryId)}
+                  className={classes.occupation}>
+                  <AccordionSummary
+                    classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}}
+                    expandIcon={<ExpandMoreIcon />}>
+                    <Gauge value={occupation.score * 100} />
+                    <Typography className={classes.categoryHeaderTitle}>{occupation.categoryName}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <If condition={expanded === occupation.categoryId}>
+                      <List dense>
+                        {occupation.subOccupations.map(subOccupation => (
+                          <ListItem key={subOccupation.id}>
+                            <ListItemText primary={subOccupation.prefLabel} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </If>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </Box>
+          </div>
         </Otherwise>
       </Choose>
     </CartonetExploreLayout>

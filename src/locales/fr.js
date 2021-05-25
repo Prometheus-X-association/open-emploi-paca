@@ -55,6 +55,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       SHOW_JOBS: "Voir les métiers suggérés",
       SHOW_PROFILE: "Editer son profil",
       PRINT_PROFILE: "Imprimer son profil",
+      PRINT: "Imprimer",
       RESTITUTION: "Restitution de profil",
       EDITION: "Édition de profil",
       EXTRACT_SKILLS_FROM_CV: "Importer vos compétences"
@@ -138,7 +139,8 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       SUGGETIONS: "Métiers suggérés"
     },
     OCCUPATION_MATCHING: {
-      PAGE_TITLE: "Suggestion de métiers"
+      PAGE_TITLE: "Suggestion de métiers",
+      SUBTITLE: "Liste des métiers correspondant à votre profil"
     },
     EXPORT: {
       TITLE: "Mon profil Carto.net"

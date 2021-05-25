@@ -15,6 +15,9 @@ import {ROUTES} from "../../../../routes";
 import {gqlMyExperiences} from "../Experience/gql/MyExperiences.gql";
 
 const useStyles = makeStyles(theme => ({
+  experience: {
+    breakInside: "avoid"
+  },
   experienceAptitudes: {
     paddingLeft: theme.spacing(4),
     paddingTop: 0
@@ -66,7 +69,7 @@ export function ExperienceItem({
 
   return (
     <Fragment key={experience.id}>
-      <ListItem>
+      <ListItem className={classes.experience}>
         <ListItemAvatar>
           <Avatar>
             <Choose>
