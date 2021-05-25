@@ -1,8 +1,22 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {Button, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemText, ListItemSecondaryAction, ListSubheader, Accordion, AccordionDetails, AccordionSummary, Typography} from "@material-ui/core";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  ListSubheader,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography
+} from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import {useHistory} from "react-router";
 import {useLazyQuery} from "@apollo/client";
@@ -10,6 +24,7 @@ import {gqlOccupationsMatching} from "./gql/OccupationsMatching.gql";
 import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
 import {Gauge} from "../../../widgets/Gauge";
+import {CartonetExploreLayout} from "../CartonetExploreLayout";
 
 const useStyles = makeStyles(theme => ({
   categoryHeader: {
@@ -23,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export function useSuggestedOccupationsMatchings(){
+export function useSuggestedOccupationsMatchings() {
   const {user} = useLoggedUser();
   const [getOccupationsMatching, {data, loading}] = useLazyQuery(gqlOccupationsMatching, {fetchPolicy: "no-cache"});
 
@@ -37,7 +52,7 @@ export function useSuggestedOccupationsMatchings(){
 
   const occupations = JSON.parse(data?.occupationsMatching || "[]");
 
-  return [occupations, {loading}]
+  return [occupations, {loading}];
 }
 
 /**
@@ -48,28 +63,35 @@ export default function OccupationsMatching({print} = {}) {
   const {t} = useTranslation();
   const history = useHistory();
   const [expanded, setExpanded] = useState(false);
-  const handleChange = (panel) => (event, isExpanded) => {
+  const handleChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
   const [occupations, {loading}] = useSuggestedOccupationsMatchings();
 
-  function renderMatching(){
-    return (
+  return print ? (
+    renderMatching()
+  ) : (
+    <CartonetExploreLayout>
       <Choose>
         <When condition={loading}>
           <LoadingSplashScreen />
         </When>
         <Otherwise>
           {occupations.slice(0, print ? 10 : undefined).map(occupation => (
-            <Accordion key={occupation.categoryId} expanded={expanded === occupation.categoryId} onChange={handleChange(occupation.categoryId)}>
-              <AccordionSummary classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}} expandIcon={<ExpandMoreIcon />} >
-                <Gauge value={occupation.score * 100}/>
+            <Accordion
+              key={occupation.categoryId}
+              expanded={expanded === occupation.categoryId}
+              onChange={handleChange(occupation.categoryId)}>
+              <AccordionSummary
+                classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}}
+                expandIcon={<ExpandMoreIcon />}>
+                <Gauge value={occupation.score * 100} />
                 <Typography className={classes.categoryHeaderTitle}>{occupation.categoryName}</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <If condition={expanded === occupation.categoryId}>
                   <List dense>
-                    {occupation.subOccupations.map((subOccupation) => (
+                    {occupation.subOccupations.map(subOccupation => (
                       <ListItem key={subOccupation.id}>
                         <ListItemText primary={subOccupation.prefLabel} />
                       </ListItem>
@@ -81,18 +103,6 @@ export default function OccupationsMatching({print} = {}) {
           ))}
         </Otherwise>
       </Choose>
-    )
-  }
-
-  return print ? renderMatching() : (
-    <>
-      <DialogTitle>{t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE")}</DialogTitle>
-      <DialogContent>
-        {renderMatching()}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
-      </DialogActions>
-    </>
+    </CartonetExploreLayout>
   );
 }

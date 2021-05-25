@@ -1,16 +1,7 @@
 import {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {
-  Button,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  Chip,
-  Typography,
-  CircularProgress
-} from "@material-ui/core";
+import {Button, Grid, Chip, Typography, CircularProgress} from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
 import clsx from "clsx";
 import {useHistory} from "react-router";
@@ -19,6 +10,9 @@ import {ROUTES} from "../../../../routes";
 
 import {gqlMyAptitudes} from "../Aptitudes/gql/MyAptitudes.gql";
 import Experiences from "./Experiences";
+import {CartonetExploreLayout} from "../CartonetExploreLayout";
+import {Link} from "react-router-dom";
+import {generateCartonetPath} from "../utils/generateCartonetPath";
 
 const useStyles = makeStyles(theme => ({
   experienceAptitudes: {
@@ -37,7 +31,8 @@ const useStyles = makeStyles(theme => ({
     textAlign: "right"
   },
   aptitude: {
-    transition: "all 0.5s"
+    transition: "all 0.5s",
+    marginBottom: theme.spacing(0.5)
   },
   faded: {
     opacity: 0.1
@@ -51,6 +46,11 @@ const useStyles = makeStyles(theme => ({
     "& > span": {
       padding: theme.spacing(0, 0.5)
     }
+  },
+  column: {
+    height: "60vh",
+    overflow: "auto",
+    padding: theme.spacing(2)
   }
 }));
 
@@ -85,68 +85,69 @@ export default function Cartography({} = {}) {
   });
 
   return (
-    <>
-      <DialogTitle>{t("CARTONET.CARTOGRAPHY.PAGE_TITLE")}</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item md={7}>
-            <Typography variant="button" display="block" gutterBottom>
-              {t("CARTONET.CARTOGRAPHY.EXPERIENCES")}
-            </Typography>
+    <CartonetExploreLayout
+      actions={
+        <Button
+          variant={"contained"}
+          component={Link}
+          to={generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_APTITUDES})}>
+          {t("CARTONET.ACTIONS.EDIT_APTITUDES")}
+        </Button>
+      }>
+      <Grid container>
+        <Grid item md={6} className={classes.column}>
+          <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+            {t("CARTONET.CARTOGRAPHY.EXPERIENCES")}
+          </Typography>
 
-            <Experiences
-              selectedAptitude={selectedAptitude}
-              onAptitudeMouseEnter={setSelectedAptitude}
-              onAptitudeMouseLeave={() => setSelectedAptitude(null)}
-            />
-          </Grid>
-          <Grid item md={5}>
-            <Typography variant={"subtitle1"} display="block" className={classes.categoryTitle}>
-              {t("CARTONET.CARTOGRAPHY.APTITUDES")}
-            </Typography>
-
-            <Choose>
-              <When condition={loadingAptitudes}>
-                <CircularProgress />
-              </When>
-              <Otherwise>
-                {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
-                  <Grid
-                    key={aptitude.id}
-                    container
-                    spacing={2}
-                    justify={"flex-end"}
-                    direction={"row"}
-                    className={clsx(classes.aptitude, {
-                      [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
-                    })}>
-                    <Grid item md={1}>
-                      <If condition={aptitude.isTop5}>
-                        <Chip
-                          className={classes.top5Chip}
-                          label={"Top5"}
-                          color="primary"
-                          variant="outlined"
-                          size="small"
-                        />
-                      </If>
-                    </Grid>
-                    <Grid item md={7}>
-                      {aptitude.skillLabel || aptitude.skill?.prefLabel}
-                    </Grid>
-                    <Grid item md={4} className={classes.rating}>
-                      <Rating value={aptitude.rating?.value} size={"small"} readOnly />
-                    </Grid>
-                  </Grid>
-                ))}
-              </Otherwise>
-            </Choose>
-          </Grid>
+          <Experiences
+            selectedAptitude={selectedAptitude}
+            onAptitudeMouseEnter={setSelectedAptitude}
+            onAptitudeMouseLeave={() => setSelectedAptitude(null)}
+          />
         </Grid>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
-      </DialogActions>
-    </>
+        <Grid item md={6} className={classes.column}>
+          <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+            {t("CARTONET.CARTOGRAPHY.APTITUDES")}
+          </Typography>
+
+          <Choose>
+            <When condition={loadingAptitudes}>
+              <CircularProgress />
+            </When>
+            <Otherwise>
+              {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
+                <Grid
+                  key={aptitude.id}
+                  container
+                  justify={"flex-end"}
+                  direction={"row"}
+                  className={clsx(classes.aptitude, {
+                    [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
+                  })}>
+                  <Grid item md={1}>
+                    <If condition={aptitude.isTop5}>
+                      <Chip
+                        className={classes.top5Chip}
+                        label={"Top5"}
+                        color="primary"
+                        variant="outlined"
+                        size="small"
+                      />
+                    </If>
+                  </Grid>
+                  <Grid item md={7}>
+                    {aptitude.skillLabel || aptitude.skill?.prefLabel}
+                  </Grid>
+                  <Grid item md={4} className={classes.rating}>
+                    <Rating value={aptitude.rating?.value} size={"small"} readOnly />
+                  </Grid>
+                </Grid>
+              ))}
+            </Otherwise>
+          </Choose>
+        </Grid>
+      </Grid>
+    </CartonetExploreLayout>
   );
 }

@@ -197,10 +197,14 @@ export default function EditExperience({experienceType = "experience"} = {}) {
       <Grid container className={classes.content}>
         <Grid xs={3} item container wrap={"nowrap"} direction={"column"} className={classes.experiencesContainer}>
           <Grid xs item className={classes.experiences}>
-            <Experiences aptitudesDisabled />
+            <Experiences aptitudesDisabled experienceType={experienceType} />
           </Grid>
           <Grid item container className={classes.actions} justify={"center"}>
-            <Button variant={"contained"} color={"secondary"} onClick={() => handleNavigateTo(experienceType)}>
+            <Button
+              size={"small"}
+              variant={"contained"}
+              color={"secondary"}
+              onClick={() => handleNavigateTo(experienceType)}>
               {t("CARTONET.ACTIONS.ADD_EXPERIENCE")}
             </Button>
           </Grid>
@@ -511,6 +515,11 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   }
 
   function handleNavigateTo(experienceType) {
-    history.push(generatePath(ROUTES[`CARTONET_EDIT_${experienceType.toUpperCase()}`]));
+    history.push(
+      generateCartonetPath({
+        route: ROUTES[`CARTONET_EDIT_${experienceType.toUpperCase()}`],
+        history
+      })
+    );
   }
 }

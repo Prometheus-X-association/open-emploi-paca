@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
     fontWeight: "bold"
   },
   big: {
-    fontSize: theme.typography.pxToRem(11),
+    fontSize: theme.typography.pxToRem(11)
   },
   green: {
     color: "#099906",
@@ -63,11 +63,11 @@ export function Gauge({value, big, disabled, hideText, label, ...props} = {}) {
   return (
     <Box position="relative" display="inline-flex">
       <CircularProgress
-        variant="static"
+        variant="determinate"
         value={value}
         {...props}
         thickness={4}
-        className={disabled ? classes.disabled :  classes[color]}
+        className={disabled ? classes.disabled : classes[color]}
         size={big ? 80 : 40}
       />
       <If condition={!hideText}>
@@ -81,7 +81,7 @@ export function Gauge({value, big, disabled, hideText, label, ...props} = {}) {
           alignItems="center"
           justifyContent="center">
           <Typography
-            className={clsx(classes.value, disabled ? classes.disabled :  classes[color], {[classes.big]: big})}
+            className={clsx(classes.value, disabled ? classes.disabled : classes[color], {[classes.big]: big})}
             variant="caption"
             component="div"
             color="textSecondary">

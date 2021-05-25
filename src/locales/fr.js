@@ -46,7 +46,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
   CARTONET: {
     CONFIRM_CLOSE: "Êtes-vous sûr de vouloir fermer la fenêtre ?",
     EDIT_TITLE: "Créez votre cartographie des compétences",
-    VIEW_TITLE: "Votre cartographie des compétences et métiers suggérés",
+    EXPLORE_TITLE: "Votre cartographie des compétences et métiers suggérés",
     ACTIONS: {
       ADD_EXPERIENCE: "Ajouter une expérience",
       ADD_TRAINING: "Ajouter une formation",
