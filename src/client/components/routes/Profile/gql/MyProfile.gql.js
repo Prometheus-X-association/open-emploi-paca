@@ -23,7 +23,7 @@ export const gqlMyProfileFragment = gql`
     occupation {
       ...OccupationFragment
     }
-    spouseOccupation{
+    spouseOccupation {
       ...OccupationFragment
     }
     jobArea {
@@ -31,24 +31,23 @@ export const gqlMyProfileFragment = gql`
     }
     wishedOccupations {
       edges {
-        node{
+        node {
           ...OccupationFragment
         }
       }
     }
     wishedJobAreas {
       edges {
-        node{
+        node {
           ...JobAreaFragment
         }
       }
     }
   }
-  
+
   ${gqlJobAreaFragment}
   ${gqlOccupationFragment}
 `;
-
 
 export const gqlMyProfile = gql`
   query Me {
@@ -57,14 +56,15 @@ export const gqlMyProfile = gql`
       avatar
       firstName
       lastName
-      weverUser{
+      weverUser {
         mapId
         reportId
         token
       }
+      aptitudesCount
       ...MyProfileFragment
     }
   }
-  
+
   ${gqlMyProfileFragment}
 `;

@@ -1,7 +1,7 @@
 import {makeStyles} from "@material-ui/core/styles";
 import loadable from "@loadable/component";
 import {useTranslation} from "react-i18next";
-import {Grid, InputAdornment, List, ListItem, Typography, ListSubheader, Divider} from "@material-ui/core";
+import {Grid, InputAdornment, List, ListItem, Typography, ListSubheader, Divider, Button} from "@material-ui/core";
 import {useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
 import {object, string} from "yup";
@@ -15,14 +15,14 @@ import {useSnackbar} from "notistack";
 import {JobAreaPickerField} from "../../widgets/Form/JobAreaPickerField";
 import {prepareMutation} from "../../../utilities/apollo/prepareMutation";
 import {gqlJobAreaFragment, gqlOccupationFragment} from "./gql/MyProfile.gql";
-import {createLink} from "../../../utilities/createLink";
 import {CartonetModal} from "../Cartonet/CartonetModal";
 import {ROUTES} from "../../../routes";
 import LogoMM from "../../../assets/logo-mm.png";
 import LogoWever from "../../../assets/logo-wever.png";
-import {generatePath} from "react-router";
+import {generatePath, useHistory} from "react-router";
 import ErrorBoundary from "../../widgets/ErrorBoundary";
-
+import {Link} from "react-router-dom";
+import {generateCartonetPath} from "../Cartonet/utils/generateCartonetPath";
 
 const WeverCollector = loadable(() => import("./WeverCollector"));
 
@@ -34,8 +34,18 @@ const useStyles = makeStyles(theme => ({
   logoInsert: {
     position: "absolute",
     top: theme.spacing(2),
-    right:theme.spacing(2),
+    right: theme.spacing(2),
     width: theme.spacing(10)
+  },
+  cartonetCatchPhrase: {
+    marginTop: theme.spacing(2)
+  },
+  cartonetButton: {
+    marginTop: theme.spacing(10),
+    textAlign: "center"
+  },
+  strong: {
+    fontWeight: "bold"
   }
 }));
 /**
@@ -45,6 +55,7 @@ export default function Profile({} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const {enqueueSnackbar} = useSnackbar();
+  const history = useHistory();
 
   const {data: {me} = {}, loading} = useQuery(gqlMyProfile);
   const [updateProfile, {loading: saving}] = useMutation(gqlUpdateProfile, {
@@ -132,73 +143,63 @@ export default function Profile({} = {}) {
 
                     <Grid item xs={12} md={6}>
                       <BlockContainer title={"Mon profil de compétences (Carto.net)"}>
-                        <img src={LogoMM} alt={"Logo MM"} className={classes.logoInsert}/>
-                        <List>
-                          <ListSubheader disableGutters disableSticky className={classes.cartoNetSubHeader}>
-                            {t("CARTONET.ACTIONS.EDITION")}
-                          </ListSubheader>
-                          <ListItem>
-                            {createLink({
-                              text: t("CARTONET.ACTIONS.ADD_EXPERIENCE"),
-                              to: generatePath(`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_EXPERIENCE}`)
-                            })}
-                          </ListItem>
-                          <ListItem>
-                            {createLink({
-                              text: t("CARTONET.ACTIONS.ADD_TRAINING"),
-                              to: generatePath(`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_TRAINING}`)
-                            })}
-                          </ListItem>
-                          <ListItem>
-                            {createLink({
-                              text: t("CARTONET.ACTIONS.ADD_HOBBY"),
-                              to: generatePath(`${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_HOBBY}`)
-                            })}
-                          </ListItem>
-                          <ListItem>
-                            {createLink({
-                              text: t("CARTONET.ACTIONS.EXTRACT_SKILLS_FROM_CV"),
-                              to: generatePath(`${ROUTES.PROFILE}${ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV}`)
-                            })}
-                          </ListItem>
-                          <ListItem>
-                            {createLink({
-                              text: t("CARTONET.ACTIONS.EDIT_APTITUDES"),
-                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_EDIT_APTITUDES}`
-                            })}
-                          </ListItem>
-                          <ListSubheader disableGutters disableSticky className={classes.cartoNetSubHeader}>
-                            {t("CARTONET.ACTIONS.RESTITUTION")}
-                          </ListSubheader>
-                          <ListItem>
-                            {createLink({
-                              text: t("CARTONET.ACTIONS.SHOW_PROFILE"),
-                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_PROFILE}`
-                            })}
-                          </ListItem>
-                          <ListItem>
-                            {createLink({
-                              text: t("CARTONET.ACTIONS.PRINT_PROFILE"),
-                              to: `${ROUTES.CARTONET_PRINT_PROFILE}`,
-                              target: "_blank"
-                            })}
-                          </ListItem>
-                          <ListItem>
-                            {createLink({
-                              text: t("CARTONET.ACTIONS.SHOW_JOBS"),
-                              to: `${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_JOBS}`
-                            })}
-                          </ListItem>
+                        <img src={LogoMM} alt={"Logo MM"} className={classes.logoInsert} />
+                        <p className={classes.cartonetCatchPhrase}>
+                          <p>
+                            L’application Carto.net permet de créer votre profil de compétences au regard de vos
+                            différentes expériences (professionnelles, de formation, extra professionnelles).
+                          </p>
+                          <p>
+                            Ce profil est utilisé par les fonctionnalités du Diagnostic 360° pour affiner le gap de
+                            compétences à acquérir pour accéder aux métiers que vous envisagez ou qui vous sont
+                            suggérés.
+                          </p>
+                          <p>A termes, ce profil vous permettra d’avoir un parcours de formation individualisé.</p>
+                        </p>
 
-                        </List>
-
+                        <Choose>
+                          <When condition={me.aptitudesCount === 0}>
+                            <p className={classes.strong}>
+                              Laissez vous guider dans la création de votre profil de compétences.
+                            </p>
+                            <div className={classes.cartonetButton}>
+                              <Button
+                                variant={"contained"}
+                                color={"secondary"}
+                                component={Link}
+                                to={generateCartonetPath({
+                                  history,
+                                  route: ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV
+                                })}>
+                                Créer votre profil de compétences
+                              </Button>
+                            </div>
+                          </When>
+                          <Otherwise>
+                            <p className={classes.strong}>
+                              Vous pouvez visualiser/modifier votre profil de compétences.
+                            </p>
+                            <div className={classes.cartonetButton}>
+                              <Button
+                                variant={"contained"}
+                                color={"secondary"}
+                                component={Link}
+                                to={generateCartonetPath({
+                                  history,
+                                  route: ROUTES.CARTONET_SHOW_PROFILE
+                                })}>
+                                Visualiser/Modifier votre profil de compétences
+                              </Button>
+                            </div>
+                          </Otherwise>
+                        </Choose>
                         <CartonetModal />
                       </BlockContainer>
                     </Grid>
 
                     <Grid item xs={12} md={6}>
                       <BlockContainer title={"Mon profil de mobilité (WeDiag)"}>
-                        <img src={LogoWever} alt={"Logo Wever"} className={classes.logoInsert}/>
+                        <img src={LogoWever} alt={"Logo Wever"} className={classes.logoInsert} />
                         <ErrorBoundary>
                           <WeverCollector {...me?.weverUser} />
                         </ErrorBoundary>
