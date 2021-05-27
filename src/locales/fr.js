@@ -136,7 +136,9 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       PAGE_TITLE: "Cartographie",
       APTITUDES: "Compétences",
       EXPERIENCES: "Expériences",
-      SUGGETIONS: "Métiers suggérés"
+      SUGGETIONS: "Métiers suggérés",
+      NO_EXPERIENCE: "Aucune expérience saisie",
+      NO_EXPERIENCE_ADVISE: "Cliquer sur Ajouter et remplir le formulaire"
     },
     OCCUPATION_MATCHING: {
       PAGE_TITLE: "Suggestion de métiers",

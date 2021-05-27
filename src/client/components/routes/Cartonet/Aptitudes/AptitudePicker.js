@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useLazyQuery} from "@apollo/client";
 import {useTranslation} from "react-i18next";
@@ -11,7 +11,8 @@ import {
   ListItemText,
   ListSubheader,
   ListItemIcon,
-  Portal, Paper
+  Portal,
+  Paper
 } from "@material-ui/core";
 import {Delete, Add} from "@material-ui/icons";
 
@@ -43,10 +44,9 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    margin: theme.spacing(2),
-  },
+    margin: theme.spacing(2)
+  }
 }));
-
 
 /**
  * @param name
@@ -66,7 +66,10 @@ export function AptitudePicker({
   const {t} = useTranslation();
   const {user} = useLoggedUser();
   const [qs, setQs] = useState();
-  const [loadSkills, {loading, data: {myAptitudes, otherSkills, myAptitudesCount, otherSkillsCount} = {}}] = useLazyQuery(gqlSkills);
+  const [
+    loadSkills,
+    {loading, data: {myAptitudes, otherSkills, myAptitudesCount, otherSkillsCount} = {}}
+  ] = useLazyQuery(gqlSkills);
 
   const throttledOnChange = throttle(
     event => {
@@ -113,23 +116,25 @@ export function AptitudePicker({
         <Choose>
           <When condition={filterByRelatedOccupationIds?.length > 0}>
             <If condition={loading}>
-              <LoadingSplashScreen/>
+              <LoadingSplashScreen />
             </If>
             <div className={classes.skillsContainer}>
               <If condition={(myAptitudes?.edges || []).length > 0}>
                 <ListSubheader className={classes.skillsSubHeader}>{t("CARTONET.SKILL.YOURS")}</ListSubheader>
 
-                {myAptitudes?.edges.map(({node: aptitude}) => renderSkill({skill: {
-                    prefLabel: aptitude.skillLabel,
-                    aptitudeId: aptitude.id,
-                    id: aptitude.id
-                  }}))}
+                {myAptitudes?.edges.map(({node: aptitude}) =>
+                  renderSkill({
+                    skill: {
+                      prefLabel: aptitude.skillLabel,
+                      aptitudeId: aptitude.id,
+                      id: aptitude.id
+                    }
+                  })
+                )}
 
                 <If condition={myAptitudesCount > 100}>
                   <ListItem disabled>
-                    <ListItemText>
-                      {t("CARTONET.SKILL.MORE_OTHER", {count: myAptitudesCount - 100})}
-                    </ListItemText>
+                    <ListItemText>{t("CARTONET.SKILL.MORE_OTHER", {count: myAptitudesCount - 100})}</ListItemText>
                   </ListItem>
                 </If>
                 <ListSubheader className={classes.skillsSubHeader}>{t("CARTONET.SKILL.OTHERS")}</ListSubheader>
@@ -139,9 +144,7 @@ export function AptitudePicker({
 
               <If condition={otherSkillsCount > 100}>
                 <ListItem disabled>
-                  <ListItemText>
-                    {t("CARTONET.SKILL.MORE_OTHER", {count: otherSkillsCount - 100})}
-                  </ListItemText>
+                  <ListItemText>{t("CARTONET.SKILL.MORE_OTHER", {count: otherSkillsCount - 100})}</ListItemText>
                 </ListItem>
               </If>
 
@@ -213,8 +216,10 @@ export function AptitudePicker({
 
   function handleSelectSkill(skill) {
     const newAptitudeEdge = {
-      id: skill.aptitudeId,
-      node: {skill}
+      node: {
+        id: skill.aptitudeId,
+        skill
+      }
     };
 
     persitSelectedAptitudes([...existingAptitudesEdges, newAptitudeEdge]);

@@ -134,8 +134,8 @@ export default function Cartography({} = {}) {
         <Button
           variant={"contained"}
           component={Link}
-          to={generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_APTITUDES})}>
-          {t("CARTONET.ACTIONS.EDIT_APTITUDES")}
+          to={generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_EXPERIENCE})}>
+          {t("ACTIONS.UPDATE")}
         </Button>
       }>
       <div className={classes.root}>

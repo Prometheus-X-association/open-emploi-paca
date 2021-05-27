@@ -10,9 +10,9 @@ import HobbyIcon from "@material-ui/icons/BeachAccess";
 import TrainingIcon from "@material-ui/icons/School";
 import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
 import {createLink} from "../../../../utilities/createLink";
-import {ROUTES} from "../../../../routes";
 
 import {gqlMyExperiences} from "../Experience/gql/MyExperiences.gql";
+import {generateCartonetEditExperiencePath} from "../utils/generateCartonetPath";
 
 const useStyles = makeStyles(theme => ({
   experience: {
@@ -51,12 +51,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const editLinkMapping = {
-  hobby: ROUTES.CARTONET_EDIT_HOBBY,
-  training: ROUTES.CARTONET_EDIT_TRAINING,
-  experience: ROUTES.CARTONET_EDIT_EXPERIENCE
-};
-
 export function ExperienceItem({
   experience,
   onAptitudeMouseEnter = () => {},
@@ -87,7 +81,7 @@ export function ExperienceItem({
         </ListItemAvatar>
         <ListItemText
           primary={createLink({
-            to: getEditLink({experience}),
+            to: generateCartonetEditExperiencePath({history, experience}),
             text: experience.title
           })}
           secondary={
@@ -124,19 +118,6 @@ export function ExperienceItem({
       </If>
     </Fragment>
   );
-
-  function getEditLink({experience}) {
-    let route = editLinkMapping[experience.experienceType] || editLinkMapping.experience;
-
-    // This is a hack to guess if we are in cartonet standalone mode or in openemploi.
-    if (!!matchPath(history.location.pathname, {path: ROUTES.PROFILE, exact: false, strict: false})) {
-      route = `${ROUTES.PROFILE}${route}`;
-    }
-
-    return generatePath(route, {
-      id: experience.id
-    });
-  }
 }
 
 /**
@@ -152,7 +133,6 @@ export default function Experiences({
   const {t} = useTranslation();
 
   const {data: {me: myExperiences} = {}, loading: loadingExperiences} = useQuery(gqlMyExperiences, {
-    fetchPolicy: "no-cache",
     variables: {
       filters: experienceType ? [`experienceType:${experienceType}`] : null
     }
@@ -175,6 +155,14 @@ export default function Experiences({
               onAptitudeMouseLeave={onAptitudeMouseLeave}
             />
           ))}
+          <If condition={(myExperiences?.experiences?.edges || []).length === 0}>
+            <ListItem disabled>
+              <ListItemText
+                primary={t("CARTONET.CARTOGRAPHY.NO_EXPERIENCE")}
+                secondary={t("CARTONET.CARTOGRAPHY.NO_EXPERIENCE_ADVISE")}
+              />
+            </ListItem>
+          </If>
         </List>
       </Otherwise>
     </Choose>

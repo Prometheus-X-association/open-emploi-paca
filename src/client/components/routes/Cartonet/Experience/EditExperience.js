@@ -19,15 +19,20 @@ import {object} from "yup";
 import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
 import {useSnackbar} from "notistack";
+import {
+  prepareMutation,
+  MutationConfig,
+  LinkInputDefinition,
+  DynamicFormDefinition
+} from "@mnemotix/synaptix-client-toolkit";
 
 import {DatePickerField, FormButtons, TextField, OrganizationPickerField} from "../../../widgets/Form";
 import {WishedOccupations} from "../../Project/WishedOccupations";
 import {AptitudePicker} from "../Aptitudes/AptitudePicker";
 import {gqlOccupationFragment} from "../../Profile/gql/MyProfile.gql";
-import {prepareMutation} from "../../../../utilities/apollo/prepareMutation";
-import {gqlAptitudeFragment} from "../Aptitudes/gql/Aptitude.gql";
+import {gqlAptitudeFragment, gqlSkillFragment} from "../Aptitudes/gql/Aptitude.gql";
 import {gqlOrganizationFragment} from "../../../widgets/Autocomplete/OrganizationAutocomplete/gql/Organizations.gql";
-import {gqlExperience} from "./gql/Experience.gql";
+import {gqlExperience, gqlExperienceFragment} from "./gql/Experience.gql";
 
 import {gqlUpdateExperience} from "./gql/UpdateExperience.gql";
 import {gqlCreateExperience} from "./gql/CreateExperience.gql";
@@ -36,9 +41,10 @@ import {gqlRemoveExperience} from "./gql/RemoveExperience.gql";
 import {LoadingButton} from "../../../widgets/Button/LoadingButton";
 import {CartonetEditLayout} from "../CartonetEditLayout";
 import {Link} from "react-router-dom";
-import {generateCartonetPath} from "../utils/generateCartonetPath";
+import {generateCartonetEditExperiencePath, generateCartonetPath} from "../utils/generateCartonetPath";
 import Experiences from "../Cartography/Experiences";
 import {useLoggedUser} from "../../../../hooks/useLoggedUser";
+import {gqlMyExperiences} from "./gql/MyExperiences.gql";
 
 const useStyles = makeStyles(theme => ({
   categoryTitle: {
@@ -59,23 +65,11 @@ const useStyles = makeStyles(theme => ({
     border: `1px solid ${theme.palette.grey[200]}`,
     borderBottom: 0
   },
-  content: {
-    height: "50vh"
-  },
   experiencesContainer: {
     borderRight: `1px solid ${theme.palette.grey[200]}`
   },
-  experiences: {
-    height: `calc(50vh - ${theme.spacing(7)}px)`,
-    overflow: "auto"
-  },
-  editor: {
-    height: "50vh"
-  },
   form: {
-    height: `calc(50vh - ${theme.spacing(7)}px)`,
-    padding: theme.spacing(2),
-    overflow: "auto"
+    padding: theme.spacing(2)
   },
   actions: {
     padding: theme.spacing(1),
@@ -115,23 +109,105 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   const [editingExperience, setEditingExperience] = useState(null);
 
   const {user: me} = useLoggedUser() || {};
-  const [getExperience, {data: {experience} = {}, loading: loadingExperience}] = useLazyQuery(gqlExperience, {
-    fetchPolicy: "network-only"
-  });
+  const [getExperience, {data: {experience} = {}, loading: loadingExperience}] = useLazyQuery(gqlExperience);
 
   const [createExperience, {loading: savingProfile}] = useMutation(gqlCreateExperience, {
-    onCompleted: handleSaveCompleted
+    onCompleted: data => {
+      history.push(
+        generateCartonetEditExperiencePath({
+          history,
+          experience: {
+            id: data?.createExperience?.createdObject?.id,
+            experienceType
+          }
+        })
+      );
+      handleSaveCompleted();
+    }
   });
 
   const [updateExperience, {loading: savingExperience}] = useMutation(gqlUpdateExperience, {
-    onCompleted: handleSaveCompleted
+    onCompleted: () => {
+      setEditingExperience(experience);
+      handleSaveCompleted();
+    }
   });
 
   const [removeExperience, {loading: removingExperience}] = useMutation(gqlRemoveExperience, {
-    onCompleted: handleRemoveCompleted
+    onCompleted: () => {
+      setEditingExperience(null);
+      handleNavigateTo(experienceType);
+      handleRemoveCompleted();
+    }
   });
 
   const saving = savingProfile || savingExperience;
+
+  const mutationConfig = new MutationConfig({
+    scalarInputNames: ["title", "description", "startDate", "endDate"],
+    linkInputDefinitions: [
+      new LinkInputDefinition({
+        name: "organization",
+        inputName: "organizationInput",
+        targetObjectFormDefinition: new DynamicFormDefinition({
+          mutationConfig: new MutationConfig({
+            gqlFragment: gqlOrganizationFragment
+          })
+        })
+      }),
+      new LinkInputDefinition({
+        name: "occupations",
+        inputName: "occupationInputs",
+        isPlural: true,
+        targetObjectFormDefinition: new DynamicFormDefinition({
+          mutationConfig: new MutationConfig({
+            gqlFragment: gqlOccupationFragment
+          })
+        })
+      }),
+      new LinkInputDefinition({
+        name: "aptitudes",
+        inputName: "aptitudeInputs",
+        isPlural: true,
+        targetObjectFormDefinition: new DynamicFormDefinition({
+          mutationConfig: new MutationConfig({
+            gqlFragment: gqlAptitudeFragment
+          })
+        }),
+        nestedLinks: [
+          new LinkInputDefinition({
+            name: "skill",
+            inputName: "skillInput"
+          }),
+          new LinkInputDefinition({
+            name: "person",
+            inputName: "personInput"
+          }),
+          new LinkInputDefinition({
+            name: "rating",
+            inputName: "ratingInput"
+          })
+        ],
+        modifyValue: aptitude => {
+          if (aptitude.skill?.aptitudeId) {
+            return {
+              id: aptitude.skill?.aptitudeId
+            };
+          } else {
+            return {
+              ...aptitude,
+              person: {id: me.id},
+              rating: {
+                range: 5,
+                value: 0
+              }
+            };
+          }
+        }
+      })
+    ],
+    gqlFragment: gqlExperienceFragment
+  });
 
   useEffect(() => {
     if (id) {
@@ -355,58 +431,9 @@ export default function EditExperience({experienceType = "experience"} = {}) {
 
   async function save(mutatingExperience) {
     const {objectInput, updateCache} = prepareMutation({
-      entity: experience,
-      values: mutatingExperience,
-      inputNames: ["title", "description", "startDate", "endDate"],
-      links: [
-        {
-          name: "organization",
-          inputName: "organizationInput",
-          targetFragment: gqlOrganizationFragment
-        },
-        {
-          name: "occupations",
-          isPlural: true,
-          inputName: "occupationInputs",
-          targetFragment: gqlOccupationFragment
-        },
-        {
-          name: "aptitudes",
-          isPlural: true,
-          inputName: "aptitudeInputs",
-          targetFragment: gqlAptitudeFragment,
-          nestedLinks: [
-            {
-              name: "skill",
-              inputName: "skillInput"
-            },
-            {
-              name: "person",
-              inputName: "personInput"
-            },
-            {
-              name: "rating",
-              inputName: "ratingInput"
-            }
-          ],
-          modifyValue: aptitude => {
-            if (aptitude.skill?.aptitudeId) {
-              return {
-                id: aptitude.skill?.aptitudeId
-              };
-            } else {
-              return {
-                ...aptitude,
-                person: {id: me.id},
-                rating: {
-                  range: 5,
-                  value: 0
-                }
-              };
-            }
-          }
-        }
-      ]
+      initialObject: experience,
+      mutatedObject: mutatingExperience,
+      mutationConfig
     });
 
     objectInput.experienceType = experienceType;
@@ -434,7 +461,16 @@ export default function EditExperience({experienceType = "experience"} = {}) {
               }
             }
           }
-        }
+        },
+        refetchQueries: [
+          {
+            query: gqlMyExperiences,
+            variables: {
+              filters: experienceType ? [`experienceType:${experienceType}`] : null
+            }
+          }
+        ],
+        awaitRefetchQueries: true
       });
 
       mutatingExperience.id = createdObject?.id;
@@ -460,29 +496,25 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           input: {
             objectId: editingExperience.id
           }
+        },
+        update: cache => {
+          cache.modify({
+            id: cache.identify(me),
+            fields: {
+              experiences(connection, {readField}) {
+                return {
+                  ...connection,
+                  edges: connection.edges.filter(experienceEdge => {
+                    return editingExperience.id !== readField("id", readField("node", experienceEdge));
+                  })
+                };
+              }
+            }
+          });
         }
       });
     }
     setDeleteModalOpen(false);
-  }
-
-  function getEditLink() {
-    const location = history.location.pathname.replace(ROUTES.PROFILE, "");
-
-    let route = ROUTES.CARTONET_EDIT_EXPERIENCE;
-
-    if (!!matchPath(location, {path: ROUTES.CARTONET_EDIT_TRAINING, exact: false, strict: false})) {
-      route = ROUTES.CARTONET_EDIT_TRAINING;
-    } else if (!!matchPath(location, {path: ROUTES.CARTONET_EDIT_HOBBY, exact: false, strict: false})) {
-      route = ROUTES.CARTONET_EDIT_HOBBY;
-    }
-
-    // This is a hack to guess if we are in cartonet standalone mode or in openemploi.
-    if (!!matchPath(history.location.pathname, {path: ROUTES.PROFILE, exact: false, strict: false})) {
-      route = `${ROUTES.PROFILE}${route}`;
-    }
-
-    return generatePath(route);
   }
 
   function handleNavigateTo(experienceType) {

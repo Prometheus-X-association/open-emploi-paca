@@ -14,7 +14,7 @@ const OccupationsMatching = loadable(() => import("./Recommendation/OccupationsM
 const ExtractAptitudesFromCV = loadable(() => import("./Aptitudes/ExtractAptitudesFromCV"));
 const PrintProfile = loadable(() => import("./Export/PrintProfile"));
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     position: "relative",
     maxWidth: 1200,
@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
   logoInsert: {
     position: "absolute",
     top: theme.spacing(2),
-    right: theme.spacing(20),
-    width: theme.spacing(20)
+    right: theme.spacing(12),
+    width: theme.spacing(16)
   },
   close: {
     position: "absolute",

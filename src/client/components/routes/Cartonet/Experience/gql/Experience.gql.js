@@ -8,38 +8,37 @@ export const gqlExperienceFragment = gql`
     description
     startDate
     endDate
-    organization {
-      id
-      name
-    }
-    occupations {
-      edges {
-        node {
-          id
-          prefLabel
-        }
-      }
-    }
-    aptitudes {
-      edges {
-        node {
-          id
-          skillLabel
-          skill @include(if: $includeNestedSkill) {
-            id
-            prefLabel
-          }
-        }
-      }
-    }
   }
 `;
 
 export const gqlExperience = gql`
   query Experience($id: ID!, $includeNestedSkill: Boolean! = true) {
     experience(id: $id) {
-      id
       ...ExperienceFragment
+      organization {
+        id
+        name
+      }
+      occupations {
+        edges {
+          node {
+            id
+            prefLabel
+          }
+        }
+      }
+      aptitudes {
+        edges {
+          node {
+            id
+            skillLabel
+            skill @include(if: $includeNestedSkill) {
+              id
+              prefLabel
+            }
+          }
+        }
+      }
     }
   }
 

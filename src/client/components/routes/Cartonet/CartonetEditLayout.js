@@ -18,9 +18,9 @@ const useStyles = makeStyles(theme => ({
     fontSize: theme.typography.fontSize * 7
   },
   content: {
-    marginTop: theme.spacing(4),
-    height: "50vh",
-    overflow: "auto"
+    marginTop: theme.spacing(4)
+    // height: "50vh",
+    // overflow: "auto"
   },
   stepActive: {
     textDecoration: "underline"
@@ -30,6 +30,11 @@ const useStyles = makeStyles(theme => ({
   },
   dialogContent: {
     position: "relative"
+  },
+  navigation: {
+    height: theme.spacing(10),
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(-2)
   }
 }));
 

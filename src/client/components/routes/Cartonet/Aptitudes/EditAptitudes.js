@@ -10,7 +10,6 @@ import {useHistory} from "react-router";
 import {CollectionView} from "../../../widgets/CollectionView/CollectionView";
 import {useSnackbar} from "notistack";
 import {gqlUpdateAptitude} from "./gql/UpdateAptitude.gql";
-import {LoadingButton} from "../../../widgets/Button/LoadingButton";
 import {CartonetEditLayout} from "../CartonetEditLayout";
 import {Link} from "react-router-dom";
 import {generateCartonetPath} from "../utils/generateCartonetPath";
@@ -139,27 +138,38 @@ export default function EditAptitudes({
         </>
       }
       actions={
-        <Choose>
-          <When condition={modifiedAptitudesCount > 0}>
-            <Button
-              disabled={modifiedAptitudesCount === 0}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                setTimeout(() => {
-                  enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
-                }, 500);
-                setModifiedAptitudesCount(0);
-              }}>
-              {t("ACTIONS.SAVE")}
-            </Button>
-          </When>
-          <Otherwise>
-            <Button variant={"contained"} onClick={onClose}>
-              {t("ACTIONS.TERMINATE")}
-            </Button>
-          </Otherwise>
-        </Choose>
+        <>
+          <Button
+            variant={"contained"}
+            component={Link}
+            to={generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_EXPERIENCE})}>
+            {t("ACTIONS.PREVIOUS")}
+          </Button>
+          <Choose>
+            <When condition={modifiedAptitudesCount > 0}>
+              <Button
+                disabled={modifiedAptitudesCount === 0}
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setTimeout(() => {
+                    enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
+                  }, 500);
+                  setModifiedAptitudesCount(0);
+                }}>
+                {t("ACTIONS.SAVE")}
+              </Button>
+            </When>
+            <Otherwise>
+              <Button
+                component={Link}
+                variant={"contained"}
+                to={generateCartonetPath({history, route: ROUTES.CARTONET_SHOW_PROFILE})}>
+                {t("ACTIONS.TERMINATE")}
+              </Button>
+            </Otherwise>
+          </Choose>
+        </>
       }>
       <CollectionView
         columns={columns}

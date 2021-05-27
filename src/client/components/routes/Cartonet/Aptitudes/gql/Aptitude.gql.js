@@ -1,17 +1,21 @@
 import {gql} from "@apollo/client";
 
 export const gqlAptitudeFragment = gql`
-fragment AptitudeFragment on Aptitude{
-  id
-  isInCV
-  isTop5
-  skillLabel
-  rating{
+  fragment AptitudeFragment on Aptitude {
     id
-    value
+    isInCV
+    isTop5
+    skillLabel
+    rating {
+      id
+      value
+    }
+    experiencesCount
+    skill {
+      id
+      prefLabel
+    }
   }
-  experiencesCount
-}
 `;
 
 export const gqlSkillFragment = gql`
@@ -22,7 +26,13 @@ export const gqlSkillFragment = gql`
 `;
 
 export const gqlSkills = gql`
-  query Skills($qs: String, $first: Int, $myAptitudesFilters: [String], $otherSkillsFilters: [String], $sortings: [SortingInput]) {
+  query Skills(
+    $qs: String
+    $first: Int
+    $myAptitudesFilters: [String]
+    $otherSkillsFilters: [String]
+    $sortings: [SortingInput]
+  ) {
     myAptitudesCount: skillsCount(qs: $qs, filters: $myAptitudesFilters)
     myAptitudes: aptitudes(qs: $qs, first: $first, sortings: $sortings, filters: $myAptitudesFilters) {
       edges {

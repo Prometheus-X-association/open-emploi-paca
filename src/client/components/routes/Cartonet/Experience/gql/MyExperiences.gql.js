@@ -7,6 +7,30 @@ export const gqlMyExperiencesFragment = gql`
       edges {
         node {
           ...ExperienceFragment
+          organization {
+            id
+            name
+          }
+          occupations {
+            edges {
+              node {
+                id
+                prefLabel
+              }
+            }
+          }
+          aptitudes {
+            edges {
+              node {
+                id
+                skillLabel
+                skill @include(if: $includeNestedSkill) {
+                  id
+                  prefLabel
+                }
+              }
+            }
+          }
         }
       }
     }

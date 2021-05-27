@@ -21,13 +21,13 @@ const useStyles = makeStyles(theme => ({
   uploadButton: {},
   uploadButtonContainer: {
     display: "flex",
-    height: "100%",
+    height: "40vh",
     width: "100%",
     alignItems: "center",
     justifyContent: "center"
   },
   fileSelected: {
-    marginBottom: theme.spacing(2),
+    margin: theme.spacing(2, 0),
     height: "auto"
   },
   message: {
