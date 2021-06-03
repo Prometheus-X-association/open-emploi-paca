@@ -9,7 +9,7 @@ import {generateCartonetPath} from "./utils/generateCartonetPath";
 import clsx from "clsx";
 import {useEffect, useState} from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   step: {
     fontSize: theme.typography.fontSize * 1.8,
     lineHeight: "initial",
@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   content: {
     marginTop: theme.spacing(4),
     height: "60vh",
-    overflow: "auto"
+    overflow: "hidden"
   },
   stepActive: {
     textDecoration: "underline"
@@ -34,6 +34,11 @@ const useStyles = makeStyles(theme => ({
   },
   tabs: {
     marginBottom: theme.spacing(-4)
+  },
+  "@media print": {
+    content: {
+      overflow: "auto"
+    }
   }
 }));
 
@@ -73,13 +78,13 @@ export function CartonetExploreLayout({title, children, actions} = {}) {
         </Tabs>
 
         <Paper variant={"outlined"} className={classes.content}>
-          <Grid container wrap={"nowrap"} direction={"column"} style={{height: "100%"}}>
+          <Grid container wrap={"nowrap"} direction={"column"} style={{height: "100%", overflow: "hidden"}}>
             <If condition={title}>
               <Grid item className={classes.title}>
                 <Typography variant={"h5"}>{title}</Typography>
               </Grid>
             </If>
-            <Grid xs item>
+            <Grid xs item style={{overflow: "hidden"}}>
               {children}
             </Grid>
           </Grid>

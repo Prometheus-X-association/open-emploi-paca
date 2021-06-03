@@ -11,7 +11,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Typography,
-  Box
+  Grid
 } from "@material-ui/core";
 import {ExpandMore as ExpandMoreIcon, Print as PrintIcon} from "@material-ui/icons";
 
@@ -22,7 +22,7 @@ import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
 import {Gauge} from "../../../widgets/Gauge";
 import {CartonetExploreLayout} from "../CartonetExploreLayout";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   categoryHeader: {
     alignItems: "center"
   },
@@ -33,7 +33,16 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2)
   },
   root: {
-    position: "relative"
+    position: "relative",
+    overflow: "hidden",
+    height: "100%"
+  },
+  occupationsContainer: {
+    overflow: "hidden",
+    height: "100%"
+  },
+  occupationsList: {
+    overflow: "auto"
   },
   categoryTitle: {
     padding: theme.spacing(2)
@@ -48,9 +57,17 @@ const useStyles = makeStyles(theme => ({
     zIndex: 100
   },
   "@media print": {
-    occupations: {
+    root: {
+      height: "auto",
+      overflow: "visible"
+    },
+    occupationsContainer: {
+      height: "auto",
       margin: "auto",
       padding: theme.spacing(5)
+    },
+    occupationsList: {
+      overflow: "visible"
     }
   }
 }));
@@ -79,7 +96,7 @@ export default function OccupationsMatching({print} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const [expanded, setExpanded] = useState(false);
-  const handleChange = panel => (event, isExpanded) => {
+  const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
   const [occupations, {loading}] = useSuggestedOccupationsMatchings();
@@ -110,36 +127,45 @@ export default function OccupationsMatching({print} = {}) {
             <Button className={classes.printButton} onClick={handlePrint} endIcon={<PrintIcon />}>
               {t("CARTONET.ACTIONS.PRINT")}
             </Button>
-            <Box className={classes.occupations} ref={componentRef}>
-              <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
-                {t("CARTONET.OCCUPATION_MATCHING.SUBTITLE")}
-              </Typography>
-              {occupations.map(occupation => (
-                <Accordion
-                  key={occupation.categoryId}
-                  expanded={expanded === occupation.categoryId}
-                  onChange={handleChange(occupation.categoryId)}
-                  className={classes.occupation}>
-                  <AccordionSummary
-                    classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}}
-                    expandIcon={<ExpandMoreIcon />}>
-                    <Gauge value={occupation.score * 100} />
-                    <Typography className={classes.categoryHeaderTitle}>{occupation.categoryName}</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <If condition={expanded === occupation.categoryId}>
-                      <List dense>
-                        {occupation.subOccupations.map(subOccupation => (
-                          <ListItem key={subOccupation.id}>
-                            <ListItemText primary={subOccupation.prefLabel} />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </If>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
-            </Box>
+            <Grid
+              container
+              direction={"column"}
+              wrap={"nowrap"}
+              className={classes.occupationsContainer}
+              ref={componentRef}>
+              <Grid item style={{flexBasis: 0}}>
+                <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+                  {t("CARTONET.OCCUPATION_MATCHING.SUBTITLE")}
+                </Typography>
+              </Grid>
+              <Grid xs item className={classes.occupationsList}>
+                {occupations.map((occupation) => (
+                  <Accordion
+                    key={occupation.categoryId}
+                    expanded={expanded === occupation.categoryId}
+                    onChange={handleChange(occupation.categoryId)}
+                    className={classes.occupation}>
+                    <AccordionSummary
+                      classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}}
+                      expandIcon={<ExpandMoreIcon />}>
+                      <Gauge value={occupation.score * 100} />
+                      <Typography className={classes.categoryHeaderTitle}>{occupation.categoryName}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <If condition={expanded === occupation.categoryId}>
+                        <List dense>
+                          {occupation.subOccupations.map((subOccupation) => (
+                            <ListItem key={subOccupation.id}>
+                              <ListItemText primary={subOccupation.prefLabel} />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </If>
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
+              </Grid>
+            </Grid>
           </div>
         </Otherwise>
       </Choose>

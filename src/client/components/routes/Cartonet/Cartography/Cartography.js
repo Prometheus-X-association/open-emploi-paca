@@ -16,7 +16,7 @@ import {generateCartonetPath} from "../utils/generateCartonetPath";
 import {useReactToPrint} from "react-to-print";
 import {Print as PrintIcon} from "@material-ui/icons";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     position: "relative"
   },
@@ -48,9 +48,6 @@ const useStyles = makeStyles(theme => ({
   faded: {
     opacity: 0.1
   },
-  categoryTitle: {
-    marginBottom: theme.spacing(2)
-  },
   top5Chip: {
     height: theme.spacing(2),
     fontSize: 10,
@@ -59,12 +56,18 @@ const useStyles = makeStyles(theme => ({
     }
   },
   column: {
-    height: "60vh",
-    overflow: "auto",
-    padding: theme.spacing(2),
+    padding: theme.spacing(2, 2, 0, 2),
     "&:first-of-type": {
       borderRight: `1px solid ${theme.palette.grey[200]}`
     }
+  },
+  overflowScrollable: {
+    overflow: "auto",
+    height: "100%"
+  },
+  overflowHidden: {
+    overflow: "hidden",
+    height: "100%"
   },
   printButton: {
     position: "absolute",
@@ -77,8 +80,12 @@ const useStyles = makeStyles(theme => ({
       margin: "auto",
       padding: theme.spacing(2)
     },
-    column: {
-      height: "auto"
+    overflowHidden: {
+      height: "auto",
+      overflow: "visible"
+    },
+    overflowScrollable: {
+      overflow: "visible"
     }
   }
 }));
@@ -138,62 +145,78 @@ export default function Cartography({} = {}) {
           {t("ACTIONS.UPDATE")}
         </Button>
       }>
-      <div className={classes.root}>
-        <Button className={classes.printButton} onClick={handlePrint} endIcon={<PrintIcon />}>
+      <div className={clsx(classes.root, classes.overflowHidden)}>
+        <Button
+          className={classes.printButton}
+          onClick={handlePrint}
+          endIcon={<PrintIcon />}
+          disabled={loadingAptitudes}>
           {t("CARTONET.ACTIONS.PRINT")}
         </Button>
-        <Grid container className={classes.cartography} ref={componentRef} wrap={"nowrap"}>
-          <Grid item xs={5} className={classes.column}>
-            <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
-              {t("CARTONET.CARTOGRAPHY.EXPERIENCES")}
-            </Typography>
+        <Grid
+          container
+          className={clsx(classes.cartography, classes.overflowHidden)}
+          ref={componentRef}
+          direction={"column"}
+          wrap={"nowrap"}>
+          <Grid container item style={{flexBasis: 0}}>
+            <Grid item xs={5} className={classes.column}>
+              <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+                {t("CARTONET.CARTOGRAPHY.EXPERIENCES")}
+              </Typography>
+            </Grid>
 
-            <Experiences
-              selectedAptitude={selectedAptitude}
-              onAptitudeMouseEnter={setSelectedAptitude}
-              onAptitudeMouseLeave={() => setSelectedAptitude(null)}
-            />
+            <Grid item xs={7} className={classes.column}>
+              <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+                {t("CARTONET.CARTOGRAPHY.APTITUDES")}
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid item xs={7} className={classes.column}>
-            <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
-              {t("CARTONET.CARTOGRAPHY.APTITUDES")}
-            </Typography>
-
-            <Choose>
-              <When condition={loadingAptitudes}>
-                <CircularProgress />
-              </When>
-              <Otherwise>
-                {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
-                  <Grid
-                    key={aptitude.id}
-                    container
-                    direction={"row"}
-                    className={clsx(classes.aptitude, {
-                      [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
-                    })}
-                    wrap={"nowrap"}>
-                    <Grid item xs={1}>
-                      <If condition={aptitude.isTop5}>
-                        <Chip
-                          className={classes.top5Chip}
-                          label={"Top5"}
-                          color="primary"
-                          variant="outlined"
-                          size="small"
-                        />
-                      </If>
+          <Grid container item xs className={classes.overflowHidden}>
+            <Grid item xs={5} className={clsx(classes.column, classes.overflowScrollable)}>
+              <Experiences
+                selectedAptitude={selectedAptitude}
+                onAptitudeMouseEnter={setSelectedAptitude}
+                onAptitudeMouseLeave={() => setSelectedAptitude(null)}
+              />
+            </Grid>
+            <Grid item xs={7} className={clsx(classes.column, classes.overflowScrollable)}>
+              <Choose>
+                <When condition={loadingAptitudes}>
+                  <CircularProgress />
+                </When>
+                <Otherwise>
+                  {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
+                    <Grid
+                      key={aptitude.id}
+                      container
+                      direction={"row"}
+                      className={clsx(classes.aptitude, {
+                        [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
+                      })}
+                      wrap={"nowrap"}>
+                      <Grid item xs={1}>
+                        <If condition={aptitude.isTop5}>
+                          <Chip
+                            className={classes.top5Chip}
+                            label={"Top5"}
+                            color="primary"
+                            variant="outlined"
+                            size="small"
+                          />
+                        </If>
+                      </Grid>
+                      <Grid item xs={6} className={classes.aptitudeLabel}>
+                        {aptitude.skillLabel || aptitude.skill?.prefLabel}
+                      </Grid>
+                      <Grid item xs={5} className={classes.rating} container justify={"flex-end"}>
+                        <Rating value={aptitude.rating?.value} size={"small"} readOnly />
+                      </Grid>
                     </Grid>
-                    <Grid item xs={6} className={classes.aptitudeLabel}>
-                      {aptitude.skillLabel || aptitude.skill?.prefLabel}
-                    </Grid>
-                    <Grid item xs={5} className={classes.rating} container justify={"flex-end"}>
-                      <Rating value={aptitude.rating?.value} size={"small"} readOnly />
-                    </Grid>
-                  </Grid>
-                ))}
-              </Otherwise>
-            </Choose>
+                  ))}
+                </Otherwise>
+              </Choose>
+            </Grid>
           </Grid>
         </Grid>
       </div>

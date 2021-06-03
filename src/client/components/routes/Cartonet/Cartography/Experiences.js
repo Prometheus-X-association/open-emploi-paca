@@ -14,7 +14,7 @@ import {createLink} from "../../../../utilities/createLink";
 import {gqlMyExperiences} from "../Experience/gql/MyExperiences.gql";
 import {generateCartonetEditExperiencePath} from "../utils/generateCartonetPath";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   experience: {
     breakInside: "avoid"
   },
@@ -47,6 +47,12 @@ const useStyles = makeStyles(theme => ({
     fontSize: 10,
     "& > span": {
       padding: theme.spacing(0, 0.5)
+    }
+  },
+  "@media print": {
+    experienceAptitude: {
+      fontSize: "10px",
+      height: "20px"
     }
   }
 }));
