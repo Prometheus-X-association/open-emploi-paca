@@ -112,8 +112,7 @@ export default function OccupationsMatching({print} = {}) {
     documentTitle: t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE"),
     onBeforeGetContent: () => {},
     onBeforePrint: () => {},
-    onAfterPrint: () => {},
-    removeAfterPrint: true
+    onAfterPrint: () => {}
   });
 
   return (

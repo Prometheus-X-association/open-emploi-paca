@@ -116,8 +116,7 @@ export default function Cartography({} = {}) {
     documentTitle: t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE"),
     onBeforeGetContent: () => {},
     onBeforePrint: () => {},
-    onAfterPrint: () => {},
-    removeAfterPrint: true
+    onAfterPrint: () => {}
   });
 
   const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes, {
