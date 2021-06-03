@@ -23,29 +23,29 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
     NEXT: "Suivant",
     PREVIOUS: "Précédent",
     NOT_ALLOWED: "Vous n'avez pas accès à cette fonctionnalité.",
-    TERMINATE: "Terminer"
+    TERMINATE: "Terminer",
   },
   APOLLO: {
     ERROR: {
       MALFORMED_REQUEST: "Une erreur s'est produite.",
       SERVER_ERROR: "Une erreur s'est produite.",
       USER_NOT_EXISTS_IN_GRAPH:
-        "Votre compte est désynchronisé, contactez un administrateur."
-    }
+        "Votre compte est désynchronisé, contactez un administrateur.",
+    },
   },
   APP_BAR: {
     BUTTONS: {
-      BACK: "Retour"
+      BACK: "Retour",
     },
     MENU: {
       HELLO: "Bonjour",
       MY_PROFILE: "Mon profil",
-      SIGN_OUT: "Se déconnecter"
-    }
+      SIGN_OUT: "Se déconnecter",
+    },
   },
   CARTONET: {
     CONFIRM_CLOSE: "Êtes-vous sûr de vouloir fermer la fenêtre ?",
-    EDIT_TITLE: "Créez votre cartographie des compétences",
+    EDIT_TITLE: "Créer/Modifier votre cartographie des compétences",
     EXPLORE_TITLE: "Votre cartographie des compétences et métiers suggérés",
     ACTIONS: {
       ADD_EXPERIENCE: "Ajouter une expérience",
@@ -58,7 +58,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       PRINT: "Imprimer",
       RESTITUTION: "Restitution de profil",
       EDITION: "Édition de profil",
-      EXTRACT_SKILLS_FROM_CV: "Importer vos compétences"
+      EXTRACT_SKILLS_FROM_CV: "Importer vos compétences",
     },
     EXPERIENCE: {
       PAGE_TITLE: "Expériences professionnelles",
@@ -79,7 +79,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       ON_THE_FLY_EXPERIENCES: "Expériences ajoutées :",
       REMOVE: "Supprimer l'expérience",
       REMOVE_SURE:
-        'Vous êtes sur le point de supprimer l\'expérience "{{name}}".'
+        'Vous êtes sur le point de supprimer l\'expérience "{{name}}".',
     },
     TRAINING: {
       PAGE_TITLE: "Formation",
@@ -88,7 +88,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       FORM_OCCUPATIONS_LABEL: "Métiers sélectionnés pour la formation",
       FORM_APTITUDES_LABEL: "Compétences sélectionnées pour la formation",
       FORM_EXISTING_APTITUDES_LABEL:
-        "Compétences à sélectionner pour la formation"
+        "Compétences à sélectionner pour la formation",
     },
     HOBBY: {
       PAGE_TITLE: "Extra-professionnelles",
@@ -99,7 +99,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       FORM_APTITUDES_LABEL:
         "Compétences sélectionnées pour l'expérience extra-professionnelle",
       FORM_EXISTING_APTITUDES_LABEL:
-        "Compétences à sélectionner pour l'expérience extra-professionnelle"
+        "Compétences à sélectionner pour l'expérience extra-professionnelle",
     },
     SKILL: {
       ADD: "Chercher une compétence",
@@ -108,7 +108,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       OTHERS: "Autres compétences pour ce métier",
       MORE_OTHER: "+{{count}} autre compétence...",
       MORE_OTHER_plural: "+{{count}} autres compétences...",
-      SEARCH_NONE: "Aucune compétence trouvée pour ce(s) métier(s)..."
+      SEARCH_NONE: "Aucune compétence trouvée pour ce(s) métier(s)...",
     },
     EXTRACT_APTITUDES_FROM_CV: {
       PAGE_TITLE: "Importez vos compétences depuis votre CV",
@@ -119,7 +119,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       SKILL_SELECTED: "Annuler l'ajout",
       SKILL_ALREADY_SELECTED: "Compétence déjà présente",
       ACTION_SAVE: "Ajouter cette compétence à votre profil",
-      ACTION_SAVE_plural: "Ajouter ces {{count}} compétences à votre profil"
+      ACTION_SAVE_plural: "Ajouter ces {{count}} compétences à votre profil",
     },
     APTITUDES: {
       PAGE_TITLE: "Valoriser vos compétences",
@@ -130,7 +130,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       IS_IN_CV: "Dans le CV",
       REMOVE_TEXT: "Êtes-vous sûr de vouloir supprimer cette compétence ?",
       REMOVE_TEXT_plural:
-        "Êtes-vous sûr de vouloir supprimer ces {{count}} compétences ?"
+        "Êtes-vous sûr de vouloir supprimer ces {{count}} compétences ?",
     },
     CARTOGRAPHY: {
       PAGE_TITLE: "Cartographie",
@@ -138,30 +138,30 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       EXPERIENCES: "Expériences",
       SUGGETIONS: "Métiers suggérés",
       NO_EXPERIENCE: "Aucune expérience saisie",
-      NO_EXPERIENCE_ADVISE: "Cliquer sur Ajouter et remplir le formulaire"
+      NO_EXPERIENCE_ADVISE: "Cliquer sur Ajouter et remplir le formulaire",
     },
     OCCUPATION_MATCHING: {
       PAGE_TITLE: "Suggestion de métiers",
-      SUBTITLE: "Liste des métiers correspondant à votre profil"
+      SUBTITLE: "Liste des métiers correspondant à votre profil",
     },
     EXPORT: {
-      TITLE: "Mon profil Carto.net"
-    }
+      TITLE: "Mon profil Carto.net",
+    },
   },
   AUTOCOMPLETE: {
-    ADD: 'Ajouter "{{value}}"'
+    ADD: 'Ajouter "{{value}}"',
   },
   CONCEPT: {
     AUTOCOMPLETE: {
       NO_RESULT: "Aucun résultat trouvé.",
-      PLACEHOLDER: "Sélectionner..."
-    }
+      PLACEHOLDER: "Sélectionner...",
+    },
   },
   JOB_AREA: {
     AUTOCOMPLETE: {
       NO_RESULT: "Aucun résultat trouvé.",
-      PLACEHOLDER: "Sélectionner..."
-    }
+      PLACEHOLDER: "Sélectionner...",
+    },
   },
   MARKET: {
     TITLE: "Marché de l'emploi",
@@ -179,7 +179,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       "Top 10 des métiers pour une zone d'emploi donnée",
     OCCUPATIONS_COUNT: "{{count}} offre d'emploi",
     OCCUPATIONS_COUNT_plural: "{{count}} offres d'emploi",
-    OCCUPATION_EMPTY: "Aucune métier pour cette zoné d'emploi..."
+    OCCUPATION_EMPTY: "Aucune métier pour cette zoné d'emploi...",
   },
   INCOMES: {
     TITLE: "Salaires",
@@ -192,7 +192,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
     ORGANIZATION_OFFERS_COUNT: "{{count}} offre d'emploi",
     ORGANIZATION_OFFERS_COUNT_plural: "{{count}} offres d'emploi",
     ORGANIZATION_OFFERS_EMPTY:
-      "Aucune entreprise ne recrute pour les critères sélectionnés..."
+      "Aucune entreprise ne recrute pour les critères sélectionnés...",
   },
   TRAININGS: {
     TITLE: "Formations",
@@ -205,7 +205,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
     ORGANIZATION_TRAININGS_COUNT: "{{count}} formation",
     ORGANIZATION_TRAININGS_COUNT_plural: "{{count}} formations",
     ORGANIZATION_TRAININGS_EMPTY:
-      "Aucune organisation ne donne de formation pour les critères sélectionnés..."
+      "Aucune organisation ne donne de formation pour les critères sélectionnés...",
   },
   SKILLS: {
     TITLE: "Compétences",
@@ -217,7 +217,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       "Adéquation entre vos compétences et les métiers suggérés",
     NO_SUGGESTED_OCCUPATIONS: "Aucun autre métier suggéré pour vos compétences",
     MY_SKILLS: "Vos compétences",
-    OTHER_SKILLS: "Les compétences qu'il vous manque..."
+    OTHER_SKILLS: "Les compétences qu'il vous manque...",
   },
   ANALYSIS: {
     TITLE: "Analyses",
@@ -229,14 +229,14 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       ROUGE: "FAIBLE",
       ORANGE: "MOYEN",
       VERT: "BON",
-      LOADING: "..."
-    }
+      LOADING: "...",
+    },
   },
   ORGANIZATION: {
     AUTOCOMPLETE: {
       NO_RESULT: "Aucun résultat trouvé.",
-      PLACEHOLDER: "Entreprise / Organisation"
-    }
+      PLACEHOLDER: "Entreprise / Organisation",
+    },
   },
   SIGN_IN: {
     EMAIL: "Adresse mail",
@@ -245,7 +245,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
     REDIRECT_SIGN_UP: "Créer un compte",
     REMEMBER_ME: "Se souvenir de moi.",
     SUBMIT: "Se connecter",
-    TITLE: "Plateforme Open Emploi"
+    TITLE: "Plateforme Open Emploi",
   },
   SIGN_UP: {
     EMAIL: "Adresse mail",
@@ -255,7 +255,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
     REDIRECT_SIGN_IN: "Vous avez déjà un compte ? Se connecter.",
     SUBMIT: "Créer le compte",
     TITLE: "Créer un compte",
-    VALIDATE_PASSWORD: "Confirmation du mot de passe"
+    VALIDATE_PASSWORD: "Confirmation du mot de passe",
   },
   DASHBOARD: {
     YOUR_DASHBOARD: "Votre tableau de bord",
@@ -266,10 +266,10 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
     SKILLS: "Compétences",
     TRAININGS: "Formations",
     TRANSPORTS: "Transport et logement",
-    LIFE: "Cadre de vie"
+    LIFE: "Cadre de vie",
   },
   TRANSPORTS: {
-    TITLE: "Transport et logement"
+    TITLE: "Transport et logement",
   },
   PROFILE: {
     YOUR_PROFILE: "Votre profil",
@@ -278,7 +278,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
     INCOME: "Salaire actuel",
     OCCUPATION: "Métier actuel",
     SPOUSE_OCCUPATION: "Métier du conjoint",
-    JOB_AREA: "Zone d'emploi actuelle"
+    JOB_AREA: "Zone d'emploi actuelle",
   },
   PROJECT: {
     YOUR_PROJECT: "Votre projet",
@@ -291,15 +291,15 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       TIP: "Vous pouvez sélectionner 4 métiers",
       CURRENT: "Actuel",
       ADD: "Ajouter un métier...",
-      NONE: "Aucun métier sélectionné"
+      NONE: "Aucun métier sélectionné",
     },
     WISHED_JOB_AREA: {
       TITLE: "Zones d'emplois recherchées",
       TIP: "Vous pouvez sélectionner 4 zones d'emploi",
       CURRENT: "Actuel",
       ADD: "Ajouter une zone d'emploi...",
-      NONE: "Aucune zone d'emploi sélectionné"
-    }
+      NONE: "Aucune zone d'emploi sélectionné",
+    },
   },
   FORM_ERRORS: {
     FIELD_ERRORS: {
@@ -311,7 +311,7 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       REQUIRED: "Champ obligatoire",
       REQUIRED_S: "Champ(s) obligatoire(s)",
       TOO_SHORTS: "Champ(s) trop court(s)",
-      WRONG_OLD_PASSWORD: "L'ancien mot de passe est incorrect"
+      WRONG_OLD_PASSWORD: "L'ancien mot de passe est incorrect",
     },
     GENERAL_ERRORS: {
       DISABLED_BECAUSE_NO_MODIFICATION: "Aucune modification n'a été faite",
@@ -322,8 +322,8 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       USER_MUST_BE_AUTHENTICATED:
         "Vous devez être connecté avec un compte utilisateur pour effectuer cette action",
       USER_NOT_ALLOWED:
-        "Vous n'avez pas la persmission d'effectuer cette action"
-    }
+        "Vous n'avez pas la persmission d'effectuer cette action",
+    },
   },
   REMOTE_TABLE: {
     ACTIONS: {
@@ -333,41 +333,41 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
       REMOVE_CONFIRM_TEXT_plural:
         "Êtes-vous sûr de vouloir supprimer ces {{count}} objets ?",
       REMOVE_plural: "Supprimer ({{count}})",
-      REMOVE_SUCCESS: "Élements supprimés avec succès"
+      REMOVE_SUCCESS: "Élements supprimés avec succès",
     },
     BODY: {
       NO_MATCH: "Aucun résultat trouvé...",
-      TOOLTIP: "Sort"
+      TOOLTIP: "Sort",
     },
     FILTER: {
       ALL: "Tout",
       RESET: "Réinitialiser",
-      TITLE: "Filtres"
+      TITLE: "Filtres",
     },
     PAGINATION: {
       DISPLAY_ROWS: "de",
       NEXT: "Page suivante",
       PREVIOUS: "Page précédente",
-      ROWS_PER_PAGE: "Lignes par page:"
+      ROWS_PER_PAGE: "Lignes par page:",
     },
     SELECTED_ROWS: {
       DELETE: "Supprimer",
       DELETE_ARIA: "Supprimer les colonnes sélectionnées",
-      TEXT: "colonne(s) sélectionnée(s)"
+      TEXT: "colonne(s) sélectionnée(s)",
     },
     TOOLBAR: {
       DOWNLOAD_CSV: "Télécharger CSV",
       FILTER_TABLE: "Filtrer",
       PRINT: "Imprimer",
       SEARCH: "Rechercher",
-      VIEW_COLUMNS: "Colonnes visibles"
+      VIEW_COLUMNS: "Colonnes visibles",
     },
     VIEW_COLUMNS: {
       TITLE: "Colonnes visibles",
-      TITLE_ARIA: "Afficher/Cacher les colonnes du tableau"
-    }
+      TITLE_ARIA: "Afficher/Cacher les colonnes du tableau",
+    },
   },
   RESET_PASSWORD: {
-    CONFIRM: "Réinitialiser mon mot de passe"
-  }
+    CONFIRM: "Réinitialiser mon mot de passe",
+  },
 });
