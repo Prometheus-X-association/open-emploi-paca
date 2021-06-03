@@ -46,7 +46,7 @@ import Experiences from "../Cartography/Experiences";
 import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 import {gqlMyExperiences} from "./gql/MyExperiences.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   categoryTitle: {
     marginTop: theme.spacing(2)
   },
@@ -112,7 +112,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   const [getExperience, {data: {experience} = {}, loading: loadingExperience}] = useLazyQuery(gqlExperience);
 
   const [createExperience, {loading: savingProfile}] = useMutation(gqlCreateExperience, {
-    onCompleted: data => {
+    onCompleted: (data) => {
       history.push(
         generateCartonetEditExperiencePath({
           history,
@@ -188,7 +188,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
             inputName: "ratingInput"
           })
         ],
-        modifyValue: aptitude => {
+        modifyValue: (aptitude) => {
           if (aptitude.skill?.aptitudeId) {
             return {
               id: aptitude.skill?.aptitudeId
@@ -332,6 +332,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
                             label={t(`CARTONET.${experienceType.toUpperCase()}.ORGANIZATION`)}
                             name={"organization"}
                             creatable={true}
+                            required
                           />
                         </Grid>
                         <Grid item xs={12} container>
@@ -497,14 +498,14 @@ export default function EditExperience({experienceType = "experience"} = {}) {
             objectId: editingExperience.id
           }
         },
-        update: cache => {
+        update: (cache) => {
           cache.modify({
             id: cache.identify(me),
             fields: {
               experiences(connection, {readField}) {
                 return {
                   ...connection,
-                  edges: connection.edges.filter(experienceEdge => {
+                  edges: connection.edges.filter((experienceEdge) => {
                     return editingExperience.id !== readField("id", readField("node", experienceEdge));
                   })
                 };

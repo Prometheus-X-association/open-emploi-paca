@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete, {createFilterOptions} from "@material-ui/lab/Autocomplete";
 import {useLazyQuery, useQuery} from "@apollo/client";
@@ -24,6 +24,8 @@ const strictOptionsFilter = createFilterOptions();
  * @param {boolean} [multiple]
  * @param {string} [className]
  * @param {boolean} [creatable]
+ * @param {boolean} [strictMode]
+ * @param {boolean} [required]
  */
 export function GenericAutocomplete({
   gqlEntitiesQuery,
@@ -40,7 +42,8 @@ export function GenericAutocomplete({
   className,
   disableEntities = [],
   creatable,
-  strictMode = false
+  strictMode = false,
+  required = false
 } = {}) {
   invariant(gqlEntitiesQuery, "gqlEntitiesQuery must be passed");
   invariant(gqlEntitiesConnectionPath, "gqlEntitiesConnectionPath must be passed");
@@ -63,7 +66,7 @@ export function GenericAutocomplete({
   const [loadEntities, {data, loading}] = useLazyQuery(gqlEntitiesQuery);
 
   const throttledOnChange = throttle(
-    event => {
+    (event) => {
       setQs(event.target.value);
     },
     250,
@@ -71,10 +74,10 @@ export function GenericAutocomplete({
   );
 
   useEffect(() => {
-    if(typeof qs === "string"){
-      loadEntities({variables})
+    if (typeof qs === "string") {
+      loadEntities({variables});
     }
-  }, [qs])
+  }, [qs]);
 
   const options = get(data, `${gqlEntitiesConnectionPath}.edges`, []).map(({node: entity}) => entity);
 
@@ -83,21 +86,22 @@ export function GenericAutocomplete({
       className={className}
       noOptionsText={t("AUTOCOMPLETE.NO_RESULT")}
       options={options}
-      getOptionLabel={entity => {
+      getOptionLabel={(entity) => {
         return entity?.[gqlEntityLabelPath] || "";
       }}
       getOptionSelected={(option, value) => option?.id === value?.id}
-      getOptionDisabled={option => !!disableEntities.find(({id}) => id === option.id)}
+      getOptionDisabled={(option) => !!disableEntities.find(({id}) => id === option.id)}
       loading={loading}
       onChange={(e, value) => onSelect(value)}
       value={entity || entities}
       multiple={multiple}
-      renderInput={params => (
+      renderInput={(params) => (
         <TextField
           {...params}
+          required={required}
           variant={"outlined"}
           label={placeholder}
-          onChange={event => {
+          onChange={(event) => {
             event.persist();
             throttledOnChange(event);
           }}
@@ -108,15 +112,19 @@ export function GenericAutocomplete({
         />
       )}
       filterOptions={(options, params) => {
-        if(strictMode || creatable){
+        if (strictMode || creatable) {
           options = strictOptionsFilter(options, params);
         }
 
         // Suggest the creation of a new value
-        if (creatable && params.inputValue !== '' && (options.length === 0 || !!options.find(option => option[gqlEntityLabelPath] !==  params.inputValue))) {
+        if (
+          creatable &&
+          params.inputValue !== "" &&
+          (options.length === 0 || !!options.find((option) => option[gqlEntityLabelPath] !== params.inputValue))
+        ) {
           options.unshift({
             inputValue: params.inputValue,
-            [gqlEntityLabelPath]: t("AUTOCOMPLETE.ADD", {value: params.inputValue }),
+            [gqlEntityLabelPath]: t("AUTOCOMPLETE.ADD", {value: params.inputValue}),
             isCreation: true
           });
         }

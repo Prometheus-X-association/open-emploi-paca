@@ -11055,19 +11055,19 @@ webpack@^5.10.2, webpack@^5.22.0, webpack@^5.6.0:
     watchpack "^2.0.0"
     webpack-sources "^2.1.1"
 
-"wever-collector@git+https://public:jo7t7LpiHB47r5px-wCy@gitlab.com/wever-v2/wever-collector.git#stable":
-  version "0.1.0"
-  resolved "git+https://public:jo7t7LpiHB47r5px-wCy@gitlab.com/wever-v2/wever-collector.git#2cf0ad8167a723c69da837452ad8f176611276b0"
+"wever-collector@git+https://public:jo7t7LpiHB47r5px-wCy@gitlab.com/wever-v2/wever-collector.git#preprod":
+  version "1.0.0"
+  resolved "git+https://public:jo7t7LpiHB47r5px-wCy@gitlab.com/wever-v2/wever-collector.git#598daba1b6353c7ecbebaa9ba0b897cb2f46afae"
   dependencies:
     leaflet "^1.7.1"
     react-beautiful-dnd "^13.0.0"
     react-bootstrap-slider "^3.0.0"
     react-leaflet "^2.7.0"
-    wever-core "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#stable"
+    wever-core "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#preprod"
 
-"wever-core@git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#stable":
+"wever-core@git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#preprod":
   version "0.1.0"
-  resolved "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#0c38046ab597444d19a1ba8974c342488922adfc"
+  resolved "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#5264262abc8eef0e5ef711d4f04fdedf23c7c8d5"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.30"
     "@fortawesome/free-solid-svg-icons" "^5.14.0"
@@ -11091,14 +11091,14 @@ webpack@^5.10.2, webpack@^5.22.0, webpack@^5.6.0:
     reactstrap "^8.5.1"
     yup "^0.29.1"
 
-"wever-maps@git+https://public:8NdkS2Uy1CMdzs5vYthy@gitlab.com/wever-v2/wever-maps.git#stable":
+"wever-maps@git+https://public:8NdkS2Uy1CMdzs5vYthy@gitlab.com/wever-v2/wever-maps.git#preprod":
   version "1.0.0"
-  resolved "git+https://public:8NdkS2Uy1CMdzs5vYthy@gitlab.com/wever-v2/wever-maps.git#428d75bc939ff8da9577125e513d205fb19a15de"
+  resolved "git+https://public:8NdkS2Uy1CMdzs5vYthy@gitlab.com/wever-v2/wever-maps.git#b995e2f632df666755bbf9b0fb9748a3c89cf476"
   dependencies:
     leaflet "^1.7.1"
     react-leaflet "^2.7.0"
     react-minimal-pie-chart "^8.1.0"
-    wever-core "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#stable"
+    wever-core "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#preprod"
 
 whatwg-fetch@>=0.10.0:
   version "3.6.2"
