@@ -1,6 +1,13 @@
 import {Button, Grid, Tooltip, Typography} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
 import {LoadingButton} from "../Button/LoadingButton";
+import {makeStyles} from "@material-ui/core/styles";
+
+const useStyles = makeStyles(theme => ({
+  cancelButton: {
+    marginLeft: theme.spacing(1)
+  }
+}));
 
 /**
  * disabled or not a submit button of a form, display the reason with a tooltip
@@ -14,8 +21,21 @@ import {LoadingButton} from "../Button/LoadingButton";
  * @param valuesFromLinkEdit
  * @param {boolean} saving
  */
-export function FormButtons({label, errors, touched, isValid, dirty, saving, resetForm, cancelAction, extraSubmitAndResetButton, inDialog} = {}) {
+export function FormButtons({
+  label,
+  errors,
+  touched,
+  isValid,
+  dirty,
+  saving,
+  resetForm,
+  cancelAction,
+  extraSubmitAndResetButton,
+  inDialog,
+  buttonVariant = "outlined"
+} = {}) {
   const {t} = useTranslation();
+  const classes = useStyles();
 
   let disabled = !isValid || !dirty;
   let submitButton;
@@ -50,7 +70,7 @@ export function FormButtons({label, errors, touched, isValid, dirty, saving, res
       <Tooltip title={reason || ""} arrow>
         <span>
           {/* don't remove this span or it will fire an error because of disabled button inside tooltip cannot being able to display title */}
-          <Button disabled={disabled} type="submit">
+          <Button disabled={disabled} variant={buttonVariant} type="submit">
             {label || t("ACTIONS.SAVE")}
           </Button>
         </span>
@@ -58,7 +78,7 @@ export function FormButtons({label, errors, touched, isValid, dirty, saving, res
     );
   } else {
     submitButton = (
-      <LoadingButton loading={saving} type="submit" variant="contained" color="primary">
+      <LoadingButton loading={saving} type="submit" variant={buttonVariant} color="primary">
         {label || t("ACTIONS.SAVE")}
       </LoadingButton>
     );
@@ -67,15 +87,21 @@ export function FormButtons({label, errors, touched, isValid, dirty, saving, res
   return inDialog ? (
     <>
       {submitButton}
-      <Button onClick={resetForm || cancelAction}>{dirty ? t("ACTIONS.CANCEL") : t("ACTIONS.GO_BACK")}</Button>
+      <If condition={cancelAction || (dirty && resetForm)}>
+        <Button variant={buttonVariant} onClick={resetForm || cancelAction} className={classes.cancelButton}>
+          {dirty ? t("ACTIONS.CANCEL") : t("ACTIONS.GO_BACK")}
+        </Button>
+      </If>
     </>
   ) : (
     <Grid container spacing={2} justify={"flex-end"}>
       <Grid item>{submitButton}</Grid>
       <If condition={cancelAction || (dirty && resetForm)}>
-        <Button onClick={resetForm || cancelAction}>
-          {dirty ? t("ACTIONS.CANCEL") : t("ACTIONS.GO_BACK")}
-        </Button>
+        <Grid item>
+          <Button variant={buttonVariant} onClick={resetForm || cancelAction} className={classes.cancelButton}>
+            {dirty ? t("ACTIONS.CANCEL") : t("ACTIONS.GO_BACK")}
+          </Button>
+        </Grid>
       </If>
     </Grid>
   );

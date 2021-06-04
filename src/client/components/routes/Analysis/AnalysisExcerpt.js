@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import {useEffect} from "react";
 import clsx from "clsx";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation, Trans} from "react-i18next";
@@ -10,7 +10,7 @@ import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
 import {gqlMyAptitudes} from "../Cartonet/Aptitudes/gql/MyAptitudes.gql";
 import {LoadingSplashScreen} from "../../widgets/LoadingSplashScreen";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   analysisContainer: {
     margin: theme.spacing(2, 0, 3, 0)
   },
@@ -172,13 +172,13 @@ export function AnalysisExcerpt({} = {}) {
           </Typography>
         </Grid>
         <Grid item md={2} xs={6} className={classes.analysis}>
-          <Gauge disabled big={!smallGauge} />
+          <Gauge disabled big={!smallGauge} value={0} />
           <Typography className={clsx(classes.analysisTitle, {[classes.smallText]: smallGauge})}>
             {t("DASHBOARD.TRANSPORTS")}
           </Typography>
         </Grid>
         <Grid item md={2} xs={6} className={classes.analysis}>
-          <Gauge disabled big={!smallGauge} />
+          <Gauge disabled big={!smallGauge} value={0} />
           <Typography className={clsx(classes.analysisTitle, {[classes.smallText]: smallGauge})}>
             {t("DASHBOARD.LIFE")}
           </Typography>

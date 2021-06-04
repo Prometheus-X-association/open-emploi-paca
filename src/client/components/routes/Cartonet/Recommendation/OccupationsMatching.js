@@ -1,17 +1,28 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect, useCallback, useRef} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {Button, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemText, ListItemSecondaryAction, ListSubheader, Accordion, AccordionDetails, AccordionSummary, Typography} from "@material-ui/core";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {useReactToPrint} from "react-to-print";
+import {
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+  Grid
+} from "@material-ui/core";
+import {ExpandMore as ExpandMoreIcon, Print as PrintIcon} from "@material-ui/icons";
 
-import {useHistory} from "react-router";
 import {useLazyQuery} from "@apollo/client";
 import {gqlOccupationsMatching} from "./gql/OccupationsMatching.gql";
 import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
 import {Gauge} from "../../../widgets/Gauge";
+import {CartonetExploreLayout} from "../CartonetExploreLayout";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   categoryHeader: {
     alignItems: "center"
   },
@@ -20,10 +31,48 @@ const useStyles = makeStyles(theme => ({
   },
   categoryHeaderTitle: {
     marginLeft: theme.spacing(2)
+  },
+  root: {
+    position: "relative",
+    overflow: "hidden",
+    height: "100%"
+  },
+  occupationsContainer: {
+    overflow: "hidden",
+    height: "100%"
+  },
+  occupationsList: {
+    overflow: "auto"
+  },
+  categoryTitle: {
+    padding: theme.spacing(2)
+  },
+  occupation: {
+    breakInside: "avoid"
+  },
+  printButton: {
+    position: "absolute",
+    top: theme.spacing(2),
+    right: theme.spacing(2),
+    zIndex: 100
+  },
+  "@media print": {
+    root: {
+      height: "auto",
+      overflow: "visible"
+    },
+    occupationsContainer: {
+      height: "auto",
+      margin: "auto",
+      padding: theme.spacing(5)
+    },
+    occupationsList: {
+      overflow: "visible"
+    }
   }
 }));
 
-export function useSuggestedOccupationsMatchings(){
+export function useSuggestedOccupationsMatchings() {
   const {user} = useLoggedUser();
   const [getOccupationsMatching, {data, loading}] = useLazyQuery(gqlOccupationsMatching, {fetchPolicy: "no-cache"});
 
@@ -37,7 +86,7 @@ export function useSuggestedOccupationsMatchings(){
 
   const occupations = JSON.parse(data?.occupationsMatching || "[]");
 
-  return [occupations, {loading}]
+  return [occupations, {loading}];
 }
 
 /**
@@ -46,53 +95,79 @@ export function useSuggestedOccupationsMatchings(){
 export default function OccupationsMatching({print} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
-  const history = useHistory();
   const [expanded, setExpanded] = useState(false);
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
   const [occupations, {loading}] = useSuggestedOccupationsMatchings();
 
-  function renderMatching(){
-    return (
+  const componentRef = useRef(null);
+
+  const reactToPrintContent = useCallback(() => {
+    return componentRef.current;
+  }, [componentRef.current]);
+
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE"),
+    onBeforeGetContent: () => {},
+    onBeforePrint: () => {},
+    onAfterPrint: () => {}
+  });
+
+  return (
+    <CartonetExploreLayout>
       <Choose>
         <When condition={loading}>
           <LoadingSplashScreen />
         </When>
         <Otherwise>
-          {occupations.slice(0, print ? 10 : undefined).map(occupation => (
-            <Accordion key={occupation.categoryId} expanded={expanded === occupation.categoryId} onChange={handleChange(occupation.categoryId)}>
-              <AccordionSummary classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}} expandIcon={<ExpandMoreIcon />} >
-                <Gauge value={occupation.score * 100}/>
-                <Typography className={classes.categoryHeaderTitle}>{occupation.categoryName}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <If condition={expanded === occupation.categoryId}>
-                  <List dense>
-                    {occupation.subOccupations.map((subOccupation) => (
-                      <ListItem key={subOccupation.id}>
-                        <ListItemText primary={subOccupation.prefLabel} />
-                      </ListItem>
-                    ))}
-                  </List>
-                </If>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+          <div className={classes.root}>
+            <Button className={classes.printButton} onClick={handlePrint} endIcon={<PrintIcon />}>
+              {t("CARTONET.ACTIONS.PRINT")}
+            </Button>
+            <Grid
+              container
+              direction={"column"}
+              wrap={"nowrap"}
+              className={classes.occupationsContainer}
+              ref={componentRef}>
+              <Grid item style={{flexBasis: 0}}>
+                <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+                  {t("CARTONET.OCCUPATION_MATCHING.SUBTITLE")}
+                </Typography>
+              </Grid>
+              <Grid xs item className={classes.occupationsList}>
+                {occupations.map((occupation) => (
+                  <Accordion
+                    key={occupation.categoryId}
+                    expanded={expanded === occupation.categoryId}
+                    onChange={handleChange(occupation.categoryId)}
+                    className={classes.occupation}>
+                    <AccordionSummary
+                      classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}}
+                      expandIcon={<ExpandMoreIcon />}>
+                      <Gauge value={occupation.score * 100} />
+                      <Typography className={classes.categoryHeaderTitle}>{occupation.categoryName}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <If condition={expanded === occupation.categoryId}>
+                        <List dense>
+                          {occupation.subOccupations.map((subOccupation) => (
+                            <ListItem key={subOccupation.id}>
+                              <ListItemText primary={subOccupation.prefLabel} />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </If>
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
+              </Grid>
+            </Grid>
+          </div>
         </Otherwise>
       </Choose>
-    )
-  }
-
-  return print ? renderMatching() : (
-    <>
-      <DialogTitle>{t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE")}</DialogTitle>
-      <DialogContent>
-        {renderMatching()}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
-      </DialogActions>
-    </>
+    </CartonetExploreLayout>
   );
 }

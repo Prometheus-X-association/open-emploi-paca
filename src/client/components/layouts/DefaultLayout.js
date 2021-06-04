@@ -15,7 +15,7 @@ import {BlockContainer} from "../widgets/BlockContainer";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex"
   },
@@ -99,7 +99,7 @@ export function DefaultLayout({TitleComponent, children}) {
     },
     {
       path: ROUTES.TRANSPORTS,
-      text: "Transport et logement",
+      text: "Transport et logement"
     },
     {
       path: ROUTES.LIFE_STYLE,
@@ -110,7 +110,6 @@ export function DefaultLayout({TitleComponent, children}) {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
       <Drawer
         className={classes.drawer}
         variant="permanent"
@@ -129,8 +128,7 @@ export function DefaultLayout({TitleComponent, children}) {
               button
               component={disabled ? null : Link}
               to={path}
-              disabled={disabled}
-            >
+              disabled={disabled}>
               <ListItemText
                 classes={{
                   root: classes.menuItemText,

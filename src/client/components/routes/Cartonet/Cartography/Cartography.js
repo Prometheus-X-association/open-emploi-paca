@@ -1,37 +1,25 @@
-import {Fragment, useState} from "react";
+import {useCallback, useRef, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {
-  Button,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  List,
-  ListItem,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
-  Grid,
-  Chip,
-  Typography,
-  CircularProgress,
-} from "@material-ui/core";
+import {Button, Grid, Chip, Typography, CircularProgress} from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
 import clsx from "clsx";
-import dayjs from "dayjs";
-import {generatePath, useHistory, matchPath} from "react-router";
+import {useHistory} from "react-router";
 import {useQuery} from "@apollo/client";
-import ExperienceIcon from "@material-ui/icons/Work";
-import HobbyIcon from "@material-ui/icons/BeachAccess";
-import TrainingIcon from "@material-ui/icons/School";
-import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
-import {createLink} from "../../../../utilities/createLink";
 import {ROUTES} from "../../../../routes";
 
-import {gqlMyExperiences} from "../Experience/gql/MyExperiences.gql";
 import {gqlMyAptitudes} from "../Aptitudes/gql/MyAptitudes.gql";
+import Experiences from "./Experiences";
+import {CartonetExploreLayout} from "../CartonetExploreLayout";
+import {Link} from "react-router-dom";
+import {generateCartonetPath} from "../utils/generateCartonetPath";
+import {useReactToPrint} from "react-to-print";
+import {Print as PrintIcon} from "@material-ui/icons";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
+  root: {
+    position: "relative"
+  },
   experienceAptitudes: {
     paddingLeft: theme.spacing(4),
     paddingTop: 0
@@ -48,19 +36,56 @@ const useStyles = makeStyles(theme => ({
     textAlign: "right"
   },
   aptitude: {
-    transition: "all 0.5s"
+    transition: "all 0.5s",
+    marginBottom: theme.spacing(0.5),
+    width: "100%",
+    breakInside: "avoid"
+  },
+  aptitudeLabel: {
+    breakInside: "avoid",
+    paddingLeft: theme.spacing(1)
   },
   faded: {
     opacity: 0.1
-  },
-  categoryTitle: {
-    marginBottom: theme.spacing(2)
   },
   top5Chip: {
     height: theme.spacing(2),
     fontSize: 10,
     "& > span": {
       padding: theme.spacing(0, 0.5)
+    }
+  },
+  column: {
+    padding: theme.spacing(2, 2, 0, 2),
+    "&:first-of-type": {
+      borderRight: `1px solid ${theme.palette.grey[200]}`
+    }
+  },
+  overflowScrollable: {
+    overflow: "auto",
+    height: "100%"
+  },
+  overflowHidden: {
+    overflow: "hidden",
+    height: "100%"
+  },
+  printButton: {
+    position: "absolute",
+    top: theme.spacing(2),
+    right: theme.spacing(2),
+    zIndex: 100
+  },
+  "@media print": {
+    cartography: {
+      margin: "auto",
+      padding: theme.spacing(2)
+    },
+    overflowHidden: {
+      height: "auto",
+      overflow: "visible"
+    },
+    overflowScrollable: {
+      overflow: "visible"
     }
   }
 }));
@@ -71,85 +96,6 @@ const editLinkMapping = {
   experience: ROUTES.CARTONET_EDIT_EXPERIENCE
 };
 
-export function ExperienceItem({
-  experience,
-  onAptitudeMouseEnter = () => {},
-  onAptitudeMouseLeave = () => {},
-  selectedAptitude
-}) {
-  const classes = useStyles();
-  const history = useHistory();
-
-  return (
-    <Fragment key={experience.id}>
-      <ListItem>
-        <ListItemAvatar>
-          <Avatar>
-            <Choose>
-              <When condition={experience.experienceType === "hobby"}>
-                <HobbyIcon />
-              </When>
-              <When condition={experience.experienceType === "training"}>
-                <TrainingIcon />
-              </When>
-              <Otherwise>
-                <ExperienceIcon />
-              </Otherwise>
-            </Choose>
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={createLink({
-            to: getEditLink({experience}),
-            text: experience.title
-          })}
-          secondary={
-            <Grid container direction="row" alignItems="flex-start" spacing={1}>
-              <Grid item>{dayjs(experience.startDate).format("L")}</Grid>
-              <If condition={experience.endDate}>
-                <Grid item>
-                  <ArrowIcon fontSize={"small"} />
-                </Grid>
-                <Grid item>{dayjs(experience.endDate).format("L")}</Grid>
-              </If>
-            </Grid>
-          }
-        />
-      </ListItem>
-      <List disablePadding>
-        <ListItem className={classes.experienceAptitudes}>
-          <ListItemText>
-            {experience.aptitudes.edges.map(({node: aptitude}) => (
-              <Chip
-                className={classes.experienceAptitude}
-                key={aptitude.id}
-                label={aptitude.skillLabel || aptitude.skill?.prefLabel}
-                variant={selectedAptitude && selectedAptitude?.id === aptitude.id ? "default" : "outlined"}
-                size="small"
-                onMouseEnter={() => onAptitudeMouseEnter(aptitude)}
-                onMouseLeave={() => onAptitudeMouseLeave(null)}
-              />
-            ))}
-          </ListItemText>
-        </ListItem>
-      </List>
-    </Fragment>
-  );
-
-  function getEditLink({experience}) {
-    let route = editLinkMapping[experience.experienceType] || editLinkMapping.experience;
-
-    // This is a hack to guess if we are in cartonet standalone mode or in openemploi.
-    if (!!matchPath(history.location.pathname, {path: ROUTES.PROFILE, exact: false, strict: false})) {
-      route = `${ROUTES.PROFILE}${route}`;
-    }
-
-    return generatePath(route, {
-      id: experience.id
-    });
-  }
-}
-
 /**
  *
  */
@@ -159,90 +105,120 @@ export default function Cartography({} = {}) {
   const history = useHistory();
   const [selectedAptitude, setSelectedAptitude] = useState();
 
-  const {data: {me: myExperiences} = {}, loading: loadingExperiences} = useQuery(gqlMyExperiences, {
-    fetchPolicy: "no-cache"
+  const componentRef = useRef(null);
+
+  const reactToPrintContent = useCallback(() => {
+    return componentRef.current;
+  }, [componentRef.current]);
+
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE"),
+    onBeforeGetContent: () => {},
+    onBeforePrint: () => {},
+    onAfterPrint: () => {}
   });
+
   const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes, {
     fetchPolicy: "no-cache",
     variables: {
-      sortings: [{
-        sortBy: "isTop5"
-      }, {
-        sortBy: "skillLabel"
-      }]
+      sortings: [
+        {
+          sortBy: "ratingValue",
+          isSortDescending: true
+        },
+        {
+          sortBy: "isTop5"
+        }
+      ]
     }
   });
 
   return (
-    <>
-      <DialogTitle>{t("CARTONET.CARTOGRAPHY.PAGE_TITLE")}</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item md={7}>
-            <Typography variant="button" display="block" gutterBottom>
-              {t("CARTONET.CARTOGRAPHY.EXPERIENCES")}
-            </Typography>
+    <CartonetExploreLayout
+      actions={
+        <Button
+          variant={"contained"}
+          component={Link}
+          to={generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_EXPERIENCE})}>
+          {t("ACTIONS.UPDATE")}
+        </Button>
+      }>
+      <div className={clsx(classes.root, classes.overflowHidden)}>
+        <Button
+          className={classes.printButton}
+          onClick={handlePrint}
+          endIcon={<PrintIcon />}
+          disabled={loadingAptitudes}>
+          {t("CARTONET.ACTIONS.PRINT")}
+        </Button>
+        <Grid
+          container
+          className={clsx(classes.cartography, classes.overflowHidden)}
+          ref={componentRef}
+          direction={"column"}
+          wrap={"nowrap"}>
+          <Grid container item style={{flexBasis: 0}}>
+            <Grid item xs={5} className={classes.column}>
+              <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+                {t("CARTONET.CARTOGRAPHY.EXPERIENCES")}
+              </Typography>
+            </Grid>
 
-            <Choose>
-              <When condition={loadingExperiences}>
-                <CircularProgress />
-              </When>
-              <Otherwise>
-                <List dense>
-                  {(myExperiences?.experiences?.edges || []).map(({node: experience}) => (
-                    <ExperienceItem
-                      key={experience.id}
-                      experience={experience}
-                      selectedAptitude={selectedAptitude}
-                      onAptitudeMouseEnter={setSelectedAptitude}
-                      onAptitudeMouseLeave={() => setSelectedAptitude(null)}
-                    />
-                  ))}
-                </List>
-              </Otherwise>
-            </Choose>
+            <Grid item xs={7} className={classes.column}>
+              <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+                {t("CARTONET.CARTOGRAPHY.APTITUDES")}
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid item md={5}>
-            <Typography variant={"subtitle1"} variant="button" display="block" className={classes.categoryTitle}>
-              {t("CARTONET.CARTOGRAPHY.APTITUDES")}
-            </Typography>
-
-            <Choose>
-              <When condition={loadingExperiences}>
-                <CircularProgress />
-              </When>
-              <Otherwise>
-                {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
-                  <Grid
-                    key={aptitude.id}
-                    container
-                    spacing={2}
-                    justify={"flex-end"}
-                    direction={"row"}
-                    className={clsx(classes.aptitude, {
-                      [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
-                    })}>
-                    <Grid item md={1}>
-                      <If condition={aptitude.isTop5}>
-                        <Chip className={classes.top5Chip} label={"Top5"} color="primary" variant="outlined" size="small"/>
-                      </If>
+          <Grid container item xs className={classes.overflowHidden}>
+            <Grid item xs={5} className={clsx(classes.column, classes.overflowScrollable)}>
+              <Experiences
+                selectedAptitude={selectedAptitude}
+                onAptitudeMouseEnter={setSelectedAptitude}
+                onAptitudeMouseLeave={() => setSelectedAptitude(null)}
+              />
+            </Grid>
+            <Grid item xs={7} className={clsx(classes.column, classes.overflowScrollable)}>
+              <Choose>
+                <When condition={loadingAptitudes}>
+                  <CircularProgress />
+                </When>
+                <Otherwise>
+                  {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
+                    <Grid
+                      key={aptitude.id}
+                      container
+                      direction={"row"}
+                      className={clsx(classes.aptitude, {
+                        [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
+                      })}
+                      wrap={"nowrap"}>
+                      <Grid item xs={1}>
+                        <If condition={aptitude.isTop5}>
+                          <Chip
+                            className={classes.top5Chip}
+                            label={"Top5"}
+                            color="primary"
+                            variant="outlined"
+                            size="small"
+                          />
+                        </If>
+                      </Grid>
+                      <Grid item xs={6} className={classes.aptitudeLabel}>
+                        {aptitude.skillLabel || aptitude.skill?.prefLabel}
+                      </Grid>
+                      <Grid item xs={5} className={classes.rating} container justify={"flex-end"}>
+                        <Rating value={aptitude.rating?.value} size={"small"} readOnly />
+                      </Grid>
                     </Grid>
-                    <Grid item md={7}>
-                      {aptitude.skillLabel || aptitude.skill?.prefLabel}
-                    </Grid>
-                    <Grid item md={4} className={classes.rating}>
-                      <Rating value={aptitude.rating?.value} size={"small"} readOnly />
-                    </Grid>
-                  </Grid>
-                ))}
-              </Otherwise>
-            </Choose>
+                  ))}
+                </Otherwise>
+              </Choose>
+            </Grid>
           </Grid>
         </Grid>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
-      </DialogActions>
-    </>
+      </div>
+    </CartonetExploreLayout>
   );
 }

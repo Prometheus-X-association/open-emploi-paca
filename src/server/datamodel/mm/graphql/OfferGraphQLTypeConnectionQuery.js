@@ -4,23 +4,24 @@ import {
   getObjectsResolver,
   getObjectsCountResolver,
   generateConnectionArgs,
-  QueryFilter, PropertyFilter, LinkFilter
+  QueryFilter,
+  PropertyFilter,
+  LinkFilter,
 } from "@mnemotix/synaptix.js";
 import OfferDefinition from "../OfferDefinition";
 import dayjs from "dayjs";
-import weekOfYear from 'dayjs/plugin/weekOfYear';
-import advancedFormat from 'dayjs/plugin/advancedFormat';
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import advancedFormat from "dayjs/plugin/advancedFormat";
 import OccupationDefinition from "../OccupationDefinition";
 import env from "env-var";
 dayjs.extend(weekOfYear);
-dayjs.extend(advancedFormat)
+dayjs.extend(advancedFormat);
 
 const offersESDateFormat = "MM/YY";
 const offersDayJSDateFormat = offersESDateFormat;
 
 const incomesESDateFormat = "MM/YY";
 const incomesDayJSDateFormat = incomesESDateFormat;
-
 
 export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery {
   /**
@@ -134,7 +135,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          */
         async (_, { jobAreaId, ...args }, synaptixSession, info) => {
           args.filters = [].concat(args.filters || [], [
-            `withinJobArea:${jobAreaId}`
+            `withinJobArea:${jobAreaId}`,
           ]);
 
           return getObjectsResolver(
@@ -155,7 +156,7 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          */
         async (_, { jobAreaId, ...args }, synaptixSession, info) => {
           args.filters = [].concat(args.filters || [], [
-            `withinJobArea:${jobAreaId}`
+            `withinJobArea:${jobAreaId}`,
           ]);
 
           return getObjectsCountResolver(
@@ -174,52 +175,62 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          * @param {object} info
          */
         async (_, { jobAreaId, occupationIds }, synaptixSession, info) => {
-          jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
-          occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
+          jobAreaId = synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId });
+          occupationIds = occupationIds.map((occupationId) =>
+            synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+          );
 
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
             queryFilters: [
               new QueryFilter({
                 filterDefinition: OfferDefinition.getFilter("withinJobArea"),
-                filterGenerateParams: jobAreaId
-              })
+                filterGenerateParams: jobAreaId,
+              }),
             ],
             propertyFilters: [
               new PropertyFilter({
                 propertyDefinition: OfferDefinition.getProperty("creationDate"),
-                value:  getOffersLowerBoundDate(),
-                isGt: true
-              })
+                value: getOffersLowerBoundDate(),
+                isGt: true,
+              }),
             ],
             limit: 0,
             getExtraQuery: () => {
               return {
-                aggs: Object.entries(occupationIds).reduce((acc, [index, occupationId]) => {
-                  acc[occupationId] = generateOffersCountDateHistogram({
-                    filter: { term: { "occupation": occupationId } }
-                  });
+                aggs: Object.entries(occupationIds).reduce(
+                  (acc, [index, occupationId]) => {
+                    acc[occupationId] = generateOffersCountDateHistogram({
+                      filter: { term: { occupation: occupationId } },
+                    });
 
-                  return acc;
-                }, {})
+                    return acc;
+                  },
+                  {}
+                ),
               };
             },
-            rawResult: true
+            rawResult: true,
           });
 
-          const aggs = Object.entries(result.aggregations).reduce((acc, [occupationId, {offersCountHistogram}]) => {
-            for(const bucket of offersCountHistogram.buckets){
-              if (!acc[bucket.key_as_string]){
-                acc[bucket.key_as_string] = {
-                  label: bucket.key_as_string
-                };
+          const aggs = Object.entries(result.aggregations).reduce(
+            (acc, [occupationId, { offersCountHistogram }]) => {
+              for (const bucket of offersCountHistogram.buckets) {
+                if (!acc[bucket.key_as_string]) {
+                  acc[bucket.key_as_string] = {
+                    label: bucket.key_as_string,
+                  };
+                }
+
+                acc[bucket.key_as_string][
+                  synaptixSession.normalizePrefixedUri({ uri: occupationId })
+                ] = bucket.doc_count;
               }
 
-              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: occupationId})] =  bucket.doc_count;
-            }
-
-            return acc;
-          }, {});
+              return acc;
+            },
+            {}
+          );
 
           return JSON.stringify(Object.values(aggs));
         },
@@ -232,79 +243,100 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          * @param {object} info
          */
         async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
-          jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
-          occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
+          jobAreaIds = jobAreaIds.map((jobAreaId) =>
+            synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+          );
+          occupationId = synaptixSession.normalizeAbsoluteUri({
+            uri: occupationId,
+          });
 
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
             propertyFilters: [
               new PropertyFilter({
                 propertyDefinition: OfferDefinition.getProperty("creationDate"),
-                value:  getOffersLowerBoundDate(),
-                isGt: true
+                value: getOffersLowerBoundDate(),
+                isGt: true,
               }),
             ],
             linkFilters: [
               new LinkFilter({
                 linkDefinition: OfferDefinition.getLink("hasOccupation"),
-                id: occupationId
-              })
+                id: occupationId,
+              }),
             ],
             limit: 0,
             getExtraQuery: () => {
               return {
-                aggs: Object.entries(jobAreaIds).reduce((acc, [index, jobAreaId]) => {
-                  acc[jobAreaId] = generateOffersCountDateHistogram({
-                    filter: { term: { "zoneEmploi": jobAreaId } },
-                  });
+                aggs: Object.entries(jobAreaIds).reduce(
+                  (acc, [index, jobAreaId]) => {
+                    acc[jobAreaId] = generateOffersCountDateHistogram({
+                      filter: { term: { zoneEmploi: jobAreaId } },
+                    });
 
-                  return acc;
-                }, {})
+                    return acc;
+                  },
+                  {}
+                ),
               };
             },
-            rawResult: true
+            rawResult: true,
           });
 
-          const aggs = Object.entries(result.aggregations).reduce((acc, [jobAreaId, {offersCountHistogram}]) => {
-            for(const bucket of offersCountHistogram.buckets){
-              if (!acc[bucket.key_as_string]){
-                acc[bucket.key_as_string] = {
-                  label: bucket.key_as_string
-                };
+          const aggs = Object.entries(result.aggregations).reduce(
+            (acc, [jobAreaId, { offersCountHistogram }]) => {
+              for (const bucket of offersCountHistogram.buckets) {
+                if (!acc[bucket.key_as_string]) {
+                  acc[bucket.key_as_string] = {
+                    label: bucket.key_as_string,
+                  };
+                }
+
+                acc[bucket.key_as_string][
+                  synaptixSession.normalizePrefixedUri({ uri: jobAreaId })
+                ] = bucket.doc_count;
               }
 
-              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: jobAreaId})] =  bucket.doc_count;
-            }
-
-            return acc;
-          }, {});
+              return acc;
+            },
+            {}
+          );
 
           return JSON.stringify(Object.values(aggs));
         },
-      offersTopOrganizationsAggs: /**
+      /**
        * @param _
        * @param {string} occupationsId
        * @param {string} jobAreaId
        * @param {SynaptixDatastoreSession} synaptixSession
        * @param {object} info
        */
-      async (_, { jobAreaId, occupationId } = {}, synaptixSession, info) => {
-        jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId});
-        occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId});
+      offersTopOrganizationsAggs: async (
+        _,
+        { jobAreaId, occupationId } = {},
+        synaptixSession,
+        info
+      ) => {
+        jobAreaId = synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId });
+        occupationId = synaptixSession.normalizeAbsoluteUri({
+          uri: occupationId,
+        });
 
         const result = await synaptixSession.getIndexService().getNodes({
           modelDefinition: OfferDefinition,
           queryFilters: [
             new QueryFilter({
               filterDefinition: OfferDefinition.getFilter("withinJobArea"),
-              filterGenerateParams: synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
-            })
+              filterGenerateParams: synaptixSession.normalizeAbsoluteUri({
+                uri: jobAreaId,
+              }),
+            }),
           ],
           linkFilters: [
             new LinkFilter({
               linkDefinition: OfferDefinition.getLink("hasOccupation"),
-              id:  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
-            })
+              id: synaptixSession.normalizeAbsoluteUri({ uri: occupationId }),
+            }),
           ],
           limit: 0,
           getExtraQuery: () => {
@@ -312,35 +344,41 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
               aggs: {
                 organizations: {
                   terms: {
-                    field: "entreprise.nom.keyword"
-                  }
-                }
-              }
+                    field: "entreprise.nom.keyword",
+                  },
+                },
+              },
             };
           },
-          rawResult: true
+          rawResult: true,
         });
 
         return JSON.stringify(result.aggregations.organizations.buckets);
       },
 
-
-      offersTopOccupationsAggs: /**
+      /**
        * @param _
        * @param {string} jobAreaId
        * @param {SynaptixDatastoreSession} synaptixSession
        * @param {object} info
        */
-      async (_, { jobAreaId } = {}, synaptixSession, info) => {
-        jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId});
+      offersTopOccupationsAggs: async (
+        _,
+        { jobAreaId } = {},
+        synaptixSession,
+        info
+      ) => {
+        jobAreaId = synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId });
 
         const result = await synaptixSession.getIndexService().getNodes({
           modelDefinition: OfferDefinition,
           queryFilters: [
             new QueryFilter({
               filterDefinition: OfferDefinition.getFilter("withinJobArea"),
-              filterGenerateParams: synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
-            })
+              filterGenerateParams: synaptixSession.normalizeAbsoluteUri({
+                uri: jobAreaId,
+              }),
+            }),
           ],
           limit: 0,
           getExtraQuery: () => {
@@ -348,30 +386,36 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
               aggs: {
                 occupations: {
                   terms: {
-                    field: OfferDefinition.getLink("hasOccupation").getPathInIndex()
-                  }
-                }
-              }
+                    field: OfferDefinition.getLink(
+                      "hasOccupation"
+                    ).getPathInIndex(),
+                  },
+                },
+              },
             };
           },
-          rawResult: true
+          rawResult: true,
         });
 
-        const occupationIds = (result?.aggregations?.occupations?.buckets || []).slice(0, 9).map(({key}) => key)
+        const occupationIds = (result?.aggregations?.occupations?.buckets || [])
+          .slice(0, 9)
+          .map(({ key }) => key);
 
         const occupations = await synaptixSession.getIndexService().getNodes({
           modelDefinition: OccupationDefinition,
-          idsFilters: occupationIds
+          idsFilters: occupationIds,
         });
 
         let buckets = [];
 
-        for(let bucket of (result?.aggregations?.occupations?.buckets || [])){
-          const occupation = occupations.find(occupation => occupation.id === bucket.key);
-          if (occupation){
+        for (let bucket of result?.aggregations?.occupations?.buckets || []) {
+          const occupation = occupations.find(
+            (occupation) => occupation.id === bucket.key
+          );
+          if (occupation) {
             bucket.prefLabel = await synaptixSession.getLocalizedLabelFor({
               object: occupation,
-              labelDefinition: OccupationDefinition.getLabel("prefLabel")
+              labelDefinition: OccupationDefinition.getLabel("prefLabel"),
             });
             buckets.push(bucket);
           }
@@ -379,7 +423,6 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
 
         return JSON.stringify(buckets);
       },
-
 
       incomesByOccupationAggs:
         /**
@@ -390,52 +433,62 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
          * @param {object} info
          */
         async (_, { jobAreaId, occupationIds }, synaptixSession, info) => {
-          jobAreaId =  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId})
-          occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
+          jobAreaId = synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId });
+          occupationIds = occupationIds.map((occupationId) =>
+            synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+          );
 
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
             queryFilters: [
               new QueryFilter({
                 filterDefinition: OfferDefinition.getFilter("withinJobArea"),
-                filterGenerateParams: jobAreaId
-              })
+                filterGenerateParams: jobAreaId,
+              }),
             ],
             propertyFilters: [
               new PropertyFilter({
                 propertyDefinition: OfferDefinition.getProperty("creationDate"),
-                value:  getOffersLowerBoundDate(),
-                isGt: true
-              })
+                value: getOffersLowerBoundDate(),
+                isGt: true,
+              }),
             ],
             limit: 0,
             getExtraQuery: () => {
               return {
-                aggs: Object.entries(occupationIds).reduce((acc, [index, occupationId]) => {
-                  acc[occupationId] = generateIncomesAvgHistogram({
-                    filter: { term: { "occupation": occupationId } }
-                  });
+                aggs: Object.entries(occupationIds).reduce(
+                  (acc, [index, occupationId]) => {
+                    acc[occupationId] = generateIncomesAvgHistogram({
+                      filter: { term: { occupation: occupationId } },
+                    });
 
-                  return acc;
-                }, {})
+                    return acc;
+                  },
+                  {}
+                ),
               };
             },
-            rawResult: true
+            rawResult: true,
           });
 
-          const aggs = Object.entries(result.aggregations).reduce((acc, [occupationId, {incomesHistogram}]) => {
-            for(const bucket of incomesHistogram.buckets){
-              if (!acc[bucket.key_as_string]){
-                acc[bucket.key_as_string] = {
-                  label: bucket.key_as_string
-                };
+          const aggs = Object.entries(result.aggregations).reduce(
+            (acc, [occupationId, { incomesHistogram }]) => {
+              for (const bucket of incomesHistogram.buckets) {
+                if (!acc[bucket.key_as_string]) {
+                  acc[bucket.key_as_string] = {
+                    label: bucket.key_as_string,
+                  };
+                }
+
+                acc[bucket.key_as_string][
+                  synaptixSession.normalizePrefixedUri({ uri: occupationId })
+                ] = (bucket.avgIncome.value || 0) / 12;
               }
 
-              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: occupationId})] =  (bucket.avgIncome.value || 0) / 12;
-            }
-
-            return acc;
-          }, {});
+              return acc;
+            },
+            {}
+          );
 
           return JSON.stringify(Object.values(aggs));
         },
@@ -446,56 +499,73 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
        * @param {SynaptixDatastoreSession} synaptixSession
        * @param {object} info
        */
-      incomesByJobAreaAggs: async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
-          jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
-          occupationId =  synaptixSession.normalizeAbsoluteUri({uri: occupationId})
+      incomesByJobAreaAggs: async (
+        _,
+        { jobAreaIds, occupationId },
+        synaptixSession,
+        info
+      ) => {
+        jobAreaIds = jobAreaIds.map((jobAreaId) =>
+          synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+        );
+        occupationId = synaptixSession.normalizeAbsoluteUri({
+          uri: occupationId,
+        });
 
-          const result = await synaptixSession.getIndexService().getNodes({
-            modelDefinition: OfferDefinition,
-            propertyFilters: [
-              new PropertyFilter({
-                propertyDefinition: OfferDefinition.getProperty("creationDate"),
-                value:  getOffersLowerBoundDate(),
-                isGt: true
-              }),
-            ],
-            linkFilters: [
-              new LinkFilter({
-                linkDefinition: OfferDefinition.getLink("hasOccupation"),
-                id: occupationId
-              })
-            ],
-            limit: 0,
-            getExtraQuery: () => {
-              return {
-                aggs: Object.entries(jobAreaIds).reduce((acc, [index, jobAreaId]) => {
+        const result = await synaptixSession.getIndexService().getNodes({
+          modelDefinition: OfferDefinition,
+          propertyFilters: [
+            new PropertyFilter({
+              propertyDefinition: OfferDefinition.getProperty("creationDate"),
+              value: getOffersLowerBoundDate(),
+              isGt: true,
+            }),
+          ],
+          linkFilters: [
+            new LinkFilter({
+              linkDefinition: OfferDefinition.getLink("hasOccupation"),
+              id: occupationId,
+            }),
+          ],
+          limit: 0,
+          getExtraQuery: () => {
+            return {
+              aggs: Object.entries(jobAreaIds).reduce(
+                (acc, [index, jobAreaId]) => {
                   acc[jobAreaId] = generateIncomesAvgHistogram({
-                    filter: { term: { "zoneEmploi": jobAreaId } },
+                    filter: { term: { zoneEmploi: jobAreaId } },
                   });
 
                   return acc;
-                }, {})
-              };
-            },
-            rawResult: true
-          });
+                },
+                {}
+              ),
+            };
+          },
+          rawResult: true,
+        });
 
-          const aggs = Object.entries(result.aggregations).reduce((acc, [jobAreaId, {incomesHistogram}]) => {
-            for(const bucket of incomesHistogram.buckets){
-              if (!acc[bucket.key_as_string]){
+        const aggs = Object.entries(result.aggregations).reduce(
+          (acc, [jobAreaId, { incomesHistogram }]) => {
+            for (const bucket of incomesHistogram.buckets) {
+              if (!acc[bucket.key_as_string]) {
                 acc[bucket.key_as_string] = {
-                  label: bucket.key_as_string
+                  label: bucket.key_as_string,
                 };
               }
 
-              acc[bucket.key_as_string][synaptixSession.normalizePrefixedUri({uri: jobAreaId})] =  (bucket.avgIncome.value || 0) / 12;
+              acc[bucket.key_as_string][
+                synaptixSession.normalizePrefixedUri({ uri: jobAreaId })
+              ] = (bucket.avgIncome.value || 0) / 12;
             }
 
             return acc;
-          }, {});
+          },
+          {}
+        );
 
-          return JSON.stringify(Object.values(aggs));
-        },
+        return JSON.stringify(Object.values(aggs));
+      },
       /**
        * @param _
        * @param {string[]} jobAreaIds
@@ -503,26 +573,37 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
        * @param {SynaptixDatastoreSession} synaptixSession
        * @param {object} info
        */
-      analyzeOffers: async (_, { jobAreaIds, occupationIds }, synaptixSession) => {
-        jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
-        occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
+      analyzeOffers: async (
+        _,
+        { jobAreaIds, occupationIds },
+        synaptixSession
+      ) => {
+        jobAreaIds = jobAreaIds.map((jobAreaId) =>
+          synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+        );
+        occupationIds = occupationIds.map((occupationId) =>
+          synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+        );
 
         try {
-          const result = await synaptixSession.getIndexService()
-            .getIndexPublisher()
+          const result = await synaptixSession
+            .getDataPublisher()
             .publish("ami.analyze.offer.count.month", {
-              "offerIndex": OfferDefinition.getIndexType().map(type => `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`),
-              "zoneEmploiUri": jobAreaIds,
-              "occupationUri": occupationIds,
-              "dategte": getOffersLowerBoundDate().toISOString(),
-              "datelte": dayjs().toISOString()
+              offerIndex: OfferDefinition.getIndexType().map(
+                (type) =>
+                  `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`
+              ),
+              zoneEmploiUri: jobAreaIds,
+              occupationUri: occupationIds,
+              dategte: getOffersLowerBoundDate().toISOString(),
+              datelte: dayjs().toISOString(),
             });
 
-            return result?.color;
-          } catch (e){
-            return "ROUGE";
-          }
-        },
+          return result?.color;
+        } catch (e) {
+          return "ROUGE";
+        }
+      },
       /**
        * @param _
        * @param {string[]} jobAreaIds
@@ -530,77 +611,88 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
        * @param {SynaptixDatastoreSession} synaptixSession
        * @param {object} info
        */
-      analyzeIncomes: async (_, { jobAreaIds, occupationIds }, synaptixSession, info) => {
-        jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
-        occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
+      analyzeIncomes: async (
+        _,
+        { jobAreaIds, occupationIds },
+        synaptixSession,
+        info
+      ) => {
+        jobAreaIds = jobAreaIds.map((jobAreaId) =>
+          synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+        );
+        occupationIds = occupationIds.map((occupationId) =>
+          synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+        );
 
         try {
-          const result = await synaptixSession.getIndexService()
-            .getIndexPublisher()
+          const result = await synaptixSession
+            .getDataPublisher()
             .publish("ami.analyze.offer.salary.mean.month", {
-              "offerIndex": OfferDefinition.getIndexType().map(type => `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`),
-              "zoneEmploiUri": jobAreaIds,
-              "occupationUri": occupationIds,
-              "dategte": getOffersLowerBoundDate().toISOString(),
-              "datelte": dayjs().toISOString()
+              offerIndex: OfferDefinition.getIndexType().map(
+                (type) =>
+                  `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${type}`
+              ),
+              zoneEmploiUri: jobAreaIds,
+              occupationUri: occupationIds,
+              dategte: getOffersLowerBoundDate().toISOString(),
+              datelte: dayjs().toISOString(),
             });
 
           return result?.color;
         } catch (e) {
           return "ORANGE";
         }
-      }
+      },
     });
   }
 }
 
-function generateOffersCountDateHistogram({filter}){
+function generateOffersCountDateHistogram({ filter }) {
   return {
     filter,
     aggs: {
-      offersCountHistogram : {
+      offersCountHistogram: {
         date_histogram: {
           field: "dateCreation",
           calendar_interval: "month",
           format: offersESDateFormat,
           extended_bounds: {
-            "min": "now-5M",
-            "max": "now"
-          }
-        }
-      }
-    }
-  }
+            min: "now-5M",
+            max: "now",
+          },
+        },
+      },
+    },
+  };
 }
 
-
-function generateIncomesAvgHistogram({filter}){
+function generateIncomesAvgHistogram({ filter }) {
   return {
     filter,
     aggs: {
-      incomesHistogram : {
+      incomesHistogram: {
         date_histogram: {
           field: "dateCreation",
           calendar_interval: "month",
           format: incomesESDateFormat,
           extended_bounds: {
-            "min": "now-5M",
-            "max": "now"
-          }
+            min: "now-5M",
+            max: "now",
+          },
         },
         aggs: {
           avgIncome: {
             avg: {
               field: "salaire",
-              missing: 0
-            }
-          }
-        }
-      }
-    }
-  }
+              missing: 0,
+            },
+          },
+        },
+      },
+    },
+  };
 }
 
-export function getOffersLowerBoundDate(){
+export function getOffersLowerBoundDate() {
   return dayjs().subtract(5, "month");
 }

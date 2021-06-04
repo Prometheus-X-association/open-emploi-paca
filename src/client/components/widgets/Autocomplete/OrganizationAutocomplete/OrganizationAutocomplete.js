@@ -14,7 +14,8 @@ import {gqlOrganizations} from "./gql/Organizations.gql";
  * @param {object} TextFieldProps
  * @param {boolean} [multiple] - Select multiple concepts
  * @param {boolean} [creatable] - Creatable
- * @param className
+ * @param {string} [className]
+ * @param {boolean} [require]
  * @return {*}
  * @constructor
  */
@@ -30,7 +31,8 @@ export function OrganizationAutocomplete({
   AutocompleteProps,
   TextFieldProps,
   className,
-  creatable
+  creatable,
+  required
 } = {}) {
   const {t} = useTranslation();
 
@@ -54,6 +56,7 @@ export function OrganizationAutocomplete({
       }}
       TextFieldProps={{
         variant: "standard",
+        required,
         ...TextFieldProps
       }}
       strictMode

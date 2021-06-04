@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { useFormikContext } from "formik";
+import {useFormikContext} from "formik";
 import {OrganizationAutocomplete} from "../Autocomplete/OrganizationAutocomplete/OrganizationAutocomplete";
-
 
 /**
  * @param {string} label
@@ -24,10 +23,11 @@ import {OrganizationAutocomplete} from "../Autocomplete/OrganizationAutocomplete
  * @param {string} inputName
  * @param {object} [organization]
  * @param {boolean} [creatable]
+ * @param {boolean} [required]
  * @return {*}
  * @constructor
  */
-export function OrganizationPickerField({label, name, organization, creatable} = {}) {
+export function OrganizationPickerField({label, name, organization, creatable, required} = {}) {
   const formikContext = useFormikContext();
 
   return (
@@ -37,15 +37,16 @@ export function OrganizationPickerField({label, name, organization, creatable} =
       onSelectOrganizations={handleSelectOrganizations}
       selectedOrganizations={formikContext.getFieldProps(name).value}
       creatable={creatable}
+      required={required}
     />
   );
 
   function handleSelectOrganizations(organization) {
     // New organization
-    if (organization?.isCreation){
+    if (organization?.isCreation) {
       organization = {
         name: organization.inputValue
-      }
+      };
     }
 
     formikContext.setFieldValue(name, organization);

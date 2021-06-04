@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import {Suspense} from "react";
 import {Route, Switch} from "react-router-dom";
 import loadable from "@loadable/component";
 import {useQuery} from "@apollo/client";
@@ -12,12 +12,11 @@ import {EnvironmentContext} from "./hooks/useEnvironment";
 import {DefaultLayout} from "./components/layouts/DefaultLayout";
 import {LoadingSplashScreen} from "./components/widgets/LoadingSplashScreen";
 import favicon from "./assets/favicon.ico";
+import {CssBaseline} from "@material-ui/core";
 
 const SignIn = loadable(() => import("./components/routes/Authentication/SignIn"));
 const SignUp = loadable(() => import("./components/routes/Authentication/SignUp"));
-const PasswordForgotten = loadable(() =>
-  import("./components/routes/Authentication/PasswordForgotten")
-);
+const PasswordForgotten = loadable(() => import("./components/routes/Authentication/PasswordForgotten"));
 const Profile = loadable(() => import("./components/routes/Profile/Profile"));
 const Dashboard = loadable(() => import("./components/routes/Dashboard/Dashboard"));
 const Project = loadable(() => import("./components/routes/Project/Project"));
@@ -26,7 +25,6 @@ const Incomes = loadable(() => import("./components/routes/Incomes/Incomes"));
 const Trainings = loadable(() => import("./components/routes/Trainings/Trainings"));
 const Skills = loadable(() => import("./components/routes/Skills/Skills"));
 const Transports = loadable(() => import("./components/routes/Transports/Transports"));
-
 
 const Cartonet = loadable(() => import("./components/routes/Cartonet/Cartonet"));
 
@@ -51,6 +49,8 @@ export default function Application({} = {}) {
 
   return (
     <EnvironmentContext.Provider value={envData?.environment}>
+      <CssBaseline />
+
       <Helmet>
         <title>Open Emploi Région Sud</title>
         <meta name="description" content="Application pour l'Open Emploi de la Région Sud" />

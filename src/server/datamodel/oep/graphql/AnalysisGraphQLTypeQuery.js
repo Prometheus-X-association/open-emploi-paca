@@ -1,12 +1,15 @@
-import {GraphQLTypeQuery} from "@mnemotix/synaptix.js";
+import { GraphQLTypeQuery } from "@mnemotix/synaptix.js";
 import env from "env-var";
 
-import {getTrainingsLowerBoundDate, getTrainingsUpperBoundDate} from "./TrainingGraphQLTypeConnectionQuery";
+import {
+  getTrainingsLowerBoundDate,
+  getTrainingsUpperBoundDate,
+} from "./TrainingGraphQLTypeConnectionQuery";
 import TrainingDefinition from "../TrainingDefinition";
 import OfferDefinition from "../../mm/OfferDefinition";
 import SkillDefinition from "../../mm/SkillDefinition";
 
-export class AnalysisGraphQLTypeQuery extends GraphQLTypeQuery{
+export class AnalysisGraphQLTypeQuery extends GraphQLTypeQuery {
   /**
    * @inheritdoc
    */
@@ -45,30 +48,52 @@ export class AnalysisGraphQLTypeQuery extends GraphQLTypeQuery{
        * @param {SynaptixDatastoreSession} synaptixSession
        * @param {object} info
        */
-      [this.generateFieldName(modelDefinition)]: async (_, {occupationIds, jobAreaIds, skillIds}, synaptixSession) => {
-        jobAreaIds = jobAreaIds.map(jobAreaId =>  synaptixSession.normalizeAbsoluteUri({uri: jobAreaId}) );
-        occupationIds = occupationIds.map(occupationId =>  synaptixSession.normalizeAbsoluteUri({uri: occupationId}) );
-        skillIds = skillIds.map(skillId =>  synaptixSession.normalizeAbsoluteUri({uri: skillId}) );
+      [this.generateFieldName(modelDefinition)]: async (
+        _,
+        { occupationIds, jobAreaIds, skillIds },
+        synaptixSession
+      ) => {
+        jobAreaIds = jobAreaIds.map((jobAreaId) =>
+          synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+        );
+        occupationIds = occupationIds.map((occupationId) =>
+          synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+        );
+        skillIds = skillIds.map((skillId) =>
+          synaptixSession.normalizeAbsoluteUri({ uri: skillId })
+        );
 
         try {
-          const result = await synaptixSession.getIndexService()
-            .getIndexPublisher()
+          const result = await synaptixSession
+            .getDataPublisher()
             .publish("ami.analyze.global", {
-              "offerIndex" : [`${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${OfferDefinition.getIndexType()}`],
-              "formationIndex": [`${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${TrainingDefinition.getIndexType()}`],
-              "skillIndex" : [`${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${SkillDefinition.getIndexType()}`],
-              "zoneEmploiUri": jobAreaIds,
-              "occupationUri": occupationIds,
-              "skillUser": skillIds,
-              "dategte": getTrainingsLowerBoundDate().toISOString(),
-              "datelte": getTrainingsUpperBoundDate().toISOString()
+              offerIndex: [
+                `${env
+                  .get("INDEX_PREFIX_TYPES_WITH")
+                  .asString()}${OfferDefinition.getIndexType()}`,
+              ],
+              formationIndex: [
+                `${env
+                  .get("INDEX_PREFIX_TYPES_WITH")
+                  .asString()}${TrainingDefinition.getIndexType()}`,
+              ],
+              skillIndex: [
+                `${env
+                  .get("INDEX_PREFIX_TYPES_WITH")
+                  .asString()}${SkillDefinition.getIndexType()}`,
+              ],
+              zoneEmploiUri: jobAreaIds,
+              occupationUri: occupationIds,
+              skillUser: skillIds,
+              dategte: getTrainingsLowerBoundDate().toISOString(),
+              datelte: getTrainingsUpperBoundDate().toISOString(),
             });
 
           return result;
         } catch (e) {
           return [];
         }
-      }
+      },
     });
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useLazyQuery, useQuery} from "@apollo/client";
@@ -8,7 +8,7 @@ import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
 import {List, ListItem, ListItemText, ListItemIcon, Typography} from "@material-ui/core";
 import {Gauge} from "../../../widgets/Gauge";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   list: {
     marginTop: theme.spacing(4)
   },
@@ -19,8 +19,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-
-export function useOccupationMatchings(){
+export function useOccupationMatchings() {
   const {data: {me} = {}} = useQuery(gqlMyProfile);
   const [occupations, setOccupations] = useState([]);
   const [getOccupationsMatching, {data, loading}] = useLazyQuery(gqlOccupationsMatching, {fetchPolicy: "no-cache"});
@@ -42,7 +41,7 @@ export function useOccupationMatchings(){
       getOccupationsMatching({
         variables: {
           personId: me?.id,
-          occupationIds: occupations.map(occupation => occupation.id)
+          occupationIds: occupations.map((occupation) => occupation.id)
         }
       });
     }
@@ -50,7 +49,7 @@ export function useOccupationMatchings(){
 
   let occupationMatchings = JSON.parse(data?.occupationsMatching || "[]");
 
-  occupations.map(occupation => {
+  occupations.map((occupation) => {
     if (!occupationMatchings.find(({categoryId}) => categoryId === occupation.id)) {
       occupationMatchings.push({
         categoryId: occupation.id,
@@ -77,7 +76,7 @@ export function OccupationsMatchingWidget({} = {}) {
       </When>
       <Otherwise>
         <List className={classes.list}>
-          {occupationMatchings.map(occupation => (
+          {occupationMatchings.map((occupation) => (
             <ListItem key={occupation.categoryName}>
               <ListItemIcon>
                 <Gauge value={occupation.score * 100} />

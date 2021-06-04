@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 import {Button, DialogActions, DialogContent, DialogTitle, Checkbox} from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
 import {useMutation} from "@apollo/client";
@@ -10,7 +10,10 @@ import {useHistory} from "react-router";
 import {CollectionView} from "../../../widgets/CollectionView/CollectionView";
 import {useSnackbar} from "notistack";
 import {gqlUpdateAptitude} from "./gql/UpdateAptitude.gql";
-import {LoadingButton} from "../../../widgets/Button/LoadingButton";
+import {CartonetEditLayout} from "../CartonetEditLayout";
+import {Link} from "react-router-dom";
+import {generateCartonetPath} from "../utils/generateCartonetPath";
+import {ROUTES} from "../../../../routes";
 
 const useStyles = makeStyles(theme => ({}));
 
@@ -21,7 +24,8 @@ export default function EditAptitudes({
   gqlAptitudes = gqlMyAptitudes,
   gqlConnectionPath = "me.aptitudes",
   gqlCountPath = "me.aptitudesCount",
-  gqlVariables = {}
+  gqlVariables = {},
+  onClose = () => {}
 } = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
@@ -63,11 +67,7 @@ export default function EditAptitudes({
         customBodyRender: (_, {row: aptitude}) => {
           return (
             <If condition={aptitude.isInCV}>
-              <Checkbox
-                name={`${aptitude.id}_isInCV`}
-                checked={true}
-                disabled={true}
-              />
+              <Checkbox name={`${aptitude.id}_isInCV`} checked={true} disabled={true} />
             </If>
           );
         }
@@ -106,7 +106,9 @@ export default function EditAptitudes({
               checked={!!aptitude.isTop5}
               disabled={!aptitude.isTop5 && rowsSharedState?.top5Count === 5}
               onClick={e => e.stopPropagation()}
-              onChange={e => handleUpdateAptitudeRating({aptitude, value: aptitude.rating?.value || 0, isTop5: e.target.checked})}
+              onChange={e =>
+                handleUpdateAptitudeRating({aptitude, value: aptitude.rating?.value || 0, isTop5: e.target.checked})
+              }
             />
           );
         }
@@ -115,38 +117,83 @@ export default function EditAptitudes({
   ];
 
   return (
-    <>
-      <DialogTitle>{t("CARTONET.APTITUDES.PAGE_TITLE")}</DialogTitle>
-      <DialogContent>
-        <CollectionView
-          columns={columns}
-          gqlConnectionPath={gqlConnectionPath}
-          gqlCountPath={gqlCountPath}
-          gqlQuery={gqlAptitudes}
-          gqlFilters={null}
-          gqlSortings={[{sortBy: "skillLabel"}]}
-          gqlVariables={gqlVariables}
-          availableDisplayMode={["table"]}
-          searchEnabled={true}
-          removalEnabled={true}
-          getRowsSharedState={({rows}) => {
-            return {
-              top5Count: rows.filter(({isTop5}) => isTop5 === true).length
-            };
-          }}
-          getRemoveConfirmText={({count}) => t("CARTONET.APTITUDES.REMOVE_TEXT", {count})}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button disabled={modifiedAptitudesCount === 0} variant="contained" color="primary" onClick={() => {
-          setTimeout(() => {
-            enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
-          }, 500);
-          setModifiedAptitudesCount(0);
-        }}>{t("ACTIONS.SAVE")}</Button>
-        <Button onClick={() => history.goBack()}>{t("ACTIONS.GO_BACK")}</Button>
-      </DialogActions>
-    </>
+    <CartonetEditLayout
+      title={t("CARTONET.APTITUDES.PAGE_TITLE")}
+      description={
+        <>
+          <p>
+            Afin de pouvoir vous suggérer au mieux des métiers qui vous correspondent il est indispensable de valoriser
+            vos compétences.
+          </p>
+          <p>
+            Cette valorisation consiste à affecter à chacune de vos compétences une à 5 étoiles (1 étoile indique que
+            vous avez une connaissance théorique, 2 étoiles une connaissance pratique récente, 3 étoiles une
+            connaissance pratique de plus de 2 ans, 4 étoiles que vous avez un niveau d’expertise établi, 5 étoiles que
+            vous en avez la maîtrise et la capacité à l’enseigner).
+          </p>
+          <p>
+            Vous pouvez sélectionner 5 compétences (Top5) pour indiquer les compétences que vous souhaitez mettre en
+            avant.
+          </p>
+        </>
+      }
+      actions={
+        <>
+          <Button
+            variant={"contained"}
+            component={Link}
+            to={generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_EXPERIENCE})}>
+            {t("ACTIONS.PREVIOUS")}
+          </Button>
+          <Choose>
+            <When condition={modifiedAptitudesCount > 0}>
+              <Button
+                disabled={modifiedAptitudesCount === 0}
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setTimeout(() => {
+                    enqueueSnackbar(t("ACTIONS.SUCCESS"), {variant: "success"});
+                  }, 500);
+                  setModifiedAptitudesCount(0);
+                }}>
+                {t("ACTIONS.SAVE")}
+              </Button>
+            </When>
+            <Otherwise>
+              <Button
+                component={Link}
+                variant={"contained"}
+                to={generateCartonetPath({history, route: ROUTES.CARTONET_SHOW_PROFILE})}>
+                {t("ACTIONS.TERMINATE")}
+              </Button>
+            </Otherwise>
+          </Choose>
+        </>
+      }>
+      <CollectionView
+        columns={columns}
+        gqlConnectionPath={gqlConnectionPath}
+        gqlCountPath={gqlCountPath}
+        gqlQuery={gqlAptitudes}
+        gqlFilters={null}
+        gqlSortings={[
+          // This inversion seems to be a bug in Synaptix.js
+          {sortBy: "ratingValue", isSortDescending: true},
+          {sortBy: "isTop5", isSortDescending: false}
+        ]}
+        gqlVariables={gqlVariables}
+        availableDisplayMode={["table"]}
+        searchEnabled={true}
+        removalEnabled={true}
+        getRowsSharedState={({rows}) => {
+          return {
+            top5Count: rows.filter(({isTop5}) => isTop5 === true).length
+          };
+        }}
+        getRemoveConfirmText={({count}) => t("CARTONET.APTITUDES.REMOVE_TEXT", {count})}
+      />
+    </CartonetEditLayout>
   );
 
   /**
