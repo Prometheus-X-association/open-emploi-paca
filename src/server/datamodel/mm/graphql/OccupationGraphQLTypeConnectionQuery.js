@@ -155,7 +155,7 @@ export async function computeOccupationMatchingForPerson({
         })
     ),
     rawResult: true,
-    limit: 1000,
+    limit: 9000,
     ...args,
     getRootQueryWrapper: ({ query }) => ({
       script_score: {
