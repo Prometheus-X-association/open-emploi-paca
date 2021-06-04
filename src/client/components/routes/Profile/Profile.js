@@ -141,71 +141,6 @@ export default function Profile({} = {}) {
                       </BlockContainer>
                     </Grid>
 
-                    <Grid item xs={12} md={6}>
-                      <BlockContainer title={"Mon profil de compétences (Carto.net)"}>
-                        <img src={LogoMM} alt={"Logo MM"} className={classes.logoInsert} />
-                        <p className={classes.cartonetCatchPhrase}>
-                          <p>
-                            L’application Carto.net permet de créer votre profil de compétences au regard de vos
-                            différentes expériences (professionnelles, de formation, extra professionnelles).
-                          </p>
-                          <p>
-                            Ce profil est utilisé par les fonctionnalités du Diagnostic 360° pour affiner le gap de
-                            compétences à acquérir pour accéder aux métiers que vous envisagez ou qui vous sont
-                            suggérés.
-                          </p>
-                          <p>A termes, ce profil vous permettra d’avoir un parcours de formation individualisé.</p>
-                        </p>
-
-                        <Choose>
-                          <When condition={me.aptitudesCount === 0}>
-                            <p className={classes.strong}>
-                              Laissez vous guider dans la création de votre profil de compétences.
-                            </p>
-                            <div className={classes.cartonetButton}>
-                              <Button
-                                variant={"contained"}
-                                color={"secondary"}
-                                component={Link}
-                                to={generateCartonetPath({
-                                  history,
-                                  route: ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV
-                                })}>
-                                Créer votre profil de compétences
-                              </Button>
-                            </div>
-                          </When>
-                          <Otherwise>
-                            <p className={classes.strong}>
-                              Vous pouvez visualiser/modifier votre profil de compétences.
-                            </p>
-                            <div className={classes.cartonetButton}>
-                              <Button
-                                variant={"contained"}
-                                color={"secondary"}
-                                component={Link}
-                                to={generateCartonetPath({
-                                  history,
-                                  route: ROUTES.CARTONET_SHOW_PROFILE
-                                })}>
-                                Visualiser/Modifier votre profil de compétences
-                              </Button>
-                            </div>
-                          </Otherwise>
-                        </Choose>
-                        <CartonetModal />
-                      </BlockContainer>
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <BlockContainer title={"Mon profil de mobilité (WeDiag)"}>
-                        <img src={LogoWever} alt={"Logo Wever"} className={classes.logoInsert} />
-                        <ErrorBoundary>
-                          <WeverCollector email={me?.mainEmail?.email} {...me?.weverUser} />
-                        </ErrorBoundary>
-                      </BlockContainer>
-                    </Grid>
-
                     <Grid item xs={12}>
                       <BlockContainer>
                         <FormButtons
@@ -223,6 +158,66 @@ export default function Profile({} = {}) {
               );
             }}
           </Formik>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <BlockContainer title={"Mon profil de compétences (Carto.net)"}>
+            <img src={LogoMM} alt={"Logo MM"} className={classes.logoInsert} />
+            <p className={classes.cartonetCatchPhrase}>
+              <p>
+                L’application Carto.net permet de créer votre profil de compétences au regard de vos différentes
+                expériences (professionnelles, de formation, extra professionnelles).
+              </p>
+              <p>
+                Ce profil est utilisé par les fonctionnalités du Diagnostic 360° pour affiner le gap de compétences à
+                acquérir pour accéder aux métiers que vous envisagez ou qui vous sont suggérés.
+              </p>
+              <p>A termes, ce profil vous permettra d’avoir un parcours de formation individualisé.</p>
+            </p>
+
+            <Choose>
+              <When condition={me.aptitudesCount === 0}>
+                <p className={classes.strong}>Laissez vous guider dans la création de votre profil de compétences.</p>
+                <div className={classes.cartonetButton}>
+                  <Button
+                    variant={"contained"}
+                    color={"secondary"}
+                    component={Link}
+                    to={generateCartonetPath({
+                      history,
+                      route: ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV
+                    })}>
+                    Créer votre profil de compétences
+                  </Button>
+                </div>
+              </When>
+              <Otherwise>
+                <p className={classes.strong}>Vous pouvez visualiser/modifier votre profil de compétences.</p>
+                <div className={classes.cartonetButton}>
+                  <Button
+                    variant={"contained"}
+                    color={"secondary"}
+                    component={Link}
+                    to={generateCartonetPath({
+                      history,
+                      route: ROUTES.CARTONET_SHOW_PROFILE
+                    })}>
+                    Visualiser/Modifier votre profil de compétences
+                  </Button>
+                </div>
+              </Otherwise>
+            </Choose>
+            <CartonetModal />
+          </BlockContainer>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <BlockContainer title={"Mon profil de mobilité (WeDiag)"}>
+            <img src={LogoWever} alt={"Logo Wever"} className={classes.logoInsert} />
+            <ErrorBoundary>
+              <WeverCollector email={me?.mainEmail?.email} {...me?.weverUser} />
+            </ErrorBoundary>
+          </BlockContainer>
         </Grid>
       </If>
     </Grid>
