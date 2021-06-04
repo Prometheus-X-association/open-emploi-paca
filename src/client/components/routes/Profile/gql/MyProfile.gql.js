@@ -56,6 +56,9 @@ export const gqlMyProfile = gql`
       avatar
       firstName
       lastName
+      mainEmail {
+        email
+      }
       weverUser {
         mapId
         reportId

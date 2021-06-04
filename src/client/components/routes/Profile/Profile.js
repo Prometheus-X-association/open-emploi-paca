@@ -26,7 +26,7 @@ import {generateCartonetPath} from "../Cartonet/utils/generateCartonetPath";
 
 const WeverCollector = loadable(() => import("./WeverCollector"));
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   cartoNetSubHeader: {
     lineHeight: "initial",
     margin: [theme.spacing(1, 0)]
@@ -201,7 +201,7 @@ export default function Profile({} = {}) {
                       <BlockContainer title={"Mon profil de mobilité (WeDiag)"}>
                         <img src={LogoWever} alt={"Logo Wever"} className={classes.logoInsert} />
                         <ErrorBoundary>
-                          <WeverCollector {...me?.weverUser} />
+                          <WeverCollector email={me?.mainEmail?.email} {...me?.weverUser} />
                         </ErrorBoundary>
                       </BlockContainer>
                     </Grid>

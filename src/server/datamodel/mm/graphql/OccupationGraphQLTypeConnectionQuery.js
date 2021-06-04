@@ -4,7 +4,7 @@ import {
   LinkFilter,
   mergeResolvers,
   QueryFilter,
-  SynaptixDatastoreSession
+  SynaptixDatastoreSession,
 } from "@mnemotix/synaptix.js";
 import OccupationDefinition from "../OccupationDefinition";
 import PersonDefinition from "../../mnx/PersonDefinition";
@@ -48,21 +48,31 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
        * @param {SynaptixDatastoreSession} synaptixSession
        * @param {object} info
        */
-      occupationsMatching: async (_, {personId, occupationIds, light, args}, synaptixSession, info) => {
-        if(!personId){
-          personId = (await synaptixSession.getLoggedUserPerson())?.id
+      occupationsMatching: async (
+        _,
+        { personId, occupationIds, light, args },
+        synaptixSession,
+        info
+      ) => {
+        if (!personId) {
+          personId = (await synaptixSession.getLoggedUserPerson())?.id;
         }
 
-          const matching = await computeOccupationMatchingForPerson({synaptixSession, occupationIds, personId, args, light})
+        const matching = await computeOccupationMatchingForPerson({
+          synaptixSession,
+          occupationIds,
+          personId,
+          args,
+          light,
+        });
 
-          return JSON.stringify(Object.values(matching));
-        }
+        return JSON.stringify(Object.values(matching));
+      },
     });
 
     return mergeResolvers(baseResolver, extraResolver);
   }
 }
-
 
 /**
  * @param {SynaptixDatastoreSession} synaptixSession
@@ -71,30 +81,41 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
  * @param {boolean} [light]
  * @return {Object}
  */
-export async function computeOccupationMatchingForPerson({synaptixSession, personId, occupationIds, light, args}){
+export async function computeOccupationMatchingForPerson({
+  synaptixSession,
+  personId,
+  occupationIds,
+  light,
+  args,
+}) {
   if (occupationIds) {
-    occupationIds = occupationIds.map(occupationId =>
-      synaptixSession.normalizeAbsoluteUri({uri: occupationId})
+    occupationIds = occupationIds.map((occupationId) =>
+      synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
     );
   }
 
   personId = synaptixSession.normalizeAbsoluteUri({
-    uri: synaptixSession.extractIdFromGlobalId(personId)
+    uri: synaptixSession.extractIdFromGlobalId(personId),
   });
 
   let aptitudes = await synaptixSession.getLinkedObjectFor({
     object: {
-      id: personId
+      id: personId,
     },
-    linkDefinition: PersonDefinition.getLink("hasAptitude")
+    linkDefinition: PersonDefinition.getLink("hasAptitude"),
   });
 
   let skillsGroups = {};
 
-  for(let aptitude of aptitudes){
-    const rating = aptitude[AptitudeDefinition.getProperty("ratingValue").getPropertyName()] || 0;
-    const isTop5  = aptitude[AptitudeDefinition.getProperty("isTop5").getPropertyName()];
-    const skill  = aptitude[AptitudeDefinition.getLink("hasSkill").getLinkName()];
+  for (let aptitude of aptitudes) {
+    const rating =
+      aptitude[
+        AptitudeDefinition.getProperty("ratingValue").getPropertyName()
+      ] || 0;
+    const isTop5 =
+      aptitude[AptitudeDefinition.getProperty("isTop5").getPropertyName()];
+    const skill =
+      aptitude[AptitudeDefinition.getLink("hasSkill").getLinkName()];
 
     // Boost is computed with this following serie :
     // Rate 0 => Boost 0.8
@@ -102,7 +123,7 @@ export async function computeOccupationMatchingForPerson({synaptixSession, perso
     //      ...
     //      5 =>       1.8
     //      6 =>       2  (is top 5)
-    const boost = isTop5 ? 2 : (1 + 1/5 * (rating - 1))
+    const boost = isTop5 ? 2 : 1 + (1 / 5) * (rating - 1);
 
     if (!skillsGroups[boost]) {
       skillsGroups[boost] = [];
@@ -111,10 +132,15 @@ export async function computeOccupationMatchingForPerson({synaptixSession, perso
     skillsGroups[boost].push(skill.id);
   }
 
-  const hasRelatedOccupationPath = OccupationDefinition.getLink("hasRelatedOccupation").getPathInIndex();
-  const relatedOccupationLabelPath = OccupationDefinition.getProperty("relatedOccupationName").getPathInIndex();
-  const occupationLabelPath = OccupationDefinition.getProperty("prefLabel").getPathInIndex();
-
+  const hasRelatedOccupationPath = OccupationDefinition.getLink(
+    "hasRelatedOccupation"
+  ).getPathInIndex();
+  const relatedOccupationLabelPath = OccupationDefinition.getProperty(
+    "relatedOccupationName"
+  ).getPathInIndex();
+  const occupationLabelPath = OccupationDefinition.getProperty(
+    "prefLabel"
+  ).getPathInIndex();
 
   const result = await synaptixSession.getIndexService().getNodes({
     modelDefinition: OccupationDefinition,
@@ -124,20 +150,20 @@ export async function computeOccupationMatchingForPerson({synaptixSession, perso
           filterDefinition: OccupationDefinition.getFilter(
             "moreLikeThisPersonSkillsFilter"
           ),
-          filterGenerateParams: {skillsIds, boost},
-          isStrict: false
+          filterGenerateParams: { skillsIds, boost },
+          isStrict: false,
         })
     ),
     rawResult: true,
     limit: 1000,
     ...args,
-    getRootQueryWrapper: ({query}) => ({
+    getRootQueryWrapper: ({ query }) => ({
       script_score: {
         query: query,
         script: {
-          source: "_score / (40 + _score)"
-        }
-      }
+          source: "_score / (40 + _score)",
+        },
+      },
     }),
     getExtraQuery: () => {
       return {
@@ -146,48 +172,50 @@ export async function computeOccupationMatchingForPerson({synaptixSession, perso
             hasRelatedOccupationPath,
             relatedOccupationLabelPath,
             occupationLabelPath,
-          ]
+          ],
         },
-        sort: ["_score", `${occupationLabelPath}.keyword`]
+        sort: ["_score", `${occupationLabelPath}.keyword`],
       };
-    }
+    },
   });
 
   /**
    * After a bit of testing it
    * @type {number}
    */
-  return result.hits.reduce(
-    (acc, {_id, _score, _source}) => {
-      if(occupationIds && (!occupationIds.includes(_source[hasRelatedOccupationPath]))){
-        return acc;
-      }
-
-      if(Array.isArray(_source[hasRelatedOccupationPath])){
-        return acc;
-      }
-
-      if (!acc[_source[relatedOccupationLabelPath]]) {
-        acc[_source[relatedOccupationLabelPath]] = {
-          categoryName: _source[relatedOccupationLabelPath],
-          categoryId: _source[hasRelatedOccupationPath],
-          score: _score,
-          ...(light ? {} : {subOccupations: []})
-        };
-      }
-
-      if(!light){
-        acc[_source[relatedOccupationLabelPath]].subOccupations.push({
-          id: _id,
-          score: _score,
-          prefLabel: Array.isArray(_source[occupationLabelPath])
-            ? _source[occupationLabelPath][0]
-            : _source[occupationLabelPath]
-        });
-      }
-
+  return result.hits.reduce((acc, { _id, _score, _source }) => {
+    if (
+      occupationIds &&
+      !occupationIds.includes(_source[hasRelatedOccupationPath])
+    ) {
       return acc;
-    },
-    {}
-  );
+    }
+
+    if (Array.isArray(_source[hasRelatedOccupationPath])) {
+      return acc;
+    }
+
+    if (!acc[_source[relatedOccupationLabelPath]]) {
+      acc[_source[relatedOccupationLabelPath]] = {
+        categoryName: _source[relatedOccupationLabelPath],
+        categoryId: synaptixSession.normalizePrefixedUri({
+          uri: _source[hasRelatedOccupationPath],
+        }),
+        score: _score,
+        ...(light ? {} : { subOccupations: [] }),
+      };
+    }
+
+    if (!light) {
+      acc[_source[relatedOccupationLabelPath]].subOccupations.push({
+        id: synaptixSession.normalizePrefixedUri({ uri: _id }),
+        score: _score,
+        prefLabel: Array.isArray(_source[occupationLabelPath])
+          ? _source[occupationLabelPath][0]
+          : _source[occupationLabelPath],
+      });
+    }
+
+    return acc;
+  }, {});
 }

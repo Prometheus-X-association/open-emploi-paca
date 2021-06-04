@@ -1414,10 +1414,10 @@
     rxjs "^6.4.0"
     yup "^0.27.0"
 
-"@mnemotix/synaptix.js@^4.7.26":
-  version "4.7.26"
-  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.7.26.tgz#64fe966a00e8a7d15650a081bfca44a4ac50b65a"
-  integrity sha512-sfk+0WnbkU08Q1cfMX/uIh/3yQEFx8TavVM1DYu60frtyfwbsBZk8F5WOyEaRqUZHSBB1p8CAix3J8bld12UnA==
+"@mnemotix/synaptix.js@^4.7.27":
+  version "4.7.27"
+  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.7.27.tgz#282a0e3b664a7d77d0c59cb8ffad93058bbcc11b"
+  integrity sha512-YdXZrNrWWHCEBxtJttPuyslJDP2Gt6TaGx2BHUC4HaLyp/t3v6oEAiYiLVB5pJ8WkReLxD6DgnxPDYP4UfsR3g==
   dependencies:
     "@elastic/elasticsearch" "^7.11.0"
     amqplib "0.6.0"
