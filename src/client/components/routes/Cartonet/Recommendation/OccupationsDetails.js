@@ -5,7 +5,7 @@ import {gqlOccupationDetails} from "./gql/OccupationDetails.gql";
 import {CircularProgress, Grid, List, ListItem, ListItemIcon, ListItemText, Typography} from "@material-ui/core";
 import {Gauge} from "../../../widgets/Gauge";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     overflow: "hidden",
     height: "40vh"
@@ -97,7 +97,7 @@ export function OccupationsDetails({occupationId, personId, subOccupations} = {}
           <Grid xs item container className={classes.details}>
             <Grid xs item className={classes.column}>
               <List dense>
-                {subOccupations.map((subOccupation) => (
+                {subOccupations.map(subOccupation => (
                   <ListItem key={subOccupation.id}>
                     <ListItemText primary={subOccupation.prefLabel} />
                   </ListItem>
@@ -128,7 +128,7 @@ export function OccupationsDetails({occupationId, personId, subOccupations} = {}
             </Grid>
             <Grid xs item className={classes.column}>
               <Choose>
-                <When condition={(filteredSkills?.edges || []).length === 0}>
+                <When condition={(filteredSkills || []).length === 0}>
                   <div className={classes.empty}>{t("CARTONET.OCCUPATION_MATCHING.NO_SKILL")}</div>
                 </When>
                 <Otherwise>

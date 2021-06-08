@@ -24,7 +24,7 @@ import {
   LiteralDefinition,
   MnxOntologies,
   ModelDefinitionAbstract,
-  SortingDefinition,
+  SortingDefinition
 } from "@mnemotix/synaptix.js";
 import AptitudeRatingDefinition from "../mm/AptitudeRatingDefinition";
 import SkillDefinition from "../mm/SkillDefinition";
@@ -71,7 +71,7 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
       rdfObjectProperty: "mm:hasSkill",
       relatedModelDefinition: SkillDefinition,
       graphQLPropertyName: "skill",
-      graphQLInputName: "skillInput",
+      graphQLInputName: "skillInput"
     });
 
     return [
@@ -83,7 +83,7 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
         isCascadingRemoved: true,
         isPlural: false,
         graphQLPropertyName: "rating",
-        graphQLInputName: "ratingInput",
+        graphQLInputName: "ratingInput"
       }),
       skillLinkDefinition,
       new LinkDefinition({
@@ -94,7 +94,7 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
         isCascadingRemoved: true,
         isPlural: true,
         graphQLPropertyName: "expectations",
-        graphQLInputName: "isAptitudeOfInputs",
+        graphQLInputName: "isAptitudeOfInputs"
       }),
       new LinkDefinition({
         linkName: "hasExperience",
@@ -102,14 +102,14 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: ExperienceDefinition,
         isPlural: true,
         graphQLPropertyName: "experiences",
-        graphQLInputName: "relatedExperienceInputs",
+        graphQLInputName: "relatedExperienceInputs"
       }),
       new LinkDefinition({
         linkName: "hasPerson",
         rdfObjectProperty: "mm:hasCreator",
         relatedModelDefinition: PersonDefinition,
         graphQLPropertyName: "person",
-        graphQLInputName: "personInput",
+        graphQLInputName: "personInput"
       }),
       new LinkDefinition({
         linkName: "hasRelatedOccupation",
@@ -120,12 +120,13 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
               linkName: "hasOccupation",
               rdfObjectProperty: "mm:hasOccupation",
               relatedModelDefinition: OccupationDefinition,
-              isPlural: true,
-            }),
+              isPlural: true
+            })
           }),
+        isPlural: true,
         relatedModelDefinition: OccupationDefinition,
-        graphQLPropertyName: "relationOccupation",
-      }),
+        graphQLPropertyName: "relationOccupation"
+      })
     ];
   }
 
@@ -138,9 +139,9 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
           .step({ linkDefinition: AptitudeDefinition.getLink("hasSkill") })
           .property({
             propertyDefinition: SkillDefinition.getLabel("prefLabel"),
-            rdfDataPropertyAlias: "mm:skillLabel",
-          }),
-      }),
+            rdfDataPropertyAlias: "mm:skillLabel"
+          })
+      })
     ];
   }
 
@@ -153,17 +154,17 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
       new LiteralDefinition({
         literalName: "isInCV",
         rdfDataProperty: "mm:isInCV",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean",
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
       }),
       new LiteralDefinition({
         literalName: "isTop5",
         rdfDataProperty: "mm:isTop5",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean",
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
       }),
       new LiteralDefinition({
         literalName: "isMandatory",
         rdfDataProperty: "mm:isMandatory",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean",
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
       }),
       new LiteralDefinition({
         literalName: "ratingValue",
@@ -171,10 +172,10 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
           .step({ linkDefinition: AptitudeDefinition.getLink("hasRating") })
           .property({
             propertyDefinition: AptitudeRatingDefinition.getLiteral("value"),
-            rdfDataPropertyAlias: "mm:ratingValue",
+            rdfDataPropertyAlias: "mm:ratingValue"
           }),
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer",
-      }),
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
+      })
     ];
   }
 
@@ -192,12 +193,12 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
                   return doc['hasExperience'].length;
                 }
                 return 0;
-              `,
+              `
             },
-            order: direction || "asc",
-          },
-        }),
-      }),
+            order: direction || "asc"
+          }
+        })
+      })
     ];
   }
 }
