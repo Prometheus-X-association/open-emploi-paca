@@ -2,7 +2,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Cancel as CloseIcon} from "@material-ui/icons";
 import {IconButton, Tooltip} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
-import {Route, Switch} from "react-router";
+import {Route, Switch, MemoryRouter, useHistory} from "react-router";
 import loadable from "@loadable/component";
 import {ROUTES} from "../../../routes";
 import LogoMM from "../../../assets/logo-mm.png";
@@ -14,7 +14,7 @@ const OccupationsMatching = loadable(() => import("./Recommendation/OccupationsM
 const ExtractAptitudesFromCV = loadable(() => import("./Aptitudes/ExtractAptitudesFromCV"));
 const PrintProfile = loadable(() => import("./Export/PrintProfile"));
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     position: "relative",
     maxWidth: 1200,
@@ -37,6 +37,7 @@ const useStyles = makeStyles(theme => ({
 export default function Cartonet({} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
+  const history = useHistory();
 
   return (
     <div className={classes.root}>
@@ -46,24 +47,26 @@ export default function Cartonet({} = {}) {
           <CloseIcon />
         </IconButton>
       </Tooltip>
-      <Switch>
-        <Route exact path={ROUTES.CARTONET_EDIT_EXPERIENCE} render={() => <EditExperience fullscreen />} />
-        <Route
-          exact
-          path={ROUTES.CARTONET_EDIT_TRAINING}
-          render={() => <EditExperience fullscreen experienceType={"training"} />}
-        />
-        <Route
-          exact
-          path={ROUTES.CARTONET_EDIT_HOBBY}
-          render={() => <EditExperience fullscreen experienceType={"hobby"} />}
-        />
-        <Route exact path={ROUTES.CARTONET_EDIT_APTITUDES} render={() => <EditAptitudes onClose={handleClose} />} />
-        <Route exact path={ROUTES.CARTONET_SHOW_PROFILE} component={Cartography} />
-        <Route exact path={ROUTES.CARTONET_SHOW_JOBS} component={OccupationsMatching} />
-        <Route exact path={ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV} render={() => <ExtractAptitudesFromCV />} />
-        <Route exact path={ROUTES.CARTONET_PRINT_PROFILE} render={() => <PrintProfile />} />
-      </Switch>
+      <MemoryRouter initialEntries={[history.location]} initialIndex={0}>
+        <Switch>
+          <Route exact path={ROUTES.CARTONET_EDIT_EXPERIENCE} render={() => <EditExperience fullscreen />} />
+          <Route
+            exact
+            path={ROUTES.CARTONET_EDIT_TRAINING}
+            render={() => <EditExperience fullscreen experienceType={"training"} />}
+          />
+          <Route
+            exact
+            path={ROUTES.CARTONET_EDIT_HOBBY}
+            render={() => <EditExperience fullscreen experienceType={"hobby"} />}
+          />
+          <Route exact path={ROUTES.CARTONET_EDIT_APTITUDES} render={() => <EditAptitudes onClose={handleClose} />} />
+          <Route exact path={ROUTES.CARTONET_SHOW_PROFILE} component={Cartography} />
+          <Route exact path={ROUTES.CARTONET_SHOW_JOBS} component={OccupationsMatching} />
+          <Route exact path={ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV} render={() => <ExtractAptitudesFromCV />} />
+          <Route exact path={ROUTES.CARTONET_PRINT_PROFILE} render={() => <PrintProfile />} />
+        </Switch>
+      </MemoryRouter>
     </div>
   );
 
