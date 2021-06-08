@@ -122,8 +122,7 @@ export async function computeOccupationMatchingForPerson({
     //      1 =>       1
     //      ...
     //      5 =>       1.8
-    //      6 =>       2  (is top 5)
-    const boost = isTop5 ? 2 : 1 + (1 / 5) * (rating - 1);
+    const boost = 1 + (1 / 5) * (rating - 1);
 
     if (!skillsGroups[boost]) {
       skillsGroups[boost] = [];
@@ -161,7 +160,7 @@ export async function computeOccupationMatchingForPerson({
       script_score: {
         query: query,
         script: {
-          source: "_score / (40 + _score)",
+          source: "_score / (100 + _score)",
         },
       },
     }),

@@ -143,6 +143,12 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
     OCCUPATION_MATCHING: {
       PAGE_TITLE: "Suggestion de métiers",
       SUBTITLE: "Liste des métiers correspondant à votre profil",
+      SUB_OCCUPATIONS: "Postes associés au métier",
+      APTITUDES: "Compétences déjà acquises",
+      OTHER_SKILLS: "Compétences à acquérir",
+      ROME_LINK: "Lien ROME",
+      NO_APTITUDE: "Aucune compétence acquise",
+      NO_SKILL: "Aucune compétence à acquérir",
     },
     EXPORT: {
       TITLE: "Mon profil Carto.net",

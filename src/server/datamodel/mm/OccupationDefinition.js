@@ -17,14 +17,16 @@
  */
 
 import {
-  FilterDefinition, LabelDefinition,
-  LinkDefinition, LinkPath,
+  FilterDefinition,
+  LabelDefinition,
+  LinkDefinition,
+  LinkPath,
   MnxOntologies,
-  ModelDefinitionAbstract
+  ModelDefinitionAbstract,
 } from "@mnemotix/synaptix.js";
 import AwardDefinition from "../mm/AwardDefinition";
 import SkillDefinition from "./SkillDefinition";
-import {OccupationGraphQLDefinition} from "./graphql/OccupationGraphQLDefinition";
+import { OccupationGraphQLDefinition } from "./graphql/OccupationGraphQLDefinition";
 import env from "env-var";
 import JobAreaDefinition from "../oep/JobAreaDefinition";
 import PersonDefinition from "../mnx/PersonDefinition";
@@ -44,7 +46,7 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
     return "mm:Occupation";
   }
 
-  static getRdfInstanceBaseUri(){
+  static getRdfInstanceBaseUri() {
     return "http://openemploi.datasud.fr/ontology/data/occupation";
   }
 
@@ -72,29 +74,34 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
         isCascadingUpdated: true,
         isCascadingRemoved: true,
         isPlural: true,
-        graphQLInputName: "isOccupationOfInputs"
+        graphQLInputName: "isOccupationOfInputs",
       }),
       new LinkDefinition({
         linkName: "hasSkill",
         rdfObjectProperty: "mm:isOccupationOf",
         relatedModelDefinition: SkillDefinition,
         isPlural: true,
-        graphQLInputName: "skillInputs"
+        graphQLInputName: "skillInputs",
+        graphQLPropertyName: "skills",
       }),
       new LinkDefinition({
         linkName: "hasRelatedOccupation",
         rdfObjectProperty: "skos:related",
         relatedModelDefinition: OccupationDefinition,
         isPlural: true,
-        graphQLInputName: "relatedOccupationInputs"
-      })
+        graphQLInputName: "relatedOccupationInputs",
+      }),
     ];
   }
 
-
-  static getLabels(){
+  static getLabels() {
     const superLabels = super.getLabels();
-    const prefLabel  = superLabels.find(label => label.getLabelName() === "prefLabel")
+    const prefLabel = superLabels.find(
+      (label) => label.getLabelName() === "prefLabel"
+    );
+    const notation = superLabels.find(
+      (label) => label.getLabelName() === "notation"
+    );
     return [
       ...superLabels,
       new LabelDefinition({
@@ -103,11 +110,11 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
         linkPath: new LinkPath()
           .step({ linkDefinition: this.getLink("hasRelatedOccupation") })
           .property({
-            propertyDefinition : prefLabel,
-            rdfDataPropertyAlias: "skos:prefLabel"
-          })
-      })
-    ]
+            propertyDefinition: prefLabel,
+            rdfDataPropertyAlias: "skos:prefLabel",
+          }),
+      }),
+    ];
   }
   /**
    * @inheritDoc
@@ -117,24 +124,22 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
       ...super.getFilters(),
       new FilterDefinition({
         filterName: "moreLikeThisPersonSkillsFilter",
-        indexFilter: ( {skillsIds, boost} ) => ({
+        indexFilter: ({ skillsIds, boost }) => ({
           more_like_this: {
-            "fields": [
-              this.getLink("hasSkill").getPathInIndex()
-            ],
-            "like": [
+            fields: [this.getLink("hasSkill").getPathInIndex()],
+            like: [
               {
-                "doc": {
-                  [this.getLink("hasSkill").getPathInIndex()] : skillsIds
-                }
-              }
+                doc: {
+                  [this.getLink("hasSkill").getPathInIndex()]: skillsIds,
+                },
+              },
             ],
-            "min_term_freq": 1,
-            "max_query_terms": 500,
-            "boost": boost
-          }
-        })
-      })
+            min_term_freq: 1,
+            max_query_terms: 500,
+            boost: boost,
+          },
+        }),
+      }),
     ];
   }
 }

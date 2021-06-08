@@ -21,6 +21,7 @@ import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
 import {Gauge} from "../../../widgets/Gauge";
 import {CartonetExploreLayout} from "../CartonetExploreLayout";
+import {OccupationsDetails} from "./OccupationsDetails";
 
 const useStyles = makeStyles((theme) => ({
   categoryHeader: {
@@ -99,6 +100,7 @@ export default function OccupationsMatching({print} = {}) {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+  const {user: me} = useLoggedUser();
   const [occupations, {loading}] = useSuggestedOccupationsMatchings();
 
   const componentRef = useRef(null);
@@ -152,13 +154,11 @@ export default function OccupationsMatching({print} = {}) {
                     </AccordionSummary>
                     <AccordionDetails>
                       <If condition={expanded === occupation.categoryId}>
-                        <List dense>
-                          {occupation.subOccupations.map((subOccupation) => (
-                            <ListItem key={subOccupation.id}>
-                              <ListItemText primary={subOccupation.prefLabel} />
-                            </ListItem>
-                          ))}
-                        </List>
+                        <OccupationsDetails
+                          occupationId={occupation.categoryId}
+                          personId={me?.id}
+                          subOccupations={occupation.subOccupations}
+                        />
                       </If>
                     </AccordionDetails>
                   </Accordion>

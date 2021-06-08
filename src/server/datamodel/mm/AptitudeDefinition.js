@@ -17,17 +17,21 @@
  */
 
 import {
-  GraphQLTypeDefinition, LabelDefinition,
-  LinkDefinition, LinkPath,
+  GraphQLTypeDefinition,
+  LabelDefinition,
+  LinkDefinition,
+  LinkPath,
   LiteralDefinition,
   MnxOntologies,
-  ModelDefinitionAbstract, SortingDefinition
+  ModelDefinitionAbstract,
+  SortingDefinition,
 } from "@mnemotix/synaptix.js";
 import AptitudeRatingDefinition from "../mm/AptitudeRatingDefinition";
 import SkillDefinition from "../mm/SkillDefinition";
 import ExpectationDefinition from "../mm/ExpectationDefinition";
 import ExperienceDefinition from "../mm/ExperienceDefinition";
 import PersonDefinition from "../mnx/PersonDefinition";
+import OccupationDefinition from "./OccupationDefinition";
 
 export default class AptitudeDefinition extends ModelDefinitionAbstract {
   /**
@@ -62,6 +66,14 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getLinks() {
+    const skillLinkDefinition = new LinkDefinition({
+      linkName: "hasSkill",
+      rdfObjectProperty: "mm:hasSkill",
+      relatedModelDefinition: SkillDefinition,
+      graphQLPropertyName: "skill",
+      graphQLInputName: "skillInput",
+    });
+
     return [
       ...super.getLinks(),
       new LinkDefinition({
@@ -71,15 +83,9 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
         isCascadingRemoved: true,
         isPlural: false,
         graphQLPropertyName: "rating",
-        graphQLInputName: "ratingInput"
+        graphQLInputName: "ratingInput",
       }),
-      new LinkDefinition({
-        linkName: "hasSkill",
-        rdfObjectProperty: "mm:hasSkill",
-        relatedModelDefinition: SkillDefinition,
-        graphQLPropertyName: "skill",
-        graphQLInputName: "skillInput"
-      }),
+      skillLinkDefinition,
       new LinkDefinition({
         linkName: "isAptitudeOf",
         rdfObjectProperty: "mm:isAptitudeOf",
@@ -88,7 +94,7 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
         isCascadingRemoved: true,
         isPlural: true,
         graphQLPropertyName: "expectations",
-        graphQLInputName: "isAptitudeOfInputs"
+        graphQLInputName: "isAptitudeOfInputs",
       }),
       new LinkDefinition({
         linkName: "hasExperience",
@@ -96,31 +102,46 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: ExperienceDefinition,
         isPlural: true,
         graphQLPropertyName: "experiences",
-        graphQLInputName: "relatedExperienceInputs"
+        graphQLInputName: "relatedExperienceInputs",
       }),
       new LinkDefinition({
         linkName: "hasPerson",
         rdfObjectProperty: "mm:hasCreator",
         relatedModelDefinition: PersonDefinition,
         graphQLPropertyName: "person",
-        graphQLInputName: "personInput"
-      })
+        graphQLInputName: "personInput",
+      }),
+      new LinkDefinition({
+        linkName: "hasRelatedOccupation",
+        linkPath: new LinkPath()
+          .step({ linkDefinition: skillLinkDefinition })
+          .step({
+            linkDefinition: new LinkDefinition({
+              linkName: "hasOccupation",
+              rdfObjectProperty: "mm:hasOccupation",
+              relatedModelDefinition: OccupationDefinition,
+              isPlural: true,
+            }),
+          }),
+        relatedModelDefinition: OccupationDefinition,
+        graphQLPropertyName: "relationOccupation",
+      }),
     ];
   }
 
-  static getLabels(){
+  static getLabels() {
     return [
       ...super.getLabels(),
       new LabelDefinition({
         labelName: "skillLabel",
         linkPath: new LinkPath()
-          .step({linkDefinition: AptitudeDefinition.getLink("hasSkill")})
+          .step({ linkDefinition: AptitudeDefinition.getLink("hasSkill") })
           .property({
             propertyDefinition: SkillDefinition.getLabel("prefLabel"),
-            rdfDataPropertyAlias: 'mm:skillLabel'
+            rdfDataPropertyAlias: "mm:skillLabel",
           }),
-      })
-    ]
+      }),
+    ];
   }
 
   /**
@@ -132,52 +153,51 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
       new LiteralDefinition({
         literalName: "isInCV",
         rdfDataProperty: "mm:isInCV",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean",
       }),
       new LiteralDefinition({
         literalName: "isTop5",
         rdfDataProperty: "mm:isTop5",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean",
       }),
       new LiteralDefinition({
         literalName: "isMandatory",
         rdfDataProperty: "mm:isMandatory",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean"
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#boolean",
       }),
       new LiteralDefinition({
-        literalName: 'ratingValue',
+        literalName: "ratingValue",
         linkPath: new LinkPath()
-          .step({linkDefinition: AptitudeDefinition.getLink("hasRating")})
+          .step({ linkDefinition: AptitudeDefinition.getLink("hasRating") })
           .property({
             propertyDefinition: AptitudeRatingDefinition.getLiteral("value"),
-            rdfDataPropertyAlias: 'mm:ratingValue'
+            rdfDataPropertyAlias: "mm:ratingValue",
           }),
-        rdfDataType: 'http://www.w3.org/2001/XMLSchema#integer'
-      })
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer",
+      }),
     ];
   }
-
 
   static getSortings() {
     return [
       new SortingDefinition({
         sortingName: "experiencesCount",
-        indexSorting: ({direction}) => ({
-          "_script": {
-            "type": "number",
-            "script": {
-              "lang": "painless",
-              "source": `
+        indexSorting: ({ direction }) => ({
+          _script: {
+            type: "number",
+            script: {
+              lang: "painless",
+              source: `
                 if(doc.containsKey('hasExperience')) {
                   return doc['hasExperience'].length;
                 }
                 return 0;
               `,
             },
-            "order": direction || "asc"
-          }
-        })
+            order: direction || "asc",
+          },
+        }),
       }),
-    ]
+    ];
   }
 }
