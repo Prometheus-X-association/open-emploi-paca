@@ -16,11 +16,12 @@ import {
 } from "@material-ui/core";
 import {Delete, Add} from "@material-ui/icons";
 
-import {gqlSkills} from "./gql/Aptitude.gql";
+import {gqlSkills} from "./gql/Skills.gql";
 import TextField from "@material-ui/core/TextField";
 import throttle from "lodash/throttle";
 import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
+import {gqlMyAptitudes} from "./gql/MyAptitudes.gql";
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -48,6 +49,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const SKILLS_WINDOW = 100;
 /**
  * @param name
  * @param filterByRelatedOccupationIds
@@ -65,39 +67,63 @@ export function AptitudePicker({
   const classes = useStyles();
   const {t} = useTranslation();
   const {user} = useLoggedUser();
-  const [qs, setQs] = useState();
+  const [qsSkills, setQsSkills] = useState();
+  const [qsMyAptitudes, setQsMyAptitudes] = useState();
+
   const [
     loadSkills,
-    {loading, data: {myAptitudes, otherSkills, myAptitudesCount, otherSkillsCount} = {}}
+    {loading: loadingOtherSkills, data: {skills: otherSkills, skillsCount: otherSkillsCount} = {}}
   ] = useLazyQuery(gqlSkills);
 
-  const throttledOnChange = throttle(
+  const [
+    loadMyAptitudes,
+    {loading: loadingMyAptitudes, data: {me: {aptitudes: myAptitudes, aptitudesCount: myAptitudesCount} = {}} = {}}
+  ] = useLazyQuery(gqlMyAptitudes);
+
+  const throttledQsSkillsOnChange = throttle(
     event => {
-      setQs(event.target.value);
+      setQsSkills(event.target.value);
+    },
+    250,
+    {leading: false, trailing: true}
+  );
+
+  const throttledQsMyAptitudesOnChange = throttle(
+    event => {
+      setQsMyAptitudes(event.target.value);
     },
     250,
     {leading: false, trailing: true}
   );
 
   useEffect(() => {
-    setQs("");
+    setQsSkills("");
+    setQsMyAptitudes("");
   }, []);
 
   useEffect(() => {
-    if (filterByRelatedOccupationIds?.length > 0 && typeof qs === "string") {
+    if (filterByRelatedOccupationIds?.length > 0 && typeof qsSkills === "string") {
       const skillsFilters = [`hasOccupationCategory: ${JSON.stringify(filterByRelatedOccupationIds)}`];
 
       loadSkills({
         variables: {
-          qs,
-          first: 100,
-          sortings: !!qs ? [] : [{sortBy: "prefLabel"}],
-          otherSkillsFilters: skillsFilters,
-          myAptitudesFilters: [`hasPerson: ${user.uri}`]
+          qs: qsSkills,
+          first: SKILLS_WINDOW,
+          sortings: !!qsSkills ? [] : [{sortBy: "prefLabel"}],
+          filters: skillsFilters
+        }
+      });
+
+      loadMyAptitudes({
+        variables: {
+          qs: qsMyAptitudes,
+          first: SKILLS_WINDOW,
+          sortings: !!qsMyAptitudes ? [] : [{sortBy: "prefLabel"}],
+          filters: [`hasPerson: ${user.uri}`]
         }
       });
     }
-  }, [qs, filterByRelatedOccupationIds]);
+  }, [qsSkills, qsMyAptitudes, filterByRelatedOccupationIds]);
 
   const formikContext = useFormikContext();
   const existingAptitudesEdges = [...(formikContext.getFieldProps(name).value?.edges || [])];
@@ -112,16 +138,16 @@ export function AptitudePicker({
         <List dense={true}>{renderExistingSkills()}</List>
       </Portal>
 
+      <ListSubheader className={classes.skillsSubHeader}>{t("CARTONET.SKILL.YOURS")}</ListSubheader>
+
       <List dense={true}>
         <Choose>
           <When condition={filterByRelatedOccupationIds?.length > 0}>
-            <If condition={loading}>
+            <If condition={loadingMyAptitudes}>
               <LoadingSplashScreen />
             </If>
             <div className={classes.skillsContainer}>
               <If condition={(myAptitudes?.edges || []).length > 0}>
-                <ListSubheader className={classes.skillsSubHeader}>{t("CARTONET.SKILL.YOURS")}</ListSubheader>
-
                 {myAptitudes?.edges.map(({node: aptitude}) =>
                   renderSkill({
                     skill: {
@@ -131,27 +157,13 @@ export function AptitudePicker({
                     }
                   })
                 )}
-
-                <If condition={myAptitudesCount > 100}>
+                <If condition={myAptitudesCount > SKILLS_WINDOW}>
                   <ListItem disabled>
-                    <ListItemText>{t("CARTONET.SKILL.MORE_OTHER", {count: myAptitudesCount - 100})}</ListItemText>
+                    <ListItemText>
+                      {t("CARTONET.SKILL.MORE_OTHER", {count: myAptitudesCount - SKILLS_WINDOW})}
+                    </ListItemText>
                   </ListItem>
                 </If>
-                <ListSubheader className={classes.skillsSubHeader}>{t("CARTONET.SKILL.OTHERS")}</ListSubheader>
-              </If>
-
-              {(otherSkills?.edges || []).map(({node: skill}) => renderSkill({skill}))}
-
-              <If condition={otherSkillsCount > 100}>
-                <ListItem disabled>
-                  <ListItemText>{t("CARTONET.SKILL.MORE_OTHER", {count: otherSkillsCount - 100})}</ListItemText>
-                </ListItem>
-              </If>
-
-              <If condition={otherSkillsCount === 0 && myAptitudesCount === 0}>
-                <Paper variant="outlined" className={classes.empty}>
-                  {t("CARTONET.SKILL.SEARCH_NONE")}
-                </Paper>
               </If>
             </div>
             <ListItem>
@@ -162,10 +174,64 @@ export function AptitudePicker({
                 label={t("CARTONET.SKILL.ADD")}
                 onChange={event => {
                   event.persist();
-                  throttledOnChange(event);
+                  throttledQsMyAptitudesOnChange(event);
                 }}
                 onFocus={() => {
-                  setQs("");
+                  setQsMyAptitudes("");
+                }}
+              />
+            </ListItem>
+
+            <If condition={otherSkillsCount === 0 && myAptitudesCount === 0}>
+              <Paper variant="outlined" className={classes.empty}>
+                {t("CARTONET.SKILL.SEARCH_NONE")}
+              </Paper>
+            </If>
+          </When>
+          <Otherwise>
+            <Paper variant="outlined" className={classes.empty}>
+              {t("CARTONET.EXPERIENCE.PLEASE_SELECT_OCCUPATIONS")}
+            </Paper>
+          </Otherwise>
+        </Choose>
+      </List>
+
+      <ListSubheader className={classes.skillsSubHeader}>{t("CARTONET.SKILL.OTHERS")}</ListSubheader>
+
+      <List dense={true}>
+        <Choose>
+          <When condition={filterByRelatedOccupationIds?.length > 0}>
+            <If condition={loadingOtherSkills}>
+              <LoadingSplashScreen />
+            </If>
+            <div className={classes.skillsContainer}>
+              {(otherSkills?.edges || []).map(({node: skill}) => renderSkill({skill}))}
+
+              <If condition={otherSkillsCount > SKILLS_WINDOW}>
+                <ListItem disabled>
+                  <ListItemText>
+                    {t("CARTONET.SKILL.MORE_OTHER", {count: otherSkillsCount - SKILLS_WINDOW})}
+                  </ListItemText>
+                </ListItem>
+              </If>
+            </div>
+            <If condition={otherSkillsCount === 0 && myAptitudesCount === 0}>
+              <Paper variant="outlined" className={classes.empty}>
+                {t("CARTONET.SKILL.SEARCH_NONE")}
+              </Paper>
+            </If>
+            <ListItem>
+              <TextField
+                className={classes.textField}
+                size={"small"}
+                variant={"outlined"}
+                label={t("CARTONET.SKILL.ADD")}
+                onChange={event => {
+                  event.persist();
+                  throttledQsSkillsOnChange(event);
+                }}
+                onFocus={() => {
+                  setQsSkills("");
                 }}
               />
             </ListItem>

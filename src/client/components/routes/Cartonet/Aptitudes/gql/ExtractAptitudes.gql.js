@@ -1,5 +1,6 @@
 import {gql} from "@apollo/client";
-import {gqlAptitudeFragment, gqlSkillFragment} from "./Aptitude.gql";
+import {gqlAptitudeFragment} from "./Aptitude.gql";
+import {gqlSkillFragment} from "./Skills.gql";
 
 export const gqlMyAptitudesFragment = gql`
   fragment MyAptitudesFragment on Person {
@@ -17,10 +18,24 @@ export const gqlMyAptitudesFragment = gql`
 `;
 
 export const gqlExtractAptitudesFromCV = gql`
-  query ExtractAptitudesFromCV ($personId: ID!, $file: Upload, $qs: String, $first: Int $after: String $sortings: [SortingInput]){
-    skills: extractSkillsFromFile(personId: $personId file: $file first: $first after: $after qs:$qs sortings: $sortings){
-      edges{
-        node{
+  query ExtractAptitudesFromCV(
+    $personId: ID!
+    $file: Upload
+    $qs: String
+    $first: Int
+    $after: String
+    $sortings: [SortingInput]
+  ) {
+    skills: extractSkillsFromFile(
+      personId: $personId
+      file: $file
+      first: $first
+      after: $after
+      qs: $qs
+      sortings: $sortings
+    ) {
+      edges {
+        node {
           ...SkillFragment
         }
       }
@@ -29,7 +44,6 @@ export const gqlExtractAptitudesFromCV = gql`
 
   ${gqlSkillFragment}
 `;
-
 
 export const gqlMyAptitudes = gql`
   query Me {
