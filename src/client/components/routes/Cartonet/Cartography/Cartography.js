@@ -2,6 +2,7 @@ import {useCallback, useRef, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {Button, Grid, Chip, Typography, CircularProgress} from "@material-ui/core";
+import ScrollIntoViewIfNeeded from "react-scroll-into-view-if-needed";
 import {Rating} from "@material-ui/lab";
 import clsx from "clsx";
 import {useHistory} from "react-router";
@@ -186,32 +187,36 @@ export default function Cartography({} = {}) {
                 </When>
                 <Otherwise>
                   {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
-                    <Grid
-                      key={aptitude.id}
-                      container
-                      direction={"row"}
-                      className={clsx(classes.aptitude, {
-                        [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
-                      })}
-                      wrap={"nowrap"}>
-                      <Grid item xs={1}>
-                        <If condition={aptitude.isTop5}>
-                          <Chip
-                            className={classes.top5Chip}
-                            label={"Top5"}
-                            color="primary"
-                            variant="outlined"
-                            size="small"
-                          />
-                        </If>
+                    <ScrollIntoViewIfNeeded
+                      active={selectedAptitude?.id === aptitude.id}
+                      options={{block: "center", behavior: "smooth"}}>
+                      <Grid
+                        key={aptitude.id}
+                        container
+                        direction={"row"}
+                        className={clsx(classes.aptitude, {
+                          [classes.faded]: selectedAptitude && selectedAptitude?.id !== aptitude.id
+                        })}
+                        wrap={"nowrap"}>
+                        <Grid item xs={1}>
+                          <If condition={aptitude.isTop5}>
+                            <Chip
+                              className={classes.top5Chip}
+                              label={"Top5"}
+                              color="primary"
+                              variant="outlined"
+                              size="small"
+                            />
+                          </If>
+                        </Grid>
+                        <Grid item xs={6} className={classes.aptitudeLabel}>
+                          {aptitude.skillLabel || aptitude.skill?.prefLabel}
+                        </Grid>
+                        <Grid item xs={5} className={classes.rating} container justify={"flex-end"}>
+                          <Rating value={aptitude.rating?.value} size={"small"} readOnly />
+                        </Grid>
                       </Grid>
-                      <Grid item xs={6} className={classes.aptitudeLabel}>
-                        {aptitude.skillLabel || aptitude.skill?.prefLabel}
-                      </Grid>
-                      <Grid item xs={5} className={classes.rating} container justify={"flex-end"}>
-                        <Rating value={aptitude.rating?.value} size={"small"} readOnly />
-                      </Grid>
-                    </Grid>
+                    </ScrollIntoViewIfNeeded>
                   ))}
                 </Otherwise>
               </Choose>
