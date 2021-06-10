@@ -23,7 +23,7 @@ import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
 import {gqlMyAptitudes} from "./gql/MyAptitudes.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   textField: {
     width: "100%",
     marginTop: theme.spacing(2)
@@ -81,7 +81,7 @@ export function AptitudePicker({
   ] = useLazyQuery(gqlMyAptitudes);
 
   const throttledQsSkillsOnChange = throttle(
-    event => {
+    (event) => {
       setQsSkills(event.target.value);
     },
     250,
@@ -89,7 +89,7 @@ export function AptitudePicker({
   );
 
   const throttledQsMyAptitudesOnChange = throttle(
-    event => {
+    (event) => {
       setQsMyAptitudes(event.target.value);
     },
     250,
@@ -153,7 +153,7 @@ export function AptitudePicker({
                     skill: {
                       prefLabel: aptitude.skillLabel,
                       aptitudeId: aptitude.id,
-                      id: aptitude.id
+                      id: aptitude.skill?.id
                     }
                   })
                 )}
@@ -172,7 +172,7 @@ export function AptitudePicker({
                 size={"small"}
                 variant={"outlined"}
                 label={t("CARTONET.SKILL.ADD")}
-                onChange={event => {
+                onChange={(event) => {
                   event.persist();
                   throttledQsMyAptitudesOnChange(event);
                 }}
@@ -226,7 +226,7 @@ export function AptitudePicker({
                 size={"small"}
                 variant={"outlined"}
                 label={t("CARTONET.SKILL.ADD")}
-                onChange={event => {
+                onChange={(event) => {
                   event.persist();
                   throttledQsSkillsOnChange(event);
                 }}
@@ -263,7 +263,7 @@ export function AptitudePicker({
 
   function renderExistingSkills() {
     return existingSkills.length > 0 ? (
-      existingSkills.map(skill => (
+      existingSkills.map((skill) => (
         <ListItem key={skill.id}>
           <ListItemText primary={skill?.prefLabel} />
           <ListItemSecondaryAction>
