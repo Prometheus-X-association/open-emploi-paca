@@ -194,6 +194,10 @@ export async function computeOccupationMatchingForPerson({
       return acc;
     }
 
+    if (_score < 0.15) {
+      return acc;
+    }
+
     if (!acc[_source[relatedOccupationLabelPath]]) {
       acc[_source[relatedOccupationLabelPath]] = {
         categoryName: _source[relatedOccupationLabelPath],
