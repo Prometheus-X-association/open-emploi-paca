@@ -1292,10 +1292,10 @@
     prop-types "^15.7.2"
     react-is "^17.0.0"
 
-"@mnemotix/koncept-core@^2.0.0-alpha.11":
-  version "2.0.0-alpha.11"
-  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-core/-/koncept-core-2.0.0-alpha.11.tgz#8cca398c8a5ab7ecb77d9a4e429bed98517ba961"
-  integrity sha512-DbSkWHIL9e9Ha4nIpcoeffHdhVuSw6EoRJDrGYy+M5LAB2wjuwWjV3cxwlmuo33amQT+uPyrcqHbPCkeG64XZA==
+"@mnemotix/koncept-core@^2.0.0-alpha.12":
+  version "2.0.0-alpha.12"
+  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-core/-/koncept-core-2.0.0-alpha.12.tgz#9727f9c46ed7d049afa297ec4b5326658dbbecb7"
+  integrity sha512-BfDnNx0eYLOttuiVZCxIRIQJbE/lufWLUcFhLfQaJR1b718rc7oBrOvLhgYxw6V+xuN3BEpxmBQ1Z2wUErTkMQ==
   dependencies:
     "@babel/core" "^7.12.9"
     "@babel/register" "^7.12.10"
@@ -11920,32 +11920,6 @@ webpack@^5.10.2, webpack@^5.22.0, webpack@^5.6.0:
     react-leaflet "^2.7.0"
     wever-core "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#preprod"
 
-"wever-core@git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#develop":
-  version "0.1.0"
-  resolved "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#3dc7b025c0a184ce2509d57e92f625ec9445c4e2"
-  dependencies:
-    "@fortawesome/fontawesome-svg-core" "^1.2.30"
-    "@fortawesome/free-solid-svg-icons" "^5.14.0"
-    "@fortawesome/react-fontawesome" "^0.1.11"
-    "@popperjs/core" "^2.9.2"
-    axios "^0.19.2"
-    classnames "^2.2.6"
-    formik "^2.1.4"
-    jwt-decode "^2.2.0"
-    moment "^2.24.0"
-    qs "^6.9.4"
-    react-content-loader "^5.1.0"
-    react-datetime "^2.16.3"
-    react-hot-keys "^2.6.0"
-    react-input-autosize "^2.2.2"
-    react-moment "^0.9.7"
-    react-monaco-editor "^0.40.0"
-    react-notifications-component "^2.4.0"
-    react-select "^3.1.0"
-    react-stepper-horizontal "^1.0.11"
-    reactstrap "^8.5.1"
-    yup "^0.29.1"
-
 "wever-core@git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#preprod":
   version "0.1.0"
   resolved "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#d94d9d32f7dcb4dc6fe3d3944a82adac79cecb68"
@@ -11994,7 +11968,7 @@ webpack@^5.10.2, webpack@^5.22.0, webpack@^5.6.0:
 
 "wever-graph@git+https://public:oDs24YvZkwv6vfepg_B3@gitlab.com/wever-v2/wever-graph.git#preprod":
   version "1.0.0"
-  resolved "git+https://public:oDs24YvZkwv6vfepg_B3@gitlab.com/wever-v2/wever-graph.git#90d6d1e6af292656bee952e2b3a7aa196f11d7c9"
+  resolved "git+https://public:oDs24YvZkwv6vfepg_B3@gitlab.com/wever-v2/wever-graph.git#76b3ed919f0b48910cf50639511c69843b45cea8"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.30"
     "@fortawesome/free-solid-svg-icons" "^5.14.0"
@@ -12012,7 +11986,7 @@ webpack@^5.10.2, webpack@^5.22.0, webpack@^5.6.0:
     path-to-regexp "^6.1.0"
     react-select "^3.1.0"
     reactstrap "^8.5.1"
-    wever-core "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#develop"
+    wever-core "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#preprod"
     yup "^0.29.1"
 
 "wever-maps@git+https://public:8NdkS2Uy1CMdzs5vYthy@gitlab.com/wever-v2/wever-maps.git#preprod":
