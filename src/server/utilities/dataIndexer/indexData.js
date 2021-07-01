@@ -24,14 +24,14 @@ import {
   LabelDefinition,
   LinkStep,
   MnxOntologies,
-  PropertyStep
+  PropertyStep,
 } from "@mnemotix/synaptix.js";
 import env from "env-var";
 
 import {
   commonEntityFilter,
   commonFields,
-  commonMapping
+  commonMapping,
 } from "./connectors/commonFields";
 import { generateDatastoreAdapater } from "../../middlewares/generateDatastoreAdapter";
 import { Client } from "@elastic/elasticsearch";
@@ -57,7 +57,7 @@ const connectorsKnowMapping = {
 const typeMapping = {
   ...connectorsKnowMapping,
   "xsd:dateTimeStamp": "date",
-  "http://www.opengis.net/ont/geosparql#wktLiteral": "geo_shape"
+  "http://www.opengis.net/ont/geosparql#wktLiteral": "geo_shape",
 };
 
 export let indexData = async () => {
@@ -68,52 +68,52 @@ export let indexData = async () => {
     createPercolators,
     deleteOnly,
     dataModelPath,
-    environmentPath
+    environmentPath,
   } = yargs
     .usage("yarn data:index -dm ./src/server/datamodel/dataModel.js")
     .example("yarn data:index -dm ")
     .option("m", {
       alias: "dataModelPath",
       describe: "Datamodel file location",
-      default: "src/server/datamodel/dataModel.js"
+      default: "src/server/datamodel/dataModel.js",
     })
     .option("e", {
       alias: "environmentPath",
       describe: "Environment file location",
-      default: "src/server/config/environment.js"
+      default: "src/server/config/environment.js",
     })
     .option("a", {
       alias: "allIndices",
       describe: "(Re-)index all indices",
       default: false,
       nargs: 0,
-      type: "boolean"
+      type: "boolean",
     })
     .option("d", {
       alias: "deleteOnly",
       describe: "Delete indices withour reindexing them",
       default: false,
       nargs: 0,
-      type: "boolean"
+      type: "boolean",
     })
     .option("i", {
       alias: "includedTypes",
       default: [],
       describe: "List types to include to (re-)index ",
-      type: "array"
+      type: "array",
     })
     .option("x", {
       alias: "excludedTypes",
       default: [],
       describe: "List types to exclude to (re-)index ",
-      type: "array"
+      type: "array",
     })
     .option("p", {
       alias: "createPercolators",
       describe: "Create percolators ",
       default: false,
       nargs: 0,
-      type: "boolean"
+      type: "boolean",
     })
     .help("h")
     .alias("h", "help")
@@ -129,7 +129,7 @@ export let indexData = async () => {
 
   if (fs.existsSync(dataModelAbsolutePath)) {
     extraDataModels = [
-      require(path.resolve(process.cwd(), dataModelAbsolutePath)).dataModel
+      require(path.resolve(process.cwd(), dataModelAbsolutePath)).dataModel,
     ];
   }
 
@@ -137,45 +137,39 @@ export let indexData = async () => {
 
   const dataModel = generateDataModel({
     extraDataModels,
-    environmentDefinition
+    environmentDefinition,
   });
 
-  const elasticsearchNode = env
-    .get("ES_CLUSTER_NODE")
-    .required()
-    .asString();
+  const elasticsearchNode = env.get("ES_CLUSTER_NODE").required().asString();
   const elasticsearchExternalUri = env
     .get("ES_MASTER_URI")
     .required()
     .asString();
   const elasticsearchBasicAuthUser = env.get("ES_CLUSTER_USER").asString();
   const elasticsearchBasicAuthPassword = env.get("ES_CLUSTER_PWD").asString();
-  const indexPrefix = env
-    .get("INDEX_PREFIX_TYPES_WITH")
-    .required()
-    .asString();
+  const indexPrefix = env.get("INDEX_PREFIX_TYPES_WITH").required().asString();
 
   const esClient = new Client({
     node: elasticsearchExternalUri,
     auth: {
       username: elasticsearchBasicAuthUser,
-      password: elasticsearchBasicAuthPassword
+      password: elasticsearchBasicAuthPassword,
     },
     maxRetries: 2,
     requestTimeout: 60000,
-    sniffOnStart: false
+    sniffOnStart: false,
   });
 
   /** @type {SynaptixDatastoreRdfAdapter} */
   let { datastoreAdapter } = await generateDatastoreAdapater({
     graphMiddlewares: [],
-    dataModel
+    dataModel,
   });
   /** @type {SynaptixDatastoreRdfSession} */
   let synaptixSession = datastoreAdapter.getSession({
     context: new GraphQLContext({
-      anonymous: true
-    })
+      anonymous: true,
+    }),
   });
 
   let spinner = ora().start();
@@ -202,17 +196,17 @@ export let indexData = async () => {
             {
               fieldName: "types",
               propertyChain: [
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
               ],
               analyzed: false,
-              multivalued: true
-            }
+              multivalued: true,
+            },
           ],
           mappings: {
             types: {
-              type: "keyword"
+              type: "keyword",
             },
-            ...commonMapping
+            ...commonMapping,
           },
           types: [],
           elasticsearchNode,
@@ -221,10 +215,10 @@ export let indexData = async () => {
           elasticsearchClusterSniff: false,
           bulkUpdateBatchSize: 500,
           indexCreateSettings: {
-            "index.blocks.read_only_allow_delete": null
+            "index.blocks.read_only_allow_delete": null,
           },
           manageMapping: false,
-          manageIndex: false
+          manageIndex: false,
         };
 
         if (
@@ -241,7 +235,7 @@ export let indexData = async () => {
 
       connector.types.push(
         synaptixSession.normalizeAbsoluteUri({
-          uri: modelDefinition.getRdfType()
+          uri: modelDefinition.getRdfType(),
         })
       );
 
@@ -253,7 +247,8 @@ export let indexData = async () => {
         let dataType = property
           .getRdfDataType()
           .replace("http://www.w3.org/2001/XMLSchema#", "xsd:")
-          .replace("integer", "int");
+          .replace("integer", "int")
+          .replace("dateTimeStamp", "dateTime");
 
         let propertyChain = [];
 
@@ -264,7 +259,7 @@ export let indexData = async () => {
         } else if (property.getLinkPath()) {
           propertyChain = linkPathToPropertyChain({
             linkPath: property.getLinkPath(),
-            synaptixSession
+            synaptixSession,
           });
         }
 
@@ -278,32 +273,39 @@ export let indexData = async () => {
               multivalued: multivalued,
               datatype: Object.keys(connectorsKnowMapping).includes(dataType)
                 ? dataType
-                : null
+                : null,
             });
 
-            if (property instanceof LabelDefinition ||  property.isSearchable()) {
+            if (
+              property instanceof LabelDefinition ||
+              property.isSearchable()
+            ) {
               connector.mappings[fieldName] = {
                 type: "text",
                 analyzer: "autocomplete",
                 search_analyzer: "autocomplete",
                 fields: {
-                  keyword: typeMapping[dataType] ? {
-                    type: typeMapping[dataType]
-                  } : {
-                    type: "keyword",
-                    ignore_above: 256,
-                    normalizer: "lowercase_no_accent"
-                  }
-                }
+                  keyword: typeMapping[dataType]
+                    ? {
+                        type: typeMapping[dataType],
+                      }
+                    : {
+                        type: "keyword",
+                        ignore_above: 256,
+                        normalizer: "lowercase_no_accent",
+                      },
+                },
               };
             } else {
-              connector.mappings[fieldName] = typeMapping[dataType] ? {
-                type: typeMapping[dataType]
-              } : {
-                type: "keyword",
-                ignore_above: 256,
-                normalizer: "lowercase_no_accent"
-              };
+              connector.mappings[fieldName] = typeMapping[dataType]
+                ? {
+                    type: typeMapping[dataType],
+                  }
+                : {
+                    type: "keyword",
+                    ignore_above: 256,
+                    normalizer: "lowercase_no_accent",
+                  };
             }
           }
 
@@ -312,15 +314,13 @@ export let indexData = async () => {
               fieldName: `${fieldName}_locales`,
               propertyChain: [...propertyChain, "lang()"],
               analyzed: false,
-              multivalued: multivalued
+              multivalued: multivalued,
             });
 
             connector.mappings[`${fieldName}_locales`] = {
-              type: "keyword"
+              type: "keyword",
             };
           }
-        } else {
-          connector.datatype = property.getRdfDataType();
         }
       }
 
@@ -337,13 +337,13 @@ export let indexData = async () => {
           if (objectProperty) {
             propertyChain.push(
               synaptixSession.normalizeAbsoluteUri({
-                uri: objectProperty
+                uri: objectProperty,
               })
             );
           } else if (linkPath) {
             propertyChain = linkPathToPropertyChain({
               linkPath,
-              synaptixSession
+              synaptixSession,
             });
           } else {
             // logWarning(`Model definition link ${modelDefinition.name} -> ${fieldName} can't be indexed while GraphDB only support straight property chains. Try to change "rdfReversedObjectProperty" (${link.getRdfReversedObjectProperty()}) of link "${fieldName}" by it's owl:inverseOf in "rdfObjectProperty"`);
@@ -354,11 +354,11 @@ export let indexData = async () => {
               fieldName: fieldName,
               propertyChain: propertyChain,
               analyzed: false,
-              multivalued: link.isPlural()
+              multivalued: link.isPlural(),
             });
 
             connector.mappings[fieldName] = {
-              type: "keyword"
+              type: "keyword",
             };
           }
         }
@@ -401,14 +401,14 @@ PREFIX inst:<http://www.ontotext.com/connectors/elasticsearch/instance#>
 INSERT DATA {
   inst:${name} :dropConnector "" .
 }
-`
+`,
         });
     } catch (e) {}
 
     // Ensure index is deleted as well
     try {
       await esClient.indices.delete({
-        index: name
+        index: name,
       });
     } catch (e) {}
 
@@ -425,32 +425,32 @@ INSERT DATA {
                   autocomplete_filter: {
                     type: "edge_ngram",
                     min_gram: 1,
-                    max_gram: 60
-                  }
+                    max_gram: 60,
+                  },
                 },
                 analyzer: {
                   autocomplete: {
                     type: "custom",
                     tokenizer: "standard",
-                    filter: ["lowercase", "autocomplete_filter"]
+                    filter: ["lowercase", "autocomplete_filter"],
                   },
                   french: {
                     type: "standard",
-                    stopwords: "_french_"
-                  }
+                    stopwords: "_french_",
+                  },
                 },
                 normalizer: {
                   lowercase_no_accent: {
-                    "type": "custom",
-                    "filter": ["lowercase", "asciifolding"]
-                  }
-                }
-              }
+                    type: "custom",
+                    filter: ["lowercase", "asciifolding"],
+                  },
+                },
+              },
             },
             mappings: {
-              properties: mappings
-            }
-          }
+              properties: mappings,
+            },
+          },
         });
       } catch (e) {
         console.log(e);
@@ -470,7 +470,7 @@ INSERT DATA {
   ${JSON.stringify(connector, null, " ")}
 '''.
 }
-`
+`,
           });
       } catch (e) {
         spinner.fail(e.message);
@@ -485,7 +485,7 @@ INSERT DATA {
 
     try {
       await esClient.indices.delete({
-        index
+        index,
       });
     } catch (e) {}
 
@@ -498,50 +498,50 @@ INSERT DATA {
               analyzer: {
                 stemmer_analyzer: {
                   tokenizer: "whitespace",
-                  filter: ["lowercase", "french_stemmer", "french_stop"]
-                }
+                  filter: ["lowercase", "french_stemmer", "french_stop"],
+                },
               },
               filter: {
                 french_stemmer: {
                   type: "stemmer",
-                  language: "light_french"
+                  language: "light_french",
                 },
                 french_stop: {
                   type: "stop",
-                  stopwords: "_french_"
-                }
-              }
-            }
+                  stopwords: "_french_",
+                },
+              },
+            },
           },
           mappings: {
             properties: {
               query: {
-                type: "percolator"
+                type: "percolator",
               },
               concept_id: {
-                type: "text"
+                type: "text",
               },
               concept_prefLabel: {
-                type: "text"
+                type: "text",
               },
               document: {
                 type: "text",
                 analyzer: "stemmer_analyzer",
-                term_vector: "with_positions_offsets"
-              }
-            }
-          }
-        }
+                term_vector: "with_positions_offsets",
+              },
+            },
+          },
+        },
       });
     } catch (e) {
       spinner.fail(e.message);
     }
 
     let {
-      body: { count }
+      body: { count },
     } = await esClient.count({
       index: sourceIndex,
-      body: { query: { exists: { field: "hasVocabulary" } } }
+      body: { query: { exists: { field: "hasVocabulary" } } },
     });
 
     for (let i = 1; i <= count; i++) {
@@ -550,7 +550,7 @@ INSERT DATA {
         index: sourceIndex,
         from: i - 1,
         size: 1,
-        body: { query: { exists: { field: "hasVocabulary" } } }
+        body: { query: { exists: { field: "hasVocabulary" } } },
       });
       const { _id: id, _source: concept } = response.body.hits.hits[0];
       try {
@@ -562,10 +562,10 @@ INSERT DATA {
             concept_prefLabel: concept.prefLabel,
             query: {
               query_string: {
-                query: concept.prefLabel
-              }
-            }
-          }
+                query: concept.prefLabel,
+              },
+            },
+          },
         });
       } catch (e) {
         spinner.fail(e?.meta?.body?.error || e.message);
@@ -582,12 +582,15 @@ function linkPathToPropertyChain({ linkPath, synaptixSession }) {
     if (step instanceof LinkStep) {
       let objectProperty =
         step.getLinkDefinition().getRdfObjectProperty() ||
-        step.getLinkDefinition().getSymmetricLinkDefinition()?.getRdfReversedObjectProperty();
+        step
+          .getLinkDefinition()
+          .getSymmetricLinkDefinition()
+          ?.getRdfReversedObjectProperty();
 
       if (objectProperty) {
         propertyChain.push(
           synaptixSession.normalizeAbsoluteUri({
-            uri: objectProperty
+            uri: objectProperty,
           })
         );
       } else {
@@ -596,7 +599,7 @@ function linkPathToPropertyChain({ linkPath, synaptixSession }) {
     } else if (step instanceof PropertyStep) {
       propertyChain.push(
         synaptixSession.normalizeAbsoluteUri({
-          uri: step.getPropertyDefinition().getRdfDataProperty()
+          uri: step.getPropertyDefinition().getRdfDataProperty(),
         })
       );
     }
