@@ -212,7 +212,7 @@ export default {
   WEVER_DIAG_ID: {
     description: "Wever diag ID",
     obfuscate: true,
-    defaultValue: 244,
+    defaultValue: 285,
     defaultValueInProduction: true,
     exposeInGraphQL: true,
   },

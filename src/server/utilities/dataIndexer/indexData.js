@@ -25,6 +25,7 @@ import {
   LinkStep,
   MnxOntologies,
   PropertyStep,
+  EntityDefinition,
 } from "@mnemotix/synaptix.js";
 import env from "env-var";
 
@@ -221,11 +222,7 @@ export let indexData = async () => {
           manageIndex: false,
         };
 
-        if (
-          !modelDefinition.isEqualOrDescendantOf(
-            MnxOntologies.mnxContribution.ModelDefinitions.ActionDefinition
-          )
-        ) {
+        if (modelDefinition.isEqualOrDescendantOf(EntityDefinition)) {
           connector.fields = [].concat(connector.fields, commonFields);
           connector.entityFilter = commonEntityFilter;
         }

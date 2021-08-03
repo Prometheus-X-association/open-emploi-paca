@@ -23,13 +23,13 @@ import {
   LinkDefinition,
   LiteralDefinition,
   MnxOntologies,
-  ModelDefinitionAbstract
+  ModelDefinitionAbstract,
 } from "@mnemotix/synaptix.js";
 import ExpectationDefinition from "../mm/ExpectationDefinition";
 import OccupationDefinition from "../mm/OccupationDefinition";
 import ApplyDefinition from "../mm/ApplyDefinition";
 import env from "env-var";
-import {OfferGraphQLDefinition} from "./graphql/OfferGraphQLDefinition";
+import { OfferGraphQLDefinition } from "./graphql/OfferGraphQLDefinition";
 import JobAreaDefinition from "../oep/JobAreaDefinition";
 
 export default class OfferDefinition extends ModelDefinitionAbstract {
@@ -77,7 +77,7 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
         isCascadingUpdated: true,
         isCascadingRemoved: true,
         isPlural: true,
-        graphQLInputName: "expectsInputs"
+        graphQLInputName: "expectsInputs",
       }),
       new LinkDefinition({
         linkName: "hasOccupation",
@@ -87,7 +87,7 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
         isCascadingUpdated: true,
         isCascadingRemoved: true,
         isPlural: true,
-        graphQLInputName: "hasOccupationInputs"
+        graphQLInputName: "hasOccupationInputs",
       }),
       new LinkDefinition({
         linkName: "isOfferOf",
@@ -96,15 +96,15 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
         isCascadingUpdated: true,
         isCascadingRemoved: true,
         isPlural: true,
-        graphQLInputName: "isOfferOfInputs"
+        graphQLInputName: "isOfferOfInputs",
       }),
       new LinkDefinition({
         linkName: "hasJobArea",
         pathInIndex: "zoneEmploi",
         rdfObjectProperty: "mm:hasJobArea",
         relatedModelDefinition: JobAreaDefinition,
-        graphQLInputName: "jobAreaInput"
-      })
+        graphQLInputName: "jobAreaInput",
+      }),
     ];
   }
 
@@ -118,24 +118,24 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
         literalName: "creationDate",
         pathInIndex: "dateCreation",
         rdfDataProperty: "mm:creationDate",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#dateTime"
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#dateTime",
       }),
       new LiteralDefinition({
         literalName: "expirationDate",
         rdfDataProperty: "mm:expirationDate",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#dateTime"
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#dateTime",
       }),
       new LiteralDefinition({
         literalName: "income",
         rdfDataProperty: "mm:income",
         pathInIndex: "salaire",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer",
       }),
       new LiteralDefinition({
         literalName: "publicUrl",
         rdfDataProperty: "mm:publicUrl",
-        pathInIndex: "offreURL"
-      })
+        pathInIndex: "offreURL",
+      }),
     ];
   }
 
@@ -148,12 +148,12 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
       new LabelDefinition({
         labelName: "title",
         rdfDataProperty: "dct:title",
-        pathInIndex: "intitule"
+        pathInIndex: "intitule",
       }),
       new LabelDefinition({
         labelName: "description",
-        rdfDataProperty: "dct:description"
-      })
+        rdfDataProperty: "dct:description",
+      }),
     ];
   }
 
@@ -165,18 +165,20 @@ export default class OfferDefinition extends ModelDefinitionAbstract {
       ...super.getFilters(),
       new FilterDefinition({
         filterName: "withinJobArea",
-        indexFilter: ( jobAreaId ) => ({
+        indexFilter: (jobAreaId) => ({
           geo_shape: {
             geoloc: {
               indexed_shape: {
-                index: `${env.get("INDEX_PREFIX_TYPES_WITH").asString()}${JobAreaDefinition.getIndexType()}`,
+                index: `${env
+                  .get("INDEX_PREFIX_TYPES_WITH")
+                  .asString()}${JobAreaDefinition.getIndexType()}`,
                 id: jobAreaId,
-                path: JobAreaDefinition.getLiteral("asWKT").getPathInIndex()
-              }
-            }
-          }
-        })
-      })
+                path: JobAreaDefinition.getLiteral("asWKT").getPathInIndex(),
+              },
+            },
+          },
+        }),
+      }),
     ];
   }
 }
