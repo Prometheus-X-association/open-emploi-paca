@@ -11485,7 +11485,7 @@ webpack@^5.10.2, webpack@^5.22.0, webpack@^5.6.0:
 
 "wever-collector@git+https://public:jo7t7LpiHB47r5px-wCy@gitlab.com/wever-v2/wever-collector.git#preprod":
   version "1.0.0"
-  resolved "git+https://public:jo7t7LpiHB47r5px-wCy@gitlab.com/wever-v2/wever-collector.git#38f3b060dc32869deb3c97a66f966d4546c0530b"
+  resolved "git+https://public:jo7t7LpiHB47r5px-wCy@gitlab.com/wever-v2/wever-collector.git#e3ea277c15887b68b7a27c7b740eb75593028959"
   dependencies:
     leaflet "^1.7.1"
     react-beautiful-dnd "^13.0.0"
@@ -11495,7 +11495,7 @@ webpack@^5.10.2, webpack@^5.22.0, webpack@^5.6.0:
 
 "wever-core@git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#preprod":
   version "1.0.0"
-  resolved "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#4e21855f7f93883c0ca601f3e44fd2ff792d5100"
+  resolved "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#8c3bb8183488f0b97c2e9f7a7621618febb9928c"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.30"
     "@fortawesome/free-solid-svg-icons" "^5.14.0"
