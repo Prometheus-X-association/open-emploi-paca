@@ -17,14 +17,15 @@
  */
 
 import {
-  LinkDefinition, LinkPath,
-  ModelDefinitionAbstract
+  LinkDefinition,
+  LinkPath,
+  ModelDefinitionAbstract,
 } from "@mnemotix/synaptix.js";
 import AptitudeDefinition from "../mm/AptitudeDefinition";
 import KnowledgeDefinition from "../oep/KnowledgeDefinition";
 import SkillGroupDefinition from "../oep/SkillGroupDefinition";
 import OccupationDefinition from "./OccupationDefinition";
-import {SkillGraphQLDefinition} from "./graphql/SkillGraphQLDefinition";
+import { SkillGraphQLDefinition } from "./graphql/SkillGraphQLDefinition";
 import PersonDefinition from "../mnx/PersonDefinition";
 
 export default class SkillDefinition extends ModelDefinitionAbstract {
@@ -57,12 +58,13 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getLinks() {
-    const occupationLink =  new LinkDefinition({
+    const occupationLink = new LinkDefinition({
       linkName: "hasOccupation",
       rdfObjectProperty: "mm:hasOccupation",
       relatedModelDefinition: OccupationDefinition,
       isPlural: true,
-      graphQLInputName: "occupationInputs"
+      graphQLPropertyName: "occupations",
+      graphQLInputName: "occupationInputs",
     });
 
     const aptitudeLink = new LinkDefinition({
@@ -70,7 +72,7 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
       rdfObjectProperty: "mm:isSkillOf",
       relatedModelDefinition: AptitudeDefinition,
       isPlural: true,
-      graphQLInputName: "aptitudeInputs"
+      graphQLInputName: "aptitudeInputs",
     });
 
     return [
@@ -82,25 +84,29 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
         rdfObjectProperty: "ami:memberOf",
         relatedModelDefinition: SkillGroupDefinition,
         isPlural: true,
-        graphQLInputName: "skillGroupInputs"
+        graphQLInputName: "skillGroupInputs",
       }),
       new LinkDefinition({
         linkName: "hasOccupationCategory",
-        linkPath:  new LinkPath()
-          .step({linkDefinition: occupationLink})
-          .step({linkDefinition: OccupationDefinition.getLink("hasRelatedOccupation")}),
+        linkPath: new LinkPath()
+          .step({ linkDefinition: occupationLink })
+          .step({
+            linkDefinition: OccupationDefinition.getLink(
+              "hasRelatedOccupation"
+            ),
+          }),
         relatedModelDefinition: OccupationDefinition,
         isPlural: true,
-        inIndexOnly: true
+        inIndexOnly: true,
       }),
       new LinkDefinition({
         linkName: "hasPerson",
-        linkPath:  new LinkPath()
-          .step({linkDefinition: aptitudeLink})
-          .step({linkDefinition: AptitudeDefinition.getLink("hasPerson")}),
+        linkPath: new LinkPath()
+          .step({ linkDefinition: aptitudeLink })
+          .step({ linkDefinition: AptitudeDefinition.getLink("hasPerson") }),
         relatedModelDefinition: PersonDefinition,
         isPlural: true,
-        inIndexOnly: true
+        inIndexOnly: true,
       }),
     ];
   }

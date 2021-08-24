@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@apollo/client@^3.2.5", "@apollo/client@^3.3.3":
+"@apollo/client@^3.2.5", "@apollo/client@^3.4.8":
   version "3.4.8"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.4.8.tgz#66d06dc1784d07d46731b3bda546046f8c280b74"
   integrity sha512-/cNqTSwc2Dw8q6FDDjdd30+yvhP7rI0Fvl3Hbro0lTtFuhzkevfNyQaI2jAiOrjU6Jc0RbanxULaNrX7UmvjSQ==
@@ -977,7 +977,7 @@
     pirates "^4.0.0"
     source-map-support "^0.5.16"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.5", "@babel/runtime@^7.12.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.5", "@babel/runtime@^7.14.6", "@babel/runtime@^7.14.8", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.0", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.7", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.5", "@babel/runtime@^7.12.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.6", "@babel/runtime@^7.14.8", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.0", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.7", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
   version "7.15.3"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.15.3.tgz#2e1c2880ca118e5b2f9988322bd8a7656a32502b"
   integrity sha512-OvwMLqNXkCXSz1kSm58sEsNuhqOx/fKpnUnKnFB5v8uDda5bLNEHNgKPvhDN6IU0LDcnHQ90LlJ0Q6jnyBSIBA==
@@ -1205,24 +1205,6 @@
     react-is "^16.8.0 || ^17.0.0"
     react-transition-group "^4.4.0"
 
-"@material-ui/core@^4.11.0":
-  version "4.12.3"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.12.3.tgz#80d665caf0f1f034e52355c5450c0e38b099d3ca"
-  integrity sha512-sdpgI/PL56QVsEJldwEe4FFaFTLUqN+rd7sSZiRCdx2E/C7z5yK0y/khAWVBH24tXwto7I1hCzNWfJGZIYJKnw==
-  dependencies:
-    "@babel/runtime" "^7.4.4"
-    "@material-ui/styles" "^4.11.4"
-    "@material-ui/system" "^4.12.1"
-    "@material-ui/types" "5.1.0"
-    "@material-ui/utils" "^4.11.2"
-    "@types/react-transition-group" "^4.2.0"
-    clsx "^1.0.4"
-    hoist-non-react-statics "^3.3.2"
-    popper.js "1.16.1-lts"
-    prop-types "^15.7.2"
-    react-is "^16.8.0 || ^17.0.0"
-    react-transition-group "^4.4.0"
-
 "@material-ui/data-grid@^4.0.0-alpha.6":
   version "4.0.0-alpha.37"
   resolved "https://registry.yarnpkg.com/@material-ui/data-grid/-/data-grid-4.0.0-alpha.37.tgz#89d907c4e94e6a0db4e89e4f59160f7811546ca2"
@@ -1233,23 +1215,23 @@
     prop-types "^15.7.2"
     reselect "^4.0.0"
 
-"@material-ui/icons@^4.11.2", "@material-ui/icons@^4.9.1":
+"@material-ui/icons@4.11.2", "@material-ui/icons@^4.9.1":
   version "4.11.2"
   resolved "https://registry.yarnpkg.com/@material-ui/icons/-/icons-4.11.2.tgz#b3a7353266519cd743b6461ae9fdfcb1b25eb4c5"
   integrity sha512-fQNsKX2TxBmqIGJCSi3tGTO/gZ+eJgWmMJkgDiOfyNaunNaxcklJQFaFogYcFl0qFuaEz1qaXYXboa/bUXVSOQ==
   dependencies:
     "@babel/runtime" "^7.4.4"
 
-"@material-ui/lab@^4.0.0-alpha.56", "@material-ui/lab@^4.0.0-alpha.57":
-  version "4.0.0-alpha.60"
-  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-4.0.0-alpha.60.tgz#5ad203aed5a8569b0f1753945a21a05efa2234d2"
-  integrity sha512-fadlYsPJF+0fx2lRuyqAuJj7hAS1tLDdIEEdov5jlrpb5pp4b+mRDUqQTUxi4inRZHS1bEXpU8QWUhO6xX88aA==
+"@material-ui/lab@4.0.0-alpha.56":
+  version "4.0.0-alpha.56"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-4.0.0-alpha.56.tgz#ff63080949b55b40625e056bbda05e130d216d34"
+  integrity sha512-xPlkK+z/6y/24ka4gVJgwPfoCF4RCh8dXb1BNE7MtF9bXEBLN/lBxNTK8VAa0qm3V2oinA6xtUIdcRh0aeRtVw==
   dependencies:
     "@babel/runtime" "^7.4.4"
-    "@material-ui/utils" "^4.11.2"
+    "@material-ui/utils" "^4.10.2"
     clsx "^1.0.4"
     prop-types "^15.7.2"
-    react-is "^16.8.0 || ^17.0.0"
+    react-is "^16.8.0"
 
 "@material-ui/pickers@^3.2.10":
   version "3.3.10"
@@ -1263,7 +1245,7 @@
     react-transition-group "^4.0.0"
     rifm "^0.7.0"
 
-"@material-ui/styles@^4.11.3", "@material-ui/styles@^4.11.4":
+"@material-ui/styles@^4.11.3":
   version "4.11.4"
   resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.11.4.tgz#eb9dfccfcc2d208243d986457dff025497afa00d"
   integrity sha512-KNTIZcnj/zprG5LW0Sao7zw+yG3O35pviHzejMdcSGCdWbiO8qzRgOYL8JAxAsWBKOKYwVZxXtHWaB5T2Kvxew==
@@ -1285,7 +1267,7 @@
     jss-plugin-vendor-prefixer "^10.5.1"
     prop-types "^15.7.2"
 
-"@material-ui/system@^4.11.3", "@material-ui/system@^4.12.1":
+"@material-ui/system@^4.11.3":
   version "4.12.1"
   resolved "https://registry.yarnpkg.com/@material-ui/system/-/system-4.12.1.tgz#2dd96c243f8c0a331b2bb6d46efd7771a399707c"
   integrity sha512-lUdzs4q9kEXZGhbN7BptyiS1rLNHe6kG9o8Y307HCvF4sQxbCgpL2qi+gUk+yI8a2DNk48gISEQxoxpgph0xIw==
@@ -1300,7 +1282,7 @@
   resolved "https://registry.yarnpkg.com/@material-ui/types/-/types-5.1.0.tgz#efa1c7a0b0eaa4c7c87ac0390445f0f88b0d88f2"
   integrity sha512-7cqRjrY50b8QzRSYyhSpx4WRw2YuO0KKIGQEVk5J8uoz2BanawykgZGoWEqKm7pVIbzFDN0SpPcVV4IhOFkl8A==
 
-"@material-ui/utils@^4.11.2":
+"@material-ui/utils@^4.10.2", "@material-ui/utils@^4.11.2":
   version "4.11.2"
   resolved "https://registry.yarnpkg.com/@material-ui/utils/-/utils-4.11.2.tgz#f1aefa7e7dff2ebcb97d31de51aecab1bb57540a"
   integrity sha512-Uul8w38u+PICe2Fg2pDKCaIG7kOyhowZ9vjiC1FsVwPABTW8vPPKfF6OvxRq3IiBaI1faOJmgdvMG7rMJARBhA==
@@ -1320,10 +1302,10 @@
     prop-types "^15.7.2"
     react-is "^17.0.0"
 
-"@mnemotix/koncept-core@^2.0.0-alpha.12":
-  version "2.0.0-alpha.17"
-  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-core/-/koncept-core-2.0.0-alpha.17.tgz#3cef884f50349148307bb916d0737bbe3a64cc8c"
-  integrity sha512-2xrm9zJ3KZNFc+AuMf5GlJtFyeBq1YfH8RdjOouji0HxVf26a5NDa8bHpZiWucsizH8nGYoA+jkjBPxFbH+umA==
+"@mnemotix/koncept-core@^2.0.0-beta.1":
+  version "2.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-core/-/koncept-core-2.0.0-beta.1.tgz#84703fe7a781f35b1c70a43f35b860403079cb8b"
+  integrity sha512-Wfj9a990ZlpC0dxQ0G5eKNE+LSvkBV/xqaazdrn9fIHU3E5OTwNYQe6f5fqrcw0Vboobr9uWzZPwczaBkS1EDg==
   dependencies:
     "@babel/core" "^7.12.9"
     "@babel/register" "^7.12.10"
@@ -1332,8 +1314,8 @@
     "@elastic/elasticsearch" "^7.11.0"
     "@loadable/component" "^5.12.0"
     "@material-ui/core" "4.11.3"
-    "@material-ui/icons" "^4.11.2"
-    "@material-ui/lab" "^4.0.0-alpha.57"
+    "@material-ui/icons" "4.11.2"
+    "@material-ui/lab" "4.0.0-alpha.56"
     "@material-ui/pickers" "^3.2.10"
     "@types/react" "^16.9.0"
     "@ungap/url-search-params" "^0.1.4"
@@ -1375,7 +1357,6 @@
     react-anchor-link-smooth-scroll "^1.0.12"
     react-color "^2.18.0"
     react-helmet "^6.1.0"
-    react-i18next "^10.4.2"
     react-intersection-observer "^8.31.0"
     react-pdfobject "^1.1.1"
     react-router "5.2.0"
@@ -1408,10 +1389,10 @@
     webpack-dev-middleware "^4.1.0"
     webpack-hot-middleware "^2.25.0"
 
-"@mnemotix/koncept-greco@^2.0.0-alpha.6":
-  version "2.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-greco/-/koncept-greco-2.0.0-alpha.6.tgz#fda95bc5602ca7f856ba974d1084839092ba55d4"
-  integrity sha512-wg48nZGp/Vn3wn7SeKeOD641WgUk2nW2oHedJ30OIV5SdEYsomNsfOWGdoY5gOtjyXII1kqii8u3yGBDUdZeww==
+"@mnemotix/koncept-greco@^2.0.0-beta.1":
+  version "2.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-greco/-/koncept-greco-2.0.0-beta.1.tgz#da097c26ea3b981f4e4812f661db39cd5cf755e6"
+  integrity sha512-ldD7EhtQonkZA3Euc6aouWtKFJvRwAaQy5GVrojlEvSQsMt3TgQ6EjKT8poIKtS04IIFvszMxb4Wbe7LWfyaZA==
   dependencies:
     "@babel/core" "^7.12.10"
     "@babel/plugin-syntax-dynamic-import" "^7.8.3"
@@ -1419,8 +1400,9 @@
     "@babel/preset-react" "^7.12.10"
     "@babel/register" "^7.12.10"
     "@loadable/component" "^5.12.0"
-    "@material-ui/core" "^4.11.0"
-    "@material-ui/icons" "^4.9.1"
+    "@material-ui/core" "4.11.3"
+    "@material-ui/icons" "4.11.2"
+    "@material-ui/lab" "4.0.0-alpha.56"
     "@types/react" "^16.8.0"
     babel-loader "8.0.2"
     babel-plugin-import "^1.13.0"
@@ -1453,10 +1435,10 @@
     rxjs "^6.4.0"
     yup "^0.27.0"
 
-"@mnemotix/synaptix.js@^4.7.32":
-  version "4.7.35"
-  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.7.35.tgz#933700d38b2f5fb3270312408a12adc5a4af1c3f"
-  integrity sha512-7fTzRnpvepK7R3NPp/f5wykBD+UQGk5OP0e4z1FMvz8zqNcdnd+maY1fbCqm8gHYkUxOAR1tqifjqfpdLrrm9g==
+"@mnemotix/synaptix.js@^4.7.36":
+  version "4.7.36"
+  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.7.36.tgz#a2aa2a2985fd62fff35e041a9e4b87717a6004a9"
+  integrity sha512-7+ySrUMbE73gP5FxABV2VmqpHqbEkm50c6nzYoTMowIhv55DSFgFPnL8OzncTHCU2mxQ7485NcNi0PNtSeHsEQ==
   dependencies:
     "@elastic/elasticsearch" "^7.11.0"
     amqplib "0.6.0"
@@ -6069,13 +6051,6 @@ html-parse-stringify2@2.0.1:
   dependencies:
     void-elements "^2.0.1"
 
-html-parse-stringify@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/html-parse-stringify/-/html-parse-stringify-3.0.1.tgz#dfc1017347ce9f77c8141a507f233040c59c55d2"
-  integrity sha512-KknJ50kTInJ7qIScF3jeaFRpMpE8/lfiTdzf/twXyPBLAGrLRTmkz3AdTnKeh40X8k9L2fdYwEp/42WGXIRGcg==
-  dependencies:
-    void-elements "3.1.0"
-
 html-webpack-plugin@^5.0.0-alpha.14, html-webpack-plugin@^5.0.0-alpha.16:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-5.3.2.tgz#7b04bf80b1f6fe84a6d3f66c8b79d64739321b08"
@@ -9184,14 +9159,6 @@ react-i18next@^10.4.2:
     "@babel/runtime" "^7.3.1"
     html-parse-stringify2 "2.0.1"
 
-react-i18next@^11.8.3:
-  version "11.11.4"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.11.4.tgz#f6f9a1c827e7a5271377de2bf14db04cb1c9e5ce"
-  integrity sha512-ayWFlu8Sc7GAxW1PzMaPtzq+yiozWMxs0P1WeITNVzXAVRhC0Httkzw/IiODBta6seJRBCLrtUeFUSXhAIxlRg==
-  dependencies:
-    "@babel/runtime" "^7.14.5"
-    html-parse-stringify "^3.0.1"
-
 react-input-autosize@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.2.2.tgz#fcaa7020568ec206bc04be36f4eb68e647c4d8c2"
@@ -9211,7 +9178,7 @@ react-intersection-observer@^8.31.0:
   resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.32.0.tgz#47249332e12e8bb99ed35a10bb7dd10446445a7b"
   integrity sha512-RlC6FvS3MFShxTn4FHAy904bVjX5Nn4/eTjUkurW0fHK+M/fyQdXuyCy9+L7yjA+YMGogzzSJNc7M4UtfSKvtw==
 
-react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.6.3, react-is@^16.7.0, react-is@^16.8.1:
+react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.6.3, react-is@^16.7.0, react-is@^16.8.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
@@ -11343,11 +11310,6 @@ voc@:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/voc/-/voc-1.2.0.tgz#c459024531d71067c09e2c0c2bda6c2b13af32d8"
   integrity sha512-BOuDjFFYvJdZO6e/N65AlaDItXo2TgyLjeyRYcqgAPkXpp5yTJcvkL2n+syO1r9Qc5g96tfBD2tuiMhYDmaGcA==
-
-void-elements@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-3.1.0.tgz#614f7fbf8d801f0bb5f0661f5b2f5785750e4f09"
-  integrity sha1-YU9/v42AHwu18GYfWy9XhXUOTwk=
 
 void-elements@^2.0.1:
   version "2.0.1"
