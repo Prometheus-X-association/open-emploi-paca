@@ -216,6 +216,13 @@ export default {
     defaultValueInProduction: true,
     exposeInGraphQL: true,
   },
+  WEVER_DASHBOARD_ID: {
+    description: "Wever dashboard ID",
+    obfuscate: true,
+    defaultValue: 4,
+    defaultValueInProduction: true,
+    exposeInGraphQL: true,
+  },
   GRECO_BASE_URL: {
     description: "Greco base URL",
     defaultValue: "/greco",

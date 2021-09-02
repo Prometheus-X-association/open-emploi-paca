@@ -7,7 +7,7 @@ import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
 import ErrorBoundary from "../../widgets/ErrorBoundary";
 const WeverMaps = loadable(() => import("./WeverMaps"));
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles((theme) => ({}));
 
 /**
  *
@@ -17,7 +17,6 @@ export default function Transports({} = {}) {
   const {t} = useTranslation();
   const {data: {me} = {}, loading} = useQuery(gqlMyProfile);
 
-  console.log(me?.weverUser);
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>

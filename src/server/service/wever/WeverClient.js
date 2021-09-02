@@ -16,20 +16,20 @@
  */
 
 import got from "got";
-import {I18nError, logError} from "@mnemotix/synaptix.js";
+import { I18nError, logError } from "@mnemotix/synaptix.js";
 import dayjs from "dayjs";
-import {createCache} from "../Cache";
+import { createCache } from "../Cache";
 import env from "env-var";
 
 // TTL = 5 min
-const cache = createCache({ttl: 300});
+const cache = createCache({ ttl: 300 });
 
 class WeverClient {
   /**
    * Get the Wever application token.
    * @return {string}
    */
-  getApplicationToken(){
+  getApplicationToken() {
     return env.get("WEVER_APPLICATION_TOKEN").required().asString();
   }
 
@@ -55,8 +55,10 @@ class WeverClient {
       }, [])
       .join("&");
 
-
-    const uri = `${env.get("WEVER_API_ENDPOINT").required().asString()}${service}`;
+    const uri = `${env
+      .get("WEVER_API_ENDPOINT")
+      .required()
+      .asString()}${service}`;
     const cachedUri = `${uri}?${serializedParams}`;
 
     if (cache.has(cachedUri)) {
@@ -68,7 +70,7 @@ class WeverClient {
       method: "POST",
       retry: 3,
       json: params,
-      ...requestOptions
+      ...requestOptions,
     }).json();
 
     if (response) {
@@ -89,20 +91,19 @@ class WeverClient {
   async getUserInfos({ email } = {}) {
     try {
       const result =
-      (await this.get({
-        service: "/auth/partner",
-        params: {
-          email,
-          token: this.getApplicationToken()
-        }
-      })) || {};
+        (await this.get({
+          service: "/auth/partner",
+          params: {
+            email,
+            token: this.getApplicationToken(),
+          },
+        })) || {};
 
+      console.log(result);
       return result;
     } catch (e) {
-      if(e.response?.statusCode >= 500){
-        logError("There is an error while fetch Wever API :");
-        logError(e);
-      }
+      logError("There is an error while fetch Wever API :");
+      logError(e);
       return {};
     }
   }
