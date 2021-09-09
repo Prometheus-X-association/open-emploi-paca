@@ -21,8 +21,8 @@ import dayjs from "dayjs";
 import { createCache } from "../Cache";
 import env from "env-var";
 
-// TTL = 5 min
-const cache = createCache({ ttl: 300 });
+// TTL = 10s
+const cache = createCache({ ttl: 10 });
 
 class WeverClient {
   /**

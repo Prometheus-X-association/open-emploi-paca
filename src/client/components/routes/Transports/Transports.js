@@ -5,6 +5,7 @@ import {Grid, InputAdornment, List, ListItem, Typography, ListSubheader, Divider
 import {useMutation, useQuery} from "@apollo/client";
 import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
 import ErrorBoundary from "../../widgets/ErrorBoundary";
+import {gqlWeverProfile} from "./gql/WeverProfile.gql";
 const WeverMaps = loadable(() => import("./WeverMaps"));
 
 const useStyles = makeStyles((theme) => ({}));
@@ -15,7 +16,9 @@ const useStyles = makeStyles((theme) => ({}));
 export default function Transports({} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
-  const {data: {me} = {}, loading} = useQuery(gqlMyProfile);
+  const {data: {me} = {}, loading} = useQuery(gqlWeverProfile, {
+    fetchPolicy: "network-only"
+  });
 
   return (
     <Grid container spacing={3}>
