@@ -1022,7 +1022,7 @@
     debug "^4.1.0"
     globals "^11.1.0"
 
-"@babel/types@^7.14.5", "@babel/types@^7.15.4":
+"@babel/types@^7.14.5":
   version "7.15.4"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.15.4.tgz#74eeb86dbd6748d2741396557b9860e57fce0a0d"
   integrity sha512-0f1HJFuGmmbrKTCZtbm3cU+b/AqdEYk5toj5iQur58xkVMlS0JWaKxTBSmCXd47uiN7vbcozAupm6Mvs80GNhw==
@@ -1034,6 +1034,14 @@
   version "7.15.0"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.15.0.tgz#61af11f2286c4e9c69ca8deb5f4375a73c72dcbd"
   integrity sha512-OBvfqnllOIdX4ojTHpwZbpvz4j3EWyjkZEdmjH0/cgsd6QOdSgU8rLSk6ard/pcW7rlmjdVSX/AWOaORR1uNOQ==
+  dependencies:
+    "@babel/helper-validator-identifier" "^7.14.9"
+    to-fast-properties "^2.0.0"
+
+"@babel/types@^7.15.4":
+  version "7.15.6"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.15.6.tgz#99abdc48218b2881c058dd0a7ab05b99c9be758f"
+  integrity sha512-BPU+7QhqNjmWyDO0/vitH/CuhpV8ZmK1wpKva8nuyNF5MJfuRNWMc+hc14+u9xT93kvykMdncrJT19h74uB1Ig==
   dependencies:
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
@@ -9198,9 +9206,9 @@ react-helmet@^6.1.0:
     react-side-effect "^2.1.0"
 
 react-hot-keys@^2.6.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/react-hot-keys/-/react-hot-keys-2.7.0.tgz#f9b0bd732f74a4b09d40f72402591ebf0c6c8d90"
-  integrity sha512-VxKugZobravF320/pwOwt71XeQhZ6I2BhzzLNLvsu+rwFTI6y1ITeEa8vZ80fa8EEVD+ja23HVQkwQHAibrQyw==
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/react-hot-keys/-/react-hot-keys-2.7.1.tgz#a811445e66551c9f5b0e6b130d12096a59688539"
+  integrity sha512-h2LfJGs450z58/DvKuzal1LetoEGjXUbcxJyKFvWOJPy+IRpQsyxZv7FYDAJ7W0my3ySI3sVB3h5xcgvMdxS1g==
   dependencies:
     hotkeys-js "^3.8.1"
     prop-types "^15.7.2"
@@ -11511,7 +11519,7 @@ webpack@^5.10.2, webpack@^5.22.0, webpack@^5.6.0:
 
 "wever-core@git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#preprod":
   version "1.0.0"
-  resolved "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#321152001b82cf6912014684a2d70754be15ab7d"
+  resolved "git+https://public:MsWdE1r15zdx7p87wwUQ@gitlab.com/wever-v2/wever-core.git#7aafbef1ab3d52c9d5d1ba35a9a79617e9817741"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.30"
     "@fortawesome/free-solid-svg-icons" "^5.14.0"
