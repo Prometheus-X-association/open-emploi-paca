@@ -59,11 +59,6 @@ export const gqlMyProfile = gql`
       mainEmail {
         email
       }
-      weverUser {
-        mapId
-        reportId
-        token
-      }
       aptitudesCount
       ...MyProfileFragment
     }

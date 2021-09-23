@@ -228,9 +228,9 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
   ANALYSIS: {
     TITLE: "Analyses",
     TIP_BEST:
-      "Le meilleur % d'adéquation concernant votre profil est le métier de <b>{{occupation}}</b> dans la zone d'emploi <b>{{jobArea}}</b>",
+      "Le meilleur % d'adéquation concernant votre profil est le métier de <strong>{{occupation}}</strong> dans la zone d'emploi <strong>{{jobArea}}</strong>",
     TIP_SECOND_BEST:
-      "En seconde analyse, le métier de <b>{{occupation}}</b> dans la zone d'emploi <b>{{jobArea}}</b> s'avère être porteur.",
+      "En seconde analyse, le métier de <strong>{{occupation}}</strong> dans la zone d'emploi <strong>{{jobArea}}</strong> s'avère être porteur.",
     LABEL: {
       ROUGE: "FAIBLE",
       ORANGE: "MOYEN",

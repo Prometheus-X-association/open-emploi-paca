@@ -90,7 +90,7 @@ export function AnalysisExcerpt({} = {}) {
                 occupation: bestAnalysis?.occupation.prefLabel
               }}
               components={{
-                b: <strong />
+                strong: <strong />
               }}
             />
           )
@@ -107,7 +107,7 @@ export function AnalysisExcerpt({} = {}) {
                   occupation: secondBestAnalysis?.occupation.prefLabel
                 }}
                 components={{
-                  b: <strong />
+                  strong: <strong />
                 }}
               />
             ),
