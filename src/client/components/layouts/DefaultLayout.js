@@ -1,17 +1,12 @@
-import grey from "@material-ui/core/colors/grey";
-import {Link} from "react-router-dom";
-import {CssBaseline, Divider, Drawer, Grid, List, ListItem, ListItemText} from "@material-ui/core";
+import {Link, useLocation} from "react-router-dom";
+import {Divider, Drawer, List, ListItem, ListItemText} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {Version} from "../widgets/Version";
 import Logo from "../../assets/logo-region-sud.png";
 import {AppBar} from "./AppBar";
-import {useLocation} from "react-router";
 import clsx from "clsx";
 import {ROUTES} from "../../routes";
 import {Footer} from "./Footer";
-import {Gauge} from "../widgets/Gauge";
-import {BlockContainer} from "../widgets/BlockContainer";
 
 const drawerWidth = 240;
 
