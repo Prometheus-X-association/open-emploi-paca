@@ -1,5 +1,5 @@
 import {ROUTES} from "../../../../routes";
-import {generatePath, matchPath} from "react-router";
+import {generatePath, matchPath} from "react-router-dom";
 
 export const editLinkMapping = {
   hobby: ROUTES.CARTONET_EDIT_HOBBY,

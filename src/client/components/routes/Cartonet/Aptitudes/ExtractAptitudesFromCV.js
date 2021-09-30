@@ -3,7 +3,7 @@ import {Button, List, ListItem, ListItemText, Typography, ListItemSecondaryActio
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 
-import {useHistory} from "react-router";
+import {useHistory} from "react-router-dom";
 import {Link} from "react-router-dom";
 import {useSnackbar} from "notistack";
 import {gqlExtractAptitudesFromCV, gqlMyAptitudes} from "./gql/ExtractAptitudes.gql";
@@ -17,7 +17,7 @@ import clsx from "clsx";
 import {generateCartonetPath} from "../utils/generateCartonetPath";
 import {ROUTES} from "../../../../routes";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   uploadButton: {},
   uploadButtonContainer: {
     display: "flex",
@@ -191,7 +191,7 @@ export default function ExtractAptitudesFromCV({} = {}) {
         input: {
           objectId: user.id,
           objectInput: {
-            aptitudeInputs: selectedSkills.map(skill => ({
+            aptitudeInputs: selectedSkills.map((skill) => ({
               isInCV: true,
               skillInput: {
                 id: skill.id

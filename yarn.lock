@@ -1307,10 +1307,10 @@
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
-"@mnemotix/koncept-core@^2.0.0-beta.1":
-  version "2.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-core/-/koncept-core-2.0.0-beta.1.tgz#84703fe7a781f35b1c70a43f35b860403079cb8b"
-  integrity sha512-Wfj9a990ZlpC0dxQ0G5eKNE+LSvkBV/xqaazdrn9fIHU3E5OTwNYQe6f5fqrcw0Vboobr9uWzZPwczaBkS1EDg==
+"@mnemotix/koncept-core@^2.0.0-beta.2":
+  version "2.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-core/-/koncept-core-2.0.0-beta.2.tgz#f92e91e17d07451f24904ee56ceb1a6b31186869"
+  integrity sha512-0wA6S+/Qq7+YYh3LcwEd85q55UOEnGD2iqSEcGkXaY3e3rfdCornT9yTxQxkl7FAPr7carvz6Ri0+sZzgQ77dg==
   dependencies:
     "@babel/core" "^7.12.9"
     "@babel/register" "^7.12.10"
@@ -1394,10 +1394,10 @@
     webpack-dev-middleware "^4.1.0"
     webpack-hot-middleware "^2.25.0"
 
-"@mnemotix/koncept-greco@^2.0.0-beta.1":
-  version "2.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-greco/-/koncept-greco-2.0.0-beta.1.tgz#da097c26ea3b981f4e4812f661db39cd5cf755e6"
-  integrity sha512-ldD7EhtQonkZA3Euc6aouWtKFJvRwAaQy5GVrojlEvSQsMt3TgQ6EjKT8poIKtS04IIFvszMxb4Wbe7LWfyaZA==
+"@mnemotix/koncept-greco@^2.0.0-beta.2":
+  version "2.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@mnemotix/koncept-greco/-/koncept-greco-2.0.0-beta.2.tgz#db9920ce3a277f8aca5ef205377c2389d4690299"
+  integrity sha512-Jlr2r4/IXx8iF8ea2OLVL31SHaOqwAhIDmXCPur6L466/fqNtL9/qWH0gCJ8h8eNlfUjpyXCemaCaYOjg0GogA==
   dependencies:
     "@babel/core" "^7.12.10"
     "@babel/plugin-syntax-dynamic-import" "^7.8.3"
@@ -1440,10 +1440,10 @@
     rxjs "^6.4.0"
     yup "^0.27.0"
 
-"@mnemotix/synaptix.js@^4.7.36":
-  version "4.7.43"
-  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.7.43.tgz#defb21e340327ad295b554e5a2d70a2bf6d71904"
-  integrity sha512-LOcaZN/T8nOSUB8oTmxxKnOhh/EareA4QFfoq4+IJ+e+iOx6dtyvfPJw5y81xaFqYyEZrUD1+S6I2q4kLeKJwg==
+"@mnemotix/synaptix.js@4.7.36":
+  version "4.7.36"
+  resolved "https://registry.yarnpkg.com/@mnemotix/synaptix.js/-/synaptix.js-4.7.36.tgz#a2aa2a2985fd62fff35e041a9e4b87717a6004a9"
+  integrity sha512-7+ySrUMbE73gP5FxABV2VmqpHqbEkm50c6nzYoTMowIhv55DSFgFPnL8OzncTHCU2mxQ7485NcNi0PNtSeHsEQ==
   dependencies:
     "@elastic/elasticsearch" "^7.11.0"
     amqplib "0.6.0"

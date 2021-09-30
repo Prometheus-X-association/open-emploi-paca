@@ -6,7 +6,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 
 import {gqlMyAptitudes} from "./gql/MyAptitudes.gql";
-import {useHistory} from "react-router";
+import {useHistory} from "react-router-dom";
 import {CollectionView} from "../../../widgets/CollectionView/CollectionView";
 import {useSnackbar} from "notistack";
 import {gqlUpdateAptitude} from "./gql/UpdateAptitude.gql";
@@ -15,7 +15,7 @@ import {Link} from "react-router-dom";
 import {generateCartonetPath} from "../utils/generateCartonetPath";
 import {ROUTES} from "../../../../routes";
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles((theme) => ({}));
 
 /**
  *
@@ -85,7 +85,7 @@ export default function EditAptitudes({
             <Rating
               value={aptitude.rating?.value || 0}
               name={`${aptitude.id}_rating`}
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
               onChange={(_, value) => handleUpdateAptitudeRating({aptitude, isTop5: aptitude.isTop5, value})}
             />
           );
@@ -105,8 +105,8 @@ export default function EditAptitudes({
               name={`${aptitude.id}_isTop5`}
               checked={!!aptitude.isTop5}
               disabled={!aptitude.isTop5 && rowsSharedState?.top5Count === 5}
-              onClick={e => e.stopPropagation()}
-              onChange={e =>
+              onClick={(e) => e.stopPropagation()}
+              onChange={(e) =>
                 handleUpdateAptitudeRating({aptitude, value: aptitude.rating?.value || 0, isTop5: e.target.checked})
               }
             />

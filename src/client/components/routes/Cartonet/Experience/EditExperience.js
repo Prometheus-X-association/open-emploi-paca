@@ -14,7 +14,7 @@ import {
   Tabs,
   Tab
 } from "@material-ui/core";
-import {useHistory, useParams, generatePath, matchPath} from "react-router";
+import {useHistory, useParams, generatePath, matchPath} from "react-router-dom";
 import {object} from "yup";
 import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
@@ -47,7 +47,7 @@ import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 import {gqlMyExperiences} from "./gql/MyExperiences.gql";
 import {gqlSkillFragment} from "../Aptitudes/gql/Skills.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   categoryTitle: {
     marginTop: theme.spacing(2)
   },
@@ -113,7 +113,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   const [getExperience, {data: {experience} = {}, loading: loadingExperience}] = useLazyQuery(gqlExperience);
 
   const [createExperience, {loading: savingProfile}] = useMutation(gqlCreateExperience, {
-    onCompleted: data => {
+    onCompleted: (data) => {
       history.push(
         generateCartonetEditExperiencePath({
           history,
@@ -189,7 +189,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
             inputName: "ratingInput"
           })
         ],
-        modifyValue: aptitude => {
+        modifyValue: (aptitude) => {
           if (aptitude.skill?.aptitudeId) {
             return {
               id: aptitude.skill?.aptitudeId
@@ -500,14 +500,14 @@ export default function EditExperience({experienceType = "experience"} = {}) {
             objectId: editingExperience.id
           }
         },
-        update: cache => {
+        update: (cache) => {
           cache.modify({
             id: cache.identify(me),
             fields: {
               experiences(connection, {readField}) {
                 return {
                   ...connection,
-                  edges: connection.edges.filter(experienceEdge => {
+                  edges: connection.edges.filter((experienceEdge) => {
                     return editingExperience.id !== readField("id", readField("node", experienceEdge));
                   })
                 };

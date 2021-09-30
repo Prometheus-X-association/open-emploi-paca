@@ -2,7 +2,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Cancel as CloseIcon} from "@material-ui/icons";
 import {IconButton, Tooltip} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
-import {Route, Switch, MemoryRouter, useHistory} from "react-router";
+import {Route, Switch, MemoryRouter, useHistory} from "react-router-dom";
 import loadable from "@loadable/component";
 import {ROUTES} from "../../../routes";
 import LogoMM from "../../../assets/logo-mm.png";

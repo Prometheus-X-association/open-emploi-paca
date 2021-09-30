@@ -4,11 +4,11 @@ import {useTranslation} from "react-i18next";
 import {DialogActions, DialogContent, DialogTitle, Grid, Paper, Typography} from "@material-ui/core";
 import {createLink} from "../../../utilities/createLink";
 import {ROUTES} from "../../../routes";
-import {generatePath, matchPath, useHistory} from "react-router";
+import {generatePath, matchPath, useHistory} from "react-router-dom";
 import {generateCartonetPath} from "./utils/generateCartonetPath";
 import clsx from "clsx";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   step: {
     fontSize: theme.typography.fontSize * 1.8,
     lineHeight: "initial",

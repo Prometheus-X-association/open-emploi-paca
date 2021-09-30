@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 import {DialogActions, DialogContent, DialogTitle, Grid, Paper, Tab, Tabs, Typography} from "@material-ui/core";
 import {createLink} from "../../../utilities/createLink";
 import {ROUTES} from "../../../routes";
-import {generatePath, matchPath, useHistory} from "react-router";
+import {generatePath, matchPath, useHistory} from "react-router-dom";
 import {generateCartonetPath} from "./utils/generateCartonetPath";
 import clsx from "clsx";
 import {useEffect, useState} from "react";

@@ -19,7 +19,7 @@ import {CartonetModal} from "../Cartonet/CartonetModal";
 import {ROUTES} from "../../../routes";
 import LogoMM from "../../../assets/logo-mm.png";
 import LogoWever from "../../../assets/logo-wever.png";
-import {generatePath, useHistory} from "react-router";
+import {generatePath, useHistory} from "react-router-dom";
 import ErrorBoundary from "../../widgets/ErrorBoundary";
 import {Link} from "react-router-dom";
 import {generateCartonetPath} from "../Cartonet/utils/generateCartonetPath";

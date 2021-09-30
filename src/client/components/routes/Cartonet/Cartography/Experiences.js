@@ -3,7 +3,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {List, ListItem, ListItemAvatar, Avatar, ListItemText, Grid, Chip, CircularProgress} from "@material-ui/core";
 import dayjs from "dayjs";
-import {generatePath, useHistory, matchPath} from "react-router";
+import {generatePath, useHistory, matchPath} from "react-router-dom";
 import {useQuery} from "@apollo/client";
 import ExperienceIcon from "@material-ui/icons/Work";
 import HobbyIcon from "@material-ui/icons/BeachAccess";

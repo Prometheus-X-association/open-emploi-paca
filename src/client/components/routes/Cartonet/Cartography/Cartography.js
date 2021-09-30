@@ -5,7 +5,7 @@ import {Button, Grid, Chip, Typography, CircularProgress} from "@material-ui/cor
 import ScrollIntoViewIfNeeded from "react-scroll-into-view-if-needed";
 import {Rating} from "@material-ui/lab";
 import clsx from "clsx";
-import {useHistory} from "react-router";
+import {useHistory} from "react-router-dom";
 import {useQuery} from "@apollo/client";
 import {ROUTES} from "../../../../routes";
 

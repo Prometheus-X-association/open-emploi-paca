@@ -1,6 +1,6 @@
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {Route, Switch, useHistory} from "react-router";
+import {Route, Switch, useHistory} from "react-router-dom";
 import {Dialog, IconButton, Tooltip} from "@material-ui/core";
 import loadable from "@loadable/component";
 import {ROUTES} from "../../../routes";
@@ -14,7 +14,7 @@ const OccupationsMatching = loadable(() => import("./Recommendation/OccupationsM
 const ExtractAptitudesFromCV = loadable(() => import("./Aptitudes/ExtractAptitudesFromCV"));
 const PrintProfile = loadable(() => import("./Export/PrintProfile"));
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     position: "relative",
     maxWidth: 1200,
