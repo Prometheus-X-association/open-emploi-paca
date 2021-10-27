@@ -7,6 +7,7 @@ import {
   I18nError,
   logError,
   SSOApiClient,
+  logException,
 } from "@mnemotix/synaptix.js";
 import { generatePath } from "react-router-dom";
 
@@ -109,29 +110,28 @@ export async function serveAddviseo({ app, ssoApiClient }) {
           }
         }
 
-        try {
-          let user = await datastoreSession.getSSOControllerService().login({
-            username,
-            password,
-            skipCookie: true,
-          });
+        let user = await datastoreSession.getSSOControllerService().login({
+          username,
+          password,
+          skipCookie: true,
+        });
 
-          let token = Buffer.from(JSON.stringify(user.toJWTSession())).toString(
-            "base64"
-          );
+        let token = Buffer.from(JSON.stringify(user.toJWTSession())).toString(
+          "base64"
+        );
 
-          res
-            .status(httpStatus)
-            .send(
-              `${appURL}${resourceTypesMapping[resourceType]}?jwt=${token}`
-            );
-        } catch (e) {
-          logError(e.message);
-          res.sendStatus(500);
-        }
+        res
+          .status(httpStatus)
+          .send(`${appURL}${resourceTypesMapping[resourceType]}?jwt=${token}`);
       } catch (e) {
-        logError(e.message);
-        return res.sendStatus(500);
+        logError(`An exception occured for the following body parameters ${JSON.stringify(
+          req.body
+        )}
+  ${e.stack}`);
+        res.status(500).json({
+          code: e.i18nKey || "UNKNOWN",
+          message: e.message,
+        });
       }
     }
   );
