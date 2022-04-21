@@ -139,6 +139,7 @@ export default function Experiences({
   const {t} = useTranslation();
 
   const {data: {me: myExperiences} = {}, loading: loadingExperiences} = useQuery(gqlMyExperiences, {
+    fetchPolicy: "no-cache",
     variables: {
       filters: experienceType ? [`experienceType:${experienceType}`] : null
     }
