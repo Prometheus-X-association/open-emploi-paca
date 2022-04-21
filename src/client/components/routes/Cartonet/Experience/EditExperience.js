@@ -12,7 +12,8 @@ import {
   Button,
   Dialog,
   Tabs,
-  Tab
+  Tab,
+  Badge
 } from "@material-ui/core";
 import {useHistory, useParams, generatePath, matchPath} from "react-router-dom";
 import {object} from "yup";
@@ -82,6 +83,12 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginRight: theme.spacing(1)
+  },
+  red: {
+    color: theme.palette.error.main
+  },
+  badge: {
+    margin: theme.spacing(0, 1.5)
   }
 }));
 
@@ -253,11 +260,18 @@ export default function EditExperience({experienceType = "experience"} = {}) {
             professionnelles (les différents emplois que vous avez occupés), des formations (scolaires ou non), ou
             extra-professionnelles (associations, hobbies, …).
           </p>
+          <p className={classes.red}>
+            Commencer par renseigner les champs obligatoires * de l’Expérience (
+            <Badge badgeContent={"1"} color="error" className={classes.badge} />
+            ), puis les Métiers sélectionnés pour l’expérience (
+            <Badge badgeContent={"2"} color="error" className={classes.badge} />) pour enfin Sélectionner les
+            compétences associées à cette expérience (
+            <Badge badgeContent={"3"} color="error" className={classes.badge} />
+            ).
+          </p>
           <p>
-            Dans tous les cas l’affectation de ces compétences à vos différentes expériences se fait en les
-            sélectionnant sur la partie droite de l’écran. Cette sélection se fait soit sur le pool de compétences déjà
-            saisies (extraites de votre CV ou déjà sélectionnées sur une expérience précédente) soit en lien avec un
-            métier que vous indiquez.
+            Cette sélection se fait soit sur le pool de compétences déjà saisies (extraites de votre CV ou déjà
+            sélectionnées sur une expérience précédente) soit en lien avec un métier que vous indiquez.
           </p>
 
           <Tabs
@@ -319,10 +333,17 @@ export default function EditExperience({experienceType = "experience"} = {}) {
                     <Grid xs item container spacing={6} className={classes.form}>
                       <Grid item xs={12} md={6} container spacing={2}>
                         <Grid item xs={12}>
-                          <Typography variant={"overline"}>
-                            {" "}
-                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_DESCRIPTION_LABEL`)}
-                          </Typography>
+                          <Grid container alignItems="center">
+                            <Grid item xs>
+                              <Typography variant={"overline"}>
+                                {t(`CARTONET.${experienceType.toUpperCase()}.FORM_DESCRIPTION_LABEL`)}{" "}
+                              </Typography>
+                            </Grid>
+                            <Grid>
+                              <Badge badgeContent={"1"} color="error" className={classes.badge} />
+                            </Grid>
+                          </Grid>
+
                           <TextField required name="title" label={t("CARTONET.EXPERIENCE.TITLE")} />
                         </Grid>
                         <Grid item xs={12}>
@@ -346,9 +367,16 @@ export default function EditExperience({experienceType = "experience"} = {}) {
                         </Grid>
 
                         <Grid item xs={12}>
-                          <Typography className={classes.categoryTitle} variant="overline" display="block">
-                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`)}
-                          </Typography>
+                          <Grid container alignItems="center" className={classes.categoryTitle}>
+                            <Grid item xs>
+                              <Typography variant="overline" display="block">
+                                {t(`CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`)}{" "}
+                              </Typography>
+                            </Grid>
+                            <Grid>
+                              <Badge badgeContent={"2"} color="error" className={classes.badge} />
+                            </Grid>
+                          </Grid>
 
                           <WishedOccupations dense name={"occupations"} includeLeafOccupations={true} />
                         </Grid>
@@ -356,7 +384,6 @@ export default function EditExperience({experienceType = "experience"} = {}) {
                         <Grid item xs={12} container spacing={2} className={classes.aptitudes}>
                           <Grid item xs={12}>
                             <Typography variant={"overline"}>
-                              {" "}
                               {t(`CARTONET.${experienceType.toUpperCase()}.FORM_APTITUDES_LABEL`)}
                             </Typography>
 
@@ -367,10 +394,16 @@ export default function EditExperience({experienceType = "experience"} = {}) {
 
                       <Grid item xs={12} md={6}>
                         <Grid item xs={12}>
-                          <Typography variant={"overline"}>
-                            {" "}
-                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_EXISTING_APTITUDES_LABEL`)}
-                          </Typography>
+                          <Grid container alignItems="center">
+                            <Grid item xs>
+                              <Typography variant={"overline"}>
+                                {t(`CARTONET.${experienceType.toUpperCase()}.FORM_EXISTING_APTITUDES_LABEL`)}
+                              </Typography>
+                            </Grid>
+                            <Grid>
+                              <Badge badgeContent={"3"} color="error" className={classes.badge} />
+                            </Grid>
+                          </Grid>
 
                           <AptitudePicker
                             dense

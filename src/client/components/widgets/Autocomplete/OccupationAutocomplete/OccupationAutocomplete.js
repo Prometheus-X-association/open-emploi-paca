@@ -41,14 +41,13 @@ export function OccupationAutocomplete({
       getGqlVariables={({qs}) => {
         let variables = getGqlFiltersForQs({qs, excludeTopConcepts, vocabularyId: null});
 
-        variables.filters = [
-          ...variables.filters,
-          "hasSkill:*"
-        ];
+        variables.filters = [...variables.filters, "hasSkill:*"];
 
-        if (!includeLeafOccupations){
+        if (!includeLeafOccupations) {
           variables.filters.push("inScheme:http://ontology.datasud.fr/openemploi/data/scheme/1");
         }
+
+        variables.size = 50;
 
         return variables;
       }}

@@ -17,7 +17,7 @@ const PrintProfile = loadable(() => import("./Export/PrintProfile"));
 const useStyles = makeStyles((theme) => ({
   root: {
     position: "relative",
-    maxWidth: 1200,
+    maxWidth: 1300,
     margin: "auto",
     background: "white"
   },
