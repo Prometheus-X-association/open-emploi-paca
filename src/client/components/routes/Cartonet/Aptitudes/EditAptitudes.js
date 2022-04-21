@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Button, DialogActions, DialogContent, DialogTitle, Checkbox} from "@material-ui/core";
+import {Button, DialogActions, DialogContent, DialogTitle, Checkbox, Grid} from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
 import {useMutation} from "@apollo/client";
 import {makeStyles} from "@material-ui/core/styles";
@@ -15,7 +15,11 @@ import {Link} from "react-router-dom";
 import {generateCartonetPath} from "../utils/generateCartonetPath";
 import {ROUTES} from "../../../../routes";
 
-const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles((theme) => ({
+  levelDescription: {
+    marginBottom: theme.spacing(-1)
+  }
+}));
 
 /**
  *
@@ -125,12 +129,21 @@ export default function EditAptitudes({
             Afin de pouvoir vous suggérer au mieux des métiers qui vous correspondent il est indispensable de valoriser
             vos compétences.
           </p>
-          <p>
-            Cette valorisation consiste à affecter à chacune de vos compétences une à 5 étoiles (1 étoile indique que
-            vous avez une connaissance théorique, 2 étoiles une connaissance pratique récente, 3 étoiles une
-            connaissance pratique de plus de 2 ans, 4 étoiles que vous avez un niveau d’expertise établi, 5 étoiles que
-            vous en avez la maîtrise et la capacité à l’enseigner).
-          </p>
+          <p>Cette valorisation consiste à affecter à chacune de vos compétences une à 5 étoiles comme suit :</p>
+          {[
+            "connaissance théorique",
+            "connaissance pratique récente",
+            "connaissance pratique de plus de 2 ans",
+            "niveau d’expertise établi",
+            "maîtrise et capacité à l’enseigner"
+          ].map((text, index) => (
+            <Grid key={index} container alignContent="center" spacing={1} className={classes.levelDescription}>
+              <Grid item>
+                <Rating size="small" value={index + 1} readOnly />
+              </Grid>
+              <Grid item>{text}</Grid>
+            </Grid>
+          ))}
           <p>
             Vous pouvez sélectionner 5 compétences (Top5) pour indiquer les compétences que vous souhaitez mettre en
             avant.
