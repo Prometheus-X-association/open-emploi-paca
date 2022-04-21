@@ -127,8 +127,27 @@ export function AptitudePicker({
 
   const formikContext = useFormikContext();
   const existingAptitudesEdges = [...(formikContext.getFieldProps(name).value?.edges || [])];
-  const existingSkills = existingAptitudesEdges.map(({node: aptitude}) => aptitude.skill);
-  const existingSkillsIds = existingSkills.map(({id}) => id);
+  const [existingSkills, existingSkillsIds] = existingAptitudesEdges.reduce(
+    ([existingSkills, existingSkillsIds], {node: aptitude}) => {
+      if (aptitude.skill) {
+        existingSkills.push(aptitude.skill);
+        existingSkillsIds.push(aptitude.skill.id);
+      }
+      return [existingSkills, existingSkillsIds];
+    },
+    [[], []]
+  );
+
+  const [mySkills, mySkillsIds] = (myAptitudes?.edges || []).reduce(
+    ([mySkills, mySkillsIds], {node: aptitude}) => {
+      if (aptitude.skill) {
+        mySkills.push(aptitude.skill);
+        mySkillsIds.push(aptitude.skill.id);
+      }
+      return [mySkills, mySkillsIds];
+    },
+    [[], []]
+  );
 
   const inputEl = useRef();
 
@@ -147,16 +166,9 @@ export function AptitudePicker({
               <LoadingSplashScreen />
             </If>
             <div className={classes.skillsContainer}>
-              <If condition={(myAptitudes?.edges || []).length > 0}>
-                {myAptitudes?.edges.map(({node: aptitude}) =>
-                  renderSkill({
-                    skill: {
-                      prefLabel: aptitude.skillLabel,
-                      aptitudeId: aptitude.id,
-                      id: aptitude.skill?.id
-                    }
-                  })
-                )}
+              <If condition={mySkills.length > 0}>
+                {mySkills.map((skill) => renderSkill({skill, existingSkillsIds}))}
+
                 <If condition={myAptitudesCount > SKILLS_WINDOW}>
                   <ListItem disabled>
                     <ListItemText>
@@ -205,7 +217,7 @@ export function AptitudePicker({
               <LoadingSplashScreen />
             </If>
             <div className={classes.skillsContainer}>
-              {(otherSkills?.edges || []).map(({node: skill}) => renderSkill({skill}))}
+              {(otherSkills?.edges || []).map(({node: skill}) => renderSkill({skill, existingSkillsIds: mySkillsIds}))}
 
               <If condition={otherSkillsCount > SKILLS_WINDOW}>
                 <ListItem disabled>
@@ -246,7 +258,7 @@ export function AptitudePicker({
     </>
   );
 
-  function renderSkill({skill}) {
+  function renderSkill({skill, existingSkillsIds = []}) {
     const skillExists = existingSkillsIds.includes(skill.id);
 
     return (
