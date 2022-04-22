@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 import {useHistory, useParams, generatePath, matchPath} from "react-router-dom";
 import {object} from "yup";
-import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
+import {useApolloClient, useLazyQuery, useMutation, useQuery} from "@apollo/client";
 import {Form, Formik} from "formik";
 import {useSnackbar} from "notistack";
 import {
@@ -111,6 +111,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const {enqueueSnackbar} = useSnackbar();
+  const apolloClient = useApolloClient();
   const history = useHistory();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const selectedAptitudeRefContainer = useRef(null);
@@ -497,19 +498,16 @@ export default function EditExperience({experienceType = "experience"} = {}) {
               }
             }
           }
-        },
-        refetchQueries: [
-          {
-            query: gqlMyExperiences,
-            variables: {
-              filters: experienceType ? [`experienceType:${experienceType}`] : null
-            }
-          }
-        ],
-        awaitRefetchQueries: true
+        }
       });
 
       mutatingExperience.id = createdObject?.id;
+
+      setTimeout(() => {
+        apolloClient.refetchQueries({
+          include: "active"
+        });
+      }, 2000);
     }
   }
 

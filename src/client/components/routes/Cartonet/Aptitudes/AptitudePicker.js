@@ -141,7 +141,10 @@ export function AptitudePicker({
   const [mySkills, mySkillsIds] = (myAptitudes?.edges || []).reduce(
     ([mySkills, mySkillsIds], {node: aptitude}) => {
       if (aptitude.skill) {
-        mySkills.push(aptitude.skill);
+        mySkills.push({
+          ...aptitude.skill,
+          aptitudeId: aptitude.id
+        });
         mySkillsIds.push(aptitude.skill.id);
       }
       return [mySkills, mySkillsIds];
