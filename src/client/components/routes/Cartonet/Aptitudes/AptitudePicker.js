@@ -217,7 +217,9 @@ export function AptitudePicker({
               <LoadingSplashScreen />
             </If>
             <div className={classes.skillsContainer}>
-              {(otherSkills?.edges || []).map(({node: skill}) => renderSkill({skill, existingSkillsIds: mySkillsIds}))}
+              {(otherSkills?.edges || []).map(({node: skill}) =>
+                renderSkill({skill, existingSkillsIds: [].concat(existingSkillsIds, mySkillsIds)})
+              )}
 
               <If condition={otherSkillsCount > SKILLS_WINDOW}>
                 <ListItem disabled>

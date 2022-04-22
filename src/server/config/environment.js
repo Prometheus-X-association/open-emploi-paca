@@ -196,6 +196,7 @@ export default {
   },
   ADDVISEO_PASSWORD_SALT: {
     description: "This is addViseo password salt",
+    defaultValue: () => "",
     obfuscate: true,
     defaultValueInProduction: true,
   },

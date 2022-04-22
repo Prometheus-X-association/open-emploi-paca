@@ -21,6 +21,7 @@ import { serveFrontend } from "./middlewares/serveFrontend";
 import { serveLocales } from "./middlewares/serveLocales";
 import { servePdf } from "./middlewares/servePdf";
 import { serveAddviseo } from "./middlewares/serveAddviseo";
+import { serveGDPR } from "./middlewares/serveGDPR";
 
 /**
  * @param {object} Package - Basically package.json file.
@@ -34,11 +35,16 @@ export function launch({
   environmentDefinition,
   extraDataModels,
   locales = {},
-  webpackConfig
+  webpackConfig,
 } = {}) {
   dotenv.config();
 
-  let launchMiddlewares = [servePdf, serveLocales({ locales }), serveAddviseo];
+  let launchMiddlewares = [
+    servePdf,
+    serveLocales({ locales }),
+    serveAddviseo,
+    serveGDPR,
+  ];
 
   if (!parseInt(process.env.FRONTEND_DISABLED)) {
     launchMiddlewares.push(serveFrontend({ webpackConfig }));
@@ -49,9 +55,9 @@ export function launch({
     environment: environmentDefinition,
     generateGraphQLEndpoints: serveGraphQL({
       extraDataModels,
-      environmentDefinition
+      environmentDefinition,
     }),
-    launchMiddlewares
+    launchMiddlewares,
   })
     .then(() => {
       if (!!parseInt(process.env.FRONTEND_DISABLED)) {
@@ -60,5 +66,5 @@ export function launch({
         );
       }
     })
-    .catch(error => console.log(error));
+    .catch((error) => console.log(error));
 }

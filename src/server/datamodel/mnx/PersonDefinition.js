@@ -20,14 +20,14 @@ import {
   LiteralDefinition,
   LinkDefinition,
   MnxOntologies,
-  LinkPath
+  LinkPath,
 } from "@mnemotix/synaptix.js";
 import OccupationDefinition from "../mm/OccupationDefinition";
 import JobAreaDefinition from "../oep/JobAreaDefinition";
 import ExperienceDefinition from "../mm/ExperienceDefinition";
 import AptitudeDefinition from "../mm/AptitudeDefinition";
 import SkillDefinition from "../mm/SkillDefinition";
-import {PersonGraphQLDefinition} from "./graphql/PersonGraphQLDefinition";
+import { PersonGraphQLDefinition } from "./graphql/PersonGraphQLDefinition";
 
 export default class PersonDefinition extends ModelDefinitionAbstract {
   /**
@@ -53,7 +53,8 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
       relatedModelDefinition: AptitudeDefinition,
       isPlural: true,
       graphQLPropertyName: "aptitudes",
-      graphQLInputName: "aptitudeInputs"
+      graphQLInputName: "aptitudeInputs",
+      isCascadingRemoved: true,
     });
 
     return [
@@ -65,7 +66,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: OccupationDefinition,
         isPlural: false,
         graphQLPropertyName: "occupation",
-        graphQLInputName: "occupationInput"
+        graphQLInputName: "occupationInput",
       }),
       new LinkDefinition({
         linkName: "hasSpouseOccupation",
@@ -74,7 +75,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: OccupationDefinition,
         isPlural: false,
         graphQLPropertyName: "spouseOccupation",
-        graphQLInputName: "spouseOccupationInput"
+        graphQLInputName: "spouseOccupationInput",
       }),
       new LinkDefinition({
         linkName: "hasWishedOccupation",
@@ -83,7 +84,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: OccupationDefinition,
         isPlural: true,
         graphQLPropertyName: "wishedOccupations",
-        graphQLInputName: "wishedOccupationInputs"
+        graphQLInputName: "wishedOccupationInputs",
       }),
       new LinkDefinition({
         linkName: "hasJobArea",
@@ -92,7 +93,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: JobAreaDefinition,
         isPlural: false,
         graphQLPropertyName: "jobArea",
-        graphQLInputName: "jobAreaInput"
+        graphQLInputName: "jobAreaInput",
       }),
       new LinkDefinition({
         linkName: "hasWishedJobArea",
@@ -101,7 +102,7 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: JobAreaDefinition,
         isPlural: true,
         graphQLPropertyName: "wishedJobAreas",
-        graphQLInputName: "wishedJobAreaInputs"
+        graphQLInputName: "wishedJobAreaInputs",
       }),
       new LinkDefinition({
         linkName: "hasExperience",
@@ -111,7 +112,8 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         relatedModelDefinition: ExperienceDefinition,
         isPlural: true,
         graphQLPropertyName: "experiences",
-        graphQLInputName: "experienceInputs"
+        graphQLInputName: "experienceInputs",
+        isCascadingRemoved: true,
       }),
       aptitudeLink,
       new LinkDefinition({
@@ -119,11 +121,11 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         pathInIndex: "hasSkill",
         linkPath: new LinkPath()
           .step({ linkDefinition: aptitudeLink })
-          .step({linkDefinition: AptitudeDefinition.getLink("hasSkill")}),
+          .step({ linkDefinition: AptitudeDefinition.getLink("hasSkill") }),
         relatedModelDefinition: SkillDefinition,
         isPlural: true,
-        inIndexOnly: true
-      })
+        inIndexOnly: true,
+      }),
     ];
   }
 
@@ -138,20 +140,20 @@ export default class PersonDefinition extends ModelDefinitionAbstract {
         literalName: "income",
         description: "Salaire actuel en € brut mensuel",
         rdfDataProperty: "oep:income",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer",
       }),
       new LiteralDefinition({
         literalName: "wishedMinIncome",
         description: "Salaire souhaité minimum en € brut mensuel",
         rdfDataProperty: "oep:wishedMinIncome",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer",
       }),
       new LiteralDefinition({
         literalName: "wishedMaxIncome",
         description: "Salaire souhaité maximim en € brut mensuel",
         rdfDataProperty: "oep:wishedMaxIncome",
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
-      })
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer",
+      }),
     ];
   }
 }

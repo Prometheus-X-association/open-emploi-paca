@@ -23,6 +23,7 @@ const resourceTypesMapping = {
   show_jobs: generatePath(ROUTES.CARTONET_SHOW_JOBS),
   upload_cv: generatePath(ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV),
   api: "/graphql",
+  gdpr_erase_user: "/gdpr/erase-user",
 };
 /**
  * Serves AddViseo redirection pages
