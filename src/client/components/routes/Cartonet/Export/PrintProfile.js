@@ -1,9 +1,9 @@
-import { Fragment, useEffect, useState } from "react";
+import {Fragment, useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {useQuery} from "@apollo/client";
-import {gqlMyExperiences} from "../Experience/gql/MyExperiences.gql";
-import {gqlMyAptitudes} from "../Aptitudes/gql/MyAptitudes.gql";
+import {useLazyQuery, useQuery} from "@apollo/client";
+import {gqlExhaustiveExperiences} from "../Experience/gql/Experiences.gql";
+import {gqlAptitudes} from "../Aptitudes/gql/Aptitudes.gql";
 import {
   Avatar,
   Box,
@@ -25,8 +25,9 @@ import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
 import {Rating} from "@material-ui/lab";
 import {gqlMyProfile} from "../../Profile/gql/MyProfile.gql";
 import OccupationsMatching from "../Recommendation/OccupationsMatching";
+import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "21cm",
     height: "29,7cm",
@@ -79,25 +80,47 @@ const useStyles = makeStyles(theme => ({
 export default function PrintProfile({} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
+  const {user} = useLoggedUser();
 
   const {data: {me: myProfile} = {}, loading: loadingProfile} = useQuery(gqlMyProfile);
 
-  const {data: {me: myExperiences} = {}, loading: loadingExperiences} = useQuery(gqlMyExperiences, {
-    fetchPolicy: "no-cache"
-  });
-  const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes, {
-    fetchPolicy: "no-cache",
-    variables: {
-      sortings: [{
-        sortBy: "isTop5"
-      }, {
-        sortBy: "skillLabel"
-      }]
+  const [loadExperiences, {data: {experiences} = {}, loading: loadingExperiences}] = useLazyQuery(
+    gqlExhaustiveExperiences,
+    {
+      fetchPolicy: "no-cache"
     }
+  );
+
+  const [loadAptitudes, {data: {aptitudes} = {}, loading: loadingAptitudes}] = useLazyQuery(gqlAptitudes, {
+    fetchPolicy: "no-cache"
   });
 
   useEffect(() => {
-    if(myProfile && myExperiences && myAptitudes){
+    if (user) {
+      loadExperiences({
+        variables: {
+          filters: [`hasPerson:${user.id}`],
+          exhaustive: true
+        }
+      });
+
+      loadAptitudes({
+        variables: {
+          filters: [`hasPerson:${user.id}`],
+          sortings: [
+            {
+              sortBy: "isTop5"
+            },
+            {
+              sortBy: "skillLabel"
+            }
+          ]
+        }
+      });
+    }
+  }, [user]);
+  useEffect(() => {
+    if (myProfile && experiences && aptitudes) {
       setTimeout(() => {
         window.print();
       }, 400);
@@ -121,17 +144,17 @@ export default function PrintProfile({} = {}) {
             </When>
             <Otherwise>
               <List dense>
-                {(myExperiences?.experiences?.edges || []).map(({node: experience}) => (
+                {(experiences?.edges || []).map(({node: experience}) => (
                   <Fragment key={experience.id}>
                     <ListItem>
                       <ListItemAvatar>
                         <Avatar>
                           <Choose>
                             <When condition={experience.experienceType === "hobby"}>
-                              <HobbyIcon className={classes.forcePrint}/>
+                              <HobbyIcon className={classes.forcePrint} />
                             </When>
                             <When condition={experience.experienceType === "training"}>
-                              <TrainingIcon className={classes.forcePrint}/>
+                              <TrainingIcon className={classes.forcePrint} />
                             </When>
                             <Otherwise>
                               <ExperienceIcon className={classes.forcePrint} />
@@ -186,11 +209,17 @@ export default function PrintProfile({} = {}) {
             </When>
             <Otherwise>
               <List dense>
-                {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
+                {(aptitudes?.edges || []).map(({node: aptitude}) => (
                   <ListItem key={aptitude.id}>
                     <ListItemAvatar>
                       <If condition={aptitude.isTop5}>
-                        <Chip className={classes.top5Chip} label={"Top5"} color="primary" variant="outlined" size="small"/>
+                        <Chip
+                          className={classes.top5Chip}
+                          label={"Top5"}
+                          color="primary"
+                          variant="outlined"
+                          size="small"
+                        />
                       </If>
                     </ListItemAvatar>
                     <ListItemText>{aptitude.skillLabel}</ListItemText>

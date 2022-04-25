@@ -21,7 +21,7 @@ import TextField from "@material-ui/core/TextField";
 import throttle from "lodash/throttle";
 import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
-import {gqlMyAptitudes} from "./gql/MyAptitudes.gql";
+import {gqlAptitudes} from "./gql/Aptitudes.gql";
 
 const useStyles = makeStyles((theme) => ({
   textField: {
@@ -75,10 +75,9 @@ export function AptitudePicker({
     {loading: loadingOtherSkills, data: {skills: otherSkills, skillsCount: otherSkillsCount} = {}}
   ] = useLazyQuery(gqlSkills);
 
-  const [
-    loadMyAptitudes,
-    {loading: loadingMyAptitudes, data: {me: {aptitudes: myAptitudes, aptitudesCount: myAptitudesCount} = {}} = {}}
-  ] = useLazyQuery(gqlMyAptitudes);
+  const [loadAptitudes, {loading: loadingMyAptitudes, data: {aptitudes, aptitudesCount} = {}}] = useLazyQuery(
+    gqlAptitudes
+  );
 
   const throttledQsSkillsOnChange = throttle(
     (event) => {
@@ -114,12 +113,12 @@ export function AptitudePicker({
         }
       });
 
-      loadMyAptitudes({
+      loadAptitudes({
         variables: {
           qs: qsMyAptitudes,
           first: SKILLS_WINDOW,
           sortings: !!qsMyAptitudes ? [] : [{sortBy: "prefLabel"}],
-          filters: [`hasPerson: ${user.uri}`]
+          filters: [`hasPerson: ${user.id}`]
         }
       });
     }
@@ -138,7 +137,7 @@ export function AptitudePicker({
     [[], []]
   );
 
-  const [mySkills, mySkillsIds] = (myAptitudes?.edges || []).reduce(
+  const [mySkills, mySkillsIds] = (aptitudes?.edges || []).reduce(
     ([mySkills, mySkillsIds], {node: aptitude}) => {
       if (aptitude.skill) {
         mySkills.push({
@@ -172,10 +171,10 @@ export function AptitudePicker({
               <If condition={mySkills.length > 0}>
                 {mySkills.map((skill) => renderSkill({skill, existingSkillsIds}))}
 
-                <If condition={myAptitudesCount > SKILLS_WINDOW}>
+                <If condition={aptitudesCount > SKILLS_WINDOW}>
                   <ListItem disabled>
                     <ListItemText>
-                      {t("CARTONET.SKILL.MORE_OTHER", {count: myAptitudesCount - SKILLS_WINDOW})}
+                      {t("CARTONET.SKILL.MORE_OTHER", {count: aptitudesCount - SKILLS_WINDOW})}
                     </ListItemText>
                   </ListItem>
                 </If>
@@ -197,7 +196,7 @@ export function AptitudePicker({
               />
             </ListItem>
 
-            <If condition={otherSkillsCount === 0 && myAptitudesCount === 0}>
+            <If condition={otherSkillsCount === 0 && aptitudesCount === 0}>
               <Paper variant="outlined" className={classes.empty}>
                 {t("CARTONET.SKILL.SEARCH_NONE")}
               </Paper>
@@ -232,7 +231,7 @@ export function AptitudePicker({
                 </ListItem>
               </If>
             </div>
-            <If condition={otherSkillsCount === 0 && myAptitudesCount === 0}>
+            <If condition={otherSkillsCount === 0 && aptitudesCount === 0}>
               <Paper variant="outlined" className={classes.empty}>
                 {t("CARTONET.SKILL.SEARCH_NONE")}
               </Paper>

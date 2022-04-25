@@ -14,6 +14,7 @@ export const gqlExperienceFragment = gql`
 export const gqlExperience = gql`
   query Experience($id: ID!, $includeNestedSkill: Boolean! = true) {
     experience(id: $id) {
+      id
       ...ExperienceFragment
       organization {
         id

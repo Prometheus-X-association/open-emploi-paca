@@ -1,18 +1,19 @@
-import {Fragment} from "react";
+import {Fragment, useEffect} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {List, ListItem, ListItemAvatar, Avatar, ListItemText, Grid, Chip, CircularProgress} from "@material-ui/core";
 import dayjs from "dayjs";
 import {generatePath, useHistory, matchPath} from "react-router-dom";
-import {useQuery} from "@apollo/client";
+import {useLazyQuery} from "@apollo/client";
 import ExperienceIcon from "@material-ui/icons/Work";
 import HobbyIcon from "@material-ui/icons/BeachAccess";
 import TrainingIcon from "@material-ui/icons/School";
 import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
 import {createLink} from "../../../../utilities/createLink";
 
-import {gqlMyExperiences} from "../Experience/gql/MyExperiences.gql";
+import {gqlExperiences, gqlExhaustiveExperiences} from "../Experience/gql/Experiences.gql";
 import {generateCartonetEditExperiencePath} from "../utils/generateCartonetPath";
+import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   experience: {
@@ -101,13 +102,15 @@ export function ExperienceItem({
               </If>
             </Grid>
           }
+          primaryTypographyProps={{component: "div"}}
+          secondaryTypographyProps={{component: "div"}}
         />
       </ListItem>
       <If condition={!aptitudesDisabled}>
         <List disablePadding>
           <ListItem className={classes.experienceAptitudes}>
             <ListItemText>
-              {experience.aptitudes.edges.map(({node: aptitude}) => (
+              {(experience.aptitudes?.edges || []).map(({node: aptitude}) => (
                 <Chip
                   className={classes.experienceAptitude}
                   key={aptitude.id}
@@ -137,13 +140,28 @@ export default function Experiences({
   experienceType
 } = {}) {
   const {t} = useTranslation();
+  const {user} = useLoggedUser();
 
-  const {data: {me: myExperiences} = {}, loading: loadingExperiences} = useQuery(gqlMyExperiences, {
-    fetchPolicy: "no-cache",
-    variables: {
-      filters: experienceType ? [`experienceType:${experienceType}`] : null
+  const [loadExperiences, {data: {experiences} = {}, loading: loadingExperiences}] = useLazyQuery(
+    aptitudesDisabled ? gqlExperiences : gqlExhaustiveExperiences,
+    {}
+  );
+
+  useEffect(() => {
+    if (user) {
+      let filters = [`hasPerson:${user.id}`];
+
+      if (experienceType) {
+        filters.push(`experienceType:${experienceType}`);
+      }
+
+      loadExperiences({
+        variables: {
+          filters
+        }
+      });
     }
-  });
+  }, [user, experienceType]);
 
   return (
     <Choose>
@@ -152,7 +170,7 @@ export default function Experiences({
       </When>
       <Otherwise>
         <List dense>
-          {(myExperiences?.experiences?.edges || []).map(({node: experience}) => (
+          {(experiences?.edges || []).map(({node: experience}) => (
             <ExperienceItem
               key={experience.id}
               experience={experience}
@@ -162,7 +180,7 @@ export default function Experiences({
               onAptitudeMouseLeave={onAptitudeMouseLeave}
             />
           ))}
-          <If condition={(myExperiences?.experiences?.edges || []).length === 0}>
+          <If condition={(experiences?.edges || []).length === 0}>
             <ListItem disabled>
               <ListItemText
                 primary={t("CARTONET.CARTOGRAPHY.NO_EXPERIENCE")}

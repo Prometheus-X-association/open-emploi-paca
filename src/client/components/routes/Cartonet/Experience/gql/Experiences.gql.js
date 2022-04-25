@@ -1,11 +1,27 @@
 import {gql} from "@apollo/client";
 import {gqlExperienceFragment} from "./Experience.gql";
 
-export const gqlMyExperiencesFragment = gql`
-  fragment MyExperiencesFragment on Person {
+export const gqlExperiences = gql`
+  query Experiences($filters: [String]) {
     experiences(sortings: [{sortBy: "startDate"}], filters: $filters) {
       edges {
         node {
+          id
+          ...ExperienceFragment
+        }
+      }
+    }
+  }
+
+  ${gqlExperienceFragment}
+`;
+
+export const gqlExhaustiveExperiences = gql`
+  query Experiences($includeNestedSkill: Boolean! = false, $filters: [String]) {
+    experiences(sortings: [{sortBy: "startDate"}], filters: $filters) {
+      edges {
+        node {
+          id
           ...ExperienceFragment
           organization {
             id
@@ -37,15 +53,4 @@ export const gqlMyExperiencesFragment = gql`
   }
 
   ${gqlExperienceFragment}
-`;
-
-export const gqlMyExperiences = gql`
-  query Me($includeNestedSkill: Boolean! = false, $filters: [String]) {
-    me {
-      id
-      ...MyExperiencesFragment
-    }
-  }
-
-  ${gqlMyExperiencesFragment}
 `;

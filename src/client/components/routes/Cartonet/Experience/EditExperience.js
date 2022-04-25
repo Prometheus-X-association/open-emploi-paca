@@ -13,11 +13,12 @@ import {
   Dialog,
   Tabs,
   Tab,
-  Badge
+  Badge,
+  CircularProgress
 } from "@material-ui/core";
-import {useHistory, useParams, generatePath, matchPath} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {object} from "yup";
-import {useApolloClient, useLazyQuery, useMutation, useQuery} from "@apollo/client";
+import {useLazyQuery, useMutation, makeReference} from "@apollo/client";
 import {Form, Formik} from "formik";
 import {useSnackbar} from "notistack";
 import {
@@ -45,8 +46,72 @@ import {Link} from "react-router-dom";
 import {generateCartonetEditExperiencePath, generateCartonetPath} from "../utils/generateCartonetPath";
 import Experiences from "../Cartography/Experiences";
 import {useLoggedUser} from "../../../../hooks/useLoggedUser";
-import {gqlMyExperiences} from "./gql/MyExperiences.gql";
-import {gqlSkillFragment} from "../Aptitudes/gql/Skills.gql";
+
+const mutationConfig = new MutationConfig({
+  scalarInputNames: ["title", "description", "startDate", "endDate"],
+  linkInputDefinitions: [
+    new LinkInputDefinition({
+      name: "organization",
+      inputName: "organizationInput",
+      targetObjectFormDefinition: new DynamicFormDefinition({
+        mutationConfig: new MutationConfig({
+          gqlFragment: gqlOrganizationFragment
+        })
+      })
+    }),
+    new LinkInputDefinition({
+      name: "occupations",
+      inputName: "occupationInputs",
+      isPlural: true,
+      targetObjectFormDefinition: new DynamicFormDefinition({
+        mutationConfig: new MutationConfig({
+          gqlFragment: gqlOccupationFragment
+        })
+      })
+    }),
+    new LinkInputDefinition({
+      name: "aptitudes",
+      inputName: "aptitudeInputs",
+      isPlural: true,
+      targetObjectFormDefinition: new DynamicFormDefinition({
+        mutationConfig: new MutationConfig({
+          gqlFragment: gqlAptitudeFragment
+        })
+      }),
+      nestedLinks: [
+        new LinkInputDefinition({
+          name: "skill",
+          inputName: "skillInput"
+        }),
+        new LinkInputDefinition({
+          name: "person",
+          inputName: "personInput"
+        }),
+        new LinkInputDefinition({
+          name: "rating",
+          inputName: "ratingInput"
+        })
+      ],
+      modifyValue: (aptitude) => {
+        if (aptitude.skill?.aptitudeId) {
+          return {
+            id: aptitude.skill?.aptitudeId
+          };
+        } else {
+          return {
+            ...aptitude,
+            person: {id: me.id},
+            rating: {
+              range: 5,
+              value: 0
+            }
+          };
+        }
+      }
+    })
+  ],
+  gqlFragment: gqlExperienceFragment
+});
 
 const useStyles = makeStyles((theme) => ({
   categoryTitle: {
@@ -111,7 +176,6 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
   const {enqueueSnackbar} = useSnackbar();
-  const apolloClient = useApolloClient();
   const history = useHistory();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const selectedAptitudeRefContainer = useRef(null);
@@ -151,72 +215,6 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   });
 
   const saving = savingProfile || savingExperience;
-
-  const mutationConfig = new MutationConfig({
-    scalarInputNames: ["title", "description", "startDate", "endDate"],
-    linkInputDefinitions: [
-      new LinkInputDefinition({
-        name: "organization",
-        inputName: "organizationInput",
-        targetObjectFormDefinition: new DynamicFormDefinition({
-          mutationConfig: new MutationConfig({
-            gqlFragment: gqlOrganizationFragment
-          })
-        })
-      }),
-      new LinkInputDefinition({
-        name: "occupations",
-        inputName: "occupationInputs",
-        isPlural: true,
-        targetObjectFormDefinition: new DynamicFormDefinition({
-          mutationConfig: new MutationConfig({
-            gqlFragment: gqlOccupationFragment
-          })
-        })
-      }),
-      new LinkInputDefinition({
-        name: "aptitudes",
-        inputName: "aptitudeInputs",
-        isPlural: true,
-        targetObjectFormDefinition: new DynamicFormDefinition({
-          mutationConfig: new MutationConfig({
-            gqlFragment: gqlAptitudeFragment
-          })
-        }),
-        nestedLinks: [
-          new LinkInputDefinition({
-            name: "skill",
-            inputName: "skillInput"
-          }),
-          new LinkInputDefinition({
-            name: "person",
-            inputName: "personInput"
-          }),
-          new LinkInputDefinition({
-            name: "rating",
-            inputName: "ratingInput"
-          })
-        ],
-        modifyValue: (aptitude) => {
-          if (aptitude.skill?.aptitudeId) {
-            return {
-              id: aptitude.skill?.aptitudeId
-            };
-          } else {
-            return {
-              ...aptitude,
-              person: {id: me.id},
-              rating: {
-                range: 5,
-                value: 0
-              }
-            };
-          }
-        }
-      })
-    ],
-    gqlFragment: gqlExperienceFragment
-  });
 
   useEffect(() => {
     if (id) {
@@ -301,170 +299,181 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           </Grid>
         </Grid>
         <Grid xs={9} item>
-          <Formik
-            enableReinitialize={true}
-            initialValues={
-              editingExperience || {
-                title: "",
-                description: "",
-                startDate: null,
-                endDate: null,
-                occupations: {edges: []},
-                organization: null,
-                aptitudes: {edges: []}
-              }
-            }
-            onSubmit={async (values, {setSubmitting, resetForm}) => {
-              await save(values);
-              setSubmitting(false);
-              resetForm();
-            }}
-            validateOnChange={true}
-            validateOnBlur={true}
-            validationSchema={object().shape({
-              title: Yup.string().required("Required"),
-              startDate: Yup.date().required("Required"),
-              organization: Yup.object().required()
-            })}>
-            {({errors, touched, isValid, dirty, resetForm, values}) => {
-              const selectedOccupations = values.occupations;
-              return (
-                <Form>
-                  <Grid container direction={"column"} wrap={"nowrap"} className={classes.editor}>
-                    <Grid xs item container spacing={6} className={classes.form}>
-                      <Grid item xs={12} md={6} container spacing={2}>
-                        <Grid item xs={12}>
-                          <Grid container alignItems="center">
-                            <Grid item xs>
-                              <Typography variant={"overline"}>
-                                {t(`CARTONET.${experienceType.toUpperCase()}.FORM_DESCRIPTION_LABEL`)}{" "}
-                              </Typography>
-                            </Grid>
-                            <Grid>
-                              <Badge badgeContent={"1"} color="error" className={classes.badge} />
-                            </Grid>
-                          </Grid>
-
-                          <TextField required name="title" label={t("CARTONET.EXPERIENCE.TITLE")} />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField name="description" label={t("CARTONET.EXPERIENCE.DESCRIPTION")} multiline />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <OrganizationPickerField
-                            label={t(`CARTONET.${experienceType.toUpperCase()}.ORGANIZATION`)}
-                            name={"organization"}
-                            creatable={true}
-                            required
-                          />
-                        </Grid>
-                        <Grid item xs={12} container>
-                          <Grid item xs={6}>
-                            <DatePickerField required name="startDate" label={t("CARTONET.EXPERIENCE.START_DATE")} />
-                          </Grid>
-                          <Grid item xs={6}>
-                            <DatePickerField name="endDate" label={t("CARTONET.EXPERIENCE.END_DATE")} />
-                          </Grid>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                          <Grid container alignItems="center" className={classes.categoryTitle}>
-                            <Grid item xs>
-                              <Typography variant="overline" display="block">
-                                {t(`CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`)}{" "}
-                              </Typography>
-                            </Grid>
-                            <Grid>
-                              <Badge badgeContent={"2"} color="error" className={classes.badge} />
-                            </Grid>
-                          </Grid>
-
-                          <WishedOccupations dense name={"occupations"} includeLeafOccupations={true} />
-                        </Grid>
-
-                        <Grid item xs={12} container spacing={2} className={classes.aptitudes}>
-                          <Grid item xs={12}>
-                            <Typography variant={"overline"}>
-                              {t(`CARTONET.${experienceType.toUpperCase()}.FORM_APTITUDES_LABEL`)}
-                            </Typography>
-
-                            <div ref={selectedAptitudeRefContainer}></div>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-
-                      <Grid item xs={12} md={6}>
-                        <Grid item xs={12}>
-                          <Grid container alignItems="center">
-                            <Grid item xs>
-                              <Typography variant={"overline"}>
-                                {t(`CARTONET.${experienceType.toUpperCase()}.FORM_EXISTING_APTITUDES_LABEL`)}
-                              </Typography>
-                            </Grid>
-                            <Grid>
-                              <Badge badgeContent={"3"} color="error" className={classes.badge} />
-                            </Grid>
-                          </Grid>
-
-                          <AptitudePicker
-                            dense
-                            name={"aptitudes"}
-                            filterByRelatedOccupationIds={selectedOccupations.edges.map(
-                              ({node: occupation}) => occupation.id
-                            )}
-                            selectedAptitudeRefContainer={selectedAptitudeRefContainer}
-                          />
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                    <Grid item container className={classes.actions} justify={"flex-end"}>
-                      <If condition={editingExperience}>
-                        <Grid item className={classes.button}>
-                          <Button variant={"contained"} color={"secondary"} onClick={() => setDeleteModalOpen(true)}>
-                            {t("ACTIONS.DELETE")}
-                          </Button>
-                          <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
-                            <DialogTitle>{t("CARTONET.EXPERIENCE.REMOVE")}</DialogTitle>
-                            <DialogContent>
-                              <DialogContentText>
-                                {t("CARTONET.EXPERIENCE.REMOVE_SURE", {name: editingExperience.title})}
-                              </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                              <LoadingButton
-                                loading={removingExperience}
-                                variant={"contained"}
-                                color={"secondary"}
-                                onClick={handleRemove}>
-                                {t("ACTIONS.DELETE")}
-                              </LoadingButton>
-                              <Button onClick={() => setDeleteModalOpen(false)}>{t("ACTIONS.CANCEL")}</Button>
-                            </DialogActions>
-                          </Dialog>
-                        </Grid>
-                      </If>
-                      <Grid item>
-                        <FormButtons
-                          inDialog
-                          errors={errors}
-                          touched={touched}
-                          isValid={isValid}
-                          dirty={dirty}
-                          saving={saving}
-                          resetForm={resetForm}
-                          buttonVariant={"contained"}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Form>
-              );
-            }}
-          </Formik>
+          <Choose>
+            <When condition={loadingExperience}>
+              <CircularProgress />
+            </When>
+            <Otherwise>{renderExperienceForm()}</Otherwise>
+          </Choose>
         </Grid>
       </Grid>
     </CartonetEditLayout>
   );
+
+  function renderExperienceForm() {
+    return (
+      <Formik
+        enableReinitialize={true}
+        initialValues={
+          editingExperience || {
+            title: "",
+            description: "",
+            startDate: null,
+            endDate: null,
+            occupations: {edges: []},
+            organization: null,
+            aptitudes: {edges: []}
+          }
+        }
+        onSubmit={async (values, {setSubmitting, resetForm}) => {
+          await save(values);
+          setSubmitting(false);
+          resetForm();
+        }}
+        validateOnChange={true}
+        validateOnBlur={true}
+        validationSchema={object().shape({
+          title: Yup.string().required("Required"),
+          startDate: Yup.date().required("Required"),
+          organization: Yup.object().required()
+        })}>
+        {({errors, touched, isValid, dirty, resetForm, values}) => {
+          const selectedOccupations = values.occupations;
+          return (
+            <Form>
+              <Grid container direction={"column"} wrap={"nowrap"} className={classes.editor}>
+                <Grid xs item container spacing={6} className={classes.form}>
+                  <Grid item xs={12} md={6} container spacing={2}>
+                    <Grid item xs={12}>
+                      <Grid container alignItems="center">
+                        <Grid item xs>
+                          <Typography variant={"overline"}>
+                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_DESCRIPTION_LABEL`)}{" "}
+                          </Typography>
+                        </Grid>
+                        <Grid>
+                          <Badge badgeContent={"1"} color="error" className={classes.badge} />
+                        </Grid>
+                      </Grid>
+
+                      <TextField required name="title" label={t("CARTONET.EXPERIENCE.TITLE")} />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField name="description" label={t("CARTONET.EXPERIENCE.DESCRIPTION")} multiline />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <OrganizationPickerField
+                        label={t(`CARTONET.${experienceType.toUpperCase()}.ORGANIZATION`)}
+                        name={"organization"}
+                        creatable={true}
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={12} container>
+                      <Grid item xs={6}>
+                        <DatePickerField required name="startDate" label={t("CARTONET.EXPERIENCE.START_DATE")} />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <DatePickerField name="endDate" label={t("CARTONET.EXPERIENCE.END_DATE")} />
+                      </Grid>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <Grid container alignItems="center" className={classes.categoryTitle}>
+                        <Grid item xs>
+                          <Typography variant="overline" display="block">
+                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`)}{" "}
+                          </Typography>
+                        </Grid>
+                        <Grid>
+                          <Badge badgeContent={"2"} color="error" className={classes.badge} />
+                        </Grid>
+                      </Grid>
+
+                      <WishedOccupations dense name={"occupations"} includeLeafOccupations={true} />
+                    </Grid>
+
+                    <Grid item xs={12} container spacing={2} className={classes.aptitudes}>
+                      <Grid item xs={12}>
+                        <Typography variant={"overline"}>
+                          {t(`CARTONET.${experienceType.toUpperCase()}.FORM_APTITUDES_LABEL`)}
+                        </Typography>
+
+                        <div ref={selectedAptitudeRefContainer}></div>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <Grid item xs={12}>
+                      <Grid container alignItems="center">
+                        <Grid item xs>
+                          <Typography variant={"overline"}>
+                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_EXISTING_APTITUDES_LABEL`)}
+                          </Typography>
+                        </Grid>
+                        <Grid>
+                          <Badge badgeContent={"3"} color="error" className={classes.badge} />
+                        </Grid>
+                      </Grid>
+
+                      <AptitudePicker
+                        dense
+                        name={"aptitudes"}
+                        filterByRelatedOccupationIds={selectedOccupations.edges.map(
+                          ({node: occupation}) => occupation.id
+                        )}
+                        selectedAptitudeRefContainer={selectedAptitudeRefContainer}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item container className={classes.actions} justify={"flex-end"}>
+                  <If condition={editingExperience}>
+                    <Grid item className={classes.button}>
+                      <Button variant={"contained"} color={"secondary"} onClick={() => setDeleteModalOpen(true)}>
+                        {t("ACTIONS.DELETE")}
+                      </Button>
+                      <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
+                        <DialogTitle>{t("CARTONET.EXPERIENCE.REMOVE")}</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            {t("CARTONET.EXPERIENCE.REMOVE_SURE", {name: editingExperience.title})}
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <LoadingButton
+                            loading={removingExperience}
+                            variant={"contained"}
+                            color={"secondary"}
+                            onClick={handleRemove}>
+                            {t("ACTIONS.DELETE")}
+                          </LoadingButton>
+                          <Button onClick={() => setDeleteModalOpen(false)}>{t("ACTIONS.CANCEL")}</Button>
+                        </DialogActions>
+                      </Dialog>
+                    </Grid>
+                  </If>
+                  <Grid item>
+                    <FormButtons
+                      inDialog
+                      errors={errors}
+                      touched={touched}
+                      isValid={isValid}
+                      dirty={dirty}
+                      saving={saving}
+                      resetForm={resetForm}
+                      buttonVariant={"contained"}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Form>
+          );
+        }}
+      </Formik>
+    );
+  }
 
   async function save(mutatingExperience) {
     const {objectInput, updateCache} = prepareMutation({
@@ -483,7 +492,9 @@ export default function EditExperience({experienceType = "experience"} = {}) {
             objectInput
           }
         },
-        update: updateCache
+        update: (...props) => {
+          updateCache(...props);
+        }
       });
 
       mutatingExperience.id = editingExperience.id;
@@ -498,16 +509,38 @@ export default function EditExperience({experienceType = "experience"} = {}) {
               }
             }
           }
+        },
+        update: (cache, {data: {createExperience: {createdObject} = {}} = {}}) => {
+          cache.modify({
+            id: cache.identify(makeReference("ROOT_QUERY")),
+            fields: {
+              experiences(connection) {
+                let mutatedEdges = [...connection.edges];
+
+                mutatedEdges.push({
+                  __typename: "ExperienceEdge",
+                  node: cache.writeFragment({
+                    id: createdObject.id,
+                    fragment: gqlExperienceFragment,
+                    data: {
+                      id: createdObject.id,
+                      experienceType,
+                      ...mutatingExperience
+                    }
+                  })
+                });
+
+                return {
+                  ...connection,
+                  edges: mutatedEdges
+                };
+              }
+            }
+          });
         }
       });
 
       mutatingExperience.id = createdObject?.id;
-
-      setTimeout(() => {
-        apolloClient.refetchQueries({
-          include: "active"
-        });
-      }, 2000);
     }
   }
 
@@ -533,7 +566,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
         },
         update: (cache) => {
           cache.modify({
-            id: cache.identify(me),
+            id: cache.identify(makeReference("ROOT_QUERY")),
             fields: {
               experiences(connection, {readField}) {
                 return {

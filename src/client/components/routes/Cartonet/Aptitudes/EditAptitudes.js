@@ -5,7 +5,7 @@ import {useMutation} from "@apollo/client";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 
-import {gqlMyAptitudes} from "./gql/MyAptitudes.gql";
+import {gqlAptitudes as gqlAptitudesDefault} from "./gql/Aptitudes.gql";
 import {useHistory} from "react-router-dom";
 import {CollectionView} from "../../../widgets/CollectionView/CollectionView";
 import {useSnackbar} from "notistack";
@@ -14,6 +14,7 @@ import {CartonetEditLayout} from "../CartonetEditLayout";
 import {Link} from "react-router-dom";
 import {generateCartonetPath} from "../utils/generateCartonetPath";
 import {ROUTES} from "../../../../routes";
+import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   levelDescription: {
@@ -25,9 +26,9 @@ const useStyles = makeStyles((theme) => ({
  *
  */
 export default function EditAptitudes({
-  gqlAptitudes = gqlMyAptitudes,
-  gqlConnectionPath = "me.aptitudes",
-  gqlCountPath = "me.aptitudesCount",
+  gqlAptitudes = gqlAptitudesDefault,
+  gqlConnectionPath = "aptitudes",
+  gqlCountPath = "aptitudesCount",
   gqlVariables = {},
   onClose = () => {}
 } = {}) {
@@ -36,6 +37,7 @@ export default function EditAptitudes({
   const history = useHistory();
   const {enqueueSnackbar} = useSnackbar();
   const [modifiedAptitudesCount, setModifiedAptitudesCount] = useState(0);
+  const {user} = useLoggedUser();
 
   const [updateAptitude, {loading: saving}] = useMutation(gqlUpdateAptitude, {
     onCompleted: () => {
@@ -184,28 +186,30 @@ export default function EditAptitudes({
           </Choose>
         </>
       }>
-      <CollectionView
-        columns={columns}
-        gqlConnectionPath={gqlConnectionPath}
-        gqlCountPath={gqlCountPath}
-        gqlQuery={gqlAptitudes}
-        gqlFilters={null}
-        gqlSortings={[
-          // This inversion seems to be a bug in Synaptix.js
-          {sortBy: "ratingValue", isSortDescending: true},
-          {sortBy: "isTop5", isSortDescending: false}
-        ]}
-        gqlVariables={gqlVariables}
-        availableDisplayMode={["table"]}
-        searchEnabled={true}
-        removalEnabled={true}
-        getRowsSharedState={({rows}) => {
-          return {
-            top5Count: rows.filter(({isTop5}) => isTop5 === true).length
-          };
-        }}
-        getRemoveConfirmText={({count}) => t("CARTONET.APTITUDES.REMOVE_TEXT", {count})}
-      />
+      <If condition={user}>
+        <CollectionView
+          columns={columns}
+          gqlConnectionPath={gqlConnectionPath}
+          gqlCountPath={gqlCountPath}
+          gqlQuery={gqlAptitudes}
+          gqlFilters={[`hasPerson:${user.id}`]}
+          gqlSortings={[
+            // This inversion seems to be a bug in Synaptix.js
+            {sortBy: "ratingValue", isSortDescending: true},
+            {sortBy: "isTop5", isSortDescending: false}
+          ]}
+          gqlVariables={gqlVariables}
+          availableDisplayMode={["table"]}
+          searchEnabled={true}
+          removalEnabled={true}
+          getRowsSharedState={({rows}) => {
+            return {
+              top5Count: rows.filter(({isTop5}) => isTop5 === true).length
+            };
+          }}
+          getRemoveConfirmText={({count}) => t("CARTONET.APTITUDES.REMOVE_TEXT", {count})}
+        />
+      </If>
     </CartonetEditLayout>
   );
 

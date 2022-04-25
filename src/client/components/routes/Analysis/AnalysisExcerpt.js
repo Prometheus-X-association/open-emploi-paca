@@ -7,8 +7,9 @@ import {Gauge} from "../../widgets/Gauge";
 import {useLazyQuery, useQuery} from "@apollo/client";
 import {gqlAnalysis} from "./gql/Analysis.gql";
 import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
-import {gqlMyAptitudes} from "../Cartonet/Aptitudes/gql/MyAptitudes.gql";
+import {gqlAptitudes} from "../Cartonet/Aptitudes/gql/Aptitudes.gql";
 import {LoadingSplashScreen} from "../../widgets/LoadingSplashScreen";
+import {useLoggedUser} from "../../../hooks/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   analysisContainer: {
@@ -39,9 +40,9 @@ const useStyles = makeStyles((theme) => ({
 export function AnalysisExcerpt({} = {}) {
   const classes = useStyles();
   const {t} = useTranslation();
+  const {user} = useLoggedUser();
   const {data: {me: myProfile} = {}, loading: loadingProfile} = useQuery(gqlMyProfile);
-  const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes, {variables: {first: 30}});
-
+  const [loadAptitudes, {data: {aptitudes} = {}, loading: loadingAptitudes}] = useLazyQuery(gqlAptitudes);
   const [analyzeProfile, {data: {analysis} = {}, loading: loadingAnalysis}] = useLazyQuery(gqlAnalysis, {
     fetchPolicy: "no-cache"
   });
@@ -49,7 +50,15 @@ export function AnalysisExcerpt({} = {}) {
   const loading = loadingProfile || loadingAptitudes || loadingAnalysis;
 
   useEffect(() => {
-    if (myProfile && myAptitudes) {
+    if (user) {
+      loadAptitudes({
+        variables: {first: 30, filters: [`hasPerson:${user.id}`]}
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (myProfile && aptitudes) {
       let jobAreaIds = myProfile.wishedJobAreas.edges.map(({node: {id}}) => id);
       let occupationIds = myProfile.wishedOccupations.edges.map(({node: {id}}) => id);
 
@@ -65,11 +74,11 @@ export function AnalysisExcerpt({} = {}) {
         variables: {
           jobAreaIds: jobAreaIds,
           occupationIds: occupationIds,
-          skillIds: myAptitudes.aptitudes.edges.map(({node: {id}}) => id)
+          skillIds: aptitudes.edges.map(({node: {id}}) => id)
         }
       });
     }
-  }, [myProfile, myAptitudes]);
+  }, [myProfile, aptitudes]);
 
   const bestAnalysis = analysis?.[0];
   const secondBestAnalysis = analysis?.[1];

@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {Button, Grid, Chip, Typography, CircularProgress} from "@material-ui/core";
@@ -6,16 +6,17 @@ import ScrollIntoViewIfNeeded from "react-scroll-into-view-if-needed";
 import {Rating} from "@material-ui/lab";
 import clsx from "clsx";
 import {useHistory} from "react-router-dom";
-import {useQuery} from "@apollo/client";
+import {useLazyQuery, useQuery} from "@apollo/client";
 import {ROUTES} from "../../../../routes";
 
-import {gqlMyAptitudes} from "../Aptitudes/gql/MyAptitudes.gql";
+import {gqlAptitudes} from "../Aptitudes/gql/Aptitudes.gql";
 import Experiences from "./Experiences";
 import {CartonetExploreLayout} from "../CartonetExploreLayout";
 import {Link} from "react-router-dom";
 import {generateCartonetPath} from "../utils/generateCartonetPath";
 import {useReactToPrint} from "react-to-print";
 import {Print as PrintIcon} from "@material-ui/icons";
+import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -105,6 +106,7 @@ export default function Cartography({} = {}) {
   const {t} = useTranslation();
   const history = useHistory();
   const [selectedAptitude, setSelectedAptitude] = useState();
+  const {user} = useLoggedUser();
 
   const componentRef = useRef(null);
 
@@ -120,20 +122,28 @@ export default function Cartography({} = {}) {
     onAfterPrint: () => {}
   });
 
-  const {data: {me: myAptitudes} = {}, loading: loadingAptitudes} = useQuery(gqlMyAptitudes, {
-    fetchPolicy: "no-cache",
-    variables: {
-      sortings: [
-        {
-          sortBy: "ratingValue",
-          isSortDescending: true
-        },
-        {
-          sortBy: "isTop5"
-        }
-      ]
-    }
+  const [loadAptitudes, {data: {aptitudes} = {}, loading: loadingAptitudes}] = useLazyQuery(gqlAptitudes, {
+    fetchPolicy: "no-cache"
   });
+
+  useEffect(() => {
+    if (user) {
+      loadAptitudes({
+        variables: {
+          filters: [`hasPerson:${user.id}`],
+          sortings: [
+            {
+              sortBy: "ratingValue",
+              isSortDescending: true
+            },
+            {
+              sortBy: "isTop5"
+            }
+          ]
+        }
+      });
+    }
+  }, [user]);
 
   return (
     <CartonetExploreLayout
@@ -186,7 +196,7 @@ export default function Cartography({} = {}) {
                   <CircularProgress />
                 </When>
                 <Otherwise>
-                  {(myAptitudes?.aptitudes?.edges || []).map(({node: aptitude}) => (
+                  {(aptitudes?.edges || []).map(({node: aptitude}) => (
                     <ScrollIntoViewIfNeeded
                       active={selectedAptitude?.id === aptitude.id}
                       options={{block: "center", behavior: "smooth"}}>

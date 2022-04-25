@@ -6,7 +6,7 @@
   "repository": "https://gitlab.com/ami-paca/oep-application",
   "author": "Mnemotix <dev@mnemotix.com>",
   "dependencies": {
-    "@apollo/client": "^3.4.8",
+    "@apollo/client": "^3.5.10",
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.10.3",
