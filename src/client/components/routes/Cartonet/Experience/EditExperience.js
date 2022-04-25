@@ -47,72 +47,6 @@ import {generateCartonetEditExperiencePath, generateCartonetPath} from "../utils
 import Experiences from "../Cartography/Experiences";
 import {useLoggedUser} from "../../../../hooks/useLoggedUser";
 
-const mutationConfig = new MutationConfig({
-  scalarInputNames: ["title", "description", "startDate", "endDate"],
-  linkInputDefinitions: [
-    new LinkInputDefinition({
-      name: "organization",
-      inputName: "organizationInput",
-      targetObjectFormDefinition: new DynamicFormDefinition({
-        mutationConfig: new MutationConfig({
-          gqlFragment: gqlOrganizationFragment
-        })
-      })
-    }),
-    new LinkInputDefinition({
-      name: "occupations",
-      inputName: "occupationInputs",
-      isPlural: true,
-      targetObjectFormDefinition: new DynamicFormDefinition({
-        mutationConfig: new MutationConfig({
-          gqlFragment: gqlOccupationFragment
-        })
-      })
-    }),
-    new LinkInputDefinition({
-      name: "aptitudes",
-      inputName: "aptitudeInputs",
-      isPlural: true,
-      targetObjectFormDefinition: new DynamicFormDefinition({
-        mutationConfig: new MutationConfig({
-          gqlFragment: gqlAptitudeFragment
-        })
-      }),
-      nestedLinks: [
-        new LinkInputDefinition({
-          name: "skill",
-          inputName: "skillInput"
-        }),
-        new LinkInputDefinition({
-          name: "person",
-          inputName: "personInput"
-        }),
-        new LinkInputDefinition({
-          name: "rating",
-          inputName: "ratingInput"
-        })
-      ],
-      modifyValue: (aptitude) => {
-        if (aptitude.skill?.aptitudeId) {
-          return {
-            id: aptitude.skill?.aptitudeId
-          };
-        } else {
-          return {
-            ...aptitude,
-            person: {id: me.id},
-            rating: {
-              range: 5,
-              value: 0
-            }
-          };
-        }
-      }
-    })
-  ],
-  gqlFragment: gqlExperienceFragment
-});
-
 const useStyles = makeStyles((theme) => ({
   categoryTitle: {
     marginTop: theme.spacing(2)
@@ -233,6 +167,72 @@ export default function EditExperience({experienceType = "experience"} = {}) {
       setEditingExperience(experience);
     }
   }, [experience?.id, loadingExperience]);
+
+  const mutationConfig = new MutationConfig({
+    scalarInputNames: ["title", "description", "startDate", "endDate"],
+    linkInputDefinitions: [
+      new LinkInputDefinition({
+        name: "organization",
+        inputName: "organizationInput",
+        targetObjectFormDefinition: new DynamicFormDefinition({
+          mutationConfig: new MutationConfig({
+            gqlFragment: gqlOrganizationFragment
+          })
+        })
+      }),
+      new LinkInputDefinition({
+        name: "occupations",
+        inputName: "occupationInputs",
+        isPlural: true,
+        targetObjectFormDefinition: new DynamicFormDefinition({
+          mutationConfig: new MutationConfig({
+            gqlFragment: gqlOccupationFragment
+          })
+        })
+      }),
+      new LinkInputDefinition({
+        name: "aptitudes",
+        inputName: "aptitudeInputs",
+        isPlural: true,
+        targetObjectFormDefinition: new DynamicFormDefinition({
+          mutationConfig: new MutationConfig({
+            gqlFragment: gqlAptitudeFragment
+          })
+        }),
+        nestedLinks: [
+          new LinkInputDefinition({
+            name: "skill",
+            inputName: "skillInput"
+          }),
+          new LinkInputDefinition({
+            name: "person",
+            inputName: "personInput"
+          }),
+          new LinkInputDefinition({
+            name: "rating",
+            inputName: "ratingInput"
+          })
+        ],
+        modifyValue: (aptitude) => {
+          if (aptitude.skill?.aptitudeId) {
+            return {
+              id: aptitude.skill?.aptitudeId
+            };
+          } else {
+            return {
+              ...aptitude,
+              person: {id: me.id},
+              rating: {
+                range: 5,
+                value: 0
+              }
+            };
+          }
+        }
+      })
+    ],
+    gqlFragment: gqlExperienceFragment
+  });
 
   return (
     <CartonetEditLayout
