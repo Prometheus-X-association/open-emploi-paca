@@ -454,7 +454,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
 
   async function save(mutatingExperience) {
     const {objectInput, updateCache} = prepareMutation({
-      initialObject: experience,
+      initialObject: editingExperience,
       mutatedObject: mutatingExperience,
       mutationConfig: getMutationConfig()
     });
