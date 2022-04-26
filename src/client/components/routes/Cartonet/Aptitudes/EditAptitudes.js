@@ -5,7 +5,7 @@ import {useMutation} from "@apollo/client";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 
-import {gqlAptitudes as gqlAptitudesDefault} from "./gql/Aptitudes.gql";
+import {gqlExhautiveAptitudes as gqlAptitudesDefault} from "./gql/Aptitudes.gql";
 import {useHistory} from "react-router-dom";
 import {CollectionView} from "../../../widgets/CollectionView/CollectionView";
 import {useSnackbar} from "notistack";

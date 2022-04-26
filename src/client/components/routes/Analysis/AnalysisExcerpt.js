@@ -7,7 +7,7 @@ import {Gauge} from "../../widgets/Gauge";
 import {useLazyQuery, useQuery} from "@apollo/client";
 import {gqlAnalysis} from "./gql/Analysis.gql";
 import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
-import {gqlAptitudes} from "../Cartonet/Aptitudes/gql/Aptitudes.gql";
+import {gqlExhautiveAptitudes} from "../Cartonet/Aptitudes/gql/Aptitudes.gql";
 import {LoadingSplashScreen} from "../../widgets/LoadingSplashScreen";
 import {useLoggedUser} from "../../../hooks/useLoggedUser";
 
@@ -42,7 +42,7 @@ export function AnalysisExcerpt({} = {}) {
   const {t} = useTranslation();
   const {user} = useLoggedUser();
   const {data: {me: myProfile} = {}, loading: loadingProfile} = useQuery(gqlMyProfile);
-  const [loadAptitudes, {data: {aptitudes} = {}, loading: loadingAptitudes}] = useLazyQuery(gqlAptitudes);
+  const [loadAptitudes, {data: {aptitudes} = {}, loading: loadingAptitudes}] = useLazyQuery(gqlExhautiveAptitudes);
   const [analyzeProfile, {data: {analysis} = {}, loading: loadingAnalysis}] = useLazyQuery(gqlAnalysis, {
     fetchPolicy: "no-cache"
   });

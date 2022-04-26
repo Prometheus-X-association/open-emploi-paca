@@ -9,7 +9,7 @@ import {useHistory} from "react-router-dom";
 import {useLazyQuery, useQuery} from "@apollo/client";
 import {ROUTES} from "../../../../routes";
 
-import {gqlAptitudes} from "../Aptitudes/gql/Aptitudes.gql";
+import {gqlExhautiveAptitudes} from "../Aptitudes/gql/Aptitudes.gql";
 import Experiences from "./Experiences";
 import {CartonetExploreLayout} from "../CartonetExploreLayout";
 import {Link} from "react-router-dom";
@@ -122,7 +122,7 @@ export default function Cartography({} = {}) {
     onAfterPrint: () => {}
   });
 
-  const [loadAptitudes, {data: {aptitudes} = {}, loading: loadingAptitudes}] = useLazyQuery(gqlAptitudes, {
+  const [loadAptitudes, {data: {aptitudes} = {}, loading: loadingAptitudes}] = useLazyQuery(gqlExhautiveAptitudes, {
     fetchPolicy: "no-cache"
   });
 

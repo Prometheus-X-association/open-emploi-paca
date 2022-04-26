@@ -5,6 +5,18 @@ export const gqlAptitudeFragment = gql`
     id
     isInCV
     isTop5
+    skill {
+      id
+      prefLabel
+    }
+  }
+`;
+
+export const gqlExhautiveAptitudeFragment = gql`
+  fragment AptitudeExhaustiveFragment on Aptitude {
+    id
+    isInCV
+    isTop5
     skillLabel
     rating {
       id

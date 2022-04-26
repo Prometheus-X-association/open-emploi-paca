@@ -3,7 +3,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useLazyQuery, useQuery} from "@apollo/client";
 import {gqlExhaustiveExperiences} from "../Experience/gql/Experiences.gql";
-import {gqlAptitudes} from "../Aptitudes/gql/Aptitudes.gql";
+import {gqlExhautiveAptitudes} from "../Aptitudes/gql/Aptitudes.gql";
 import {
   Avatar,
   Box,
@@ -91,7 +91,7 @@ export default function PrintProfile({} = {}) {
     }
   );
 
-  const [loadAptitudes, {data: {aptitudes} = {}, loading: loadingAptitudes}] = useLazyQuery(gqlAptitudes, {
+  const [loadAptitudes, {data: {aptitudes} = {}, loading: loadingAptitudes}] = useLazyQuery(gqlExhautiveAptitudes, {
     fetchPolicy: "no-cache"
   });
 

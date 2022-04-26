@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import * as Yup from "yup";
+import dayjs from "dayjs";
 import {makeStyles} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {
@@ -117,36 +118,9 @@ export default function EditExperience({experienceType = "experience"} = {}) {
 
   const {user: me} = useLoggedUser() || {};
   const [getExperience, {data: {experience} = {}, loading: loadingExperience}] = useLazyQuery(gqlExperience);
-
-  const [createExperience, {loading: savingProfile}] = useMutation(gqlCreateExperience, {
-    onCompleted: (data) => {
-      history.push(
-        generateCartonetEditExperiencePath({
-          history,
-          experience: {
-            id: data?.createExperience?.createdObject?.id,
-            experienceType
-          }
-        })
-      );
-      handleSaveCompleted();
-    }
-  });
-
-  const [updateExperience, {loading: savingExperience}] = useMutation(gqlUpdateExperience, {
-    onCompleted: () => {
-      setEditingExperience(experience);
-      handleSaveCompleted();
-    }
-  });
-
-  const [removeExperience, {loading: removingExperience}] = useMutation(gqlRemoveExperience, {
-    onCompleted: () => {
-      setEditingExperience(null);
-      handleNavigateTo(experienceType);
-      handleRemoveCompleted();
-    }
-  });
+  const [createExperience, {loading: savingProfile}] = useMutation(gqlCreateExperience);
+  const [updateExperience, {loading: savingExperience}] = useMutation(gqlUpdateExperience);
+  const [removeExperience, {loading: removingExperience}] = useMutation(gqlRemoveExperience);
 
   const saving = savingProfile || savingExperience;
 
@@ -157,82 +131,16 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           id
         }
       });
-    } else {
-      setEditingExperience(null);
     }
   }, [id]);
 
   useEffect(() => {
-    if (editingExperience?.id !== experience?.id) {
+    if (!id) {
+      setEditingExperience(null);
+    } else if (!loadingExperience && experience && experience.id !== editingExperience?.id) {
       setEditingExperience(experience);
     }
-  }, [experience?.id, loadingExperience]);
-
-  const mutationConfig = new MutationConfig({
-    scalarInputNames: ["title", "description", "startDate", "endDate"],
-    linkInputDefinitions: [
-      new LinkInputDefinition({
-        name: "organization",
-        inputName: "organizationInput",
-        targetObjectFormDefinition: new DynamicFormDefinition({
-          mutationConfig: new MutationConfig({
-            gqlFragment: gqlOrganizationFragment
-          })
-        })
-      }),
-      new LinkInputDefinition({
-        name: "occupations",
-        inputName: "occupationInputs",
-        isPlural: true,
-        targetObjectFormDefinition: new DynamicFormDefinition({
-          mutationConfig: new MutationConfig({
-            gqlFragment: gqlOccupationFragment
-          })
-        })
-      }),
-      new LinkInputDefinition({
-        name: "aptitudes",
-        inputName: "aptitudeInputs",
-        isPlural: true,
-        targetObjectFormDefinition: new DynamicFormDefinition({
-          mutationConfig: new MutationConfig({
-            gqlFragment: gqlAptitudeFragment
-          })
-        }),
-        nestedLinks: [
-          new LinkInputDefinition({
-            name: "skill",
-            inputName: "skillInput"
-          }),
-          new LinkInputDefinition({
-            name: "person",
-            inputName: "personInput"
-          }),
-          new LinkInputDefinition({
-            name: "rating",
-            inputName: "ratingInput"
-          })
-        ],
-        modifyValue: (aptitude) => {
-          if (aptitude.skill?.aptitudeId) {
-            return {
-              id: aptitude.skill?.aptitudeId
-            };
-          } else {
-            return {
-              ...aptitude,
-              person: {id: me.id},
-              rating: {
-                range: 5,
-                value: 0
-              }
-            };
-          }
-        }
-      })
-    ],
-    gqlFragment: gqlExperienceFragment
-  });
+  }, [id, experience]);
 
   return (
     <CartonetEditLayout
@@ -311,6 +219,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   );
 
   function renderExperienceForm() {
+    console.log(editingExperience);
     return (
       <Formik
         enableReinitialize={true}
@@ -475,11 +384,79 @@ export default function EditExperience({experienceType = "experience"} = {}) {
     );
   }
 
+  function getMutationConfig() {
+    return new MutationConfig({
+      scalarInputNames: ["title", "description", "startDate", "endDate"],
+      linkInputDefinitions: [
+        new LinkInputDefinition({
+          name: "organization",
+          inputName: "organizationInput",
+          targetObjectFormDefinition: new DynamicFormDefinition({
+            mutationConfig: new MutationConfig({
+              gqlFragment: gqlOrganizationFragment
+            })
+          })
+        }),
+        new LinkInputDefinition({
+          name: "occupations",
+          inputName: "occupationInputs",
+          isPlural: true,
+          targetObjectFormDefinition: new DynamicFormDefinition({
+            mutationConfig: new MutationConfig({
+              gqlFragment: gqlOccupationFragment
+            })
+          })
+        }),
+        new LinkInputDefinition({
+          name: "aptitudes",
+          inputName: "aptitudeInputs",
+          isPlural: true,
+          targetObjectFormDefinition: new DynamicFormDefinition({
+            mutationConfig: new MutationConfig({
+              gqlFragment: gqlAptitudeFragment
+            })
+          }),
+          nestedLinks: [
+            new LinkInputDefinition({
+              name: "skill",
+              inputName: "skillInput"
+            }),
+            new LinkInputDefinition({
+              name: "person",
+              inputName: "personInput"
+            }),
+            new LinkInputDefinition({
+              name: "rating",
+              inputName: "ratingInput"
+            })
+          ],
+          modifyValue: (aptitude) => {
+            if (aptitude.skill?.aptitudeId) {
+              return {
+                id: aptitude.skill?.aptitudeId
+              };
+            } else {
+              return {
+                ...aptitude,
+                person: {id: me.id},
+                rating: {
+                  range: 5,
+                  value: 0
+                }
+              };
+            }
+          }
+        })
+      ],
+      gqlFragment: gqlExperienceFragment
+    });
+  }
+
   async function save(mutatingExperience) {
     const {objectInput, updateCache} = prepareMutation({
       initialObject: experience,
       mutatedObject: mutatingExperience,
-      mutationConfig
+      mutationConfig: getMutationConfig()
     });
 
     objectInput.experienceType = experienceType;
@@ -496,8 +473,6 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           updateCache(...props);
         }
       });
-
-      mutatingExperience.id = editingExperience.id;
     } else {
       const {data: {createExperience: {createdObject = {}} = {}} = {}} = await createExperience({
         variables: {
@@ -514,10 +489,9 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           cache.modify({
             id: cache.identify(makeReference("ROOT_QUERY")),
             fields: {
-              experiences(connection) {
+              experiences(connection, {readField}) {
                 let mutatedEdges = [...connection.edges];
-
-                mutatedEdges.push({
+                const newExperienceEdge = {
                   __typename: "ExperienceEdge",
                   node: cache.writeFragment({
                     id: createdObject.id,
@@ -528,7 +502,18 @@ export default function EditExperience({experienceType = "experience"} = {}) {
                       ...mutatingExperience
                     }
                   })
+                };
+
+                let position = mutatedEdges.findIndex((mutatedEdge) => {
+                  const startDate = readField("startDate", readField("node", mutatedEdge));
+                  return dayjs(startDate).isAfter(mutatingExperience.startDate);
                 });
+
+                if (position >= 0) {
+                  mutatedEdges.splice(position, 0, newExperienceEdge);
+                } else {
+                  mutatedEdges.push(newExperienceEdge);
+                }
 
                 return {
                   ...connection,
@@ -540,8 +525,11 @@ export default function EditExperience({experienceType = "experience"} = {}) {
         }
       });
 
-      mutatingExperience.id = createdObject?.id;
+      mutatingExperience.id = createdObject.id;
     }
+
+    setEditingExperience(mutatingExperience);
+    handleSaveCompleted();
   }
 
   function handleSaveCompleted({message} = {}) {
@@ -580,7 +568,11 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           });
         }
       });
+
+      handleNavigateTo(experienceType);
+      handleRemoveCompleted();
     }
+    setEditingExperience(null);
     setDeleteModalOpen(false);
   }
 
@@ -591,5 +583,6 @@ export default function EditExperience({experienceType = "experience"} = {}) {
         history
       })
     );
+    setEditingExperience(null);
   }
 }
