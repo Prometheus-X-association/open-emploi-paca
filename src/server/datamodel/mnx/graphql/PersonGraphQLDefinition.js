@@ -1,5 +1,9 @@
-import { GraphQLTypeDefinition, GraphQLProperty } from '@mnemotix/synaptix.js';
-import {weverClient} from "../../../service/wever/WeverClient";
+import {
+  GraphQLTypeDefinition,
+  GraphQLProperty,
+  updateObjectResolver,
+} from "@mnemotix/synaptix.js";
+import { weverClient } from "../../../service/wever/WeverClient";
 
 export class PersonGraphQLDefinition extends GraphQLTypeDefinition {
   /**
@@ -18,13 +22,13 @@ export class PersonGraphQLDefinition extends GraphQLTypeDefinition {
          */
         typeResolver: async ({} = {}, {} = {}, synaptixSession) => {
           const email = await synaptixSession.getLoggedUsername();
-          return weverClient.getUserInfos({email});
-        }
-      })
-    ]
+          return weverClient.getUserInfos({ email });
+        },
+      }),
+    ];
   }
 
-  static getExtraGraphQLCode(){
+  static getExtraGraphQLCode() {
     return `
 type WeverUserInfos{
   """ User token """
@@ -36,6 +40,56 @@ type WeverUserInfos{
   """ Map ID """
   mapId: Int
 }
-`
+
+extend type Mutation {
+  """
+  Mutation to update the person object linked to the logged user
+
+  This mutation input is protected by the Synaptix.js. Following i18nkey errors can be sent :
+
+  - **USER_MUST_BE_AUTHENTICATED** : If inited session is anomymous.
+  """
+  updateMe(input: PersonInput!) : UpdateMePayload
+}
+
+type UpdateMePayload {
+  success: Boolean!
+  me: Person
+}
+`;
+  }
+
+  static getExtraResolvers() {
+    return {
+      Mutation: {
+        /**
+         * @param {object} _
+         * @param {ResolverArgs} args
+         * @param {SynaptixDatastoreSession} synaptixSession
+         * @param info
+         */
+        updateMe: async (
+          _,
+          { input: personInput } = {},
+          synaptixSession,
+          info
+        ) => {
+          const person = await synaptixSession.getLoggedUserPerson();
+          if (person) {
+            const updatePayload = await updateObjectResolver(
+              synaptixSession.getLoggedUserPersonModelDefinition(),
+              _,
+              { input: { objectId: person.id, objectInput: personInput } },
+              synaptixSession
+            );
+
+            return {
+              success: true,
+              ...updatePayload,
+            };
+          }
+        },
+      },
+    };
   }
 }

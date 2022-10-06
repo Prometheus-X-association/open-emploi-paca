@@ -224,7 +224,7 @@ export let indexData = async () => {
 
         if (modelDefinition.isEqualOrDescendantOf(EntityDefinition)) {
           connector.fields = [].concat(connector.fields, commonFields);
-          connector.entityFilter = commonEntityFilter;
+          connector.documentFilter = commonEntityFilter;
         }
 
         connectors.push(connector);
