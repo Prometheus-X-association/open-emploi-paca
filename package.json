@@ -27,7 +27,7 @@
     "@mnemotix/koncept-core": "^2.0.0-beta.2",
     "@mnemotix/koncept-greco": "^2.0.0-beta.2",
     "@mnemotix/synaptix-client-toolkit": "^2.2.2",
-    "@mnemotix/synaptix.js": "4.7.36-patched.2",
+    "@mnemotix/synaptix.js": "4.7.36-patched.3",
     "@types/react": "^16.9.0",
     "@ungap/url-search-params": "^0.1.4",
     "apollo-upload-client": "^14.1.3",
