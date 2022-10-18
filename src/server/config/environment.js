@@ -34,7 +34,6 @@ export default {
       mnx: "http://ns.mnemotix.com/ontologies/2019/8/generic-model/",
       mm: "https://ontologies.mindmatcher.org/carto/",
       oep: "http://openemploi.datasud.fr/ontology/",
-      oepd: "http://openemploi.datasud.fr/data/",
       dsud: "http://ontology.datasud.fr/openemploi/data/",
     }),
     defaultValueInProduction: true,
