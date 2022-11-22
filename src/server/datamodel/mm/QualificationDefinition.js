@@ -20,7 +20,7 @@ import {
   GraphQLTypeDefinition,
   LinkDefinition,
   MnxOntologies,
-  ModelDefinitionAbstract
+  ModelDefinitionAbstract,
 } from "@mnemotix/synaptix.js";
 import OccupationDefinition from "../mm/OccupationDefinition";
 import AwardDefinition from "../mm/AwardDefinition";
@@ -51,8 +51,16 @@ export default class QualificationDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getLinks() {
+    let parentLinks = super.getLinks();
+    let indexOf = parentLinks.findIndex(
+      (link) => link.getLinkName() === "hasTagging"
+    );
+    if (indexOf > 0) {
+      parentLinks.splice(indexOf, 1);
+    }
+
     return [
-      ...super.getLinks(),
+      ...parentLinks,
       new LinkDefinition({
         linkName: "hasOccupation",
         rdfObjectProperty: "mm:hasOccupation",
@@ -60,7 +68,7 @@ export default class QualificationDefinition extends ModelDefinitionAbstract {
         isCascadingUpdated: true,
         isCascadingRemoved: true,
         isPlural: true,
-        graphQLInputName: "hasOccupationInputs"
+        graphQLInputName: "hasOccupationInputs",
       }),
       new LinkDefinition({
         linkName: "isQualificationOf",
@@ -69,8 +77,8 @@ export default class QualificationDefinition extends ModelDefinitionAbstract {
         isCascadingUpdated: true,
         isCascadingRemoved: true,
         isPlural: true,
-        graphQLInputName: "isQualificationOfInputs"
-      })
+        graphQLInputName: "isQualificationOfInputs",
+      }),
     ];
   }
 }

@@ -164,7 +164,7 @@ export async function computeOccupationMatchingForPerson({
         },
       },
     }),
-    getExtraQuery: () => {
+    getExtraQueryParams: () => {
       return {
         _source: {
           includes: [

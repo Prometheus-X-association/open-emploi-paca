@@ -14,26 +14,21 @@
  *
  */
 require("@babel/register");
-const path = require('path');
-const {generateWebpackConfig} = require("./src/server/middlewares/generateWebpackConfig");
+const path = require("path");
+const {
+  generateWebpackConfig,
+} = require("./src/server/middlewares/generateWebpackConfig");
 
 module.exports = generateWebpackConfig({
-  distPath: path.resolve(__dirname, 'dist'),
-  entries: [{
-    name: "main",
-    entry: path.resolve(__dirname, './src/client/main.js'),
-    html: {
-      template: path.resolve(__dirname, './src/client/index.tpl.html'),
-      excludeChunks: ["greco"],
-      filename: "index.html"
-    }
-  }, {
-    name: "greco",
-    entry: path.resolve(__dirname, './src/client/mainGreco.js'),
-    html: {
-      template: path.resolve(__dirname, './src/client/indexGreco.tpl.html'),
-      excludeChunks: ["main"],
-      filename: "greco.html"
-    }
-  }]
+  distPath: path.resolve(__dirname, "dist"),
+  entries: [
+    {
+      name: "main",
+      entry: path.resolve(__dirname, "./src/client/main.js"),
+      html: {
+        template: path.resolve(__dirname, "./src/client/index.tpl.html"),
+        filename: "index.html",
+      },
+    },
+  ],
 });

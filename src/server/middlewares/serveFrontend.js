@@ -43,23 +43,33 @@ export function serveFrontend({ webpackConfig }) {
       const compiler = webpack(webpackConfig);
       const middleware = webpackMiddleware(compiler, {
         publicPath: webpackConfig.output.publicPath,
-        writeToDisk: true
+        writeToDisk: true,
       });
 
       app.use(middleware);
       app.use(webpackHotMiddleware(compiler));
     }
 
-    app.use(expressStaticGzip("./dist", {
-      enableBrotli: true,
-      orderPreference: ['br']
-    }), authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true}));
+    app.use(
+      expressStaticGzip("./dist", {
+        enableBrotli: true,
+        orderPreference: ["br"],
+      }),
+      authenticate({
+        acceptAnonymousRequest: true,
+        disableAuthRedirection: true,
+      })
+    );
 
-    const grecoBaseUrl = env.get("GRECO_BASE_URL").asString();
-
-    app.get("*", authenticate({acceptAnonymousRequest: true, disableAuthRedirection: true}), (req, res) => {
-      const htmlFile = grecoBaseUrl && req.path.includes(grecoBaseUrl) ? "greco.html" : "index.html";
-      res.sendFile(path.resolve(webpackConfig.output.path, htmlFile));
-    });
+    app.get(
+      "*",
+      authenticate({
+        acceptAnonymousRequest: true,
+        disableAuthRedirection: true,
+      }),
+      (req, res) => {
+        res.sendFile(path.resolve(webpackConfig.output.path, "index.html"));
+      }
+    );
   };
 }

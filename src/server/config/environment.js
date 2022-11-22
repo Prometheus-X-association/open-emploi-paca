@@ -20,6 +20,16 @@ export default {
     defaultValue: () => `oep-application-${Date.now()}`,
     defaultValueInProduction: true,
   },
+  APP_PORT: {
+    description: "This is listening port of the application.",
+    defaultValue: 3034,
+    defaultValueInProduction: true,
+  },
+  APP_URL: {
+    description: "This is the base url of the application.",
+    defaultValue: () => `http://localhost:${process.env.APP_PORT}`,
+    defaultValueInProduction: true,
+  },
   SCHEMA_NAMESPACE_MAPPING: {
     description: "The ReSource ontology schema namespace mapping",
     defaultValue: JSON.stringify({
@@ -48,6 +58,37 @@ export default {
     description: "The nodes or individuals) (or class instances) namespace URI",
     defaultValue: "oepd",
     defaultValueInProduction: true,
+  },
+  INDEX_DISABLED: {
+    description: "Is index disabled",
+    defaultValue: "0",
+    defaultValueInProduction: true,
+  },
+  INDEX_MASTER_URI: {
+    description: "Index master URI (ES endpoint)",
+  },
+  INDEX_CLUSTER_USER: {
+    description: " Index cluster user",
+  },
+  INDEX_CLUSTER_PWD: {
+    description: "Index cluster password",
+    obfuscate: true,
+  },
+  INDEX_PREFIX_TYPES_WITH: {
+    description: "Prefix all index types with a prefix",
+  },
+  RDFSTORE_ROOT_URI: {
+    description: "RDF Graph root URI",
+  },
+  RDFSTORE_USER: {
+    description: "RDF Graph Store user",
+  },
+  RDFSTORE_PWD: {
+    description: "RDF Graph Store password",
+    obfuscate: true,
+  },
+  RDFSTORE_REPOSITORY_NAME: {
+    description: "RDF Graph Store default repository name",
   },
   NODES_NAMED_GRAPH: {
     description: "The ReSource nodes named graph URI",
@@ -117,64 +158,14 @@ export default {
       `${process.env.OAUTH_BASE_URL}/auth/admin/realms/${process.env.OAUTH_REALM}`,
     defaultValueInProduction: true,
   },
-  APP_PORT: {
-    description: "This is listening port of the application.",
-    defaultValue: 3034,
+  OAUTH_CERTS_URL: {
+    description: "This is the OAUTH token certs URL",
+    defaultValue: () =>
+      `${process.env.OAUTH_BASE_URL}/auth/realms/${process.env.OAUTH_REALM}/protocol/openid-connect/certs`,
     defaultValueInProduction: true,
   },
-  APP_URL: {
-    description: "This is the base url of the application.",
-    defaultValue: () => `http://localhost:${process.env.APP_PORT}`,
-    defaultValueInProduction: true,
-  },
-  RABBITMQ_HOST: {
-    description: "This is RabbitMQ host.",
-    defaultValue: "localhost",
-    defaultValueInProduction: true,
-  },
-  RABBITMQ_PORT: {
-    description: "This is RabbitMQ port.",
-    defaultValue: 5672,
-    defaultValueInProduction: true,
-  },
-  RABBITMQ_LOGIN: {
-    description: "This is RabbitMQ login.",
-    defaultValue: "guest",
-    defaultValueInProduction: true,
-  },
-  RABBITMQ_PASSWORD: {
-    description: "This is RabbitMQ password.",
-    defaultValue: "rspwd!",
-    obfuscate: true,
-    defaultValueInProduction: true,
-  },
-  RABBITMQ_EXCHANGE_NAME: {
-    description: "This is RabbitMQ exchange name.",
-    defaultValue: "local-oep",
-    defaultValueInProduction: true,
-  },
-  RABBITMQ_EXCHANGE_DURABLE: {
-    description: "Is RabbitMQ exchange durable.",
-    defaultValue: "0",
-    defaultValueInProduction: true,
-  },
-  RABBITMQ_RPC_TIMEOUT: {
-    description: "RPC timeout",
-    defaultValue: 30e3,
-    defaultValueInProduction: true,
-  },
-  INDEX_DISABLED: {
-    description: "Is index disabled",
-    defaultValue: "0",
-    defaultValueInProduction: true,
-  },
-  INDEX_PREFIX_TYPES_WITH: {
-    description: "Prefix all index types with a prefix",
-    defaultValue: "local-oep-",
-    defaultValueInProduction: true,
-  },
-  RABBITMQ_LOG_LEVEL: {
-    description: "RabbitMQ log level (DEBUG, ERROR or NONE)",
+  LOG_LEVEL: {
+    description: "Log level (ERROR|DEBUG|TRACE)",
     defaultValue: "ERROR",
     defaultValueInProduction: true,
   },
@@ -198,35 +189,6 @@ export default {
     description: "This is addViseo password salt",
     defaultValue: () => "",
     obfuscate: true,
-    defaultValueInProduction: true,
-  },
-  WEVER_APPLICATION_TOKEN: {
-    description: "Wever application token",
-    obfuscate: true,
-  },
-  WEVER_API_ENDPOINT: {
-    description: "Wever application token",
-    obfuscate: true,
-    defaultValue: "https://api.preprod.wever.team",
-    defaultValueInProduction: true,
-  },
-  WEVER_DIAG_ID: {
-    description: "Wever diag ID",
-    obfuscate: true,
-    defaultValue: 285,
-    defaultValueInProduction: true,
-    exposeInGraphQL: true,
-  },
-  WEVER_DASHBOARD_ID: {
-    description: "Wever dashboard ID",
-    obfuscate: true,
-    defaultValue: 4,
-    defaultValueInProduction: true,
-    exposeInGraphQL: true,
-  },
-  GRECO_BASE_URL: {
-    description: "Greco base URL",
-    defaultValue: "/greco",
     defaultValueInProduction: true,
   },
 };

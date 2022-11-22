@@ -23,3 +23,5 @@ ddf-application.iml
 /.yarnrc.yml
 /.yarn/
 /data/
+/.pnp.cjs
+/.pnp.loader.mjs

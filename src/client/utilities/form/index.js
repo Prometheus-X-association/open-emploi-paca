@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2013-2018 MNEMOTIX <http://www.mnemotix.com/> and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
@@ -13,37 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
-import {
-  ModelDefinitionAbstract,
-  LiteralDefinition,
-  LabelDefinition,
-  LinkDefinition,
-  GraphQLTypeDefinition,
-  MnxOntologies
-} from "@mnemotix/synaptix.js";
-
-export default class RncpDefinition extends ModelDefinitionAbstract {
-  /**
-   * @inheritDoc
-   */
-  static getParentDefinitions() {
-    return [MnxOntologies.mnxSkos.ModelDefinitions.ConceptDefinition];
-  }
-
-  /**
-   * @inheritDoc
-   */
-  static getRdfType() {
-    return "http://ontology.datasud.fr/openemploi/Rncp";
-  }
-
-  /**
-   * @inheritDoc
-   */
-  static getGraphQLDefinition() {
-    return GraphQLTypeDefinition;
-  }
-}
+export {DynamicFormDefinition} from "./DynamicFormDefinition";
+export {normalizeObjectIntoFormInitialValues} from "./normalizeObjectToFormInitialValues";
+export {LinkInputDefinition} from "./LinkInputDefinition";
+export {MixedLinkInputDefinition} from "./MixedLinkInputDefinition";

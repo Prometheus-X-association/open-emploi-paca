@@ -196,20 +196,16 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
               }),
             ],
             limit: 0,
-            getExtraQuery: () => {
-              return {
-                aggs: Object.entries(occupationIds).reduce(
-                  (acc, [index, occupationId]) => {
-                    acc[occupationId] = generateOffersCountDateHistogram({
-                      filter: { term: { occupation: occupationId } },
-                    });
+            aggs: Object.entries(occupationIds).reduce(
+              (acc, [index, occupationId]) => {
+                acc[occupationId] = generateOffersCountDateHistogram({
+                  filter: { term: { occupation: occupationId } },
+                });
 
-                    return acc;
-                  },
-                  {}
-                ),
-              };
-            },
+                return acc;
+              },
+              {}
+            ),
             rawResult: true,
           });
 
@@ -266,20 +262,16 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
               }),
             ],
             limit: 0,
-            getExtraQuery: () => {
-              return {
-                aggs: Object.entries(jobAreaIds).reduce(
-                  (acc, [index, jobAreaId]) => {
-                    acc[jobAreaId] = generateOffersCountDateHistogram({
-                      filter: { term: { zoneEmploi: jobAreaId } },
-                    });
+            aggs: Object.entries(jobAreaIds).reduce(
+              (acc, [index, jobAreaId]) => {
+                acc[jobAreaId] = generateOffersCountDateHistogram({
+                  filter: { term: { zoneEmploi: jobAreaId } },
+                });
 
-                    return acc;
-                  },
-                  {}
-                ),
-              };
-            },
+                return acc;
+              },
+              {}
+            ),
             rawResult: true,
           });
 
@@ -339,16 +331,12 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             }),
           ],
           limit: 0,
-          getExtraQuery: () => {
-            return {
-              aggs: {
-                organizations: {
-                  terms: {
-                    field: "entreprise.nom.keyword",
-                  },
-                },
+          aggs: {
+            organizations: {
+              terms: {
+                field: "entreprise.nom.keyword",
               },
-            };
+            },
           },
           rawResult: true,
         });
@@ -381,18 +369,14 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             }),
           ],
           limit: 0,
-          getExtraQuery: () => {
-            return {
-              aggs: {
-                occupations: {
-                  terms: {
-                    field: OfferDefinition.getLink(
-                      "hasOccupation"
-                    ).getPathInIndex(),
-                  },
-                },
+          aggs: {
+            occupations: {
+              terms: {
+                field: OfferDefinition.getLink(
+                  "hasOccupation"
+                ).getPathInIndex(),
               },
-            };
+            },
           },
           rawResult: true,
         });
@@ -454,20 +438,16 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
               }),
             ],
             limit: 0,
-            getExtraQuery: () => {
-              return {
-                aggs: Object.entries(occupationIds).reduce(
-                  (acc, [index, occupationId]) => {
-                    acc[occupationId] = generateIncomesAvgHistogram({
-                      filter: { term: { occupation: occupationId } },
-                    });
+            aggs: Object.entries(occupationIds).reduce(
+              (acc, [index, occupationId]) => {
+                acc[occupationId] = generateIncomesAvgHistogram({
+                  filter: { term: { occupation: occupationId } },
+                });
 
-                    return acc;
-                  },
-                  {}
-                ),
-              };
-            },
+                return acc;
+              },
+              {}
+            ),
             rawResult: true,
           });
 
@@ -528,20 +508,13 @@ export class OfferGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             }),
           ],
           limit: 0,
-          getExtraQuery: () => {
-            return {
-              aggs: Object.entries(jobAreaIds).reduce(
-                (acc, [index, jobAreaId]) => {
-                  acc[jobAreaId] = generateIncomesAvgHistogram({
-                    filter: { term: { zoneEmploi: jobAreaId } },
-                  });
+          aggs: Object.entries(jobAreaIds).reduce((acc, [index, jobAreaId]) => {
+            acc[jobAreaId] = generateIncomesAvgHistogram({
+              filter: { term: { zoneEmploi: jobAreaId } },
+            });
 
-                  return acc;
-                },
-                {}
-              ),
-            };
-          },
+            return acc;
+          }, {}),
           rawResult: true,
         });
 

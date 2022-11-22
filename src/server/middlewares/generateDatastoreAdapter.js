@@ -17,12 +17,8 @@
  */
 
 import {
-  ExpressApp,
+  SynaptixDatastoreRdfAdapter,
   MnxActionGraphMiddleware,
-  NetworkLayerAMQP,
-  SSOApiClient,
-  SynaptixDatastoreAdapter,
-  SynaptixDatastoreRdfAdapter
 } from "@mnemotix/synaptix.js";
 import kebabCase from "lodash/kebabCase";
 
@@ -32,48 +28,22 @@ import kebabCase from "lodash/kebabCase";
  * @param {ExpressApp} app - The synapix.js ExpressApp instance which will run the application server
  * @param {SSOApiClient} [ssoApiClient]
  * @param {DataModel} dataModel
- * @return {{datastoreAdapter: SynaptixDatastoreAdapter, networkLayer: NetworkLayerAMQP}}
+ * @return {SynaptixDatastoreAdapter}
  */
-export async function generateDatastoreAdapater({
+export function generateDatastoreAdapater({
   ssoApiClient,
   graphMiddlewares,
-  dataModel
+  dataModel,
 } = {}) {
-  /**
-   * Connecting network layer.
-   */
-  const amqpURL = `amqp://${process.env.RABBITMQ_LOGIN}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_HOST}:${process.env.RABBITMQ_PORT}`;
-
-  let networkLayer = new NetworkLayerAMQP(
-    amqpURL,
-    process.env.RABBITMQ_EXCHANGE_NAME,
-    {},
-    {
-      durable: !!parseInt(process.env.RABBITMQ_EXCHANGE_DURABLE || 1)
-    }
-  );
-
-  await networkLayer.connect();
-
-  if (!graphMiddlewares) {
-    graphMiddlewares = [new MnxActionGraphMiddleware()];
-  }
-
   /**
    * Initializing datastore adapter (data layer).
    */
-  const datastoreAdapter = new SynaptixDatastoreRdfAdapter({
-    networkLayer,
+  return new SynaptixDatastoreRdfAdapter({
     modelDefinitionsRegister: dataModel.generateModelDefinitionsRegister(),
     ssoApiClient,
-    graphMiddlewares,
-    nodesTypeFormatter: nodeType => {
+    graphMiddlewares: [new MnxActionGraphMiddleware()],
+    nodesTypeFormatter: (nodeType) => {
       return kebabCase(nodeType);
-    }
+    },
   });
-
-  return {
-    networkLayer,
-    datastoreAdapter
-  };
 }

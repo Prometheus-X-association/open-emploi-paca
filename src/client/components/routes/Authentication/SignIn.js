@@ -2,35 +2,37 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
-import {makeStyles} from "@material-ui/core/styles";
-import {ROUTES} from "../../../routes";
-import {createLink} from "../../../utilities/createLink";
-import {getUserAuthenticationService} from "../../../services/UserAuthenticationService";
-import {Field, Form, Formik} from "formik";
-import {useTranslation} from "react-i18next";
-import {CheckboxWithLabel, TextField} from "formik-material-ui";
-import {useApolloClient} from "@apollo/client";
+import { makeStyles } from "@material-ui/core/styles";
+import { ROUTES } from "../../../routes";
+import { createLink } from "../../../utilities/createLink";
+import { getUserAuthenticationService } from "../../../services/UserAuthenticationService";
+import { Field, Form, Formik } from "formik";
+import { useTranslation } from "react-i18next";
+import { CheckboxWithLabel, TextField } from "formik-material-ui";
+import { useApolloClient } from "@apollo/client";
 import AuthLayout from "./AuthLayout";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
+    margin: theme.spacing(3, 0, 2),
   },
   error: {
     margin: theme.spacing(1, 0, 1),
-    color: theme.palette.error.dark
-  }
+    color: theme.palette.error.dark,
+  },
 }));
 
 export default function SignIn() {
   const classes = useStyles();
-  const {t} = useTranslation();
-  const userAuthenticationService = getUserAuthenticationService({apolloClient: useApolloClient()});
-  const {login, globalErrorMessage} = userAuthenticationService.useLogin();
+  const { t } = useTranslation();
+  const userAuthenticationService = getUserAuthenticationService({
+    apolloClient: useApolloClient(),
+  });
+  const { login, globalErrorMessage } = userAuthenticationService.useLogin();
 
   return (
     <AuthLayout>
@@ -39,25 +41,27 @@ export default function SignIn() {
       </Typography>
       <Formik
         initialValues={{
-          email: localStorage.getItem("rememberMe") || "",
+          username: localStorage.getItem("rememberMe") || "",
           rememberMe: !!localStorage.getItem("rememberMe"),
-          password: ""
+          password: "",
         }}
         validateOnChange={false}
         validateOnBlur={false}
         validationSchema={userAuthenticationService.getLoginValidationSchema()}
-        onSubmit={async (values, {setSubmitting, ...formikOptions}) => {
+        onSubmit={async (values, { setSubmitting, ...formikOptions }) => {
           setSubmitting(true);
 
           if (values.rememberMe) {
-            localStorage.setItem("rememberMe", values.email);
+            localStorage.setItem("rememberMe", values.username);
           } else {
             localStorage.removeItem("rememberMe");
           }
 
-          await login(values, {setSubmitting, ...formikOptions});
-        }}>
-        {({isSubmitting, values, errors}) => {
+          await login(values, { setSubmitting, ...formikOptions });
+        }}
+      >
+        {({ isSubmitting, values, errors }) => {
+          console.log(errors);
           return (
             <Form className={classes.form} noValidate>
               <Field
@@ -66,9 +70,9 @@ export default function SignIn() {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label={t("SIGN_IN.EMAIL")}
-                name="email"
+                id="username"
+                label={t("SIGN_IN.username")}
+                name="username"
                 autoComplete="email"
                 autoFocus
               />
@@ -91,29 +95,46 @@ export default function SignIn() {
                 name="rememberMe"
                 checked={values.rememberMe}
                 color="primary"
-                Label={{label: t("SIGN_IN.REMEMBER_ME")}}
+                Label={{ label: t("SIGN_IN.REMEMBER_ME") }}
               />
 
               <If condition={globalErrorMessage}>
-                <Typography className={classes.error}>{t(globalErrorMessage)}</Typography>
+                <Typography className={classes.error}>
+                  {t(globalErrorMessage)}
+                </Typography>
               </If>
 
-              <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+              >
                 {t("SIGN_IN.SUBMIT")}
               </Button>
 
-              {isSubmitting && <CircularProgress size={24} className={classes.buttonProgress} />}
+              {isSubmitting && (
+                <CircularProgress
+                  size={24}
+                  className={classes.buttonProgress}
+                />
+              )}
 
               <Grid container>
                 <Grid item xs>
                   {createLink({
                     to: ROUTES.PASSWORD_FORGOTTEN,
                     text: t("SIGN_IN.PASSWORD_FORGOTTEN"),
-                    variant: "body2"
+                    variant: "body2",
                   })}
                 </Grid>
                 <Grid item>
-                  {createLink({to: ROUTES.SIGN_UP, text: t("SIGN_IN.REDIRECT_SIGN_UP"), variant: "body2"})}
+                  {createLink({
+                    to: ROUTES.SIGN_UP,
+                    text: t("SIGN_IN.REDIRECT_SIGN_UP"),
+                    variant: "body2",
+                  })}
                 </Grid>
               </Grid>
             </Form>

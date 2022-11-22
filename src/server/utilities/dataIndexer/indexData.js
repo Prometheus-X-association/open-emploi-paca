@@ -141,9 +141,13 @@ export let indexData = async () => {
     environmentDefinition,
   });
 
-  const elasticsearchNode = env.get("ES_CLUSTER_NODE").required().asString();
   const elasticsearchExternalUri = env
     .get("ES_MASTER_URI")
+    .required()
+    .asString();
+  const elasticsearchNode = env
+    .get("ES_CLUSTER_NODE")
+    .default(elasticsearchExternalUri)
     .required()
     .asString();
   const elasticsearchBasicAuthUser = env.get("ES_CLUSTER_USER").asString();
@@ -161,13 +165,12 @@ export let indexData = async () => {
     sniffOnStart: false,
   });
 
-  /** @type {SynaptixDatastoreRdfAdapter} */
-  let { datastoreAdapter } = await generateDatastoreAdapater({
+  const datastoreAdapter = generateDatastoreAdapater({
     graphMiddlewares: [],
     dataModel,
   });
-  /** @type {SynaptixDatastoreRdfSession} */
-  let synaptixSession = datastoreAdapter.getSession({
+
+  const synaptixSession = datastoreAdapter.getSession({
     context: new GraphQLContext({
       anonymous: true,
     }),

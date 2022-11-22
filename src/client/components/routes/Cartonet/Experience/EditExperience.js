@@ -1,8 +1,8 @@
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import dayjs from "dayjs";
-import {makeStyles} from "@material-ui/core/styles";
-import {useTranslation} from "react-i18next";
+import { makeStyles } from "@material-ui/core/styles";
+import { useTranslation } from "react-i18next";
 import {
   DialogActions,
   DialogContent,
@@ -15,63 +15,69 @@ import {
   Tabs,
   Tab,
   Badge,
-  CircularProgress
+  CircularProgress,
 } from "@material-ui/core";
-import {useHistory, useParams} from "react-router-dom";
-import {object} from "yup";
-import {useLazyQuery, useMutation, makeReference} from "@apollo/client";
-import {Form, Formik} from "formik";
-import {useSnackbar} from "notistack";
+import { useHistory, useParams } from "react-router-dom";
+import { object } from "yup";
+import { useLazyQuery, useMutation, makeReference } from "@apollo/client";
+import { Form, Formik } from "formik";
+import { useSnackbar } from "notistack";
 import {
-  prepareMutation,
-  MutationConfig,
   LinkInputDefinition,
-  DynamicFormDefinition
-} from "@mnemotix/synaptix-client-toolkit";
+  DynamicFormDefinition,
+} from "../../../../utilities/form";
+import { prepareMutation, MutationConfig } from "../../../../utilities/apollo";
+import {
+  DatePickerField,
+  FormButtons,
+  TextField,
+  OrganizationPickerField,
+} from "../../../widgets/Form";
+import { WishedOccupations } from "../../Project/WishedOccupations";
+import { AptitudePicker } from "../Aptitudes/AptitudePicker";
+import { gqlOccupationFragment } from "../../Profile/gql/MyProfile.gql";
+import { gqlAptitudeFragment } from "../Aptitudes/gql/Aptitude.gql";
+import { gqlOrganizationFragment } from "../../../widgets/Autocomplete/OrganizationAutocomplete/gql/Organizations.gql";
+import { gqlExperience, gqlExperienceFragment } from "./gql/Experience.gql";
 
-import {DatePickerField, FormButtons, TextField, OrganizationPickerField} from "../../../widgets/Form";
-import {WishedOccupations} from "../../Project/WishedOccupations";
-import {AptitudePicker} from "../Aptitudes/AptitudePicker";
-import {gqlOccupationFragment} from "../../Profile/gql/MyProfile.gql";
-import {gqlAptitudeFragment} from "../Aptitudes/gql/Aptitude.gql";
-import {gqlOrganizationFragment} from "../../../widgets/Autocomplete/OrganizationAutocomplete/gql/Organizations.gql";
-import {gqlExperience, gqlExperienceFragment} from "./gql/Experience.gql";
-
-import {gqlUpdateExperience} from "./gql/UpdateExperience.gql";
-import {gqlCreateExperience} from "./gql/CreateExperience.gql";
-import {ROUTES} from "../../../../routes";
-import {gqlRemoveExperience} from "./gql/RemoveExperience.gql";
-import {LoadingButton} from "../../../widgets/Button/LoadingButton";
-import {CartonetEditLayout} from "../CartonetEditLayout";
-import {Link} from "react-router-dom";
-import {generateCartonetEditExperiencePath, generateCartonetPath} from "../utils/generateCartonetPath";
+import { gqlUpdateExperience } from "./gql/UpdateExperience.gql";
+import { gqlCreateExperience } from "./gql/CreateExperience.gql";
+import { ROUTES } from "../../../../routes";
+import { gqlRemoveExperience } from "./gql/RemoveExperience.gql";
+import { LoadingButton } from "../../../widgets/Button/LoadingButton";
+import { CartonetEditLayout } from "../CartonetEditLayout";
+import { Link } from "react-router-dom";
+import {
+  generateCartonetEditExperiencePath,
+  generateCartonetPath,
+} from "../utils/generateCartonetPath";
 import Experiences from "../Cartography/Experiences";
-import {useLoggedUser} from "../../../../hooks/useLoggedUser";
+import { useLoggedUser } from "../../../../hooks/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   categoryTitle: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   fullscreen: {
-    overflowY: "initial"
+    overflowY: "initial",
   },
   aptitudes: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   onTheFlyExperiences: {
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
   },
   tabs: {
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(-4),
     border: `1px solid ${theme.palette.grey[200]}`,
-    borderBottom: 0
+    borderBottom: 0,
   },
   experiencesContainer: {
-    borderRight: `1px solid ${theme.palette.grey[200]}`
+    borderRight: `1px solid ${theme.palette.grey[200]}`,
   },
   form: {
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
   },
   actions: {
     padding: theme.spacing(1),
@@ -79,17 +85,17 @@ const useStyles = makeStyles((theme) => ({
     background: "white",
     zIndex: 3,
     borderTop: `1px solid ${theme.palette.grey[200]}`,
-    margin: 0
+    margin: 0,
   },
   button: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
   },
   red: {
-    color: theme.palette.error.main
+    color: theme.palette.error.main,
   },
   badge: {
-    margin: theme.spacing(0, 1.5)
-  }
+    margin: theme.spacing(0, 1.5),
+  },
 }));
 
 /**
@@ -97,30 +103,41 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-export default function EditExperience({experienceType = "experience"} = {}) {
+export default function EditExperience({ experienceType = "experience" } = {}) {
   if (!["experience", "training", "hobby"].includes(experienceType)) {
-    throw new Error('experience type must be in ["experience", "training", "hobby"]');
+    throw new Error(
+      'experience type must be in ["experience", "training", "hobby"]'
+    );
   }
 
-  let {id} = useParams();
+  let { id } = useParams();
 
   if (id) {
     id = decodeURIComponent(id);
   }
 
   const classes = useStyles();
-  const {t} = useTranslation();
-  const {enqueueSnackbar} = useSnackbar();
+  const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const selectedAptitudeRefContainer = useRef(null);
   const [editingExperience, setEditingExperience] = useState(null);
 
-  const {user: me} = useLoggedUser() || {};
-  const [getExperience, {data: {experience} = {}, loading: loadingExperience}] = useLazyQuery(gqlExperience);
-  const [createExperience, {loading: savingProfile}] = useMutation(gqlCreateExperience);
-  const [updateExperience, {loading: savingExperience}] = useMutation(gqlUpdateExperience);
-  const [removeExperience, {loading: removingExperience}] = useMutation(gqlRemoveExperience);
+  const { user: me } = useLoggedUser() || {};
+  const [
+    getExperience,
+    { data: { experience } = {}, loading: loadingExperience },
+  ] = useLazyQuery(gqlExperience);
+  const [createExperience, { loading: savingProfile }] = useMutation(
+    gqlCreateExperience
+  );
+  const [updateExperience, { loading: savingExperience }] = useMutation(
+    gqlUpdateExperience
+  );
+  const [removeExperience, { loading: removingExperience }] = useMutation(
+    gqlRemoveExperience
+  );
 
   const saving = savingProfile || savingExperience;
 
@@ -128,8 +145,8 @@ export default function EditExperience({experienceType = "experience"} = {}) {
     if (id) {
       getExperience({
         variables: {
-          id
-        }
+          id,
+        },
       });
     }
   }, [id]);
@@ -137,7 +154,11 @@ export default function EditExperience({experienceType = "experience"} = {}) {
   useEffect(() => {
     if (!id) {
       setEditingExperience(null);
-    } else if (!loadingExperience && experience && experience.id !== editingExperience?.id) {
+    } else if (
+      !loadingExperience &&
+      experience &&
+      experience.id !== editingExperience?.id
+    ) {
       setEditingExperience(experience);
     }
   }, [id, experience]);
@@ -149,13 +170,21 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           <Button
             variant={"contained"}
             component={Link}
-            to={generateCartonetPath({history, route: ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV})}>
+            to={generateCartonetPath({
+              history,
+              route: ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV,
+            })}
+          >
             {t("ACTIONS.PREVIOUS")}
           </Button>
           <Button
             variant={"contained"}
             component={Link}
-            to={generateCartonetPath({history, route: ROUTES.CARTONET_EDIT_APTITUDES})}>
+            to={generateCartonetPath({
+              history,
+              route: ROUTES.CARTONET_EDIT_APTITUDES,
+            })}
+          >
             {t("ACTIONS.NEXT")}
           </Button>
         </>
@@ -163,36 +192,51 @@ export default function EditExperience({experienceType = "experience"} = {}) {
       description={
         <>
           <p>
-            Vous allez pouvoir saisir vos compétences et les affecter à des expériences. Ces expériences peuvent être
-            professionnelles (les différents emplois que vous avez occupés), des formations (scolaires ou non), ou
-            extra-professionnelles (associations, hobbies, …).
+            Vous allez pouvoir saisir vos compétences et les affecter à des
+            expériences. Ces expériences peuvent être professionnelles (les
+            différents emplois que vous avez occupés), des formations (scolaires
+            ou non), ou extra-professionnelles (associations, hobbies, …).
           </p>
           <p className={classes.red}>
             Commencer par renseigner les champs obligatoires * de l’Expérience (
             <Badge badgeContent={"1"} color="error" className={classes.badge} />
             ), puis les Métiers sélectionnés pour l’expérience (
-            <Badge badgeContent={"2"} color="error" className={classes.badge} />) pour enfin Sélectionner les
-            compétences associées à cette expérience (
+            <Badge badgeContent={"2"} color="error" className={classes.badge} />
+            ) pour enfin Sélectionner les compétences associées à cette
+            expérience (
             <Badge badgeContent={"3"} color="error" className={classes.badge} />
             ).
           </p>
           <p>
-            Cette sélection se fait soit sur le pool de compétences déjà saisies (extraites de votre CV ou déjà
-            sélectionnées sur une expérience précédente) soit en lien avec un métier que vous indiquez.
+            Cette sélection se fait soit sur le pool de compétences déjà saisies
+            (extraites de votre CV ou déjà sélectionnées sur une expérience
+            précédente) soit en lien avec un métier que vous indiquez.
           </p>
 
           <Tabs
             value={experienceType}
             className={classes.tabs}
-            onChange={(e, experienceType) => handleNavigateTo(experienceType)}>
-            <Tab value={"experience"} label={t(`CARTONET.EXPERIENCE.PAGE_TITLE`)} />
+            onChange={(e, experienceType) => handleNavigateTo(experienceType)}
+          >
+            <Tab
+              value={"experience"}
+              label={t(`CARTONET.EXPERIENCE.PAGE_TITLE`)}
+            />
             <Tab value={"training"} label={t(`CARTONET.TRAINING.PAGE_TITLE`)} />
             <Tab value={"hobby"} label={t(`CARTONET.HOBBY.PAGE_TITLE`)} />
           </Tabs>
         </>
-      }>
+      }
+    >
       <Grid container className={classes.content}>
-        <Grid xs={3} item container wrap={"nowrap"} direction={"column"} className={classes.experiencesContainer}>
+        <Grid
+          xs={3}
+          item
+          container
+          wrap={"nowrap"}
+          direction={"column"}
+          className={classes.experiencesContainer}
+        >
           <Grid xs item className={classes.experiences}>
             <Experiences aptitudesDisabled experienceType={experienceType} />
           </Grid>
@@ -201,7 +245,8 @@ export default function EditExperience({experienceType = "experience"} = {}) {
               size={"small"}
               variant={"contained"}
               color={"secondary"}
-              onClick={() => handleNavigateTo(experienceType)}>
+              onClick={() => handleNavigateTo(experienceType)}
+            >
               {t("CARTONET.ACTIONS.ADD_EXPERIENCE")}
             </Button>
           </Grid>
@@ -229,12 +274,12 @@ export default function EditExperience({experienceType = "experience"} = {}) {
             description: "",
             startDate: null,
             endDate: null,
-            occupations: {edges: []},
+            occupations: { edges: [] },
             organization: null,
-            aptitudes: {edges: []}
+            aptitudes: { edges: [] },
           }
         }
-        onSubmit={async (values, {setSubmitting, resetForm}) => {
+        onSubmit={async (values, { setSubmitting, resetForm }) => {
           await save(values);
           setSubmitting(false);
           resetForm();
@@ -244,35 +289,57 @@ export default function EditExperience({experienceType = "experience"} = {}) {
         validationSchema={object().shape({
           title: Yup.string().required("Required"),
           startDate: Yup.date().required("Required"),
-          organization: Yup.object().required()
-        })}>
-        {({errors, touched, isValid, dirty, resetForm, values}) => {
+          organization: Yup.object().required(),
+        })}
+      >
+        {({ errors, touched, isValid, dirty, resetForm, values }) => {
           const selectedOccupations = values.occupations;
           return (
             <Form>
-              <Grid container direction={"column"} wrap={"nowrap"} className={classes.editor}>
+              <Grid
+                container
+                direction={"column"}
+                wrap={"nowrap"}
+                className={classes.editor}
+              >
                 <Grid xs item container spacing={6} className={classes.form}>
                   <Grid item xs={12} md={6} container spacing={2}>
                     <Grid item xs={12}>
                       <Grid container alignItems="center">
                         <Grid item xs>
                           <Typography variant={"overline"}>
-                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_DESCRIPTION_LABEL`)}{" "}
+                            {t(
+                              `CARTONET.${experienceType.toUpperCase()}.FORM_DESCRIPTION_LABEL`
+                            )}{" "}
                           </Typography>
                         </Grid>
                         <Grid>
-                          <Badge badgeContent={"1"} color="error" className={classes.badge} />
+                          <Badge
+                            badgeContent={"1"}
+                            color="error"
+                            className={classes.badge}
+                          />
                         </Grid>
                       </Grid>
 
-                      <TextField required name="title" label={t("CARTONET.EXPERIENCE.TITLE")} />
+                      <TextField
+                        required
+                        name="title"
+                        label={t("CARTONET.EXPERIENCE.TITLE")}
+                      />
                     </Grid>
                     <Grid item xs={12}>
-                      <TextField name="description" label={t("CARTONET.EXPERIENCE.DESCRIPTION")} multiline />
+                      <TextField
+                        name="description"
+                        label={t("CARTONET.EXPERIENCE.DESCRIPTION")}
+                        multiline
+                      />
                     </Grid>
                     <Grid item xs={12}>
                       <OrganizationPickerField
-                        label={t(`CARTONET.${experienceType.toUpperCase()}.ORGANIZATION`)}
+                        label={t(
+                          `CARTONET.${experienceType.toUpperCase()}.ORGANIZATION`
+                        )}
                         name={"organization"}
                         creatable={true}
                         required
@@ -280,32 +347,61 @@ export default function EditExperience({experienceType = "experience"} = {}) {
                     </Grid>
                     <Grid item xs={12} container>
                       <Grid item xs={6}>
-                        <DatePickerField required name="startDate" label={t("CARTONET.EXPERIENCE.START_DATE")} />
+                        <DatePickerField
+                          required
+                          name="startDate"
+                          label={t("CARTONET.EXPERIENCE.START_DATE")}
+                        />
                       </Grid>
                       <Grid item xs={6}>
-                        <DatePickerField name="endDate" label={t("CARTONET.EXPERIENCE.END_DATE")} />
+                        <DatePickerField
+                          name="endDate"
+                          label={t("CARTONET.EXPERIENCE.END_DATE")}
+                        />
                       </Grid>
                     </Grid>
 
                     <Grid item xs={12}>
-                      <Grid container alignItems="center" className={classes.categoryTitle}>
+                      <Grid
+                        container
+                        alignItems="center"
+                        className={classes.categoryTitle}
+                      >
                         <Grid item xs>
                           <Typography variant="overline" display="block">
-                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`)}{" "}
+                            {t(
+                              `CARTONET.${experienceType.toUpperCase()}.FORM_OCCUPATIONS_LABEL`
+                            )}{" "}
                           </Typography>
                         </Grid>
                         <Grid>
-                          <Badge badgeContent={"2"} color="error" className={classes.badge} />
+                          <Badge
+                            badgeContent={"2"}
+                            color="error"
+                            className={classes.badge}
+                          />
                         </Grid>
                       </Grid>
 
-                      <WishedOccupations dense name={"occupations"} includeLeafOccupations={true} />
+                      <WishedOccupations
+                        dense
+                        name={"occupations"}
+                        includeLeafOccupations={true}
+                      />
                     </Grid>
 
-                    <Grid item xs={12} container spacing={2} className={classes.aptitudes}>
+                    <Grid
+                      item
+                      xs={12}
+                      container
+                      spacing={2}
+                      className={classes.aptitudes}
+                    >
                       <Grid item xs={12}>
                         <Typography variant={"overline"}>
-                          {t(`CARTONET.${experienceType.toUpperCase()}.FORM_APTITUDES_LABEL`)}
+                          {t(
+                            `CARTONET.${experienceType.toUpperCase()}.FORM_APTITUDES_LABEL`
+                          )}
                         </Typography>
 
                         <div ref={selectedAptitudeRefContainer}></div>
@@ -318,11 +414,17 @@ export default function EditExperience({experienceType = "experience"} = {}) {
                       <Grid container alignItems="center">
                         <Grid item xs>
                           <Typography variant={"overline"}>
-                            {t(`CARTONET.${experienceType.toUpperCase()}.FORM_EXISTING_APTITUDES_LABEL`)}
+                            {t(
+                              `CARTONET.${experienceType.toUpperCase()}.FORM_EXISTING_APTITUDES_LABEL`
+                            )}
                           </Typography>
                         </Grid>
                         <Grid>
-                          <Badge badgeContent={"3"} color="error" className={classes.badge} />
+                          <Badge
+                            badgeContent={"3"}
+                            color="error"
+                            className={classes.badge}
+                          />
                         </Grid>
                       </Grid>
 
@@ -330,24 +432,42 @@ export default function EditExperience({experienceType = "experience"} = {}) {
                         dense
                         name={"aptitudes"}
                         filterByRelatedOccupationIds={selectedOccupations.edges.map(
-                          ({node: occupation}) => occupation.id
+                          ({ node: occupation }) => occupation.id
                         )}
-                        selectedAptitudeRefContainer={selectedAptitudeRefContainer}
+                        selectedAptitudeRefContainer={
+                          selectedAptitudeRefContainer
+                        }
                       />
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid item container className={classes.actions} justify={"flex-end"}>
+                <Grid
+                  item
+                  container
+                  className={classes.actions}
+                  justify={"flex-end"}
+                >
                   <If condition={editingExperience}>
                     <Grid item className={classes.button}>
-                      <Button variant={"contained"} color={"secondary"} onClick={() => setDeleteModalOpen(true)}>
+                      <Button
+                        variant={"contained"}
+                        color={"secondary"}
+                        onClick={() => setDeleteModalOpen(true)}
+                      >
                         {t("ACTIONS.DELETE")}
                       </Button>
-                      <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
-                        <DialogTitle>{t("CARTONET.EXPERIENCE.REMOVE")}</DialogTitle>
+                      <Dialog
+                        open={deleteModalOpen}
+                        onClose={() => setDeleteModalOpen(false)}
+                      >
+                        <DialogTitle>
+                          {t("CARTONET.EXPERIENCE.REMOVE")}
+                        </DialogTitle>
                         <DialogContent>
                           <DialogContentText>
-                            {t("CARTONET.EXPERIENCE.REMOVE_SURE", {name: editingExperience.title})}
+                            {t("CARTONET.EXPERIENCE.REMOVE_SURE", {
+                              name: editingExperience.title,
+                            })}
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>
@@ -355,10 +475,13 @@ export default function EditExperience({experienceType = "experience"} = {}) {
                             loading={removingExperience}
                             variant={"contained"}
                             color={"secondary"}
-                            onClick={handleRemove}>
+                            onClick={handleRemove}
+                          >
                             {t("ACTIONS.DELETE")}
                           </LoadingButton>
-                          <Button onClick={() => setDeleteModalOpen(false)}>{t("ACTIONS.CANCEL")}</Button>
+                          <Button onClick={() => setDeleteModalOpen(false)}>
+                            {t("ACTIONS.CANCEL")}
+                          </Button>
                         </DialogActions>
                       </Dialog>
                     </Grid>
@@ -393,9 +516,9 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           inputName: "organizationInput",
           targetObjectFormDefinition: new DynamicFormDefinition({
             mutationConfig: new MutationConfig({
-              gqlFragment: gqlOrganizationFragment
-            })
-          })
+              gqlFragment: gqlOrganizationFragment,
+            }),
+          }),
         }),
         new LinkInputDefinition({
           name: "occupations",
@@ -403,9 +526,9 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           isPlural: true,
           targetObjectFormDefinition: new DynamicFormDefinition({
             mutationConfig: new MutationConfig({
-              gqlFragment: gqlOccupationFragment
-            })
-          })
+              gqlFragment: gqlOccupationFragment,
+            }),
+          }),
         }),
         new LinkInputDefinition({
           name: "aptitudes",
@@ -413,50 +536,50 @@ export default function EditExperience({experienceType = "experience"} = {}) {
           isPlural: true,
           targetObjectFormDefinition: new DynamicFormDefinition({
             mutationConfig: new MutationConfig({
-              gqlFragment: gqlAptitudeFragment
-            })
+              gqlFragment: gqlAptitudeFragment,
+            }),
           }),
           nestedLinks: [
             new LinkInputDefinition({
               name: "skill",
-              inputName: "skillInput"
+              inputName: "skillInput",
             }),
             new LinkInputDefinition({
               name: "person",
-              inputName: "personInput"
+              inputName: "personInput",
             }),
             new LinkInputDefinition({
               name: "rating",
-              inputName: "ratingInput"
-            })
+              inputName: "ratingInput",
+            }),
           ],
           modifyValue: (aptitude) => {
             if (aptitude.skill?.aptitudeId) {
               return {
-                id: aptitude.skill?.aptitudeId
+                id: aptitude.skill?.aptitudeId,
               };
             } else {
               return {
                 ...aptitude,
-                person: {id: me.id},
+                person: { id: me.id },
                 rating: {
                   range: 5,
-                  value: 0
-                }
+                  value: 0,
+                },
               };
             }
-          }
-        })
+          },
+        }),
       ],
-      gqlFragment: gqlExperienceFragment
+      gqlFragment: gqlExperienceFragment,
     });
   }
 
   async function save(mutatingExperience) {
-    const {objectInput, updateCache} = prepareMutation({
+    const { objectInput, updateCache } = prepareMutation({
       initialObject: editingExperience,
       mutatedObject: mutatingExperience,
-      mutationConfig: getMutationConfig()
+      mutationConfig: getMutationConfig(),
     });
 
     objectInput.experienceType = experienceType;
@@ -466,30 +589,35 @@ export default function EditExperience({experienceType = "experience"} = {}) {
         variables: {
           input: {
             objectId: editingExperience.id,
-            objectInput
-          }
+            objectInput,
+          },
         },
         update: (...props) => {
           updateCache(...props);
-        }
+        },
       });
     } else {
-      const {data: {createExperience: {createdObject = {}} = {}} = {}} = await createExperience({
+      const {
+        data: { createExperience: { createdObject = {} } = {} } = {},
+      } = await createExperience({
         variables: {
           input: {
             objectInput: {
               ...objectInput,
               personInput: {
-                id: me.id
-              }
-            }
-          }
+                id: me.id,
+              },
+            },
+          },
         },
-        update: (cache, {data: {createExperience: {createdObject} = {}} = {}}) => {
+        update: (
+          cache,
+          { data: { createExperience: { createdObject } = {} } = {} }
+        ) => {
           cache.modify({
             id: cache.identify(makeReference("ROOT_QUERY")),
             fields: {
-              experiences(connection, {readField}) {
+              experiences(connection, { readField }) {
                 let mutatedEdges = [...connection.edges];
                 const newExperienceEdge = {
                   __typename: "ExperienceEdge",
@@ -499,13 +627,16 @@ export default function EditExperience({experienceType = "experience"} = {}) {
                     data: {
                       id: createdObject.id,
                       experienceType,
-                      ...mutatingExperience
-                    }
-                  })
+                      ...mutatingExperience,
+                    },
+                  }),
                 };
 
                 let position = mutatedEdges.findIndex((mutatedEdge) => {
-                  const startDate = readField("startDate", readField("node", mutatedEdge));
+                  const startDate = readField(
+                    "startDate",
+                    readField("node", mutatedEdge)
+                  );
                   return dayjs(startDate).isAfter(mutatingExperience.startDate);
                 });
 
@@ -517,12 +648,12 @@ export default function EditExperience({experienceType = "experience"} = {}) {
 
                 return {
                   ...connection,
-                  edges: mutatedEdges
+                  edges: mutatedEdges,
                 };
-              }
-            }
+              },
+            },
           });
-        }
+        },
       });
 
       mutatingExperience.id = createdObject.id;
@@ -532,15 +663,15 @@ export default function EditExperience({experienceType = "experience"} = {}) {
     handleSaveCompleted();
   }
 
-  function handleSaveCompleted({message} = {}) {
+  function handleSaveCompleted({ message } = {}) {
     enqueueSnackbar(message || t("ACTIONS.SUCCESS"), {
-      variant: "success"
+      variant: "success",
     });
   }
 
   function handleRemoveCompleted() {
     handleSaveCompleted({
-      message: t("ACTIONS.SUCCESS_DELETE")
+      message: t("ACTIONS.SUCCESS_DELETE"),
     });
   }
 
@@ -549,24 +680,27 @@ export default function EditExperience({experienceType = "experience"} = {}) {
       await removeExperience({
         variables: {
           input: {
-            objectId: editingExperience.id
-          }
+            objectId: editingExperience.id,
+          },
         },
         update: (cache) => {
           cache.modify({
             id: cache.identify(makeReference("ROOT_QUERY")),
             fields: {
-              experiences(connection, {readField}) {
+              experiences(connection, { readField }) {
                 return {
                   ...connection,
                   edges: connection.edges.filter((experienceEdge) => {
-                    return editingExperience.id !== readField("id", readField("node", experienceEdge));
-                  })
+                    return (
+                      editingExperience.id !==
+                      readField("id", readField("node", experienceEdge))
+                    );
+                  }),
                 };
-              }
-            }
+              },
+            },
           });
-        }
+        },
       });
 
       handleNavigateTo(experienceType);
@@ -580,7 +714,7 @@ export default function EditExperience({experienceType = "experience"} = {}) {
     history.push(
       generateCartonetPath({
         route: ROUTES[`CARTONET_EDIT_${experienceType.toUpperCase()}`],
-        history
+        history,
       })
     );
     setEditingExperience(null);

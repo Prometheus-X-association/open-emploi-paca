@@ -1,16 +1,12 @@
-import {getUserAuthenticationService} from "../services/UserAuthenticationService";
-import {useApolloClient} from "@apollo/client";
+import { getUserAuthenticationService } from "../services/UserAuthenticationService";
+import { useApolloClient } from "@apollo/client";
 
 /**
- * @param {UserAuthenticationService} [userAuthenticationService]
- *  @return {{isLogged: boolean, loading: any, user: object, isContributor: boolean, isEditor: boolean, isAdmin: boolean, useLogout: Function}}
+ *  @param {UserAuthenticationService} [userAuthenticationService]
+ *  @return {object}
  */
-export function useLoggedUser({userAuthenticationService} = {}) {
-  if (!userAuthenticationService) {
-    userAuthenticationService = getUserAuthenticationService({
-      apolloClient: useApolloClient()
-    });
-  }
+export function useLoggedUser({ userAuthenticationService } = {}) {
+  const apolloClient = useApolloClient();
 
-  return userAuthenticationService.useLoggedUser();
+  return getUserAuthenticationService({ apolloClient }).useLoggedUser();
 }

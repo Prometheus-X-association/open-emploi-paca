@@ -1,8 +1,4 @@
-import merge from "lodash/merge";
-import { frLocale as SynaptixClientToolkitFrLocale } from "@mnemotix/synaptix-client-toolkit";
-import { locales as grecoLocales } from "@mnemotix/koncept-greco/locales";
-
-export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
+export const fr = {
   ACTIONS: {
     ADD: "Ajouter",
     CANCEL: "Annuler",
@@ -376,4 +372,25 @@ export const fr = merge(grecoLocales.fr, SynaptixClientToolkitFrLocale, {
   RESET_PASSWORD: {
     CONFIRM: "Réinitialiser mon mot de passe",
   },
-});
+  "SYNAPTIX-CLIENT-TOOLKIT": {
+    FIELD_ERRORS: {
+      REQUIRED: "Champ obligatoire",
+      INVALID_EMAIL: "Format de l'adresse de courriel invalide",
+      PASSWORD_TOO_SHORT: "Mot de passe trop court",
+      EMAIL_ALREADY_REGISTERED: "Cette adresse de courriel est déjà utilisée",
+      PASSWORDS_DO_NOT_MATCH:
+        "La confirmation ne correspond pas au nouveau mot de passe",
+      WRONG_OLD_PASSWORD: "L'ancien mot de passe est incorrect",
+    },
+    GENERAL_ERRORS: {
+      FORM_VALIDATION_ERROR: "Certains champs sont invalides",
+      UNEXPECTED_ERROR:
+        "Un problème non identifié nous empêche d'effectuer cette action. Réessayez plus tard",
+      INVALID_CREDENTIALS: "Ces identifiants ne sont pas valides",
+      USER_MUST_BE_AUTHENTICATED:
+        "Vous devez être connecté avec un compte utilisateur pour effectuer cette action",
+      USER_NOT_ALLOWED:
+        "Vous n'avez pas la persmission d'effectuer cette action",
+    },
+  },
+};

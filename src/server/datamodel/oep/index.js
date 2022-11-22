@@ -17,35 +17,20 @@
  */
 
 import { DataModel } from "@mnemotix/synaptix.js";
-import CertifinfoDefinition from "./CertifinfoDefinition.js";
-import FormaCodeDefinition from "./FormaCodeDefinition.js";
-import KnowledgeDefinition from "./KnowledgeDefinition.js";
-import NsfDefinition from "./NsfDefinition.js";
-import PrerequisiteDefinition from "./PrerequisiteDefinition.js";
-import RncpDefinition from "./RncpDefinition.js";
-import SkillGroupDefinition from "./SkillGroupDefinition.js";
 import TrainingDefinition from "./TrainingDefinition.js";
 import PersonDefinition from "../mnx/PersonDefinition";
 import JobAreaDefinition from "./JobAreaDefinition";
 import AddressDefinition from "../mnx/AddressDefinition";
-import {AnalysisDefinition} from "./AnalysisDefinition";
+import { AnalysisDefinition } from "./AnalysisDefinition";
 
 export let OepModelDefinitions = {
-  CertifinfoDefinition,
-  FormaCodeDefinition,
   JobAreaDefinition,
-  KnowledgeDefinition,
-  NsfDefinition,
-  PrerequisiteDefinition,
-  RncpDefinition,
-  SkillGroupDefinition,
   TrainingDefinition,
   PersonDefinition,
   AddressDefinition,
-  AnalysisDefinition
+  AnalysisDefinition,
 };
 
-
 export let oepDataModel = new DataModel({
-  modelDefinitions: OepModelDefinitions
+  modelDefinitions: OepModelDefinitions,
 });

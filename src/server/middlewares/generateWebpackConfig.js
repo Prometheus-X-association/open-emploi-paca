@@ -20,8 +20,8 @@ export function generateWebpackConfig({
   assetsPath = "a/",
   jsAssetsPath = "js/",
   htmlTemplatePath,
-  entries
-} ) {
+  entries,
+}) {
   let isDev = process.env.NODE_ENV !== "production";
   let isProd = !isDev;
   let isCI = !!process.env.CI;
@@ -33,7 +33,7 @@ export function generateWebpackConfig({
   let devtool = isDev ? "cheap-module-source-map" : false;
 
   /** entry **/
-  let entry = entries.reduce((acc, {name, entry}) => {
+  let entry = entries.reduce((acc, { name, entry }) => {
     acc[name] = entry;
     return acc;
   }, {});
@@ -43,72 +43,66 @@ export function generateWebpackConfig({
     path: distPath,
     filename: jsAssetsPath + (isDev ? "[name].js" : "[name].[hash].js"),
     chunkFilename: jsAssetsPath + (isDev ? "[name].js" : "[name].[hash].js"),
-    publicPath: "/"
+    publicPath: "/",
   };
 
   /** plugins **/
   let plugins = [
     new CleanWebpackPlugin(),
     ...(!isCI ? [new webpack.ProgressPlugin()] : []),
-    ...(entries.map(({html}) => (
-      new HtmlWebpackPlugin({
-        inject: "body",
-        ...html
-      })
-    ))),
+    ...entries.map(
+      ({ html }) =>
+        new HtmlWebpackPlugin({
+          inject: "body",
+          ...html,
+        })
+    ),
     ...(isProd
       ? [
           new MiniCssExtractPlugin({
             filename: "[name].[hash].css",
-            chunkFilename: "[id].[hash].css"
+            chunkFilename: "[id].[hash].css",
           }),
           new CompressionPlugin({
             filename: "[path][base].gz",
             algorithm: "gzip",
             test: /\.js$|\.css$|\.html$/,
             threshold: 10240,
-            minRatio: 0.8
+            minRatio: 0.8,
           }),
           new CompressionPlugin({
             filename: "[path][base].br",
             algorithm: "brotliCompress",
             test: /\.(js|css|html|svg)$/,
             compressionOptions: {
-              level: 11
+              level: 11,
             },
             threshold: 10240,
-            minRatio: 0.8
-          })
+            minRatio: 0.8,
+          }),
         ]
       : []),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
       SYNAPTIX_USER_SESSION_COOKIE_NAME: "SNXID",
-      THUMBOR_BASE_URL: ""
-    })
+      THUMBOR_BASE_URL: "",
+    }),
   ];
 
   /** optimization **/
   let optimization = {
     splitChunks: {
       cacheGroups: {
-        greco: {
-          test: /[\\/]@mnemotix\/koncept-greco[\\/]/,
-          name: "greco",
-          chunks: "all"
-        },
         vendors: {
           test(module) {
-            return (
-              module.resource && module.resource.includes(`.yarn/cache`)
-            );
+            return module.resource && module.resource.includes(`.yarn/cache`);
           },
           name: "vendors",
-          chunks: "all"
-        }
-      }
-    }
+          chunks: "all",
+        },
+      },
+    },
   };
 
   if (isProd) {
@@ -116,7 +110,7 @@ export function generateWebpackConfig({
     optimization.minimizer = [
       new TerserPlugin({
         extractComments: true,
-      })
+      }),
     ];
   }
 
@@ -132,8 +126,8 @@ export function generateWebpackConfig({
       {
         test: /\.m?js$/,
         resolve: {
-          fullySpecified: false
-        }
+          fullySpecified: false,
+        },
       },
       {
         test: /\.js$/,
@@ -142,41 +136,44 @@ export function generateWebpackConfig({
           {
             loader: require.resolve("babel-loader"),
             options: {
-              rootMode: "upward"
-            }
-          }
-        ]
+              rootMode: "upward",
+            },
+          },
+        ],
       },
       {
         test: /\.css$/i,
         exclude: /node_modules\/wever/,
-        use: [require.resolve("style-loader"), require.resolve("css-loader")]
+        use: [require.resolve("style-loader"), require.resolve("css-loader")],
       },
       {
         test: /\.css$/i,
         include: /node_modules\/wever/,
-        use: [require.resolve("style-loader"), {
-          loader: require.resolve("css-loader"),
-          options: {
-            url: false
-          }
-        }]
+        use: [
+          require.resolve("style-loader"),
+          {
+            loader: require.resolve("css-loader"),
+            options: {
+              url: false,
+            },
+          },
+        ],
       },
       {
         test: /\.(jpe?g|png|gif|svg|ico|woff|woff2|eot|ttf)$/i,
         use: {
           loader: require.resolve("file-loader"),
           options: {
-            name:  "[name].[hash].[ext]",
-            outputPath: assetsPath
-          }
-        }
+            name: "[name].[hash].[ext]",
+            outputPath: assetsPath,
+          },
+        },
       },
       {
         test: /\.md/,
-        use: require.resolve("raw-loader")
-      }
-    ]
+        use: require.resolve("raw-loader"),
+      },
+    ],
   };
 
   return {
@@ -191,20 +188,20 @@ export function generateWebpackConfig({
       extensions: [
         ".js",
         ".json" /* needed because some dependencies use { import './Package' } expecting to resolve Package.json */,
-        ".css" /* for libraries shipping ES6 module to work */
+        ".css" /* for libraries shipping ES6 module to work */,
       ],
       fallback: {
         // This is to avoid the error "BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default."
-        "path": require.resolve("path-browserify"),
-        "url": require.resolve("url"),
-        "events": require.resolve("events")
-      }
+        path: false,
+        url: false,
+        events: require.resolve("events"),
+      },
     },
     cache: {
-      type: 'filesystem'
+      type: "filesystem",
     },
     performance: {
-      hints: false
-    }
+      hints: false,
+    },
   };
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2013-2018 MNEMOTIX <http://www.mnemotix.com/> and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
@@ -13,37 +13,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
-import {
-  ModelDefinitionAbstract,
-  LiteralDefinition,
-  LabelDefinition,
-  LinkDefinition,
-  GraphQLTypeDefinition,
-  MnxOntologies
-} from "@mnemotix/synaptix.js";
+import merge from "lodash/merge";
+/**
+ * @param object
+ * @param {string[]} scalarInputNames - object property names that need to be normalized
+ * @return {*}
+ */
+export function normalizeObjectIntoFormInitialValues({object, scalarInputNames = []} = {}){
+  let normalizedObject = merge({}, object);
 
-export default class NsfDefinition extends ModelDefinitionAbstract {
-  /**
-   * @inheritDoc
-   */
-  static getParentDefinitions() {
-    return [MnxOntologies.mnxSkos.ModelDefinitions.ConceptDefinition];
+  for (let prop of scalarInputNames) {
+    const propValue = normalizedObject[prop];
+    const isTranslatedProp = normalizedObject[`${prop}Translated`];
+
+    if (propValue && isTranslatedProp === false) {
+      normalizedObject[`${prop}Placeholder`] = normalizedObject[prop];
+      normalizedObject[prop] = "";
+    } else if (!propValue) {
+      normalizedObject[prop] = "";
+    }
   }
 
-  /**
-   * @inheritDoc
-   */
-  static getRdfType() {
-    return "http://ontology.datasud.fr/openemploi/Nsf";
-  }
-
-  /**
-   * @inheritDoc
-   */
-  static getGraphQLDefinition() {
-    return GraphQLTypeDefinition;
-  }
+  return normalizedObject;
 }

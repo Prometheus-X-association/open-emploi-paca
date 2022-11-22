@@ -127,7 +127,7 @@ export class SkillGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery 
             ],
             rawResult: true,
             limit: 1000,
-            getExtraQuery: () => {
+            getExtraQueryParams: () => {
               return {
                 _source: {
                   includes: [skillLabelPath],

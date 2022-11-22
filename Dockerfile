@@ -8,7 +8,7 @@ RUN mkdir -p /opt/app
 WORKDIR /opt/app
 ADD . /opt/app
 ENV NODE_ENV production
-#RUN yarn set version berry
+RUN yarn set version berry && yarn set version 3.1
 RUN yarn install
 RUN yarn build:prod
 CMD yarn run start:prod

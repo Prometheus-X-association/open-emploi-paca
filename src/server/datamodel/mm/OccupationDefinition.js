@@ -65,8 +65,16 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getLinks() {
+    let parentLinks = super.getLinks();
+    let indexOf = parentLinks.findIndex(
+      (link) => link.getLinkName() === "hasTagging"
+    );
+    if (indexOf > 0) {
+      parentLinks.splice(indexOf, 1);
+    }
+
     return [
-      ...super.getLinks(),
+      ...parentLinks,
       new LinkDefinition({
         linkName: "hasAward",
         rdfObjectProperty: "mm:isOccupationOf",

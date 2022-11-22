@@ -16,7 +16,7 @@
  *
  */
 
-import { DataModel, ExpressApp, SSOApiClient } from "@mnemotix/synaptix.js";
+import { DataModel } from "@mnemotix/synaptix.js";
 import { generateDatastoreAdapater } from "./generateDatastoreAdapter";
 import { generateDataModel } from "../datamodel/generateDataModel";
 
@@ -32,17 +32,16 @@ export function serveGraphQL({ extraDataModels, environmentDefinition }) {
    * @param {ExpressApp} app - The synapix.js ExpressApp instance which will run the application server
    * @param {SSOApiClient} ssoApiClient
    */
-  return async ({ app, ssoApiClient }) => {
+  return async ({ ssoApiClient }) => {
     const dataModel = generateDataModel({
       extraDataModels,
-      environmentDefinition
-    });
-    const { networkLayer, datastoreAdapter } = await generateDatastoreAdapater({
-      ssoApiClient,
-      dataModel
+      environmentDefinition,
     });
 
-    app.addNetworkLayer({ networkLayer });
+    const datastoreAdapter = generateDatastoreAdapater({
+      ssoApiClient,
+      dataModel,
+    });
 
     /**
      * Initializing GraphQL endpoints
@@ -53,8 +52,8 @@ export function serveGraphQL({ extraDataModels, environmentDefinition }) {
         graphQLSchema: dataModel.generateExecutableSchema(),
         datastoreAdapter,
         datastoreAdapterKey: "default",
-        acceptAnonymousRequest: true
-      }
+        acceptAnonymousRequest: true,
+      },
     ];
   };
 }

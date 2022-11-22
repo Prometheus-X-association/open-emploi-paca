@@ -63,36 +63,39 @@ export class AnalysisGraphQLTypeQuery extends GraphQLTypeQuery {
           synaptixSession.normalizeAbsoluteUri({ uri: skillId })
         );
 
-        try {
-          const result = await synaptixSession
-            .getDataPublisher()
-            .publish("ami.analyze.global", {
-              offerIndex: [
-                `${env
-                  .get("INDEX_PREFIX_TYPES_WITH")
-                  .asString()}${OfferDefinition.getIndexType()}`,
-              ],
-              formationIndex: [
-                `${env
-                  .get("INDEX_PREFIX_TYPES_WITH")
-                  .asString()}${TrainingDefinition.getIndexType()}`,
-              ],
-              skillIndex: [
-                `${env
-                  .get("INDEX_PREFIX_TYPES_WITH")
-                  .asString()}${SkillDefinition.getIndexType()}`,
-              ],
-              zoneEmploiUri: jobAreaIds,
-              occupationUri: occupationIds,
-              skillUser: skillIds,
-              dategte: getTrainingsLowerBoundDate().toISOString(),
-              datelte: getTrainingsUpperBoundDate().toISOString(),
-            });
+        // Disconnected.
+        // try {
+        //   const result = await synaptixSession
+        //     .getDataPublisher()
+        //     .publish("ami.analyze.global", {
+        //       offerIndex: [
+        //         `${env
+        //           .get("INDEX_PREFIX_TYPES_WITH")
+        //           .asString()}${OfferDefinition.getIndexType()}`,
+        //       ],
+        //       formationIndex: [
+        //         `${env
+        //           .get("INDEX_PREFIX_TYPES_WITH")
+        //           .asString()}${TrainingDefinition.getIndexType()}`,
+        //       ],
+        //       skillIndex: [
+        //         `${env
+        //           .get("INDEX_PREFIX_TYPES_WITH")
+        //           .asString()}${SkillDefinition.getIndexType()}`,
+        //       ],
+        //       zoneEmploiUri: jobAreaIds,
+        //       occupationUri: occupationIds,
+        //       skillUser: skillIds,
+        //       dategte: getTrainingsLowerBoundDate().toISOString(),
+        //       datelte: getTrainingsUpperBoundDate().toISOString(),
+        //     });
+        //
+        //   return result;
+        // } catch (e) {
+        //   return [];
+        // }
 
-          return result;
-        } catch (e) {
-          return [];
-        }
+        return [];
       },
     });
   }

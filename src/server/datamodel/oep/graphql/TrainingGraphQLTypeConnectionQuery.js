@@ -174,26 +174,22 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
             }),
           ],
           limit: 0,
-          getExtraQuery: () => {
-            return {
-              aggs: Object.entries(occupationIds).reduce(
-                (acc, [index, occupationId]) => {
-                  acc[occupationId] = generateTrainingsCountDateHistogram({
-                    filter: {
-                      term: {
-                        [TrainingDefinition.getLink(
-                          "hasMainOccupation"
-                        ).getPathInIndex()]: occupationId,
-                      },
-                    },
-                  });
-
-                  return acc;
+          aggs: Object.entries(occupationIds).reduce(
+            (acc, [index, occupationId]) => {
+              acc[occupationId] = generateTrainingsCountDateHistogram({
+                filter: {
+                  term: {
+                    [TrainingDefinition.getLink(
+                      "hasMainOccupation"
+                    ).getPathInIndex()]: occupationId,
+                  },
                 },
-                {}
-              ),
-            };
-          },
+              });
+
+              return acc;
+            },
+            {}
+          ),
           rawResult: true,
         });
 
@@ -263,26 +259,19 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
             }),
           ],
           limit: 0,
-          getExtraQuery: () => {
-            return {
-              aggs: Object.entries(jobAreaIds).reduce(
-                (acc, [index, jobAreaId]) => {
-                  acc[jobAreaId] = generateTrainingsCountDateHistogram({
-                    filter: {
-                      term: {
-                        [TrainingDefinition.getLink(
-                          "hasJobArea"
-                        ).getPathInIndex()]: jobAreaId,
-                      },
-                    },
-                  });
-
-                  return acc;
+          aggs: Object.entries(jobAreaIds).reduce((acc, [index, jobAreaId]) => {
+            acc[jobAreaId] = generateTrainingsCountDateHistogram({
+              filter: {
+                term: {
+                  [TrainingDefinition.getLink(
+                    "hasJobArea"
+                  ).getPathInIndex()]: jobAreaId,
                 },
-                {}
-              ),
-            };
-          },
+              },
+            });
+
+            return acc;
+          }, {}),
           rawResult: true,
         });
 
@@ -338,16 +327,12 @@ export class TrainingGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQue
             }),
           ],
           limit: 0,
-          getExtraQuery: () => {
-            return {
-              aggs: {
-                organizations: {
-                  terms: {
-                    field: "organizationName.keyword",
-                  },
-                },
+          aggs: {
+            organizations: {
+              terms: {
+                field: "organizationName.keyword",
               },
-            };
+            },
           },
           rawResult: true,
         });

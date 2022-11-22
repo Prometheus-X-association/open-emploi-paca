@@ -20,10 +20,9 @@ import {
   LinkDefinition,
   LinkPath,
   ModelDefinitionAbstract,
+  MnxOntologies,
 } from "@mnemotix/synaptix.js";
 import AptitudeDefinition from "../mm/AptitudeDefinition";
-import KnowledgeDefinition from "../oep/KnowledgeDefinition";
-import SkillGroupDefinition from "../oep/SkillGroupDefinition";
 import OccupationDefinition from "./OccupationDefinition";
 import { SkillGraphQLDefinition } from "./graphql/SkillGraphQLDefinition";
 import PersonDefinition from "../mnx/PersonDefinition";
@@ -33,7 +32,7 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getParentDefinitions() {
-    return [KnowledgeDefinition];
+    return [MnxOntologies.mnxSkos.ModelDefinitions.ConceptDefinition];
   }
 
   /**
@@ -58,6 +57,14 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
    * @inheritDoc
    */
   static getLinks() {
+    let parentLinks = super.getLinks();
+    let indexOf = parentLinks.findIndex(
+      (link) => link.getLinkName() === "hasTagging"
+    );
+    if (indexOf > 0) {
+      parentLinks.splice(indexOf, 1);
+    }
+
     const occupationLink = new LinkDefinition({
       linkName: "hasOccupation",
       rdfObjectProperty: "mm:hasOccupation",
@@ -76,25 +83,14 @@ export default class SkillDefinition extends ModelDefinitionAbstract {
     });
 
     return [
-      ...super.getLinks(),
+      ...parentLinks,
       occupationLink,
       aptitudeLink,
       new LinkDefinition({
-        linkName: "isMemberOf",
-        rdfObjectProperty: "ami:memberOf",
-        relatedModelDefinition: SkillGroupDefinition,
-        isPlural: true,
-        graphQLInputName: "skillGroupInputs",
-      }),
-      new LinkDefinition({
         linkName: "hasOccupationCategory",
-        linkPath: new LinkPath()
-          .step({ linkDefinition: occupationLink })
-          .step({
-            linkDefinition: OccupationDefinition.getLink(
-              "hasRelatedOccupation"
-            ),
-          }),
+        linkPath: new LinkPath().step({ linkDefinition: occupationLink }).step({
+          linkDefinition: OccupationDefinition.getLink("hasRelatedOccupation"),
+        }),
         relatedModelDefinition: OccupationDefinition,
         isPlural: true,
         inIndexOnly: true,
