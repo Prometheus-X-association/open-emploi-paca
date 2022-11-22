@@ -8,11 +8,11 @@ import {
   PropertyFilter,
   LinkFilter,
 } from "@mnemotix/synaptix.js";
-import OfferDefinition from "../OfferDefinition";
+import OfferDefinition from "./OfferDefinition";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import OccupationDefinition from "../OccupationDefinition";
+import OccupationDefinition from "./OccupationDefinition";
 import env from "env-var";
 dayjs.extend(weekOfYear);
 dayjs.extend(advancedFormat);

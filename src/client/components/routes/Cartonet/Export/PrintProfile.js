@@ -1,9 +1,9 @@
-import {Fragment, useEffect, useState} from "react";
-import {makeStyles} from "@material-ui/core/styles";
-import {useTranslation} from "react-i18next";
-import {useLazyQuery, useQuery} from "@apollo/client";
-import {gqlExhaustiveExperiences} from "../Experience/gql/Experiences.gql";
-import {gqlExhautiveAptitudes} from "../Aptitudes/gql/Aptitudes.gql";
+import { Fragment, useEffect, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { useTranslation } from "react-i18next";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { gqlExhaustiveExperiences } from "../Experience/gql/Experiences.gql";
+import { gqlExhautiveAptitudes } from "../Aptitudes/gql/Aptitudes.gql";
 import {
   Avatar,
   Box,
@@ -15,84 +15,89 @@ import {
   ListItemAvatar,
   ListItemText,
   ListItemSecondaryAction,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import HobbyIcon from "@material-ui/icons/BeachAccess";
 import TrainingIcon from "@material-ui/icons/School";
 import ExperienceIcon from "@material-ui/icons/Work";
 import dayjs from "dayjs";
 import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
-import {Rating} from "@material-ui/lab";
-import {gqlMyProfile} from "../../Profile/gql/MyProfile.gql";
+import { Rating } from "@material-ui/lab";
+import { gqlMyProfile } from "../../Profile/gql/MyProfile.gql";
 import OccupationsMatching from "../Recommendation/OccupationsMatching";
-import {useLoggedUser} from "../../../../hooks/useLoggedUser";
+import { useLoggedUser } from "../../../../hooks/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "21cm",
     height: "29,7cm",
-    margin: "auto"
+    margin: "auto",
   },
   experienceAptitudes: {
     paddingLeft: theme.spacing(4),
-    paddingTop: 0
+    paddingTop: 0,
   },
   experienceAptitude: {
     margin: theme.spacing(0.5),
     maxWidth: theme.spacing(50),
-    cursor: "pointer"
+    cursor: "pointer",
   },
   aptitudes: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   rating: {
-    textAlign: "right"
+    textAlign: "right",
   },
   aptitude: {
-    transition: "all 0.5s"
+    transition: "all 0.5s",
   },
   faded: {
-    opacity: 0.1
+    opacity: 0.1,
   },
   categoryTitle: {
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
   },
   noPrint: {
     "@media print": {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   forcePrint: {
     colorAdjust: "exact",
-    "-webkit-print-color-adjust": "exact"
+    "-webkit-print-color-adjust": "exact",
   },
   top5Chip: {
     height: theme.spacing(2.2),
     fontSize: 12,
     "& > span": {
-      padding: theme.spacing(0, 0.8)
-    }
-  }
+      padding: theme.spacing(0, 0.8),
+    },
+  },
 }));
 /**
  *
  */
 export default function PrintProfile({} = {}) {
   const classes = useStyles();
-  const {t} = useTranslation();
-  const {user} = useLoggedUser();
+  const { t } = useTranslation();
+  const { user } = useLoggedUser();
 
-  const {data: {me: myProfile} = {}, loading: loadingProfile} = useQuery(gqlMyProfile);
-
-  const [loadExperiences, {data: {experiences} = {}, loading: loadingExperiences}] = useLazyQuery(
-    gqlExhaustiveExperiences,
-    {
-      fetchPolicy: "no-cache"
-    }
+  const { data: { me: myProfile } = {}, loading: loadingProfile } = useQuery(
+    gqlMyProfile
   );
 
-  const [loadAptitudes, {data: {aptitudes} = {}, loading: loadingAptitudes}] = useLazyQuery(gqlExhautiveAptitudes, {
-    fetchPolicy: "no-cache"
+  const [
+    loadExperiences,
+    { data: { experiences } = {}, loading: loadingExperiences },
+  ] = useLazyQuery(gqlExhaustiveExperiences, {
+    fetchPolicy: "no-cache",
+  });
+
+  const [
+    loadAptitudes,
+    { data: { aptitudes } = {}, loading: loadingAptitudes },
+  ] = useLazyQuery(gqlExhautiveAptitudes, {
+    fetchPolicy: "no-cache",
   });
 
   useEffect(() => {
@@ -100,8 +105,8 @@ export default function PrintProfile({} = {}) {
       loadExperiences({
         variables: {
           filters: [`hasPerson:${user.id}`],
-          exhaustive: true
-        }
+          exhaustive: true,
+        },
       });
 
       loadAptitudes({
@@ -109,16 +114,17 @@ export default function PrintProfile({} = {}) {
           filters: [`hasPerson:${user.id}`],
           sortings: [
             {
-              sortBy: "isTop5"
+              sortBy: "isTop5",
             },
             {
-              sortBy: "skillLabel"
-            }
-          ]
-        }
+              sortBy: "skillLabel",
+            },
+          ],
+        },
       });
     }
   }, [user]);
+
   useEffect(() => {
     if (myProfile && experiences && aptitudes) {
       setTimeout(() => {
@@ -144,16 +150,22 @@ export default function PrintProfile({} = {}) {
             </When>
             <Otherwise>
               <List dense>
-                {(experiences?.edges || []).map(({node: experience}) => (
+                {(experiences?.edges || []).map(({ node: experience }) => (
                   <Fragment key={experience.id}>
                     <ListItem>
                       <ListItemAvatar>
                         <Avatar>
                           <Choose>
-                            <When condition={experience.experienceType === "hobby"}>
+                            <When
+                              condition={experience.experienceType === "hobby"}
+                            >
                               <HobbyIcon className={classes.forcePrint} />
                             </When>
-                            <When condition={experience.experienceType === "training"}>
+                            <When
+                              condition={
+                                experience.experienceType === "training"
+                              }
+                            >
                               <TrainingIcon className={classes.forcePrint} />
                             </When>
                             <Otherwise>
@@ -165,13 +177,22 @@ export default function PrintProfile({} = {}) {
                       <ListItemText
                         primary={experience.title}
                         secondary={
-                          <Grid container direction="row" alignItems="flex-start" spacing={1}>
-                            <Grid item>{dayjs(experience.startDate).format("L")}</Grid>
+                          <Grid
+                            container
+                            direction="row"
+                            alignItems="flex-start"
+                            spacing={1}
+                          >
+                            <Grid item>
+                              {dayjs(experience.startDate).format("L")}
+                            </Grid>
                             <If condition={experience.endDate}>
                               <Grid item>
                                 <ArrowIcon fontSize={"small"} />
                               </Grid>
-                              <Grid item>{dayjs(experience.endDate).format("L")}</Grid>
+                              <Grid item>
+                                {dayjs(experience.endDate).format("L")}
+                              </Grid>
                             </If>
                           </Grid>
                         }
@@ -180,15 +201,17 @@ export default function PrintProfile({} = {}) {
                     <List disablePadding>
                       <ListItem className={classes.experienceAptitudes}>
                         <ListItemText>
-                          {experience.aptitudes.edges.map(({node: aptitude}) => (
-                            <Chip
-                              className={classes.experienceAptitude}
-                              key={aptitude.id}
-                              label={aptitude.skillLabel}
-                              variant={"outlined"}
-                              size="small"
-                            />
-                          ))}
+                          {experience.aptitudes.edges.map(
+                            ({ node: aptitude }) => (
+                              <Chip
+                                className={classes.experienceAptitude}
+                                key={aptitude.id}
+                                label={aptitude.skillLabel}
+                                variant={"outlined"}
+                                size="small"
+                              />
+                            )
+                          )}
                         </ListItemText>
                       </ListItem>
                     </List>
@@ -199,7 +222,11 @@ export default function PrintProfile({} = {}) {
           </Choose>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="button" display="block" className={classes.categoryTitle}>
+          <Typography
+            variant="button"
+            display="block"
+            className={classes.categoryTitle}
+          >
             {t("CARTONET.CARTOGRAPHY.APTITUDES")}
           </Typography>
 
@@ -209,7 +236,7 @@ export default function PrintProfile({} = {}) {
             </When>
             <Otherwise>
               <List dense>
-                {(aptitudes?.edges || []).map(({node: aptitude}) => (
+                {(aptitudes?.edges || []).map(({ node: aptitude }) => (
                   <ListItem key={aptitude.id}>
                     <ListItemAvatar>
                       <If condition={aptitude.isTop5}>
@@ -224,7 +251,11 @@ export default function PrintProfile({} = {}) {
                     </ListItemAvatar>
                     <ListItemText>{aptitude.skillLabel}</ListItemText>
                     <ListItemSecondaryAction>
-                      <Rating value={aptitude.rating?.value} size={"small"} readOnly />
+                      <Rating
+                        value={aptitude.ratingValue}
+                        size={"small"}
+                        readOnly
+                      />
                     </ListItemSecondaryAction>
                   </ListItem>
                 ))}
@@ -235,7 +266,11 @@ export default function PrintProfile({} = {}) {
       </Grid>
 
       <Grid item xs={12}>
-        <Typography variant="button" display="block" className={classes.categoryTitle}>
+        <Typography
+          variant="button"
+          display="block"
+          className={classes.categoryTitle}
+        >
           {t("CARTONET.CARTOGRAPHY.SUGGETIONS")}
         </Typography>
 

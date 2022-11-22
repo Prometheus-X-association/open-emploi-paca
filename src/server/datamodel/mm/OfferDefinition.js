@@ -29,7 +29,7 @@ import ExpectationDefinition from "../mm/ExpectationDefinition";
 import OccupationDefinition from "../mm/OccupationDefinition";
 import ApplyDefinition from "../mm/ApplyDefinition";
 import env from "env-var";
-import { OfferGraphQLDefinition } from "./graphql/OfferGraphQLDefinition";
+import { OfferGraphQLDefinition } from "./OfferGraphQLDefinition";
 import JobAreaDefinition from "../oep/JobAreaDefinition";
 
 export default class OfferDefinition extends ModelDefinitionAbstract {

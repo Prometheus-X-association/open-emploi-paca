@@ -1,14 +1,13 @@
 import {
   generateConnectionArgs,
   GraphQLTypeConnectionQuery,
-  LinkFilter,
+  FragmentDefinition,
   mergeResolvers,
   QueryFilter,
-  SynaptixDatastoreSession,
 } from "@mnemotix/synaptix.js";
-import OccupationDefinition from "../OccupationDefinition";
-import PersonDefinition from "../../mnx/PersonDefinition";
-import AptitudeDefinition from "../AptitudeDefinition";
+import OccupationDefinition from "./OccupationDefinition";
+import PersonDefinition from "../mnx/PersonDefinition";
+import AptitudeDefinition from "./AptitudeDefinition";
 
 export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQuery {
   /**
@@ -26,7 +25,14 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
          - occupationIds: [OPTIONAL] Restrict on occupation ids
          - light: [OPTIONAL] Restrict data on occupation categories, discard suboccupations.
       """
-      occupationsMatching(personId:ID me:Boolean light: Boolean occupationIds:[ID!] ${generateConnectionArgs()}): String
+      occupationsMatching(
+        personId:ID 
+        me:Boolean 
+        light: Boolean 
+        occupationIds:[ID!] 
+        thresholdScore: Float! = 0.15
+        ${generateConnectionArgs()}
+      ): String
     `);
     return `
       ${baseType}
@@ -45,12 +51,13 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
        * @param {string} personId
        * @param {string[]} [occupationIds]
        * @param {boolean} [light]
+       * @param {number} [thresholdScore=0.15]
        * @param {SynaptixDatastoreSession} synaptixSession
        * @param {object} info
        */
       occupationsMatching: async (
         _,
-        { personId, occupationIds, light, args },
+        { personId, occupationIds, light, thresholdScore },
         synaptixSession,
         info
       ) => {
@@ -62,8 +69,8 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
           synaptixSession,
           occupationIds,
           personId,
-          args,
           light,
+          thresholdScore,
         });
 
         return JSON.stringify(Object.values(matching));
@@ -75,10 +82,11 @@ export class OccupationGraphQLTypeConnectionQuery extends GraphQLTypeConnectionQ
 }
 
 /**
- * @param {SynaptixDatastoreSession} synaptixSession
+ * @param {SynaptixDatastoreRdfSession} synaptixSession
  * @param {String} personId
  * @param {String[]} occupationIds
  * @param {boolean} [light]
+ * @param {number} [thresholdScore=0.15]
  * @return {Object}
  */
 export async function computeOccupationMatchingForPerson({
@@ -86,7 +94,7 @@ export async function computeOccupationMatchingForPerson({
   personId,
   occupationIds,
   light,
-  args,
+  thresholdScore,
 }) {
   if (occupationIds) {
     occupationIds = occupationIds.map((occupationId) =>
@@ -103,6 +111,18 @@ export async function computeOccupationMatchingForPerson({
       id: personId,
     },
     linkDefinition: PersonDefinition.getLink("hasAptitude"),
+    fragmentDefinitions: [
+      new FragmentDefinition({
+        modelDefinition: PersonDefinition.getLink(
+          "hasAptitude"
+        ).getRelatedModelDefinition(),
+        properties: [
+          AptitudeDefinition.getProperty("ratingValue"),
+          AptitudeDefinition.getProperty("isTop5"),
+        ],
+        links: [AptitudeDefinition.getLink("hasSkill")],
+      }),
+    ],
   });
 
   let skillsGroups = {};
@@ -155,7 +175,6 @@ export async function computeOccupationMatchingForPerson({
     ),
     rawResult: true,
     limit: 9000,
-    ...args,
     getRootQueryWrapper: ({ query }) => ({
       script_score: {
         query: query,
@@ -166,16 +185,19 @@ export async function computeOccupationMatchingForPerson({
     }),
     getExtraQueryParams: () => {
       return {
-        _source: {
-          includes: [
-            hasRelatedOccupationPath,
-            relatedOccupationLabelPath,
-            occupationLabelPath,
-          ],
-        },
         sort: ["_score", `${occupationLabelPath}.keyword`],
       };
     },
+    fragmentDefinitions: [
+      new FragmentDefinition({
+        modelDefinition: OccupationDefinition,
+        properties: [
+          OccupationDefinition.getProperty("prefLabel"),
+          OccupationDefinition.getProperty("relatedOccupationName"),
+        ],
+        links: [OccupationDefinition.getLink("hasRelatedOccupation")],
+      }),
+    ],
   });
 
   /**
@@ -194,7 +216,7 @@ export async function computeOccupationMatchingForPerson({
       return acc;
     }
 
-    if (_score < 0.15) {
+    if (_score < thresholdScore) {
       return acc;
     }
 

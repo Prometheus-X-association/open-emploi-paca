@@ -3,31 +3,12 @@ import {
   GraphQLProperty,
   updateObjectResolver,
 } from "@mnemotix/synaptix.js";
-import { weverClient } from "../../../service/wever/WeverClient";
+import { weverClient } from "../../service/wever/WeverClient";
 
 export class PersonGraphQLDefinition extends GraphQLTypeDefinition {
   /**
-   * @inheritDoc
+   * @return {string}
    */
-  static getExtraProperties() {
-    return [
-      new GraphQLProperty({
-        name: "weverUser",
-        description: `
-          Wever user
-        `,
-        type: "WeverUserInfos",
-        /**
-         * @param {SynaptixDatastoreSession} synaptixSession
-         */
-        typeResolver: async ({} = {}, {} = {}, synaptixSession) => {
-          const email = await synaptixSession.getLoggedUsername();
-          return weverClient.getUserInfos({ email });
-        },
-      }),
-    ];
-  }
-
   static getExtraGraphQLCode() {
     return `
 type WeverUserInfos{
@@ -59,6 +40,41 @@ type UpdateMePayload {
 `;
   }
 
+  /**
+   * @inheritDoc
+   */
+  static getExtraProperties() {
+    return [
+      new GraphQLProperty({
+        name: "weverUser",
+        description: `Wever user`,
+        type: "WeverUserInfos",
+        /**
+         * @param {SynaptixDatastoreSession} synaptixSession
+         */
+        typeResolver: async ({} = {}, {} = {}, synaptixSession) => {
+          const email = await synaptixSession.getLoggedUsername();
+          return weverClient.getUserInfos({ email });
+        },
+      }),
+      new GraphQLProperty({
+        name: "jobMatching",
+        description: `Wever user`,
+        type: "WeverUserInfos",
+        /**
+         * @param {SynaptixDatastoreSession} synaptixSession
+         */
+        typeResolver: async ({} = {}, {} = {}, synaptixSession) => {
+          const email = await synaptixSession.getLoggedUsername();
+          return weverClient.getUserInfos({ email });
+        },
+      }),
+    ];
+  }
+
+  /**
+   * @inheritDoc
+   */
   static getExtraResolvers() {
     return {
       Mutation: {

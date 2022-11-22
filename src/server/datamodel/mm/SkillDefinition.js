@@ -24,7 +24,7 @@ import {
 } from "@mnemotix/synaptix.js";
 import AptitudeDefinition from "../mm/AptitudeDefinition";
 import OccupationDefinition from "./OccupationDefinition";
-import { SkillGraphQLDefinition } from "./graphql/SkillGraphQLDefinition";
+import { SkillGraphQLDefinition } from "./SkillGraphQLDefinition";
 import PersonDefinition from "../mnx/PersonDefinition";
 
 export default class SkillDefinition extends ModelDefinitionAbstract {

@@ -1,5 +1,5 @@
-import { ModelDefinitionAbstract} from "@mnemotix/synaptix.js";
-import {AnalysisGraphQLDefinition} from "./graphql/AnalysisGraphQLDefinition";
+import { ModelDefinitionAbstract } from "@mnemotix/synaptix.js";
+import { AnalysisGraphQLDefinition } from "./AnalysisGraphQLDefinition";
 
 export class AnalysisDefinition extends ModelDefinitionAbstract {
   /**
@@ -12,7 +12,7 @@ export class AnalysisDefinition extends ModelDefinitionAbstract {
   /**
    * @inheritDoc
    */
-  static getRdfType(){
+  static getRdfType() {
     return "oep:Analysis";
   }
 

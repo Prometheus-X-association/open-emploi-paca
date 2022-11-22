@@ -1,13 +1,13 @@
-import {GraphQLTypeDefinition, GraphQLProperty} from "@mnemotix/synaptix.js";
-import {AnalysisGraphQLTypeQuery} from "./AnalysisGraphQLTypeQuery";
-import OccupationDefinition from "../../mm/OccupationDefinition";
-import JobAreaDefinition from "../JobAreaDefinition";
+import { GraphQLTypeDefinition, GraphQLProperty } from "@mnemotix/synaptix.js";
+import { AnalysisGraphQLTypeQuery } from "./AnalysisGraphQLTypeQuery";
+import OccupationDefinition from "../mm/OccupationDefinition";
+import JobAreaDefinition from "./JobAreaDefinition";
 
 export class AnalysisGraphQLDefinition extends GraphQLTypeDefinition {
   /**
    * @inheritDoc
    */
-  static getTypeQuery(){
+  static getTypeQuery() {
     return new AnalysisGraphQLTypeQuery();
   }
 
@@ -22,7 +22,8 @@ export class AnalysisGraphQLDefinition extends GraphQLTypeDefinition {
           Score computed for incomes analysis (ROUGE|ORANGE|VERT)
         `,
         type: "String",
-        typeResolver: ({salaryMeanMonth}) => salaryMeanMonth?.color || 'ROUGE'
+        typeResolver: ({ salaryMeanMonth }) =>
+          salaryMeanMonth?.color || "ROUGE",
       }),
       new GraphQLProperty({
         name: "offersScore",
@@ -30,7 +31,8 @@ export class AnalysisGraphQLDefinition extends GraphQLTypeDefinition {
           Score computed for incomes analysis (ROUGE|ORANGE|VERT)
         `,
         type: "String",
-        typeResolver: ({offerCountMonth}) => offerCountMonth?.color || 'ROUGE'
+        typeResolver: ({ offerCountMonth }) =>
+          offerCountMonth?.color || "ROUGE",
       }),
       new GraphQLProperty({
         name: "skillsScore",
@@ -38,7 +40,7 @@ export class AnalysisGraphQLDefinition extends GraphQLTypeDefinition {
           Score computed for skills analysis (ROUGE|ORANGE|VERT)
         `,
         type: "String",
-        typeResolver: ({userSkillArea}) => userSkillArea?.color || 'ROUGE'
+        typeResolver: ({ userSkillArea }) => userSkillArea?.color || "ROUGE",
       }),
       new GraphQLProperty({
         name: "trainingsScore",
@@ -46,7 +48,8 @@ export class AnalysisGraphQLDefinition extends GraphQLTypeDefinition {
           Score computed for trainings analysis (ROUGE|ORANGE|VERT)
         `,
         type: "String",
-        typeResolver: ({trainingCountMonth}) => trainingCountMonth?.color || 'ROUGE'
+        typeResolver: ({ trainingCountMonth }) =>
+          trainingCountMonth?.color || "ROUGE",
       }),
       new GraphQLProperty({
         name: "occupation",
@@ -58,10 +61,11 @@ export class AnalysisGraphQLDefinition extends GraphQLTypeDefinition {
          * @param occupationId
          * @param {SynaptixDatastoreSession} synaptixSession
          */
-        typeResolver: ({occupation: occupationId}, {}, synaptixSession) => synaptixSession.getObject({
-          modelDefinition: OccupationDefinition,
-          objectId: occupationId
-        })
+        typeResolver: ({ occupation: occupationId }, {}, synaptixSession) =>
+          synaptixSession.getObject({
+            modelDefinition: OccupationDefinition,
+            objectId: occupationId,
+          }),
       }),
       new GraphQLProperty({
         name: "jobArea",
@@ -73,12 +77,12 @@ export class AnalysisGraphQLDefinition extends GraphQLTypeDefinition {
          * @param occupationId
          * @param {SynaptixDatastoreSession} synaptixSession
          */
-        typeResolver: ({area: jobAreaId}, {}, synaptixSession) => synaptixSession.getObject({
-          modelDefinition: JobAreaDefinition,
-          objectId: jobAreaId
-        })
+        typeResolver: ({ area: jobAreaId }, {}, synaptixSession) =>
+          synaptixSession.getObject({
+            modelDefinition: JobAreaDefinition,
+            objectId: jobAreaId,
+          }),
       }),
-
-    ]
+    ];
   }
 }

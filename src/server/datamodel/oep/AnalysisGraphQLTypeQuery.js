@@ -5,9 +5,9 @@ import {
   getTrainingsLowerBoundDate,
   getTrainingsUpperBoundDate,
 } from "./TrainingGraphQLTypeConnectionQuery";
-import TrainingDefinition from "../TrainingDefinition";
-import OfferDefinition from "../../mm/OfferDefinition";
-import SkillDefinition from "../../mm/SkillDefinition";
+import TrainingDefinition from "./TrainingDefinition";
+import OfferDefinition from "../mm/OfferDefinition";
+import SkillDefinition from "../mm/SkillDefinition";
 
 export class AnalysisGraphQLTypeQuery extends GraphQLTypeQuery {
   /**

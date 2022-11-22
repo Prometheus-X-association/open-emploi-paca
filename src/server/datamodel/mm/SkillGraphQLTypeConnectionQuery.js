@@ -7,11 +7,11 @@ import {
 } from "@mnemotix/synaptix.js";
 import textract from "textract";
 
-import SkillDefinition from "../SkillDefinition";
-import AptitudeDefinition from "../AptitudeDefinition";
-import OccupationDefinition from "../OccupationDefinition";
+import SkillDefinition from "./SkillDefinition";
+import AptitudeDefinition from "./AptitudeDefinition";
+import OccupationDefinition from "./OccupationDefinition";
 import env from "env-var";
-import OfferDefinition from "../OfferDefinition";
+import OfferDefinition from "./OfferDefinition";
 import dayjs from "dayjs";
 import { getOffersLowerBoundDate } from "./OfferGraphQLTypeConnectionQuery";
 

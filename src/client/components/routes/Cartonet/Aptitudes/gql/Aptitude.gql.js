@@ -1,4 +1,4 @@
-import {gql} from "@apollo/client";
+import { gql } from "@apollo/client";
 
 export const gqlAptitudeFragment = gql`
   fragment AptitudeFragment on Aptitude {
@@ -17,15 +17,14 @@ export const gqlExhautiveAptitudeFragment = gql`
     id
     isInCV
     isTop5
-    skillLabel
+    ratingValue
     rating {
       id
-      value
     }
     experiencesCount
+    skillLabel
     skill {
       id
-      prefLabel
     }
   }
 `;

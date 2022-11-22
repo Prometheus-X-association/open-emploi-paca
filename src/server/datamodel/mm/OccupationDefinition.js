@@ -26,10 +26,7 @@ import {
 } from "@mnemotix/synaptix.js";
 import AwardDefinition from "../mm/AwardDefinition";
 import SkillDefinition from "./SkillDefinition";
-import { OccupationGraphQLDefinition } from "./graphql/OccupationGraphQLDefinition";
-import env from "env-var";
-import JobAreaDefinition from "../oep/JobAreaDefinition";
-import PersonDefinition from "../mnx/PersonDefinition";
+import { OccupationGraphQLDefinition } from "./OccupationGraphQLDefinition";
 
 export default class OccupationDefinition extends ModelDefinitionAbstract {
   /**

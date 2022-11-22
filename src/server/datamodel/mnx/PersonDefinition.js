@@ -27,7 +27,7 @@ import JobAreaDefinition from "../oep/JobAreaDefinition";
 import ExperienceDefinition from "../mm/ExperienceDefinition";
 import AptitudeDefinition from "../mm/AptitudeDefinition";
 import SkillDefinition from "../mm/SkillDefinition";
-import { PersonGraphQLDefinition } from "./graphql/PersonGraphQLDefinition";
+import { PersonGraphQLDefinition } from "./PersonGraphQLDefinition";
 
 export default class PersonDefinition extends ModelDefinitionAbstract {
   /**
