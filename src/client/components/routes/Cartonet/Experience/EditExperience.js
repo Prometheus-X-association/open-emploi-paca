@@ -50,7 +50,7 @@ import { Link } from "react-router-dom";
 import {
   generateCartonetEditExperiencePath,
   generateCartonetPath,
-} from "../utils/generateCartonetPath";
+} from "../generateCartonetPath";
 import Experiences from "../Cartography/Experiences";
 import { useLoggedUser } from "../../../../hooks/useLoggedUser";
 

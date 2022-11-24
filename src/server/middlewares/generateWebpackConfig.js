@@ -1,10 +1,10 @@
-const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 
 const env = require("env-var");
 
@@ -34,7 +34,14 @@ export function generateWebpackConfig({
 
   /** entry **/
   let entry = entries.reduce((acc, { name, entry }) => {
-    acc[name] = entry;
+    if (isDev) {
+      acc[name] = [
+        "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000",
+        entry,
+      ];
+    } else {
+      acc[name] = entry;
+    }
     return acc;
   }, {});
 
@@ -57,6 +64,12 @@ export function generateWebpackConfig({
           ...html,
         })
     ),
+    ...(isDev
+      ? [
+          new webpack.HotModuleReplacementPlugin(),
+          new ReactRefreshWebpackPlugin(),
+        ]
+      : []),
     ...(isProd
       ? [
           new MiniCssExtractPlugin({

@@ -1,9 +1,14 @@
-import {gql} from "@apollo/client";
+import { gql } from "@apollo/client";
 
 export const gqlOccupationDetails = gql`
-  query OccupationsMatching($occupationId: ID!, $skillsFilters: [String], $aptitudesFilters: [String]) {
+  query OccupationsDetails(
+    $occupationId: ID!
+    $skillsFilters: [String]
+    $aptitudesFilters: [String]
+  ) {
     occupation(id: $occupationId) {
       notation
+      relatedOccupationName
     }
     skillsCount(filters: $skillsFilters)
     skills(filters: $skillsFilters) {

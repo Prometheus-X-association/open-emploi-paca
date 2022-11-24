@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 
+import { DynamicFormDefinition } from "./DynamicFormDefinition";
+import { MutationConfig } from "../apollo";
+import { gqlOccupationFragment } from "../../components/routes/Profile/gql/MyProfile.gql";
+
 /**
  * LinkInputDefinition is a way to describe a mutation input between an object and a linked target object.
  *
@@ -77,6 +81,7 @@ export class LinkInputDefinition {
    * @property {boolean} [forceUpdateTarget=true]
    * @property {function} [modifyValue]
    * @property {DynamicFormDefinition} [targetObjectFormDefinition] - Defined the target object form definition.
+   * @property {Object} [targetObjectGqlFragment] - GQL fragment of target object. Discarded if targetObjectFormDefinition passed.
    * @property {string} [inputInheritedTypename] - Use this field to add a "inputInheritedTypename" key to input values. Needed when input refers to interface object (@see NOT_INSTANTIABLE_OBJECT_INPUT error in Synaptix.js in function SynaptixDatastoreRdfSession::_extractLinksFromObjectInput()).
    * /!\ Important : If that param is precised, be sure that it's value matches creating target object "__typename" value. Otherwise link will be skipped in normalization process to avoid persiting misformed data.
    * Example : Invovement.agentInput refers to an interface Agent. To take this input into account, make sure to set inputInheritedTypename to "Person" and creating person data get a __typename: "Person"
@@ -87,11 +92,12 @@ export class LinkInputDefinition {
     isPlural = false,
     inputName,
     targetObjectFormDefinition,
+    targetObjectGqlFragment,
     deleteInputName,
     forceUpdateTarget = false,
     modifyValue,
     nestedLinks,
-    inputInheritedTypename
+    inputInheritedTypename,
   }) {
     this._name = name;
     this._isPlural = isPlural;
@@ -102,6 +108,15 @@ export class LinkInputDefinition {
     this._nestedLinks = nestedLinks;
     this._targetObjectFormDefinition = targetObjectFormDefinition;
     this._inputInheritedTypename = inputInheritedTypename;
+
+    // Use this shorcut to save code in form logic
+    if (targetObjectGqlFragment && !this._targetObjectFormDefinition) {
+      this._targetObjectFormDefinition = new DynamicFormDefinition({
+        mutationConfig: new MutationConfig({
+          gqlFragment: targetObjectGqlFragment,
+        }),
+      });
+    }
   }
 
   get name() {
@@ -133,7 +148,10 @@ export class LinkInputDefinition {
   }
 
   get nestedLinks() {
-    return this._targetObjectFormDefinition?.getLinkInputDefinitions() || this._nestedLinks;
+    return (
+      this._targetObjectFormDefinition?.getLinkInputDefinitions() ||
+      this._nestedLinks
+    );
   }
 
   get targetObjectFragment() {
@@ -151,16 +169,21 @@ export class LinkInputDefinition {
   /**
    * @return {object}
    */
-  getTargetObjectInitialValues({object} = {}) {
-    return this._targetObjectFormDefinition?.getInitialValues?.({object}) || {};
+  getTargetObjectInitialValues({ object } = {}) {
+    return (
+      this._targetObjectFormDefinition?.getInitialValues?.({ object }) || {}
+    );
   }
 
   /**
    * @return {object}
    *
    */
-  getTargetObjectValidationSchema({...props}) {
-     return this._targetObjectFormDefinition?.getValidationSchema?.({...props}) || {};
+  getTargetObjectValidationSchema({ ...props }) {
+    return (
+      this._targetObjectFormDefinition?.getValidationSchema?.({ ...props }) ||
+      {}
+    );
   }
 
   set name(value) {
@@ -198,7 +221,6 @@ export class LinkInputDefinition {
   set inputInheritedTypename(value) {
     this._inputInheritedTypename = value;
   }
-
 
   get targetObjectFormDefinition() {
     return this._targetObjectFormDefinition;

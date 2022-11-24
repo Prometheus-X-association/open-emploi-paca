@@ -23,7 +23,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
-    "@mnemotix/synaptix.js": "4.14.0",
+    "@mnemotix/synaptix.js": "4.14.1",
     "@types/react": "^16.9.0",
     "@ungap/url-search-params": "^0.1.4",
     "apollo-upload-client": "^14.1.3",
@@ -83,14 +83,19 @@
     "tiny-warning": "^1.0.3",
     "url-loader": "^4.1.1",
     "use-debounce": "^3.4.0",
-    "webpack": "^5.75.0",
-    "webpack-bundle-analyzer": "^4.1.0",
-    "webpack-cli": "^4.2.0",
-    "webpack-dev-middleware": "^4.0.2",
-    "webpack-hot-middleware": "^2.25.0",
+    "webpack": "^5.59.1",
+    "webpack-cli": "^4.9.2",
     "wicket": "^1.3.6",
     "yargs": "^13.2.4",
     "yup": "^0.27.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.9",
+    "react-refresh": "^0.14.0",
+    "webpack-bundle-analyzer": "^4.5.0",
+    "webpack-dev-middleware": "^5.3.1",
+    "webpack-hot-middleware": "^2.25.1"
   },
   "scripts": {
     "start": "node --max-http-header-size=100000 --max_old_space_size=8192 ./entrypoint.js",

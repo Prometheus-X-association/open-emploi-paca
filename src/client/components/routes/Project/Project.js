@@ -9,8 +9,6 @@ import { Form, Formik } from "formik";
 import pick from "lodash/pick";
 import cloneDeep from "lodash/cloneDeep";
 
-import { number, object } from "yup";
-
 import { BlockContainer } from "../../widgets/BlockContainer";
 import { FormButtons, TextField } from "../../widgets/Form";
 

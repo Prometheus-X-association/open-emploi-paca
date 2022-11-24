@@ -1,61 +1,73 @@
-import {Fragment, useEffect} from "react";
-import {makeStyles} from "@material-ui/core/styles";
-import {useTranslation} from "react-i18next";
-import {List, ListItem, ListItemAvatar, Avatar, ListItemText, Grid, Chip, CircularProgress} from "@material-ui/core";
+import { Fragment, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { useTranslation } from "react-i18next";
+import {
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  Grid,
+  Chip,
+  CircularProgress,
+} from "@material-ui/core";
 import dayjs from "dayjs";
-import {generatePath, useHistory, matchPath} from "react-router-dom";
-import {useLazyQuery} from "@apollo/client";
+import { generatePath, useHistory, matchPath } from "react-router-dom";
+import { useLazyQuery } from "@apollo/client";
 import ExperienceIcon from "@material-ui/icons/Work";
 import HobbyIcon from "@material-ui/icons/BeachAccess";
 import TrainingIcon from "@material-ui/icons/School";
 import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
-import {createLink} from "../../../../utilities/createLink";
+import { createLink } from "../../../../utilities/createLink";
 
-import {gqlExperiences, gqlExhaustiveExperiences} from "../Experience/gql/Experiences.gql";
-import {generateCartonetEditExperiencePath} from "../utils/generateCartonetPath";
-import {useLoggedUser} from "../../../../hooks/useLoggedUser";
+import {
+  gqlExperiences,
+  gqlExhaustiveExperiences,
+} from "../Experience/gql/Experiences.gql";
+import { generateCartonetEditExperiencePath } from "../generateCartonetPath";
+import { useLoggedUser } from "../../../../hooks/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   experience: {
-    breakInside: "avoid"
+    breakInside: "avoid",
   },
   experienceAptitudes: {
     paddingLeft: theme.spacing(4),
-    paddingTop: 0
+    paddingTop: 0,
   },
   experienceAptitude: {
     margin: theme.spacing(0.5),
     maxWidth: theme.spacing(50),
-    cursor: "pointer"
+    cursor: "pointer",
   },
   aptitudes: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   rating: {
-    textAlign: "right"
+    textAlign: "right",
   },
   aptitude: {
-    transition: "all 0.5s"
+    transition: "all 0.5s",
   },
   faded: {
-    opacity: 0.1
+    opacity: 0.1,
   },
   categoryTitle: {
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
   },
   top5Chip: {
     height: theme.spacing(2),
     fontSize: 10,
     "& > span": {
-      padding: theme.spacing(0, 0.5)
-    }
+      padding: theme.spacing(0, 0.5),
+    },
   },
   "@media print": {
     experienceAptitude: {
       fontSize: "10px",
-      height: "20px"
-    }
-  }
+      height: "20px",
+    },
+  },
 }));
 
 export function ExperienceItem({
@@ -63,7 +75,7 @@ export function ExperienceItem({
   onAptitudeMouseEnter = () => {},
   onAptitudeMouseLeave = () => {},
   selectedAptitude,
-  aptitudesDisabled = false
+  aptitudesDisabled = false,
 }) {
   const classes = useStyles();
   const history = useHistory();
@@ -88,8 +100,8 @@ export function ExperienceItem({
         </ListItemAvatar>
         <ListItemText
           primary={createLink({
-            to: generateCartonetEditExperiencePath({history, experience}),
-            text: experience.title
+            to: generateCartonetEditExperiencePath({ history, experience }),
+            text: experience.title,
           })}
           secondary={
             <Grid container direction="row" alignItems="flex-start" spacing={1}>
@@ -102,20 +114,24 @@ export function ExperienceItem({
               </If>
             </Grid>
           }
-          primaryTypographyProps={{component: "div"}}
-          secondaryTypographyProps={{component: "div"}}
+          primaryTypographyProps={{ component: "div" }}
+          secondaryTypographyProps={{ component: "div" }}
         />
       </ListItem>
       <If condition={!aptitudesDisabled}>
         <List disablePadding>
           <ListItem className={classes.experienceAptitudes}>
             <ListItemText>
-              {(experience.aptitudes?.edges || []).map(({node: aptitude}) => (
+              {(experience.aptitudes?.edges || []).map(({ node: aptitude }) => (
                 <Chip
                   className={classes.experienceAptitude}
                   key={aptitude.id}
                   label={aptitude.skillLabel || aptitude.skill?.prefLabel}
-                  variant={selectedAptitude && selectedAptitude?.id === aptitude.id ? "default" : "outlined"}
+                  variant={
+                    selectedAptitude && selectedAptitude?.id === aptitude.id
+                      ? "default"
+                      : "outlined"
+                  }
                   size="small"
                   onMouseEnter={() => onAptitudeMouseEnter(aptitude)}
                   onMouseLeave={() => onAptitudeMouseLeave(null)}
@@ -137,12 +153,15 @@ export default function Experiences({
   selectedAptitude,
   onAptitudeMouseEnter,
   onAptitudeMouseLeave,
-  experienceType
+  experienceType,
 } = {}) {
-  const {t} = useTranslation();
-  const {user} = useLoggedUser();
+  const { t } = useTranslation();
+  const { user } = useLoggedUser();
 
-  const [loadExperiences, {data: {experiences} = {}, loading: loadingExperiences}] = useLazyQuery(
+  const [
+    loadExperiences,
+    { data: { experiences } = {}, loading: loadingExperiences },
+  ] = useLazyQuery(
     aptitudesDisabled ? gqlExperiences : gqlExhaustiveExperiences,
     {}
   );
@@ -157,8 +176,8 @@ export default function Experiences({
 
       loadExperiences({
         variables: {
-          filters
-        }
+          filters,
+        },
       });
     }
   }, [user, experienceType]);
@@ -170,7 +189,7 @@ export default function Experiences({
       </When>
       <Otherwise>
         <List dense>
-          {(experiences?.edges || []).map(({node: experience}) => (
+          {(experiences?.edges || []).map(({ node: experience }) => (
             <ExperienceItem
               key={experience.id}
               experience={experience}

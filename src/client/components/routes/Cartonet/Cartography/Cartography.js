@@ -19,7 +19,7 @@ import { gqlExhautiveAptitudes } from "../Aptitudes/gql/Aptitudes.gql";
 import Experiences from "./Experiences";
 import { CartonetExploreLayout } from "../CartonetExploreLayout";
 import { Link } from "react-router-dom";
-import { generateCartonetPath } from "../utils/generateCartonetPath";
+import { generateCartonetPath } from "../generateCartonetPath";
 import { useReactToPrint } from "react-to-print";
 import { Print as PrintIcon } from "@material-ui/icons";
 import { useLoggedUser } from "../../../../hooks/useLoggedUser";

@@ -1,32 +1,45 @@
-import {useEffect, useState} from "react";
-import {makeStyles} from "@material-ui/core/styles";
-import {useTranslation} from "react-i18next";
-import {useLazyQuery, useQuery} from "@apollo/client";
-import {gqlOccupationsMatching} from "../../Cartonet/Recommendation/gql/OccupationsMatching.gql";
-import {gqlMyProfile} from "../../Profile/gql/MyProfile.gql";
-import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
-import {List, ListItem, ListItemText, ListItemIcon, Typography} from "@material-ui/core";
-import {Gauge} from "../../../widgets/Gauge";
+import { useEffect, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { useTranslation } from "react-i18next";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { gqlSuggestedOccupationsMatchings } from "../../Cartonet/OccupationsMatching/gql/SuggestedOccupationsMatchings.gql";
+import { gqlMyProfile } from "../../Profile/gql/MyProfile.gql";
+import { LoadingSplashScreen } from "../../../widgets/LoadingSplashScreen";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Typography,
+} from "@material-ui/core";
+import { Gauge } from "../../../widgets/Gauge";
 
 const useStyles = makeStyles((theme) => ({
   list: {
-    marginTop: theme.spacing(4)
+    marginTop: theme.spacing(4),
   },
   tip: {
     color: theme.palette.text.emptyHint,
     textAlign: "center",
-    marginTop: theme.spacing(4)
-  }
+    marginTop: theme.spacing(4),
+  },
 }));
 
 export function useOccupationMatchings() {
-  const {data: {me} = {}} = useQuery(gqlMyProfile);
+  const { data: { me } = {} } = useQuery(gqlMyProfile);
   const [occupations, setOccupations] = useState([]);
-  const [getOccupationsMatching, {data, loading}] = useLazyQuery(gqlOccupationsMatching, {fetchPolicy: "no-cache"});
+  const [getOccupationsMatching, { data, loading }] = useLazyQuery(
+    gqlSuggestedOccupationsMatchings,
+    {
+      fetchPolicy: "no-cache",
+    }
+  );
 
   useEffect(() => {
     if (me?.id) {
-      let occupations = (me.wishedOccupations?.edges || []).map(({node: occupation}) => occupation);
+      let occupations = (me.wishedOccupations?.edges || []).map(
+        ({ node: occupation }) => occupation
+      );
 
       if (me.occupation) {
         occupations.unshift(me.occupation);
@@ -41,8 +54,8 @@ export function useOccupationMatchings() {
       getOccupationsMatching({
         variables: {
           personId: me?.id,
-          occupationIds: occupations.map((occupation) => occupation.id)
-        }
+          occupationIds: occupations.map((occupation) => occupation.id),
+        },
       });
     }
   }, [occupations]);
@@ -50,24 +63,28 @@ export function useOccupationMatchings() {
   let occupationMatchings = JSON.parse(data?.occupationsMatching || "[]");
 
   occupations.map((occupation) => {
-    if (!occupationMatchings.find(({categoryId}) => categoryId === occupation.id)) {
+    if (
+      !occupationMatchings.find(
+        ({ categoryId }) => categoryId === occupation.id
+      )
+    ) {
       occupationMatchings.push({
         categoryId: occupation.id,
         categoryName: occupation.prefLabel,
-        score: 0
+        score: 0,
       });
     }
   });
 
-  return [occupationMatchings, {loading}];
+  return [occupationMatchings, { loading }];
 }
 /**
  *
  */
 export function OccupationsMatchingWidget({} = {}) {
   const classes = useStyles();
-  const {t} = useTranslation();
-  let [occupationMatchings, {loading}] = useOccupationMatchings();
+  const { t } = useTranslation();
+  let [occupationMatchings, { loading }] = useOccupationMatchings();
 
   return (
     <Choose>
@@ -86,7 +103,9 @@ export function OccupationsMatchingWidget({} = {}) {
           ))}
         </List>
 
-        <Typography className={classes.tip}>{t("SKILLS.OCCUPATIONS_MATCHING_TIP")}</Typography>
+        <Typography className={classes.tip}>
+          {t("SKILLS.OCCUPATIONS_MATCHING_TIP")}
+        </Typography>
       </Otherwise>
     </Choose>
   );

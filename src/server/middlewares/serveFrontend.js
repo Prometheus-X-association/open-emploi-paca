@@ -17,10 +17,6 @@
  */
 
 import path from "path";
-import webpack from "webpack";
-import webpackMiddleware from "webpack-dev-middleware";
-import webpackHotMiddleware from "webpack-hot-middleware";
-import env from "env-var";
 import expressStaticGzip from "express-static-gzip";
 
 import { ExpressApp, logInfo } from "@mnemotix/synaptix.js";
@@ -40,14 +36,22 @@ export function serveFrontend({ webpackConfig }) {
     if (!["production", "integration"].includes(process.env.NODE_ENV)) {
       logInfo(`Building webpack resources...`);
 
-      const compiler = webpack(webpackConfig);
-      const middleware = webpackMiddleware(compiler, {
+      const compiler = require("webpack")(webpackConfig);
+      const middleware = require("webpack-dev-middleware")(compiler, {
         publicPath: webpackConfig.output.publicPath,
-        writeToDisk: true,
+        writeToDisk: (filePath) => {
+          return /^(?!.*(hot)).*/.test(filePath);
+        },
       });
 
       app.use(middleware);
-      app.use(webpackHotMiddleware(compiler));
+      app.use(
+        require("webpack-hot-middleware")(compiler, {
+          log: console.log,
+          path: "/__webpack_hmr",
+          heartbeat: 2000,
+        })
+      );
     }
 
     app.use(

@@ -94,6 +94,7 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
         rdfObjectProperty: "skos:related",
         relatedModelDefinition: OccupationDefinition,
         isPlural: true,
+        graphQLPropertyName: "relatedOccupations",
         graphQLInputName: "relatedOccupationInputs",
       }),
     ];
@@ -111,7 +112,7 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
       ...superLabels,
       new LabelDefinition({
         labelName: "relatedOccupationName",
-        inIndexOnly: true,
+        isPlural: true,
         linkPath: new LinkPath()
           .step({ linkDefinition: this.getLink("hasRelatedOccupation") })
           .property({
@@ -127,6 +128,30 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
   static getFilters() {
     return [
       ...super.getFilters(),
+      /**
+       * The idea of this filter is to compare an "occupation" document (with a "hasSkill" proprerty containings all related skills ids),
+       * with a fake document shaped with desired skills.
+       *
+       * Like so :
+       *
+       * {
+       *   more_like_this: {
+       *     fields: ["hasSkill"],
+       *     like: [
+       *       {
+       *         doc: {
+       *           hasSkill: [
+       *             "http://ontology.datasud.fr/openemploi/data/skill/5f51db9cfdbcf1047bdb8496b28a12f2",
+       *             "http://ontology.datasud.fr/openemploi/data/skill/931caae1a40005eff180950445ee28fb",
+       *             "http://ontology.datasud.fr/openemploi/data/skill/52f25407dedf77a0e80801a742f8a3e1",
+       *             "http://ontology.datasud.fr/openemploi/data/skill/7439d1c2df98acf49df773f5898a105f",
+       *           ],
+       *         },
+       *       },
+       *     ]
+       *   },
+       * }
+       */
       new FilterDefinition({
         filterName: "moreLikeThisPersonSkillsFilter",
         indexFilter: ({ skillsIds, boost }) => ({

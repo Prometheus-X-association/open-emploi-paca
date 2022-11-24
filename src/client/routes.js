@@ -18,6 +18,7 @@ export const ROUTES = {
   CARTONET_EDIT_APTITUDES: "/cartonet/edit-aptitudes",
   CARTONET_SHOW_PROFILE: "/cartonet/show-profile",
   CARTONET_SHOW_JOBS: "/cartonet/show-jobs",
+  CARTONET_SHOW_WISHED_JOBS: "/cartonet/show-wished-jobs",
   CARTONET_EXTRACT_SKILLS_FROM_CV: "/cartonet/extract-skills-from-cv",
-  CARTONET_PRINT_PROFILE: "/cartonet/print"
+  CARTONET_PRINT_PROFILE: "/cartonet/print",
 };

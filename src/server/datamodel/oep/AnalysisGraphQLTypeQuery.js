@@ -1,13 +1,13 @@
 import { GraphQLTypeQuery } from "@mnemotix/synaptix.js";
 import env from "env-var";
 
-import {
-  getTrainingsLowerBoundDate,
-  getTrainingsUpperBoundDate,
-} from "./TrainingGraphQLTypeConnectionQuery";
 import TrainingDefinition from "./TrainingDefinition";
 import OfferDefinition from "../mm/OfferDefinition";
 import SkillDefinition from "../mm/SkillDefinition";
+import {
+  getTrainingsLowerBoundDate,
+  getTrainingsUpperBoundDate,
+} from "./TrainingGraphQLDefinition";
 
 export class AnalysisGraphQLTypeQuery extends GraphQLTypeQuery {
   /**

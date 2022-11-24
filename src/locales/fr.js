@@ -146,6 +146,10 @@ export const fr = {
       NO_APTITUDE: "Aucune compétence acquise",
       NO_SKILL: "Aucune compétence à acquérir",
     },
+    WISHED_OCCUPATION_MATCHING: {
+      PAGE_TITLE: "Métiers d'intérêt",
+      SUBTITLE: "Liste des métiers d'intérêt",
+    },
     EXPORT: {
       TITLE: "Mon profil Carto.net",
     },

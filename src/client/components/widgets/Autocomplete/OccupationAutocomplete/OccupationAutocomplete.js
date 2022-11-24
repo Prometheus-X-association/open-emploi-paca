@@ -1,7 +1,7 @@
-import {useTranslation} from "react-i18next";
-import {gqlOccupations} from "./gql/Occupations.gql";
-import {ConceptAutocomplete} from "../ConceptAutocomplete/ConceptAutocomplete";
-import {getGqlFiltersForQs} from "../ConceptAutocomplete/gql/Concepts.gql";
+import { useTranslation } from "react-i18next";
+import { gqlOccupations } from "./gql/Occupations.gql";
+import { ConceptAutocomplete } from "../ConceptAutocomplete/ConceptAutocomplete";
+import { getGqlFiltersForQs } from "../ConceptAutocomplete/gql/Concepts.gql";
 
 /**
  * @param {function} onSelectConcepts
@@ -15,7 +15,6 @@ import {getGqlFiltersForQs} from "../ConceptAutocomplete/gql/Concepts.gql";
  * @param {boolean} [multiple] - Select multiple concepts
  * @param {string} [className]
  * @return {*}
- * @constructor
  */
 export function OccupationAutocomplete({
   onSelectConcepts,
@@ -27,9 +26,9 @@ export function OccupationAutocomplete({
   AutocompleteProps,
   TextFieldProps,
   className,
-  includeLeafOccupations = false
+  includeLeafOccupations = false,
 } = {}) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <ConceptAutocomplete
@@ -38,13 +37,19 @@ export function OccupationAutocomplete({
       placeholder={placeholder}
       gqlQuery={gqlOccupations}
       gqlEntitiesConnectionPath={"occupations"}
-      getGqlVariables={({qs}) => {
-        let variables = getGqlFiltersForQs({qs, excludeTopConcepts, vocabularyId: null});
+      getGqlVariables={({ qs }) => {
+        let variables = getGqlFiltersForQs({
+          qs,
+          excludeTopConcepts,
+          vocabularyId: null,
+        });
 
         variables.filters = [...variables.filters, "hasSkill:*"];
 
         if (!includeLeafOccupations) {
-          variables.filters.push("inScheme:http://ontology.datasud.fr/openemploi/data/scheme/1");
+          variables.filters.push(
+            "inScheme:http://ontology.datasud.fr/openemploi/data/scheme/1"
+          );
         }
 
         variables.size = 50;

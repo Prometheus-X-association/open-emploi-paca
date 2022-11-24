@@ -1,50 +1,59 @@
 import PropTypes from "prop-types";
-import {CircularProgress, Box, Typography} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import { CircularProgress, Box, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   value: {
     fontSize: theme.typography.pxToRem(8),
     color: "white",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   big: {
-    fontSize: theme.typography.pxToRem(11)
+    fontSize: theme.typography.pxToRem(11),
   },
   green: {
     color: "#099906",
     "& circle": {
-      fill: "#92de91"
-    }
+      fill: "#92de91",
+    },
   },
   yellow: {
     color: "#aecb00",
     "& circle": {
-      fill: "#d9ffa9"
-    }
+      fill: "#d9ffa9",
+    },
   },
   orange: {
     color: "#e27700",
     "& circle": {
-      fill: "#ffc88c"
-    }
+      fill: "#ffc88c",
+    },
   },
   red: {
     color: "#dd0101",
     "& circle": {
-      fill: "#ff9a9a"
-    }
+      fill: "#ff9a9a",
+    },
   },
   disabled: {
     color: "#969696",
     "& circle": {
-      fill: "#e3e3e3"
-    }
-  }
+      fill: "#e3e3e3",
+    },
+  },
 }));
 
-export function Gauge({value, big, disabled, hideText, label, ...props} = {}) {
+export function Gauge({
+  value,
+  big,
+  disabled,
+  hideText,
+  label,
+  className,
+  loading,
+  ...props
+} = {}) {
   const classes = useStyles();
   let color = "red";
 
@@ -61,16 +70,16 @@ export function Gauge({value, big, disabled, hideText, label, ...props} = {}) {
   }
 
   return (
-    <Box position="relative" display="inline-flex">
+    <Box position="relative" display="inline-flex" className={className}>
       <CircularProgress
-        variant="determinate"
+        variant={loading ? "indeterminate" : "determinate"}
         value={value}
         {...props}
         thickness={4}
-        className={disabled ? classes.disabled : classes[color]}
+        className={disabled || loading ? classes.disabled : classes[color]}
         size={big ? 80 : 40}
       />
-      <If condition={!hideText}>
+      <If condition={!hideText && !loading}>
         <Box
           top={0}
           left={0}
@@ -79,12 +88,18 @@ export function Gauge({value, big, disabled, hideText, label, ...props} = {}) {
           position="absolute"
           display="flex"
           alignItems="center"
-          justifyContent="center">
+          justifyContent="center"
+        >
           <Typography
-            className={clsx(classes.value, disabled ? classes.disabled : classes[color], {[classes.big]: big})}
+            className={clsx(
+              classes.value,
+              disabled ? classes.disabled : classes[color],
+              { [classes.big]: big }
+            )}
             variant="caption"
             component="div"
-            color="textSecondary">
+            color="textSecondary"
+          >
             {disabled ? "À VENIR" : label || `${Math.round(value)}%`}
           </Typography>
         </Box>
@@ -98,5 +113,5 @@ Gauge.propTypes = {
    * The value of the progress indicator for the determinate and static variants.
    * Value between 0 and 100.
    */
-  value: PropTypes.number.isRequired
+  value: PropTypes.number.isRequired,
 };

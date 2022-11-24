@@ -1,12 +1,12 @@
-import {Button, Grid, Tooltip, Typography} from "@material-ui/core";
-import {useTranslation} from "react-i18next";
-import {LoadingButton} from "../Button/LoadingButton";
-import {makeStyles} from "@material-ui/core/styles";
+import { Button, Grid, Tooltip, Typography } from "@material-ui/core";
+import { useTranslation } from "react-i18next";
+import { LoadingButton } from "../Button/LoadingButton";
+import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   cancelButton: {
-    marginLeft: theme.spacing(1)
-  }
+    marginLeft: theme.spacing(1),
+  },
 }));
 
 /**
@@ -32,9 +32,10 @@ export function FormButtons({
   cancelAction,
   extraSubmitAndResetButton,
   inDialog,
-  buttonVariant = "outlined"
+  buttonVariant = "outlined",
+  className,
 } = {}) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const classes = useStyles();
 
   let disabled = !isValid || !dirty;
@@ -54,15 +55,21 @@ export function FormButtons({
       }
       if (required.length > 0 || tooShort.length > 0) {
         reason = (
-          <div style={{fontSize: 14}}>
-            {required.length > 0 && <>{t("FORM_ERRORS.FIELD_ERRORS.REQUIRED_S")}</>}
-            {tooShort.length > 0 && <>{t("FORM_ERRORS.FIELD_ERRORS.TOO_SHORTS")}</>}
+          <div style={{ fontSize: 14 }}>
+            {required.length > 0 && (
+              <>{t("FORM_ERRORS.FIELD_ERRORS.REQUIRED_S")}</>
+            )}
+            {tooShort.length > 0 && (
+              <>{t("FORM_ERRORS.FIELD_ERRORS.TOO_SHORTS")}</>
+            )}
           </div>
         );
       }
     } else if (!dirty) {
       reason = (
-        <Typography color="inherit">{t("FORM_ERRORS.GENERAL_ERRORS.DISABLED_BECAUSE_NO_MODIFICATION")}</Typography>
+        <Typography color="inherit">
+          {t("FORM_ERRORS.GENERAL_ERRORS.DISABLED_BECAUSE_NO_MODIFICATION")}
+        </Typography>
       );
     }
 
@@ -78,7 +85,12 @@ export function FormButtons({
     );
   } else {
     submitButton = (
-      <LoadingButton loading={saving} type="submit" variant={buttonVariant} color="primary">
+      <LoadingButton
+        loading={saving}
+        type="submit"
+        variant={buttonVariant}
+        color="primary"
+      >
         {label || t("ACTIONS.SAVE")}
       </LoadingButton>
     );
@@ -88,17 +100,25 @@ export function FormButtons({
     <>
       {submitButton}
       <If condition={cancelAction || (dirty && resetForm)}>
-        <Button variant={buttonVariant} onClick={resetForm || cancelAction} className={classes.cancelButton}>
+        <Button
+          variant={buttonVariant}
+          onClick={resetForm || cancelAction}
+          className={classes.cancelButton}
+        >
           {dirty ? t("ACTIONS.CANCEL") : t("ACTIONS.GO_BACK")}
         </Button>
       </If>
     </>
   ) : (
-    <Grid container spacing={2} justify={"flex-end"}>
+    <Grid container spacing={2} justify={"flex-end"} className={className}>
       <Grid item>{submitButton}</Grid>
       <If condition={cancelAction || (dirty && resetForm)}>
         <Grid item>
-          <Button variant={buttonVariant} onClick={resetForm || cancelAction} className={classes.cancelButton}>
+          <Button
+            variant={buttonVariant}
+            onClick={resetForm || cancelAction}
+            className={classes.cancelButton}
+          >
             {dirty ? t("ACTIONS.CANCEL") : t("ACTIONS.GO_BACK")}
           </Button>
         </Grid>

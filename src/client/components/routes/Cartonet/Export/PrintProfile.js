@@ -24,7 +24,7 @@ import dayjs from "dayjs";
 import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
 import { Rating } from "@material-ui/lab";
 import { gqlMyProfile } from "../../Profile/gql/MyProfile.gql";
-import OccupationsMatching from "../Recommendation/OccupationsMatching";
+import OccupationsMatching from "../OccupationsMatching/OccupationsMatching";
 import { useLoggedUser } from "../../../../hooks/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({

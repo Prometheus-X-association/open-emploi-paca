@@ -1,107 +1,110 @@
-import {useState, useEffect, useCallback, useRef} from "react";
-import {makeStyles} from "@material-ui/core/styles";
-import {useTranslation} from "react-i18next";
-import {useReactToPrint} from "react-to-print";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { useTranslation } from "react-i18next";
+import { useReactToPrint } from "react-to-print";
 import {
   Button,
-  List,
-  ListItem,
-  ListItemText,
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Typography,
-  Grid
+  Grid,
 } from "@material-ui/core";
-import {ExpandMore as ExpandMoreIcon, Print as PrintIcon} from "@material-ui/icons";
+import {
+  ExpandMore as ExpandMoreIcon,
+  Print as PrintIcon,
+} from "@material-ui/icons";
 
-import {useLazyQuery} from "@apollo/client";
-import {gqlOccupationsMatching} from "./gql/OccupationsMatching.gql";
-import {useLoggedUser} from "../../../../hooks/useLoggedUser";
-import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
-import {Gauge} from "../../../widgets/Gauge";
-import {CartonetExploreLayout} from "../CartonetExploreLayout";
-import {OccupationsDetails} from "./OccupationsDetails";
+import { useLazyQuery } from "@apollo/client";
+import { gqlSuggestedOccupationsMatchings } from "./gql/SuggestedOccupationsMatchings.gql";
+import { useLoggedUser } from "../../../../hooks/useLoggedUser";
+import { LoadingSplashScreen } from "../../../widgets/LoadingSplashScreen";
+import { Gauge } from "../../../widgets/Gauge";
+import { CartonetExploreLayout } from "../CartonetExploreLayout";
+import { OccupationDetails } from "./OccupationDetails";
 
 const useStyles = makeStyles((theme) => ({
   categoryHeader: {
-    alignItems: "center"
+    alignItems: "center",
   },
   categoryHeaderExpanded: {
-    margin: 0
+    margin: 0,
   },
   categoryHeaderTitle: {
-    marginLeft: theme.spacing(2)
+    marginLeft: theme.spacing(2),
   },
   root: {
     position: "relative",
     overflow: "hidden",
-    height: "100%"
+    height: "100%",
   },
   occupationsContainer: {
     overflow: "hidden",
-    height: "100%"
+    height: "100%",
   },
   occupationsList: {
-    overflow: "auto"
+    overflow: "auto",
   },
   categoryTitle: {
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
   },
   occupation: {
-    breakInside: "avoid"
+    breakInside: "avoid",
   },
   printButton: {
     position: "absolute",
     top: theme.spacing(2),
     right: theme.spacing(2),
-    zIndex: 100
+    zIndex: 100,
   },
   "@media print": {
     root: {
       height: "auto",
-      overflow: "visible"
+      overflow: "visible",
     },
     occupationsContainer: {
       height: "auto",
       margin: "auto",
-      padding: theme.spacing(5)
+      padding: theme.spacing(5),
     },
     occupationsList: {
-      overflow: "visible"
-    }
-  }
+      overflow: "visible",
+    },
+  },
 }));
 
 export function useSuggestedOccupationsMatchings() {
-  const {user} = useLoggedUser();
-  const [getOccupationsMatching, {data, loading}] = useLazyQuery(gqlOccupationsMatching, {fetchPolicy: "no-cache"});
+  const { user } = useLoggedUser();
+  const [
+    getOccupationsMatching,
+    { data: { suggestedOccupationsMatchings } = {}, loading },
+  ] = useLazyQuery(gqlSuggestedOccupationsMatchings, {
+    fetchPolicy: "no-cache",
+  });
 
   useEffect(() => {
     if (user?.id) {
       getOccupationsMatching({
-        variables: {personId: user?.id}
+        variables: { personId: user?.id },
       });
     }
   }, [user]);
 
-  const occupations = JSON.parse(data?.occupationsMatching || "[]");
-
-  return [occupations, {loading}];
+  return [suggestedOccupationsMatchings || [], { loading }];
 }
 
 /**
  *
  */
-export default function OccupationsMatching({print} = {}) {
+export default function OccupationsMatching({ print } = {}) {
   const classes = useStyles();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
-  const {user: me} = useLoggedUser();
-  const [occupations, {loading}] = useSuggestedOccupationsMatchings();
+  const { user: me } = useLoggedUser();
+  const [occupations, { loading }] = useSuggestedOccupationsMatchings();
 
   const componentRef = useRef(null);
 
@@ -114,7 +117,7 @@ export default function OccupationsMatching({print} = {}) {
     documentTitle: t("CARTONET.OCCUPATION_MATCHING.PAGE_TITLE"),
     onBeforeGetContent: () => {},
     onBeforePrint: () => {},
-    onAfterPrint: () => {}
+    onAfterPrint: () => {},
   });
 
   return (
@@ -125,7 +128,11 @@ export default function OccupationsMatching({print} = {}) {
         </When>
         <Otherwise>
           <div className={classes.root}>
-            <Button className={classes.printButton} onClick={handlePrint} endIcon={<PrintIcon />}>
+            <Button
+              className={classes.printButton}
+              onClick={handlePrint}
+              endIcon={<PrintIcon />}
+            >
               {t("CARTONET.ACTIONS.PRINT")}
             </Button>
             <Grid
@@ -133,9 +140,14 @@ export default function OccupationsMatching({print} = {}) {
               direction={"column"}
               wrap={"nowrap"}
               className={classes.occupationsContainer}
-              ref={componentRef}>
-              <Grid item style={{flexBasis: 0}}>
-                <Typography variant={"h6"} display="block" className={classes.categoryTitle}>
+              ref={componentRef}
+            >
+              <Grid item style={{ flexBasis: 0 }}>
+                <Typography
+                  variant={"h6"}
+                  display="block"
+                  className={classes.categoryTitle}
+                >
                   {t("CARTONET.OCCUPATION_MATCHING.SUBTITLE")}
                 </Typography>
               </Grid>
@@ -145,16 +157,23 @@ export default function OccupationsMatching({print} = {}) {
                     key={occupation.categoryId}
                     expanded={expanded === occupation.categoryId}
                     onChange={handleChange(occupation.categoryId)}
-                    className={classes.occupation}>
+                    className={classes.occupation}
+                  >
                     <AccordionSummary
-                      classes={{content: classes.categoryHeader, expanded: classes.categoryHeaderExpanded}}
-                      expandIcon={<ExpandMoreIcon />}>
+                      classes={{
+                        content: classes.categoryHeader,
+                        expanded: classes.categoryHeaderExpanded,
+                      }}
+                      expandIcon={<ExpandMoreIcon />}
+                    >
                       <Gauge value={occupation.score * 100} />
-                      <Typography className={classes.categoryHeaderTitle}>{occupation.categoryName}</Typography>
+                      <Typography className={classes.categoryHeaderTitle}>
+                        {occupation.categoryName}
+                      </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <If condition={expanded === occupation.categoryId}>
-                        <OccupationsDetails
+                        <OccupationDetails
                           occupationId={occupation.categoryId}
                           personId={me?.id}
                           subOccupations={occupation.subOccupations}

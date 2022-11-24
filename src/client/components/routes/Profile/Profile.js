@@ -24,7 +24,7 @@ import LogoMM from "../../../assets/logo-mm.png";
 import LogoWever from "../../../assets/logo-wever.png";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { generateCartonetPath } from "../Cartonet/utils/generateCartonetPath";
+import { generateCartonetPath } from "../Cartonet/generateCartonetPath";
 import { MutationConfig } from "../../../utilities/apollo";
 import {
   DynamicFormDefinition,
