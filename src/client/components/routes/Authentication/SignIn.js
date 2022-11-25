@@ -41,7 +41,7 @@ export default function SignIn() {
       </Typography>
       <Formik
         initialValues={{
-          username: localStorage.getItem("rememberMe") || "",
+          email: localStorage.getItem("rememberMe") || "",
           rememberMe: !!localStorage.getItem("rememberMe"),
           password: "",
         }}
@@ -52,7 +52,7 @@ export default function SignIn() {
           setSubmitting(true);
 
           if (values.rememberMe) {
-            localStorage.setItem("rememberMe", values.username);
+            localStorage.setItem("rememberMe", values.email);
           } else {
             localStorage.removeItem("rememberMe");
           }
@@ -61,7 +61,6 @@ export default function SignIn() {
         }}
       >
         {({ isSubmitting, values, errors }) => {
-          console.log(errors);
           return (
             <Form className={classes.form} noValidate>
               <Field
@@ -70,9 +69,9 @@ export default function SignIn() {
                 margin="normal"
                 required
                 fullWidth
-                id="username"
-                label={t("SIGN_IN.username")}
-                name="username"
+                id="email"
+                label={t("SIGN_IN.EMAIL")}
+                name="email"
                 autoComplete="email"
                 autoFocus
               />

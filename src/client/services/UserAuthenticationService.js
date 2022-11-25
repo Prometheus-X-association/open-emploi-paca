@@ -17,7 +17,6 @@ import { handleGraphQLError } from "../utilities/handleGraphQLError";
 
 export const gqlRegisterUserAccountMutation = gql`
   mutation RegisterUserAccount(
-    $username: String!
     $password: String!
     $email: String!
     $firstName: String!
@@ -25,7 +24,6 @@ export const gqlRegisterUserAccountMutation = gql`
   ) {
     registerUserAccount(
       input: {
-        username: $username
         password: $password
         email: $email
         firstName: $firstName
@@ -38,8 +36,8 @@ export const gqlRegisterUserAccountMutation = gql`
 `;
 
 export const gqlLoginMutation = gql`
-  mutation Login($username: String!, $password: String!) {
-    login(input: { username: $username, password: $password }) {
+  mutation Login($email: String!, $password: String!) {
+    login(input: { username: $email, password: $password }) {
       success
     }
   }
@@ -409,7 +407,7 @@ export class UserAuthenticationService {
 
   getLoginValidationSchema() {
     return Yup.object().shape({
-      username: Yup.string().required(
+      email: Yup.string().required(
         this.t(`${this.i18nKeyPrefix}FIELD_ERRORS.REQUIRED`)
       ),
       password: Yup.string().required(
@@ -420,7 +418,7 @@ export class UserAuthenticationService {
 
   getLoginFormInitialValues() {
     return {
-      username: "",
+      email: "",
       password: "",
     };
   }
