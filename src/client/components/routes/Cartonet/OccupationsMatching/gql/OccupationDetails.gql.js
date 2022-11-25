@@ -19,7 +19,10 @@ export const gqlOccupationDetails = gql`
         }
       }
     }
-    aptitudes(filters: $aptitudesFilters) {
+    aptitudes(
+      filters: $aptitudesFilters
+      sortings: [{ sortBy: "ratingValue", isSortDescending: true }]
+    ) {
       edges {
         node {
           id

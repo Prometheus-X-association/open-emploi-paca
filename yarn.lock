@@ -2265,9 +2265,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mnemotix/synaptix.js@npm:4.14.1":
-  version: 4.14.1
-  resolution: "@mnemotix/synaptix.js@npm:4.14.1"
+"@mnemotix/synaptix.js@npm:4.14.2":
+  version: 4.14.2
+  resolution: "@mnemotix/synaptix.js@npm:4.14.2"
   dependencies:
     "@elastic/elasticsearch": ^7.11.0
     "@graphql-tools/schema": ^8.2.0
@@ -2319,7 +2319,7 @@ __metadata:
   bin:
     check-datamodel: bin/checkDataModel.js
     generate-datamodel: bin/generateDataModel.js
-  checksum: 5bf6cd70a468595e5454982d453d0312168ad2ed5ccdf0590b52101c6a7baae4b9725697b950ce706fb4bce48a52ecdd416801eb0d6afab6c69a564db470f4c8
+  checksum: 5965f162374418f0a1a5d4ff69d79042b1561803524c70bb70365aaa5c0b0698c38e01f0fe5c0c36554a9a3aa44507da4225a01139471c9d7a60b3420f1ef445
   languageName: node
   linkType: hard
 
@@ -5399,13 +5399,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"env-var@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "env-var@npm:5.2.0"
-  checksum: 289c76a744bea97c5452ee3a070fe49161815e492ca84061f99c3ced70591ac1fd7d16a0a7dc962feaa371999e517b7f912223355e7f022c648b5fea7bc0fd0e
-  languageName: node
-  linkType: hard
-
 "env-var@npm:^7.0.0":
   version: 7.0.1
   resolution: "env-var@npm:7.0.1"
@@ -8269,7 +8262,7 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": 4.0.0-alpha.56
     "@material-ui/pickers": ^3.2.10
-    "@mnemotix/synaptix.js": 4.14.1
+    "@mnemotix/synaptix.js": 4.14.2
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.9
     "@types/react": ^16.9.0
     "@ungap/url-search-params": ^0.1.4
@@ -8284,7 +8277,7 @@ __metadata:
     css-loader: ^5.0.1
     dayjs: ^1.8.17
     dotenv: ^7.0.0
-    env-var: ^5.2.0
+    env-var: ^7.0.0
     events: ^3.3.0
     express: ^4.17.1
     express-static-gzip: ^2.1.0

@@ -69,10 +69,14 @@ export default {
   },
   INDEX_CLUSTER_USER: {
     description: " Index cluster user",
+    defaultValue: () => "",
+    defaultValueInProduction: true,
   },
   INDEX_CLUSTER_PWD: {
     description: "Index cluster password",
     obfuscate: true,
+    defaultValue: () => "",
+    defaultValueInProduction: true,
   },
   INDEX_PREFIX_TYPES_WITH: {
     description: "Prefix all index types with a prefix",

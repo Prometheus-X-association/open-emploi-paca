@@ -44,6 +44,7 @@ dotenv.config();
 
 process.env.UUID = "index-data";
 process.env.RABBITMQ_RPC_TIMEOUT = "360000";
+process.env.LOG_LEVEL = "VERBOSE";
 
 const connectorsKnowMapping = {
   "xsd:date": "date",
@@ -142,16 +143,14 @@ export let indexData = async () => {
   });
 
   const elasticsearchExternalUri = env
-    .get("ES_MASTER_URI")
+    .get("INDEX_MASTER_URI")
     .required()
     .asString();
-  const elasticsearchNode = env
-    .get("ES_CLUSTER_NODE")
-    .default(elasticsearchExternalUri)
-    .required()
+  const elasticsearchNode = elasticsearchExternalUri;
+  const elasticsearchBasicAuthUser = env.get("INDEX_CLUSTER_USER").asString();
+  const elasticsearchBasicAuthPassword = env
+    .get("INDEX_CLUSTER_PWD")
     .asString();
-  const elasticsearchBasicAuthUser = env.get("ES_CLUSTER_USER").asString();
-  const elasticsearchBasicAuthPassword = env.get("ES_CLUSTER_PWD").asString();
   const indexPrefix = env.get("INDEX_PREFIX_TYPES_WITH").required().asString();
 
   const esClient = new Client({
@@ -227,7 +226,11 @@ export let indexData = async () => {
 
         if (modelDefinition.isEqualOrDescendantOf(EntityDefinition)) {
           connector.fields = [].concat(connector.fields, commonFields);
-          connector.documentFilter = commonEntityFilter;
+          if (env.get("RDFSTORE_VERSION").default(10).asFloat() > 9) {
+            connector.documentFilter = commonEntityFilter;
+          } else {
+            connector.entityFilter = commonEntityFilter;
+          }
         }
 
         connectors.push(connector);

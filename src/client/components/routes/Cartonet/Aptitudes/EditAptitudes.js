@@ -22,6 +22,7 @@ import { Link } from "react-router-dom";
 import { generateCartonetPath } from "../generateCartonetPath";
 import { ROUTES } from "../../../../routes";
 import { useLoggedUser } from "../../../../hooks/useLoggedUser";
+import { gqlExperienceFragment } from "../Experience/gql/Experience.gql";
 
 const useStyles = makeStyles((theme) => ({
   levelDescription: {
@@ -100,7 +101,7 @@ export default function EditAptitudes({
         customBodyRender: (_, { row: aptitude }) => {
           return (
             <Rating
-              value={aptitude.rating?.value || 0}
+              value={aptitude.ratingValue || 0}
               name={`${aptitude.id}_rating`}
               onClick={(e) => e.stopPropagation()}
               onChange={(_, value) =>
@@ -291,13 +292,18 @@ export default function EditAptitudes({
             __typename: "Aptitude",
             id: aptitude.id,
             isTop5,
-            rating: {
-              __typename: "AptitudeRating",
-              id: aptitude.rating?.id,
-              value,
-            },
+            ratingValue: value,
           },
         },
+      },
+      update: (cache) => {
+        cache.modify({
+          id: aptitude.id,
+          fields: {
+            isTop5: () => isTop5,
+            ratingValue: () => value,
+          },
+        });
       },
     });
   }
