@@ -2,9 +2,9 @@ import { gql } from "@apollo/client";
 
 export const gqlSuggestedOccupationsMatchings = gql`
   query SuggestedOccupationsMatchings($personId: ID!) {
-    suggestedOccupationsMatchings(personId: $personId) {
-      categoryId
-      categoryName
+    suggestedOccupationMatchingsForPerson(personId: $personId) {
+      occupationId
+      occupationPrefLabel
       score
       subOccupations {
         prefLabel

@@ -3,19 +3,18 @@ import { FragmentDefinition, QueryFilter } from "@mnemotix/synaptix.js";
 import PersonDefinition from "../../mnx/PersonDefinition";
 import AptitudeDefinition from "../AptitudeDefinition";
 import OccupationDefinition from "../OccupationDefinition";
+import { reduceEsHitsToOccupationMatchings } from "./reduceEsHitsToOccupationMatchings";
 
 /**
  * @param {SynaptixDatastoreRdfSession} synaptixSession
  * @param {String} personId
- * @param {boolean} [light]
  * @param {number} [thresholdScore=0.15]
  * @param {array} forcedOccupationIds
- * @return {Object}
+ * @return {Promise<[OccupationMatching]>}
  */
 export async function computeSuggestedOccupationsMatchingForPerson({
   synaptixSession,
   personId,
-  light,
   thresholdScore,
   forcedOccupationIds,
 }) {
@@ -130,17 +129,17 @@ export async function computeSuggestedOccupationsMatchingForPerson({
     modelDefinition: OccupationDefinition,
     idsFilters: forcedOccupationIds,
     queryFilters: Object.entries(skillsGroups).map(
-      ([boost, skillsIds]) =>
+      ([boost, skillIds]) =>
         new QueryFilter({
           filterDefinition: OccupationDefinition.getFilter(
             "moreLikeThisPersonSkillsFilter"
           ),
-          filterGenerateParams: { skillsIds, boost },
+          filterGenerateParams: { skillIds, boost },
           isStrict: false,
         })
     ),
     rawResult: true,
-    limit: 9000,
+    limit: 1000,
     buildQuery: (query) => ({
       script_score: {
         query: query,
@@ -161,39 +160,8 @@ export async function computeSuggestedOccupationsMatchingForPerson({
     ],
   });
 
-  const hasRelatedOccupationPath = OccupationDefinition.getLink(
-    "hasRelatedOccupation"
-  ).getPathInIndex();
-  const relatedOccupationLabelPath = OccupationDefinition.getProperty(
-    "relatedOccupationName"
-  ).getPathInIndex();
-  const occupationLabelPath = OccupationDefinition.getProperty(
-    "prefLabel"
-  ).getPathInIndex();
-
-  const matchings = result.hits.reduce((acc, { _id, _score, _source }) => {
-    if (_score < thresholdScore) {
-      return acc;
-    }
-
-    // Case of an occupation that is an occupation category (gathers sub occupations)
-    // Ex: "Design Industriel"
-    //           |=> Chef de produits design
-    //           |=> Directeur de création designer
-    //           |=> ....
-    // If
-    if (Array.isArray(_source[hasRelatedOccupationPath])) {
-      // Discarded by default except is forced requested
-      acc[_source[relatedOccupationLabelPath]] = {
-        categoryName: _source.prefLabel,
-        categoryId: _id,
-        score: _score,
-      };
-      return acc;
-    }
-
-    return acc;
-  }, {});
-
-  return Object.values(matchings);
+  return reduceEsHitsToOccupationMatchings({
+    hits: result.hits,
+    thresholdScore,
+  });
 }

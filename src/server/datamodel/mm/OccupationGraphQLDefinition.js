@@ -1,8 +1,10 @@
 import {
   GraphQLTypeDefinition,
   generateConnectionArgs,
+  I18nError,
 } from "@mnemotix/synaptix.js";
 import { computeSuggestedOccupationsMatchingForPerson } from "./ia/computeSuggestedOccupationsMatchingForPerson";
+import { computeSuggestedOccupationsMatchingForSkills } from "./ia/computeSuggestedOccupationsMatchingForSkills";
 
 export class OccupationGraphQLDefinition extends GraphQLTypeDefinition {
   /**
@@ -15,8 +17,8 @@ Occupation matching representation
 """
 type OccupationMatching{
   score: Float
-  categoryId: String
-  categoryName: String
+  occupationId: String
+  occupationPrefLabel: String
   subOccupations: [Occupation]
 }    
 
@@ -26,16 +28,26 @@ extend type Query {
    
    Parameters :
      - personId: [OPTIONAL] Person ID. Default to logged user person ID
-     - light: [OPTIONAL] Restrict data on occupation categories, discard suboccupations.
      - thresholdScore [OPTIONAL] Tweak the threshold score (default: 0.15)
   """
-  suggestedOccupationsMatchings(
+  suggestedOccupationMatchingsForPerson(
     personId: ID
-    light: Boolean 
     thresholdScore: Float! = 0.15
     ${generateConnectionArgs()}
   ): [OccupationMatching]
-  
+
+  """
+   This service returns a list of occupations matching scores given a list of skill ids.
+   
+   Parameters :
+     - skillIds: [OPTIONAL] Skills IDs.
+     - thresholdScore [OPTIONAL] Tweak the threshold score (default: 0.15)
+  """
+  suggestedOccupationMatchingsForSkills(
+    skillIds: [ID!]!
+    thresholdScore: Float! = 0.15
+    ${generateConnectionArgs()}
+  ): [OccupationMatching]  
   
   """
    This service returns an occupation matching scores for a logged user.
@@ -66,28 +78,46 @@ extend type Query {
         /**
          * @param _
          * @param {string} [personId]
-         * @param {boolean} [light]
          * @param {number} [thresholdScore=0.15]
          * @param {SynaptixDatastoreSession} synaptixSession
          * @param {object} info
          */
-        suggestedOccupationsMatchings: async (
+        suggestedOccupationMatchingsForPerson: async (
           _,
-          { personId, light, thresholdScore },
+          { personId, thresholdScore },
           synaptixSession
         ) => {
           if (!personId) {
             personId = (await synaptixSession.getLoggedUserPerson())?.id;
           }
 
-          if (personId) {
-            return computeSuggestedOccupationsMatchingForPerson({
-              synaptixSession,
-              personId,
-              light,
-              thresholdScore,
-            });
+          if (!personId) {
+            throw new I18nError("Person not found.");
           }
+
+          return computeSuggestedOccupationsMatchingForPerson({
+            synaptixSession,
+            personId,
+            thresholdScore,
+          });
+        },
+        /**
+         * @param _
+         * @param {[string]} [skillIds]
+         * @param {number} [thresholdScore=0.15]
+         * @param {SynaptixDatastoreSession} synaptixSession
+         * @param {object} info
+         */
+        suggestedOccupationMatchingsForSkills: async (
+          _,
+          { skillIds, thresholdScore },
+          synaptixSession
+        ) => {
+          return computeSuggestedOccupationsMatchingForSkills({
+            synaptixSession,
+            skillIds,
+            thresholdScore,
+          });
         },
         /**
          * @param _
@@ -112,7 +142,6 @@ extend type Query {
                 synaptixSession,
                 forcedOccupationIds: [occupationId],
                 personId,
-                light,
                 thresholdScore: 0,
               }
             );

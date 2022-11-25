@@ -154,13 +154,13 @@ export default class OccupationDefinition extends ModelDefinitionAbstract {
        */
       new FilterDefinition({
         filterName: "moreLikeThisPersonSkillsFilter",
-        indexFilter: ({ skillsIds, boost }) => ({
+        indexFilter: ({ skillIds, boost = 1 }) => ({
           more_like_this: {
             fields: [this.getLink("hasSkill").getPathInIndex()],
             like: [
               {
                 doc: {
-                  [this.getLink("hasSkill").getPathInIndex()]: skillsIds,
+                  [this.getLink("hasSkill").getPathInIndex()]: skillIds,
                 },
               },
             ],

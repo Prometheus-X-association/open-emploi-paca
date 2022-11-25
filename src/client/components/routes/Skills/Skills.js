@@ -33,7 +33,7 @@ export default function Skills({} = {}) {
       (suggestedMatching) =>
         !(occupationMatchings || []).find(
           (occupationMatching) =>
-            occupationMatching.categoryId === suggestedMatching.categoryId
+            occupationMatching.occupationId === suggestedMatching.occupationId
         )
     )
     .slice(0, 4);
@@ -83,17 +83,19 @@ export default function Skills({} = {}) {
           {filteredSuggestedOccupationMatchings.map(
             (filteredSuggestedOccupationMatching) => (
               <Grid
-                key={filteredSuggestedOccupationMatching.categoryId}
+                key={filteredSuggestedOccupationMatching.occupationId}
                 item
                 xs={6}
               >
                 <BlockContainer
-                  title={filteredSuggestedOccupationMatching.categoryName}
+                  title={
+                    filteredSuggestedOccupationMatching.occupationPrefLabel
+                  }
                   expandable
                 >
                   <SkillsMatchingByOccupationWidget
                     occupationId={
-                      filteredSuggestedOccupationMatching.categoryId
+                      filteredSuggestedOccupationMatching.occupationId
                     }
                   />
                 </BlockContainer>

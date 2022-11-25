@@ -13,6 +13,9 @@ const Cartography = loadable(() => import("./Cartography/Cartography"));
 const OccupationsMatching = loadable(() =>
   import("./OccupationsMatching/OccupationsMatching")
 );
+const WishedOccupationsMatching = loadable(() =>
+  import("./WhishedOccupationsMatching/WishedOccupationsMatching")
+);
 const ExtractAptitudesFromCV = loadable(() =>
   import("./Aptitudes/ExtractAptitudesFromCV")
 );
@@ -89,6 +92,11 @@ export function CartonetModal({} = {}) {
           <Route
             path={`${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_JOBS}`}
             render={() => <OccupationsMatching />}
+          />
+          <Route
+            exact
+            path={`${ROUTES.PROFILE}${ROUTES.CARTONET_SHOW_WISHED_JOBS}`}
+            component={() => <WishedOccupationsMatching />}
           />
           <Route
             path={`${ROUTES.PROFILE}${ROUTES.CARTONET_EXTRACT_SKILLS_FROM_CV}`}

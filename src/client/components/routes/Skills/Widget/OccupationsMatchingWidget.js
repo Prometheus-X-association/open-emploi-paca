@@ -65,12 +65,12 @@ export function useOccupationMatchings() {
   occupations.map((occupation) => {
     if (
       !occupationMatchings.find(
-        ({ categoryId }) => categoryId === occupation.id
+        ({ occupationId }) => occupationId === occupation.id
       )
     ) {
       occupationMatchings.push({
-        categoryId: occupation.id,
-        categoryName: occupation.prefLabel,
+        occupationId: occupation.id,
+        occupationPrefLabel: occupation.prefLabel,
         score: 0,
       });
     }
@@ -94,11 +94,11 @@ export function OccupationsMatchingWidget({} = {}) {
       <Otherwise>
         <List className={classes.list}>
           {occupationMatchings.map((occupation) => (
-            <ListItem key={occupation.categoryName}>
+            <ListItem key={occupation.occupationPrefLabel}>
               <ListItemIcon>
                 <Gauge value={occupation.score * 100} />
               </ListItemIcon>
-              <ListItemText primary={occupation.categoryName} />
+              <ListItemText primary={occupation.occupationPrefLabel} />
             </ListItem>
           ))}
         </List>

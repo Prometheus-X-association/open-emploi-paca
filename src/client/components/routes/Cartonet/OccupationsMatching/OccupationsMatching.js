@@ -77,7 +77,7 @@ export function useSuggestedOccupationsMatchings() {
   const { user } = useLoggedUser();
   const [
     getOccupationsMatching,
-    { data: { suggestedOccupationsMatchings } = {}, loading },
+    { data: { suggestedOccupationMatchingsForPerson } = {}, loading },
   ] = useLazyQuery(gqlSuggestedOccupationsMatchings, {
     fetchPolicy: "no-cache",
   });
@@ -90,7 +90,7 @@ export function useSuggestedOccupationsMatchings() {
     }
   }, [user]);
 
-  return [suggestedOccupationsMatchings || [], { loading }];
+  return [suggestedOccupationMatchingsForPerson || [], { loading }];
 }
 
 /**
@@ -154,9 +154,9 @@ export default function OccupationsMatching({ print } = {}) {
               <Grid xs item className={classes.occupationsList}>
                 {occupations.map((occupation) => (
                   <Accordion
-                    key={occupation.categoryId}
-                    expanded={expanded === occupation.categoryId}
-                    onChange={handleChange(occupation.categoryId)}
+                    key={occupation.occupationId}
+                    expanded={expanded === occupation.occupationId}
+                    onChange={handleChange(occupation.occupationId)}
                     className={classes.occupation}
                   >
                     <AccordionSummary
@@ -168,13 +168,13 @@ export default function OccupationsMatching({ print } = {}) {
                     >
                       <Gauge value={occupation.score * 100} />
                       <Typography className={classes.categoryHeaderTitle}>
-                        {occupation.categoryName}
+                        {occupation.occupationPrefLabel}
                       </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <If condition={expanded === occupation.categoryId}>
+                      <If condition={expanded === occupation.occupationId}>
                         <OccupationDetails
-                          occupationId={occupation.categoryId}
+                          occupationId={occupation.occupationId}
                           personId={me?.id}
                           subOccupations={occupation.subOccupations}
                         />
