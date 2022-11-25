@@ -15,6 +15,7 @@
  */
 import { DataModel, launchApplication, logInfo } from "@mnemotix/synaptix.js";
 import dotenv from "dotenv";
+import env from "env-var";
 
 import { serveGraphQL } from "./middlewares/serveGraphQL";
 import { serveFrontend } from "./middlewares/serveFrontend";
@@ -38,15 +39,17 @@ export function launch({
   webpackConfig,
 } = {}) {
   dotenv.config();
+  let launchMiddlewares = [servePdf, serveLocales({ locales }), serveGDPR];
 
-  let launchMiddlewares = [
-    servePdf,
-    serveLocales({ locales }),
-    serveAddviseo,
-    serveGDPR,
-  ];
+  if (
+    !!env.get("ADDVISEO_AUTH_LOGIN").asString() &&
+    !!env.get("ADDVISEO_AUTH_TOKEN").asString() &&
+    !!env.get("ADDVISEO_PASSWORD_SALT").asString()
+  ) {
+    launchMiddlewares.push(serveAddviseo);
+  }
 
-  if (!parseInt(process.env.FRONTEND_DISABLED)) {
+  if (!env.get("FRONTEND_DISABLED").default("0").asBool()) {
     launchMiddlewares.push(serveFrontend({ webpackConfig }));
   }
 

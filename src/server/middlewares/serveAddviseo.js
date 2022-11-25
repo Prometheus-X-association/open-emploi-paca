@@ -3,11 +3,9 @@ import env from "env-var";
 import {
   attachDatastoreSessionExpressMiddleware,
   sendValidationErrorsJSONExpressMiddleware,
-  ExpressApp,
   I18nError,
   logError,
-  SSOApiClient,
-  logException,
+  logInfo,
 } from "@mnemotix/synaptix.js";
 import { generatePath } from "react-router-dom";
 
@@ -136,4 +134,6 @@ export async function serveAddviseo({ app, ssoApiClient }) {
       }
     }
   );
+
+  logInfo("Addviseo middleware loaded...");
 }

@@ -182,17 +182,19 @@ export default {
   ADDVISEO_AUTH_LOGIN: {
     description: "This is addViseo X-Auth-Login",
     obfuscate: true,
+    defaultValue: () => "",
     defaultValueInProduction: true,
   },
   ADDVISEO_AUTH_TOKEN: {
     description: "This is addViseo X-Auth-Token",
     obfuscate: true,
+    defaultValue: () => "",
     defaultValueInProduction: true,
   },
   ADDVISEO_PASSWORD_SALT: {
     description: "This is addViseo password salt",
-    defaultValue: () => "",
     obfuscate: true,
+    defaultValue: () => "",
     defaultValueInProduction: true,
   },
 };
