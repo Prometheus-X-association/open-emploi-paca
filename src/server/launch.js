@@ -39,7 +39,7 @@ export function launch({
   webpackConfig,
 } = {}) {
   dotenv.config();
-  let launchMiddlewares = [servePdf, serveLocales({ locales }), serveGDPR];
+  let launchMiddlewares = [servePdf, serveLocales({ locales }), serveGDPR, serveFrontend({ webpackConfig })];
 
   if (
     !!env.get("ADDVISEO_AUTH_LOGIN").asString() &&
@@ -47,10 +47,6 @@ export function launch({
     !!env.get("ADDVISEO_PASSWORD_SALT").asString()
   ) {
     launchMiddlewares.push(serveAddviseo);
-  }
-
-  if (!env.get("FRONTEND_DISABLED").default("0").asBool()) {
-    launchMiddlewares.push(serveFrontend({ webpackConfig }));
   }
 
   return launchApplication({

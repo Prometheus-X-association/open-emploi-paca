@@ -18,6 +18,7 @@
 
 import path from "path";
 import expressStaticGzip from "express-static-gzip";
+import env from "env-var";
 
 import { ExpressApp, logInfo } from "@mnemotix/synaptix.js";
 
@@ -33,7 +34,15 @@ export function serveFrontend({ webpackConfig }) {
    * @param {ExpressApp} app - The expressJS application, wrapped in a synaptix.js ExpressApp instance
    */
   return ({ app, authenticate }) => {
-    if (!["production", "integration"].includes(process.env.NODE_ENV)) {
+
+    // If Frontend disabled. Redirect to API.
+    if (env.get("FRONTEND_DISABLED").asBool()) {
+      return app.get("/", (req, res) => res.redirect("/graphql"));
+    }
+
+    const nodeEnv = env.get("NODE_ENV").asString();
+
+    if (!["production", "integration"].includes(nodeEnv)) {
       logInfo(`Building webpack resources...`);
 
       const compiler = require("webpack")(webpackConfig);
