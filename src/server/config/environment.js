@@ -56,7 +56,7 @@ export default {
   },
   NODES_PREFIX: {
     description: "The nodes or individuals) (or class instances) namespace URI",
-    defaultValue: "oepd",
+    defaultValue: "data",
     defaultValueInProduction: true,
   },
   INDEX_DISABLED: {
