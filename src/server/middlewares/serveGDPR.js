@@ -11,10 +11,11 @@ import PersonDefinition from "../datamodel/mnx/PersonDefinition";
 /**
  * Serves GDPR services
  * @param {ExpressApp} app
- * @param {function} authenticate
+ * @param {function} authenticate - Authenticate middleware
+ * @param {function} attachDatastoreSession - Attach a datastore session middleware
  * @param {SSOApiClient} ssoApiClient
  */
-export async function serveGDPR({ app, authenticate, ssoApiClient }) {
+export async function serveGDPR({ app, ssoApiClient, attachDatastoreSession, authenticate}) {
   /**
    * GDPR.
    * @see https://gdpr-info.eu/art-17-gdpr/
@@ -31,11 +32,10 @@ export async function serveGDPR({ app, authenticate, ssoApiClient }) {
   app.get(
     "/gdpr/erase-user",
     [
-      authenticate({ acceptAnonymousRequest: false }),
-      attachDatastoreSessionExpressMiddleware({
-        datastoreAdapter: app.getDefaultDatastoreAdapter(),
-        acceptAnonymousRequest: false,
-      }),
+      authenticate(),
+      attachDatastoreSession({
+        acceptAnonymousRequest: false
+      })
     ],
     async (req, res) => {
       try {

@@ -23,12 +23,14 @@ const resourceTypesMapping = {
   api: "/graphql",
   gdpr_erase_user: "/gdpr/erase-user",
 };
+
+console.log(resourceTypesMapping)
 /**
  * Serves AddViseo redirection pages
  * @param {ExpressApp} app
- * @param {SSOApiClient} ssoApiClient
+ * @param {function} attachDatastoreSession - Attach a datastore session
  */
-export async function serveAddviseo({ app, ssoApiClient }) {
+export async function serveAddviseo({ app, attachDatastoreSession }) {
   app.post(
     "/addviseo",
     [
@@ -42,9 +44,8 @@ export async function serveAddviseo({ app, ssoApiClient }) {
         .exists()
         .isIn(Object.keys(resourceTypesMapping)),
       sendValidationErrorsJSONExpressMiddleware,
-      attachDatastoreSessionExpressMiddleware({
-        datastoreAdapter: app.getDefaultDatastoreAdapter(),
-        acceptAnonymousRequest: true,
+      attachDatastoreSession({
+        acceptAnonymousRequest: true
       }),
     ],
     async (req, res) => {
@@ -82,15 +83,8 @@ export async function serveAddviseo({ app, ssoApiClient }) {
         let httpStatus;
 
         try {
-          let user = await ssoApiClient.getUserByUsername(username);
+          await datastoreSession.getSSOControllerService().getApiClient().getUserByUsername(username);
           httpStatus = 200;
-
-          if (
-            user.getFirstName() !== firstName ||
-            user.getLastName() !== lastName
-          ) {
-            // TODO: Update user.
-          }
         } catch (e) {
           if (e instanceof I18nError && e.i18nKey === "USER_NOT_IN_SSO") {
             await datastoreSession

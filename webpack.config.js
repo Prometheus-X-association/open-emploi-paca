@@ -17,7 +17,7 @@ require("@babel/register");
 const path = require("path");
 const {
   generateWebpackConfig,
-} = require("./src/server/middlewares/generateWebpackConfig");
+} = require("./src/server/config/generateWebpackConfig");
 
 module.exports = generateWebpackConfig({
   distPath: path.resolve(__dirname, "dist"),

@@ -26,6 +26,7 @@ import {
   MnxOntologies,
   PropertyStep,
   EntityDefinition,
+  generateDefaultDatastoreAdapter
 } from "@mnemotix/synaptix.js";
 import env from "env-var";
 
@@ -34,7 +35,6 @@ import {
   commonFields,
   commonMapping,
 } from "./connectors/commonFields";
-import { generateDatastoreAdapater } from "../../middlewares/generateDatastoreAdapter";
 import { Client } from "@elastic/elasticsearch";
 import path from "path";
 import { generateDataModel } from "../../datamodel/generateDataModel";
@@ -164,9 +164,8 @@ export let indexData = async () => {
     sniffOnStart: false,
   });
 
-  const datastoreAdapter = generateDatastoreAdapater({
-    graphMiddlewares: [],
-    dataModel,
+  const datastoreAdapter = generateDefaultDatastoreAdapter({
+    dataModel
   });
 
   const synaptixSession = datastoreAdapter.getSession({

@@ -16,7 +16,6 @@
  *
  */
 
-import merge from "lodash/merge";
 import { locales } from "../../locales";
 
 /**
@@ -25,27 +24,25 @@ import { locales } from "../../locales";
  * The locales are defined in the directory src/locales
  *
  */
-export function serveLocales() {
-  return ({ app }) => {
-    app.get("/locales/:lang", async (req, res) => {
-      let lang = req.params.lang;
-      let locale;
+export function serveLocales({ app }) {
+  app.get("/locales/:lang", async (req, res) => {
+    let lang = req.params.lang;
+    let locale;
 
-      if (process.env.NODE_ENV !== "production") {
-        /* In development mode, dynamically load the locale file in order to have live reloading
-         * if the file changes without restarting the server */
-        let localeFile = `../../locales/${lang}`;
-        delete require.cache[require.resolve(localeFile)];
-        locale = require(localeFile)[lang];
-      } else {
-        locale = locales[lang];
-      }
+    if (process.env.NODE_ENV !== "production") {
+      /* In development mode, dynamically load the locale file in order to have live reloading
+       * if the file changes without restarting the server */
+      let localeFile = `../../locales/${lang}`;
+      delete require.cache[require.resolve(localeFile)];
+      locale = require(localeFile)[lang];
+    } else {
+      locale = locales[lang];
+    }
 
-      if (!locale) {
-        res.send(404);
-      }
+    if (!locale) {
+      res.send(404);
+    }
 
-      return res.json(locale);
-    });
-  };
+    return res.json(locale);
+  });
 }

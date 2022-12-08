@@ -3,7 +3,6 @@ import {
   GraphQLProperty,
   updateObjectResolver,
 } from "@mnemotix/synaptix.js";
-import { weverClient } from "../../service/wever/WeverClient";
 
 export class PersonGraphQLDefinition extends GraphQLTypeDefinition {
   /**
@@ -11,17 +10,6 @@ export class PersonGraphQLDefinition extends GraphQLTypeDefinition {
    */
   static getExtraGraphQLCode() {
     return `
-type WeverUserInfos{
-  """ User token """
-  token: String
-  
-  """ Report ID """
-  reportId: Int
-  
-  """ Map ID """
-  mapId: Int
-}
-
 extend type Mutation {
   """
   Mutation to update the person object linked to the logged user
@@ -38,38 +26,6 @@ type UpdateMePayload {
   me: Person
 }
 `;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  static getExtraProperties() {
-    return [
-      new GraphQLProperty({
-        name: "weverUser",
-        description: `Wever user`,
-        type: "WeverUserInfos",
-        /**
-         * @param {SynaptixDatastoreSession} synaptixSession
-         */
-        typeResolver: async ({} = {}, {} = {}, synaptixSession) => {
-          const email = await synaptixSession.getLoggedUsername();
-          return weverClient.getUserInfos({ email });
-        },
-      }),
-      new GraphQLProperty({
-        name: "jobMatching",
-        description: `Wever user`,
-        type: "WeverUserInfos",
-        /**
-         * @param {SynaptixDatastoreSession} synaptixSession
-         */
-        typeResolver: async ({} = {}, {} = {}, synaptixSession) => {
-          const email = await synaptixSession.getLoggedUsername();
-          return weverClient.getUserInfos({ email });
-        },
-      }),
-    ];
   }
 
   /**

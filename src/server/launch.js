@@ -13,57 +13,51 @@
  * limitations under the License.
  *
  */
-import { DataModel, launchApplication, logInfo } from "@mnemotix/synaptix.js";
+import { launchApplication, logInfo } from "@mnemotix/synaptix.js";
 import dotenv from "dotenv";
 import env from "env-var";
 
-import { serveGraphQL } from "./middlewares/serveGraphQL";
+import Package from "../../package.json";
+import environmentDefinition from "./config/environment";
+import webpackConfig from "../../webpack.config";
+
+import { generateGraphQLEndpoints } from "./datamodel/generateGraphQLEndpoints";
+
 import { serveFrontend } from "./middlewares/serveFrontend";
 import { serveLocales } from "./middlewares/serveLocales";
-import { servePdf } from "./middlewares/servePdf";
 import { serveAddviseo } from "./middlewares/serveAddviseo";
 import { serveGDPR } from "./middlewares/serveGDPR";
 
-/**
- * @param {object} Package - Basically package.json file.
- * @param {object} environmentDefinition - Environment file describing require env variables
- * @param {[DataModel]} extraDataModels
- * @param {object} locales
- * @param {object} webpackConfig
- */
-export function launch({
-  Package,
-  environmentDefinition,
-  extraDataModels,
-  locales = {},
-  webpackConfig,
-} = {}) {
-  dotenv.config();
-  let launchMiddlewares = [servePdf, serveLocales({ locales }), serveGDPR, serveFrontend({ webpackConfig })];
+dotenv.config();
 
-  if (
-    !!env.get("ADDVISEO_AUTH_LOGIN").asString() &&
-    !!env.get("ADDVISEO_AUTH_TOKEN").asString() &&
-    !!env.get("ADDVISEO_PASSWORD_SALT").asString()
-  ) {
-    launchMiddlewares.push(serveAddviseo);
-  }
+let launchMiddlewares = [
+  serveLocales,
+  serveGDPR,
+  serveFrontend({ webpackConfig })
+];
 
-  return launchApplication({
-    Package,
-    environment: environmentDefinition,
-    generateGraphQLEndpoints: serveGraphQL({
-      extraDataModels,
-      environmentDefinition,
-    }),
-    launchMiddlewares,
-  })
-    .then(() => {
-      if (!!parseInt(process.env.FRONTEND_DISABLED)) {
-        logInfo(
-          "`FRONTEND_DISABLED` variable detected. Frontend is disabled, serve API only."
-        );
-      }
-    })
-    .catch((error) => console.log(error));
+// Disable Addviseo middleware is related env vars not set
+if (
+  !!env.get("ADDVISEO_AUTH_LOGIN").asString() &&
+  !!env.get("ADDVISEO_AUTH_TOKEN").asString() &&
+  !!env.get("ADDVISEO_PASSWORD_SALT").asString()
+) {
+  launchMiddlewares.push(serveAddviseo);
 }
+
+launchApplication({
+  Package,
+  environment: environmentDefinition,
+  launchMiddlewares,
+  graphQLEndpoints: generateGraphQLEndpoints({
+    environmentDefinition
+  }),
+})
+  .then(() => {
+    if (!!parseInt(process.env.FRONTEND_DISABLED)) {
+      logInfo(
+        "`FRONTEND_DISABLED` variable detected. Frontend is disabled, serve API only."
+      );
+    }
+  })
+  .catch((error) => console.log(error));

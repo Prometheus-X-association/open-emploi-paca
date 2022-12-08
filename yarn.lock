@@ -2029,9 +2029,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mnemotix/synaptix.js@npm:4.14.3":
-  version: 4.14.3
-  resolution: "@mnemotix/synaptix.js@npm:4.14.3"
+"@mnemotix/synaptix.js@npm:4.14.4":
+  version: 4.14.4
+  resolution: "@mnemotix/synaptix.js@npm:4.14.4"
   dependencies:
     "@elastic/elasticsearch": ^7.11.0
     "@graphql-tools/schema": ^8.2.0
@@ -2083,7 +2083,7 @@ __metadata:
   bin:
     check-datamodel: bin/checkDataModel.js
     generate-datamodel: bin/generateDataModel.js
-  checksum: 3cde4503c7e4dc15712844ea0100a75efbf2ddbd9254fd52c286a647c4c98d386cc86490f284713b3efdf86199a1696aafdaab072ee2f13317c312fddab47fb2
+  checksum: d7a071cfce5fdc84bd5b10f6f3cf9f0a24a363c97eaa147ae5e453a86cf1ac65644792aab41f7aab9794a3aba24b3917d8156a18f4461c85be2a52cf44c01962
   languageName: node
   linkType: hard
 
@@ -7590,7 +7590,7 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": 4.0.0-alpha.56
     "@material-ui/pickers": ^3.2.10
-    "@mnemotix/synaptix.js": 4.14.3
+    "@mnemotix/synaptix.js": 4.14.4
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.9
     "@types/react": ^16.9.0
     "@ungap/url-search-params": ^0.1.4
