@@ -73,27 +73,10 @@ export let indexData = async () => {
     environmentPath,
   } = yargs
     .usage("yarn data:index -dm ./src/server/datamodel/dataModel.js")
-    .example("yarn data:index -dm ")
-    .option("m", {
-      alias: "dataModelPath",
-      describe: "Datamodel file location",
-      default: "src/server/datamodel/dataModel.js",
-    })
-    .option("e", {
-      alias: "environmentPath",
-      describe: "Environment file location",
-      default: "src/server/config/environment.js",
-    })
+    .example("yarn data:index -i aptitude")
     .option("a", {
       alias: "allIndices",
       describe: "(Re-)index all indices",
-      default: false,
-      nargs: 0,
-      type: "boolean",
-    })
-    .option("d", {
-      alias: "deleteOnly",
-      describe: "Delete indices withour reindexing them",
       default: false,
       nargs: 0,
       type: "boolean",
@@ -110,6 +93,23 @@ export let indexData = async () => {
       describe: "List types to exclude to (re-)index ",
       type: "array",
     })
+    .option("d", {
+      alias: "deleteOnly",
+      describe: "Delete indices without reindexing them",
+      default: false,
+      nargs: 0,
+      type: "boolean",
+    })
+    .option("m", {
+      alias: "dataModelPath",
+      describe: "Datamodel file location",
+      default: "src/server/datamodel/dataModel.js",
+    })
+    .option("e", {
+      alias: "environmentPath",
+      describe: "Environment file location",
+      default: "src/server/config/environment.js",
+    })
     .option("p", {
       alias: "createPercolators",
       describe: "Create percolators ",
@@ -119,7 +119,7 @@ export let indexData = async () => {
     })
     .help("h")
     .alias("h", "help")
-    .epilog("Copyright Mnemotix 2019")
+    .epilog("Copyright Mnemotix 2022")
     .help().argv;
 
   const environmentDefinition = require(path.resolve(
@@ -236,9 +236,7 @@ export let indexData = async () => {
       }
 
       connector.types.push(
-        synaptixSession.normalizeAbsoluteUri({
-          uri: modelDefinition.getRdfType(),
-        })
+        synaptixSession.normalizeId(modelDefinition.getRdfType())
       );
 
       for (let property of modelDefinition.getProperties()) {
@@ -256,7 +254,7 @@ export let indexData = async () => {
 
         if (property.getRdfDataProperty()) {
           propertyChain.push(
-            synaptixSession.normalizeAbsoluteUri({ uri: dataProperty })
+            synaptixSession.normalizeId(dataProperty)
           );
         } else if (property.getLinkPath()) {
           propertyChain = linkPathToPropertyChain({
@@ -338,9 +336,7 @@ export let indexData = async () => {
 
           if (objectProperty) {
             propertyChain.push(
-              synaptixSession.normalizeAbsoluteUri({
-                uri: objectProperty,
-              })
+              synaptixSession.normalizeId(objectProperty)
             );
           } else if (linkPath) {
             propertyChain = linkPathToPropertyChain({
@@ -591,18 +587,14 @@ function linkPathToPropertyChain({ linkPath, synaptixSession }) {
 
       if (objectProperty) {
         propertyChain.push(
-          synaptixSession.normalizeAbsoluteUri({
-            uri: objectProperty,
-          })
+          synaptixSession.normalizeId(objectProperty)
         );
       } else {
         // logWarning(`Model definition link ${modelDefinition.name} -> ${fieldName} can't be indexed while GraphDB only support straight property chains. Try to change "rdfReversedObjectProperty" (${step.getLinkDefinition().getRdfReversedObjectProperty()}) of step link "${step.getLinkDefinition().getLinkName()}" by it's owl:inverseOf in "rdfObjectProperty"`);
       }
     } else if (step instanceof PropertyStep) {
       propertyChain.push(
-        synaptixSession.normalizeAbsoluteUri({
-          uri: step.getPropertyDefinition().getRdfDataProperty(),
-        })
+        synaptixSession.normalizeId(step.getPropertyDefinition().getRdfDataProperty())
       );
     }
 

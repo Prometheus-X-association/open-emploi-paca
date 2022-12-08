@@ -142,9 +142,9 @@ extend type Query{
           synaptixSession,
           info
         ) => {
-          jobAreaId = synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId });
+          jobAreaId = synaptixSession.normalizeId(jobAreaId);
           occupationIds = occupationIds.map((occupationId) =>
-            synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+            synaptixSession.normalizeId(occupationId)
           );
 
           const result = await synaptixSession.getIndexService().getNodes({
@@ -226,11 +226,9 @@ extend type Query{
           info
         ) => {
           jobAreaIds = jobAreaIds.map((jobAreaId) =>
-            synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+            synaptixSession.normalizeId(jobAreaId)
           );
-          occupationId = synaptixSession.normalizeAbsoluteUri({
-            uri: occupationId,
-          });
+          occupationId = synaptixSession.normalizeId(occupationId);
 
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: TrainingDefinition,
@@ -310,10 +308,8 @@ extend type Query{
           synaptixSession,
           info
         ) => {
-          occupationId = synaptixSession.normalizeAbsoluteUri({
-            uri: occupationId,
-          });
-          jobAreaId = synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId });
+          occupationId = synaptixSession.normalizeId(occupationId);
+          jobAreaId = synaptixSession.normalizeId(jobAreaId);
 
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: TrainingDefinition,
@@ -353,10 +349,10 @@ extend type Query{
           synaptixSession
         ) => {
           jobAreaIds = jobAreaIds.map((jobAreaId) =>
-            synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+            synaptixSession.normalizeId(jobAreaId)
           );
           occupationIds = occupationIds.map((occupationId) =>
-            synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+            synaptixSession.normalizeId(occupationId)
           );
 
           try {

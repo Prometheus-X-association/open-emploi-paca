@@ -16,7 +16,7 @@ export async function computeSuggestedOccupationsMatchingForSkills({
   first = 100,
 }) {
   skillIds = skillIds.map((skillId) =>
-    synaptixSession.normalizeAbsoluteUri({ uri: skillId })
+    synaptixSession.normalizeId(skillId)
   );
 
   //

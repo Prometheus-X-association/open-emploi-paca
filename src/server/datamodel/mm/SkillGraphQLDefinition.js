@@ -82,13 +82,8 @@ extend type Query {
            * @param {SynaptixDatastoreSession} synaptixSession
            */
           async (_, { personId, occupationId }, synaptixSession) => {
-            personId = synaptixSession.normalizeAbsoluteUri({
-              uri: synaptixSession.extractIdFromGlobalId(personId),
-            });
-
-            occupationId = synaptixSession.normalizeAbsoluteUri({
-              uri: synaptixSession.extractIdFromGlobalId(occupationId),
-            });
+            personId = synaptixSession.normalizeId(synaptixSession.extractIdFromGlobalId(personId));
+            occupationId = synaptixSession.normalizeId(synaptixSession.extractIdFromGlobalId(occupationId));
 
             let aptitudes = await synaptixSession.getObjects({
               modelDefinition: AptitudeDefinition,
@@ -213,10 +208,10 @@ extend type Query {
          */
         analyzeSkills: async (_, { jobAreaIds, skillIds }, synaptixSession) => {
           jobAreaIds = jobAreaIds.map((jobAreaId) =>
-            synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+            synaptixSession.normalizeId(jobAreaId)
           );
           skillIds = skillIds.map((occupationId) =>
-            synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+            synaptixSession.normalizeId(occupationId)
           );
 
           try {

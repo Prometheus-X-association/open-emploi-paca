@@ -42,7 +42,7 @@ export async function serveGDPR({ app, ssoApiClient, attachDatastoreSession, aut
         /** @type {SynaptixDatastoreSession} datastoreSession */
         let session = req.datastoreSession;
 
-        const person = await session.getLoggedUserPerson();
+        const person = await session.getLoggedPerson();
         const username = session.getLoggedUsername();
         const userSsoId = session.getLoggedUserId();
 

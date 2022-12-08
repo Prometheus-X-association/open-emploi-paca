@@ -46,10 +46,10 @@ type UpdateMePayload {
           synaptixSession,
           info
         ) => {
-          const person = await synaptixSession.getLoggedUserPerson();
+          const person = await synaptixSession.getLoggedPerson();
           if (person) {
             const updatePayload = await updateObjectResolver(
-              synaptixSession.getLoggedUserPersonModelDefinition(),
+              synaptixSession.getLoggedPersonModelDefinition(),
               _,
               { input: { objectId: person.id, objectInput: personInput } },
               synaptixSession

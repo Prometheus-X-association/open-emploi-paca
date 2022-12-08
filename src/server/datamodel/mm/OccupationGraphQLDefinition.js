@@ -88,7 +88,7 @@ extend type Query {
           synaptixSession
         ) => {
           if (!personId) {
-            personId = (await synaptixSession.getLoggedUserPerson())?.id;
+            personId = (await synaptixSession.getLoggedPerson())?.id;
           }
 
           if (!personId) {
@@ -133,7 +133,7 @@ extend type Query {
           synaptixSession
         ) => {
           if (!personId) {
-            personId = (await synaptixSession.getLoggedUserPerson())?.id;
+            personId = (await synaptixSession.getLoggedPerson())?.id;
           }
 
           if (personId) {

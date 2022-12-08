@@ -20,13 +20,11 @@ export async function computeSuggestedOccupationsMatchingForPerson({
 }) {
   if (forcedOccupationIds) {
     forcedOccupationIds = forcedOccupationIds.map((occupationId) =>
-      synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+      synaptixSession.normalizeId(occupationId)
     );
   }
 
-  personId = synaptixSession.normalizeAbsoluteUri({
-    uri: synaptixSession.extractIdFromGlobalId(personId),
-  });
+  personId = synaptixSession.normalizeId(synaptixSession.extractIdFromGlobalId(personId));
 
   //
   // 1. First gathers all the aptitudes of a person.

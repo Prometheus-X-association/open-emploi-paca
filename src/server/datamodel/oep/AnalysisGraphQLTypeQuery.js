@@ -54,13 +54,13 @@ export class AnalysisGraphQLTypeQuery extends GraphQLTypeQuery {
         synaptixSession
       ) => {
         jobAreaIds = jobAreaIds.map((jobAreaId) =>
-          synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+          synaptixSession.normalizeId(jobAreaId)
         );
         occupationIds = occupationIds.map((occupationId) =>
-          synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+          synaptixSession.normalizeId(occupationId)
         );
         skillIds = skillIds.map((skillId) =>
-          synaptixSession.normalizeAbsoluteUri({ uri: skillId })
+          synaptixSession.normalizeId(skillId)
         );
 
         // Disconnected.

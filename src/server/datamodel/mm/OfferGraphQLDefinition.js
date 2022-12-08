@@ -173,11 +173,9 @@ extend type Query{
            * @param {object} info
            */
           async (_, { jobAreaId, occupationIds }, synaptixSession, info) => {
-            jobAreaId = synaptixSession.normalizeAbsoluteUri({
-              uri: jobAreaId,
-            });
+            jobAreaId = synaptixSession.normalizeId(jobAreaId);
             occupationIds = occupationIds.map((occupationId) =>
-              synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+              synaptixSession.normalizeId(occupationId)
             );
 
             const result = await synaptixSession.getIndexService().getNodes({
@@ -242,11 +240,9 @@ extend type Query{
            */
           async (_, { jobAreaIds, occupationId }, synaptixSession, info) => {
             jobAreaIds = jobAreaIds.map((jobAreaId) =>
-              synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+              synaptixSession.normalizeId(jobAreaId)
             );
-            occupationId = synaptixSession.normalizeAbsoluteUri({
-              uri: occupationId,
-            });
+            occupationId = synaptixSession.normalizeId(occupationId);
 
             const result = await synaptixSession.getIndexService().getNodes({
               modelDefinition: OfferDefinition,
@@ -313,25 +309,21 @@ extend type Query{
           synaptixSession,
           info
         ) => {
-          jobAreaId = synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId });
-          occupationId = synaptixSession.normalizeAbsoluteUri({
-            uri: occupationId,
-          });
+          jobAreaId = synaptixSession.normalizeId(jobAreaId);
+          occupationId = synaptixSession.normalizeId(occupationId);
 
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
             queryFilters: [
               new QueryFilter({
                 filterDefinition: OfferDefinition.getFilter("withinJobArea"),
-                filterGenerateParams: synaptixSession.normalizeAbsoluteUri({
-                  uri: jobAreaId,
-                }),
+                filterGenerateParams: synaptixSession.normalizeId(jobAreaId),
               }),
             ],
             linkFilters: [
               new LinkFilter({
                 linkDefinition: OfferDefinition.getLink("hasOccupation"),
-                id: synaptixSession.normalizeAbsoluteUri({ uri: occupationId }),
+                id: synaptixSession.normalizeId(occupationId),
               }),
             ],
             limit: 0,
@@ -360,16 +352,14 @@ extend type Query{
           synaptixSession,
           info
         ) => {
-          jobAreaId = synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId });
+          jobAreaId = synaptixSession.normalizeId(jobAreaId);
 
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
             queryFilters: [
               new QueryFilter({
                 filterDefinition: OfferDefinition.getFilter("withinJobArea"),
-                filterGenerateParams: synaptixSession.normalizeAbsoluteUri({
-                  uri: jobAreaId,
-                }),
+                filterGenerateParams: synaptixSession.normalizeId(jobAreaId),
               }),
             ],
             limit: 0,
@@ -423,11 +413,9 @@ extend type Query{
            * @param {object} info
            */
           async (_, { jobAreaId, occupationIds }, synaptixSession, info) => {
-            jobAreaId = synaptixSession.normalizeAbsoluteUri({
-              uri: jobAreaId,
-            });
+            jobAreaId = synaptixSession.normalizeId(jobAreaId);
             occupationIds = occupationIds.map((occupationId) =>
-              synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+              synaptixSession.normalizeId(occupationId)
             );
 
             const result = await synaptixSession.getIndexService().getNodes({
@@ -496,11 +484,9 @@ extend type Query{
           info
         ) => {
           jobAreaIds = jobAreaIds.map((jobAreaId) =>
-            synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+            synaptixSession.normalizeId(jobAreaId)
           );
-          occupationId = synaptixSession.normalizeAbsoluteUri({
-            uri: occupationId,
-          });
+          occupationId = synaptixSession.normalizeId(occupationId);
 
           const result = await synaptixSession.getIndexService().getNodes({
             modelDefinition: OfferDefinition,
@@ -565,10 +551,10 @@ extend type Query{
           synaptixSession
         ) => {
           jobAreaIds = jobAreaIds.map((jobAreaId) =>
-            synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+            synaptixSession.normalizeId(jobAreaId)
           );
           occupationIds = occupationIds.map((occupationId) =>
-            synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+            synaptixSession.normalizeId(occupationId)
           );
 
           try {
@@ -604,10 +590,10 @@ extend type Query{
           info
         ) => {
           jobAreaIds = jobAreaIds.map((jobAreaId) =>
-            synaptixSession.normalizeAbsoluteUri({ uri: jobAreaId })
+            synaptixSession.normalizeId(jobAreaId)
           );
           occupationIds = occupationIds.map((occupationId) =>
-            synaptixSession.normalizeAbsoluteUri({ uri: occupationId })
+            synaptixSession.normalizeId(occupationId)
           );
 
           try {
