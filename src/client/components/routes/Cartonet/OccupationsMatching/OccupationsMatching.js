@@ -17,8 +17,8 @@ import {
 
 import { useLazyQuery } from "@apollo/client";
 import { gqlSuggestedOccupationsMatchings } from "./gql/SuggestedOccupationsMatchings.gql";
-import { useLoggedUser } from "../../../../hooks/useLoggedUser";
-import { LoadingSplashScreen } from "../../../widgets/LoadingSplashScreen";
+import { useLoggedUser } from "../../../../utilities/auth/useLoggedUser";
+import { LoadingSpinner } from "../../../widgets/LoadingSpinner";
 import { Gauge } from "../../../widgets/Gauge";
 import { CartonetExploreLayout } from "../CartonetExploreLayout";
 import { OccupationDetails } from "./OccupationDetails";
@@ -124,7 +124,7 @@ export default function OccupationsMatching({ print } = {}) {
     <CartonetExploreLayout>
       <Choose>
         <When condition={loading}>
-          <LoadingSplashScreen />
+          <LoadingSpinner />
         </When>
         <Otherwise>
           <div className={classes.root}>

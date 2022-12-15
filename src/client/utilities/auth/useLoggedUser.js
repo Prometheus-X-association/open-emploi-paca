@@ -1,4 +1,4 @@
-import { getUserAuthenticationService } from "../services/UserAuthenticationService";
+import { getUserAuthenticationService } from "./UserAuthenticationService";
 import { useApolloClient } from "@apollo/client";
 
 /**

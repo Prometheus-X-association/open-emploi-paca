@@ -6,8 +6,6 @@ const CompressionPlugin = require("compression-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 
-const env = require("env-var");
-
 /**
  * @param {string} distPath
  * @param {string} assetsPath
@@ -99,7 +97,6 @@ export function generateWebpackConfig({
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
       SYNAPTIX_USER_SESSION_COOKIE_NAME: "SNXID",
-      THUMBOR_BASE_URL: "",
     }),
   ];
 
@@ -109,7 +106,7 @@ export function generateWebpackConfig({
       cacheGroups: {
         vendors: {
           test(module) {
-            return module.resource && module.resource.includes(`.yarn/cache`);
+            return module.resource && (module.resource.includes(`.yarn/cache`) || module.resource.includes(`node_modules`));
           },
           name: "vendors",
           chunks: "all",
@@ -126,12 +123,6 @@ export function generateWebpackConfig({
       }),
     ];
   }
-
-  // HMR
-  // if(isDev && env.get("HOT_RELOAD_DISABLED").asBool() !== true) {
-  //   entry.hmr = "webpack-hot-middleware/client";
-  //   plugins.push(new webpack.HotModuleReplacementPlugin());
-  // }
 
   /** modules **/
   let webpackModule = {
@@ -156,21 +147,7 @@ export function generateWebpackConfig({
       },
       {
         test: /\.css$/i,
-        exclude: /node_modules\/wever/,
         use: [require.resolve("style-loader"), require.resolve("css-loader")],
-      },
-      {
-        test: /\.css$/i,
-        include: /node_modules\/wever/,
-        use: [
-          require.resolve("style-loader"),
-          {
-            loader: require.resolve("css-loader"),
-            options: {
-              url: false,
-            },
-          },
-        ],
       },
       {
         test: /\.(jpe?g|png|gif|svg|ico|woff|woff2|eot|ttf)$/i,
@@ -204,7 +181,6 @@ export function generateWebpackConfig({
         ".css" /* for libraries shipping ES6 module to work */,
       ],
       fallback: {
-        // This is to avoid the error "BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default."
         path: false,
         url: false,
         events: require.resolve("events"),

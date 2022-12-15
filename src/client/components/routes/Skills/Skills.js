@@ -6,7 +6,7 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { gqlMyProfile } from "../Profile/gql/MyProfile.gql";
 import { BlockContainer } from "../../widgets/BlockContainer";
 import { TrainingsByJobAreaWidget } from "../Trainings/Widget/TrainingsByJobAreaWidget";
-import { createLink } from "../../../utilities/createLink";
+import { createLink } from "../../../utilities/router/createLink";
 import { ROUTES } from "../../../routes";
 import {
   OccupationsMatchingWidget,

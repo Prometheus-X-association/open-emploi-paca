@@ -17,9 +17,9 @@ import {
   gqlExtractAptitudesFromCV,
   gqlMyAptitudes,
 } from "./gql/ExtractAptitudes.gql";
-import { useLoggedUser } from "../../../../hooks/useLoggedUser";
+import { useLoggedUser } from "../../../../utilities/auth/useLoggedUser";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { LoadingSplashScreen } from "../../../widgets/LoadingSplashScreen";
+import { LoadingSpinner } from "../../../widgets/LoadingSpinner";
 import { gqlUpdateProfile } from "../../Profile/gql/UpdateProfile.gql";
 import { LoadingButton } from "../../../widgets/Button/LoadingButton";
 import { CartonetEditLayout } from "../CartonetEditLayout";
@@ -210,7 +210,7 @@ export default function ExtractAptitudesFromCV({} = {}) {
         </List>
 
         <If condition={loading}>
-          <LoadingSplashScreen />
+          <LoadingSpinner />
         </If>
       </If>
     </CartonetEditLayout>

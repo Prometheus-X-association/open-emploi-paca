@@ -25,7 +25,7 @@ import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
 import { Rating } from "@material-ui/lab";
 import { gqlMyProfile } from "../../Profile/gql/MyProfile.gql";
 import OccupationsMatching from "../OccupationsMatching/OccupationsMatching";
-import { useLoggedUser } from "../../../../hooks/useLoggedUser";
+import { useLoggedUser } from "../../../../utilities/auth/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -9,7 +9,7 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-import { createLink } from "../../../utilities/createLink";
+import { createLink } from "../../../utilities/router/createLink";
 import { ROUTES } from "../../../routes";
 import { generatePath, matchPath, useHistory } from "react-router-dom";
 import { generateCartonetPath } from "./generateCartonetPath";

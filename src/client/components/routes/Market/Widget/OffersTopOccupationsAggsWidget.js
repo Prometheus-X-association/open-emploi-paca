@@ -5,7 +5,7 @@ import {useTranslation} from "react-i18next";
 import {useLazyQuery} from "@apollo/client";
 import {gqlOffersTopOccupationsAggs} from "./gql/OffersAggs.gql";
 import {JobAreaSelect} from "../../Dashboard/Widget/JobAreaSelect";
-import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
+import {LoadingSpinner} from "../../../widgets/LoadingSpinner";
 
 const useStyles = makeStyles(theme => ({
   empty: {
@@ -45,7 +45,7 @@ export function OffersTopOccupationsAggsWidget({forcedJobArea} = {}) {
         <Grid item xs={12}>
           <Choose>
             <When condition={loading}>
-              <LoadingSplashScreen />
+              <LoadingSpinner />
             </When>
             <When condition={aggregations.length > 0}>
               <List dense>

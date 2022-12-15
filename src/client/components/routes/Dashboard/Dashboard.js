@@ -14,7 +14,7 @@ import { useQuery } from "@apollo/client";
 import { gqlMyProfile } from "../Profile/gql/MyProfile.gql";
 import { IncomesByOccupationWidget } from "../Incomes/Widget/IncomesByOccupationWidget";
 import { TrainingsByOccupationWidget } from "../Trainings/Widget/TrainingsByOccupationWidget";
-import { createLink } from "../../../utilities/createLink";
+import { createLink } from "../../../utilities/router/createLink";
 import { ROUTES } from "../../../routes";
 import { OccupationsMatchingWidget } from "../Skills/Widget/OccupationsMatchingWidget";
 import { AnalysisExcerpt } from "../Analysis/AnalysisExcerpt";

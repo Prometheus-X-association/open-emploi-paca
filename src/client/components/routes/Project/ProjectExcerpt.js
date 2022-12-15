@@ -6,7 +6,7 @@ import {Map, Polygon, TileLayer, CircleMarker, Popup, GeoJSON} from "react-leafl
 import Wkt from "wicket";
 import "wicket/wicket-leaflet";
 
-import {createLink} from "../../../utilities/createLink";
+import {createLink} from "../../../utilities/router/createLink";
 import {ROUTES} from "../../../routes";
 import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
 

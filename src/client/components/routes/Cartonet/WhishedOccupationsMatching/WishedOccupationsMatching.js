@@ -10,7 +10,7 @@ import { Button, Typography, Grid } from "@material-ui/core";
 import { Print as PrintIcon } from "@material-ui/icons";
 import { useMutation, useQuery } from "@apollo/client";
 
-import { LoadingSplashScreen } from "../../../widgets/LoadingSplashScreen";
+import { LoadingSpinner } from "../../../widgets/LoadingSpinner";
 import { CartonetExploreLayout } from "../CartonetExploreLayout";
 import { WishedOccupations } from "./WishedOccupations";
 import { MutationConfig, prepareMutation } from "../../../../utilities/apollo";
@@ -117,7 +117,7 @@ export default function WishedOccupationsMatching({} = {}) {
     <CartonetExploreLayout>
       <Choose>
         <When condition={loading}>
-          <LoadingSplashScreen />
+          <LoadingSpinner />
         </When>
         <Otherwise>
           <div className={classes.root}>

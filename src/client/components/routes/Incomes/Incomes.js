@@ -3,7 +3,7 @@ import {useTranslation} from "react-i18next";
 import {useQuery} from "@apollo/client";
 import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
 import {Grid, ListItemText, Typography} from "@material-ui/core";
-import {createLink} from "../../../utilities/createLink";
+import {createLink} from "../../../utilities/router/createLink";
 import {ROUTES} from "../../../routes";
 import {BlockContainer} from "../../widgets/BlockContainer";
 import {IncomesByOccupationWidget} from "./Widget/IncomesByOccupationWidget";

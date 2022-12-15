@@ -3,7 +3,7 @@ import {ApolloClient, ApolloLink, concat, InMemoryCache} from "@apollo/client";
 import {onError} from "@apollo/client/link/error";
 import { createUploadLink } from 'apollo-upload-client';
 
-import {SnackErrorMessage} from "../components/widgets/Snackbar/SnackErrorMessage";
+import {SnackErrorMessage} from "../../components/widgets/Snackbar/SnackErrorMessage";
 
 export function getApolloClient({i18n, enqueueSnackbar, possibleTypes} = {}) {
   invariant(

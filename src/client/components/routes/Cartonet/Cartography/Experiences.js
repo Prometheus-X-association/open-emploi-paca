@@ -18,14 +18,14 @@ import ExperienceIcon from "@material-ui/icons/Work";
 import HobbyIcon from "@material-ui/icons/BeachAccess";
 import TrainingIcon from "@material-ui/icons/School";
 import ArrowIcon from "@material-ui/icons/ArrowRightAlt";
-import { createLink } from "../../../../utilities/createLink";
+import { createLink } from "../../../../utilities/router/createLink";
 
 import {
   gqlExperiences,
   gqlExhaustiveExperiences,
 } from "../Experience/gql/Experiences.gql";
 import { generateCartonetEditExperiencePath } from "../generateCartonetPath";
-import { useLoggedUser } from "../../../../hooks/useLoggedUser";
+import { useLoggedUser } from "../../../../utilities/auth/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   experience: {

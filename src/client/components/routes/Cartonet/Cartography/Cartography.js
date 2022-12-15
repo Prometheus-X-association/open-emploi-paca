@@ -22,7 +22,7 @@ import { Link } from "react-router-dom";
 import { generateCartonetPath } from "../generateCartonetPath";
 import { useReactToPrint } from "react-to-print";
 import { Print as PrintIcon } from "@material-ui/icons";
-import { useLoggedUser } from "../../../../hooks/useLoggedUser";
+import { useLoggedUser } from "../../../../utilities/auth/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   root: {

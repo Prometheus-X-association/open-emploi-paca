@@ -8,8 +8,8 @@ import {useLazyQuery, useQuery} from "@apollo/client";
 import {gqlAnalysis} from "./gql/Analysis.gql";
 import {gqlMyProfile} from "../Profile/gql/MyProfile.gql";
 import {gqlExhautiveAptitudes} from "../Cartonet/Aptitudes/gql/Aptitudes.gql";
-import {LoadingSplashScreen} from "../../widgets/LoadingSplashScreen";
-import {useLoggedUser} from "../../../hooks/useLoggedUser";
+import {LoadingSpinner} from "../../widgets/LoadingSpinner";
+import {useLoggedUser} from "../../../utilities/auth/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   analysisContainer: {
@@ -86,7 +86,7 @@ export function AnalysisExcerpt({} = {}) {
   return (
     <Choose>
       <When condition={loading}>
-        <LoadingSplashScreen />
+        <LoadingSpinner />
       </When>
       <When condition={bestAnalysis}>
         {renderAnalysis({

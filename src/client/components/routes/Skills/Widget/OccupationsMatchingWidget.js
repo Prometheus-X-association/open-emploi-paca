@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { gqlSuggestedOccupationsMatchings } from "../../Cartonet/OccupationsMatching/gql/SuggestedOccupationsMatchings.gql";
 import { gqlMyProfile } from "../../Profile/gql/MyProfile.gql";
-import { LoadingSplashScreen } from "../../../widgets/LoadingSplashScreen";
+import { LoadingSpinner } from "../../../widgets/LoadingSpinner";
 import {
   List,
   ListItem,
@@ -89,7 +89,7 @@ export function OccupationsMatchingWidget({} = {}) {
   return (
     <Choose>
       <When condition={loading}>
-        <LoadingSplashScreen />
+        <LoadingSpinner />
       </When>
       <Otherwise>
         <List className={classes.list}>

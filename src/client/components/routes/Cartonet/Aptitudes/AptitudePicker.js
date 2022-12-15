@@ -19,8 +19,8 @@ import {Delete, Add} from "@material-ui/icons";
 import {gqlSkills} from "./gql/Skills.gql";
 import TextField from "@material-ui/core/TextField";
 import throttle from "lodash/throttle";
-import {useLoggedUser} from "../../../../hooks/useLoggedUser";
-import {LoadingSplashScreen} from "../../../widgets/LoadingSplashScreen";
+import {useLoggedUser} from "../../../../utilities/auth/useLoggedUser";
+import {LoadingSpinner} from "../../../widgets/LoadingSpinner";
 import {gqlAptitudes} from "./gql/Aptitudes.gql";
 
 const useStyles = makeStyles((theme) => ({
@@ -165,7 +165,7 @@ export function AptitudePicker({
         <Choose>
           <When condition={filterByRelatedOccupationIds?.length > 0}>
             <If condition={loadingMyAptitudes}>
-              <LoadingSplashScreen />
+              <LoadingSpinner />
             </If>
             <div className={classes.skillsContainer}>
               <If condition={mySkills.length > 0}>
@@ -216,7 +216,7 @@ export function AptitudePicker({
         <Choose>
           <When condition={filterByRelatedOccupationIds?.length > 0}>
             <If condition={loadingOtherSkills}>
-              <LoadingSplashScreen />
+              <LoadingSpinner />
             </If>
             <div className={classes.skillsContainer}>
               {(otherSkills?.edges || []).map(({node: skill}) =>

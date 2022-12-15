@@ -42,9 +42,8 @@ import URLSearchParams from "@ungap/url-search-params";
 import {gql} from "@apollo/client";
 import {useHistory, useLocation} from "react-router-dom";
 
-import {GridView} from "./GridView/GridView";
 import {TableView} from "./TableView/TableView";
-import {removeNodesInApolloCache} from "../../../utilities/removeNodesInApolloCache";
+import {removeNodesInApolloCache} from "../../../utilities/apollo/removeNodesInApolloCache";
 import Grid from "@material-ui/core/Grid";
 import {LoadingButton} from "../Button/LoadingButton";
 import {useSnackbar} from "notistack";
@@ -63,11 +62,6 @@ export const builtinDisplayModes = [
     key: "table",
     Icon: ViewListIcon,
     renderComponent: props => <TableView {...props} />
-  },
-  {
-    key: "grid",
-    Icon: AppsIcon,
-    renderComponent: props => <GridView {...props} />
   }
 ];
 

@@ -13,7 +13,7 @@ import { useObservable } from "react-use";
 import { useMutation } from "@apollo/client";
 import invariant from "invariant";
 
-import { handleGraphQLError } from "../utilities/handleGraphQLError";
+import { handleGraphQLError } from "../apollo/handleGraphQLError";
 
 export const gqlRegisterUserAccountMutation = gql`
   mutation RegisterUserAccount(

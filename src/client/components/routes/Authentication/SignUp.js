@@ -2,13 +2,13 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
-import {createLink} from "../../../utilities/createLink";
+import {createLink} from "../../../utilities/router/createLink";
 import {ROUTES} from "../../../routes";
 import {useTranslation} from "react-i18next";
 import {Form, Formik} from "formik";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-import {getUserAuthenticationService} from "../../../services/UserAuthenticationService";
+import {getUserAuthenticationService} from "../../../utilities/auth/UserAuthenticationService";
 import {useApolloClient} from "@apollo/client";
 import {TextField} from "../../widgets/Form";
 import AuthLayout from "./AuthLayout";

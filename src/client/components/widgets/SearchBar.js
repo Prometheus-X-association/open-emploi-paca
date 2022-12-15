@@ -10,7 +10,7 @@ import {grey} from "@material-ui/core/colors";
 import clsx from "clsx";
 import {makeStyles} from "@material-ui/core/styles";
 
-import {LoadingSplashScreen} from "./LoadingSplashScreen";
+import {LoadingSpinner} from "./LoadingSpinner";
 import ErrorBoundary from "./ErrorBoundary";
 
 const useStyles = makeStyles(theme => ({
@@ -153,7 +153,7 @@ function SearchBarCode(props) {
       </div>
       <Choose>
         <When condition={loading}>
-          <LoadingSplashScreen size={30} className={classes.progress} />
+          <LoadingSpinner size={30} className={classes.progress} />
         </When>
         <Otherwise>
           {extraButtons}

@@ -16,7 +16,7 @@ import { useQuery } from "@apollo/client";
 
 import { Gauge } from "../../../widgets/Gauge";
 import { OccupationDetails } from "../OccupationsMatching/OccupationDetails";
-import { useLoggedUser } from "../../../../hooks/useLoggedUser";
+import { useLoggedUser } from "../../../../utilities/auth/useLoggedUser";
 import { gqlOccupationMatching } from "./gql/OccupationMatching.gql";
 
 const useStyles = makeStyles((theme) => ({

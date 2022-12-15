@@ -2,7 +2,7 @@ import { useState } from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {Avatar, CardHeader, Grid, Menu, MenuItem} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
-import {useLoggedUser} from "../../hooks/useLoggedUser";
+import {useLoggedUser} from "../../utilities/auth/useLoggedUser";
 import {useQuery} from "@apollo/client";
 import {gqlMyProfile} from "../routes/Profile/gql/MyProfile.gql";
 

@@ -21,7 +21,7 @@ import { CartonetEditLayout } from "../CartonetEditLayout";
 import { Link } from "react-router-dom";
 import { generateCartonetPath } from "../generateCartonetPath";
 import { ROUTES } from "../../../../routes";
-import { useLoggedUser } from "../../../../hooks/useLoggedUser";
+import { useLoggedUser } from "../../../../utilities/auth/useLoggedUser";
 import { gqlExperienceFragment } from "../Experience/gql/Experience.gql";
 
 const useStyles = makeStyles((theme) => ({

@@ -7,10 +7,10 @@ import Helmet from "react-helmet";
 import { ROUTES } from "./routes";
 import EnvVars from "../server/config/environment";
 
-import { useLoggedUser } from "./hooks/useLoggedUser";
-import { EnvironmentContext } from "./hooks/useEnvironment";
+import { useLoggedUser } from "./utilities/auth/useLoggedUser";
+import { EnvironmentContext } from "./utilities/useEnvironment";
 import { DefaultLayout } from "./components/layouts/DefaultLayout";
-import { LoadingSplashScreen } from "./components/widgets/LoadingSplashScreen";
+import { LoadingSpinner } from "./components/widgets/LoadingSpinner";
 import favicon from "./assets/favicon.ico";
 import { CssBaseline } from "@material-ui/core";
 
@@ -54,7 +54,7 @@ const gqlEnvironmentQuery = gql`
  * @return {*}
  * @constructor
  */
-export default function Application({} = {}) {
+export function Application({} = {}) {
   const { data: envData, loading: envLoading } = useQuery(gqlEnvironmentQuery);
   const { isLogged, loading } = useLoggedUser();
 
@@ -73,11 +73,11 @@ export default function Application({} = {}) {
 
       <Choose>
         <When condition={loading || envLoading}>
-          <LoadingSplashScreen />
+          <LoadingSpinner />
         </When>
 
         <When condition={isLogged}>
-          <Suspense fallback={<LoadingSplashScreen />}>
+          <Suspense fallback={<LoadingSpinner />}>
             <Switch>
               <Route path={"/cartonet"} component={Cartonet} />
 

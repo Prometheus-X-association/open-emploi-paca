@@ -4,7 +4,6 @@ const mainBlue = "#014d88";
 const mainOrange = "#FCB018";
 const backgroundGrey = "#F0EFEF";
 const textBlue = "#0072BC";
-const linkBlue = "#007bff";
 const emptyGrey = "#6c757d";
 const fontSize = 14;
 

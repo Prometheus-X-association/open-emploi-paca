@@ -52,7 +52,7 @@ import {
   generateCartonetPath,
 } from "../generateCartonetPath";
 import Experiences from "../Cartography/Experiences";
-import { useLoggedUser } from "../../../../hooks/useLoggedUser";
+import { useLoggedUser } from "../../../../utilities/auth/useLoggedUser";
 
 const useStyles = makeStyles((theme) => ({
   categoryTitle: {
@@ -264,7 +264,6 @@ export default function EditExperience({ experienceType = "experience" } = {}) {
   );
 
   function renderExperienceForm() {
-    console.log(editingExperience);
     return (
       <Formik
         enableReinitialize={true}
