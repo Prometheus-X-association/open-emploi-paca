@@ -2029,9 +2029,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mnemotix/synaptix.js@npm:4.14.5":
-  version: 4.14.5
-  resolution: "@mnemotix/synaptix.js@npm:4.14.5"
+"@mnemotix/synaptix.js@npm:4.14.6":
+  version: 4.14.6
+  resolution: "@mnemotix/synaptix.js@npm:4.14.6"
   dependencies:
     "@elastic/elasticsearch": ^7.11.0
     "@graphql-tools/schema": ^8.2.0
@@ -2053,6 +2053,7 @@ __metadata:
     env-var: ^7.0.0
     express: ^4.17.1
     express-validator: 5.3.1
+    express-winston: ^4.2.0
     got: ^11.8.5
     graphql-middleware: 6.1.7
     graphql-shield: 7.5.0
@@ -2083,7 +2084,7 @@ __metadata:
   bin:
     check-datamodel: bin/checkDataModel.js
     generate-datamodel: bin/generateDataModel.js
-  checksum: 6bb87d28a421f293a3bc309c7e3fec51cdb8d6ef62864c1e95aaa76b298bbac56b026457a9f6c794c33a54d40015910c5bec55743641f404354630db713f98f9
+  checksum: ebbbec71a37fc656293fb26554bda4cfad9c5c280b1cd26391bf4ab608bf196e6006a5ba8bfae5945b2d61c3ea8e55f2137bf58c54b1db1ecc44377516554d70
   languageName: node
   linkType: hard
 
@@ -5104,6 +5105,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"express-winston@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "express-winston@npm:4.2.0"
+  dependencies:
+    chalk: ^2.4.2
+    lodash: ^4.17.21
+  peerDependencies:
+    winston: ">=3.x <4"
+  checksum: 029529107f0bb72363c87d83d8c05a997bcbb4f8431d47dd2ab7f61fa165a56747c1e2e3c8621cbacb0190798a9b5cb9975506dcdfd6e27036fab1d8d193ec09
+  languageName: node
+  linkType: hard
+
 "express@npm:^4.17.1":
   version: 4.18.2
   resolution: "express@npm:4.18.2"
@@ -7590,7 +7603,7 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": 4.0.0-alpha.56
     "@material-ui/pickers": ^3.2.10
-    "@mnemotix/synaptix.js": 4.14.5
+    "@mnemotix/synaptix.js": 4.14.6
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.9
     "@types/react": ^16.9.0
     "@ungap/url-search-params": ^0.1.4

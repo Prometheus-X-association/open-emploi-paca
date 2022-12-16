@@ -24,7 +24,6 @@ const resourceTypesMapping = {
   gdpr_erase_user: "/gdpr/erase-user",
 };
 
-console.log(resourceTypesMapping)
 /**
  * Serves AddViseo redirection pages
  * @param {ExpressApp} app
