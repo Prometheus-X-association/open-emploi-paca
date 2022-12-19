@@ -1,10 +1,11 @@
 import {
   GraphQLTypeDefinition,
   generateConnectionArgs,
-  I18nError,
+  I18nError, FragmentDefinition,
 } from "@mnemotix/synaptix.js";
 import { computeSuggestedOccupationsMatchingForPerson } from "./ia/computeSuggestedOccupationsMatchingForPerson";
 import { computeSuggestedOccupationsMatchingForSkills } from "./ia/computeSuggestedOccupationsMatchingForSkills";
+import OccupationDefinition from "./OccupationDefinition";
 
 export class OccupationGraphQLDefinition extends GraphQLTypeDefinition {
   /**
@@ -65,6 +66,27 @@ extend type Query {
     thresholdScore: Float! = 0.15
     ${generateConnectionArgs()}
   ): OccupationMatching
+  
+   """
+   @deprecated : Use suggestedOccupationMatchingsForPerson or suggestedOccupationMatchingsForSkills instead with a real
+   GraphQL output type
+   
+   This service returns a list of occupations matching scores for a given personId.
+   
+   Parameters :
+     - me: [OPTIONAL] Get for logged user.
+     - personId: [OPTIONAL] Person id. If not entered, get logged user.
+     - occupationIds: [OPTIONAL] Restrict on occupation ids
+     - light: [OPTIONAL] Restrict data on occupation categories, discard suboccupations.
+  """
+  occupationsMatching(
+    personId:ID 
+    me:Boolean 
+    light: Boolean 
+    occupationIds:[ID!] 
+    thresholdScore: Float! = 0.15
+    ${generateConnectionArgs()}
+  ): String
 }
 `;
   }
@@ -148,6 +170,72 @@ extend type Query {
 
             return matchings[0];
           }
+        },
+        /**
+         * @deprecated : Use suggestedOccupationMatchingsForPerson or suggestedOccupationMatchingsForSkills instead with a typed output object
+         * instead of a JSONinfied string
+         *
+         * @param _
+         * @param {string} personId
+         * @param {string[]} [occupationIds]
+         * @param {boolean} [light]
+         * @param {number} [thresholdScore=0.15]
+         * @param {SynaptixDatastoreSession} synaptixSession
+         * @param {object} info
+         */
+        occupationsMatching: async (
+          _,
+          { personId, occupationIds, light, thresholdScore },
+          synaptixSession,
+          info
+        ) => {
+          if (!personId) {
+            personId = (await synaptixSession.getLoggedUserPerson())?.id;
+          }
+
+          const matchings = await computeSuggestedOccupationsMatchingForPerson({
+            synaptixSession,
+            forcedOccupationIds: occupationIds,
+            personId,
+            light,
+            thresholdScore,
+          });
+
+          let reducedMatchings = [];
+          for(const {score, occupationPrefLabel, occupationId} of Object.values(matchings) ){
+            const subOccupations = await synaptixSession.getObjects({
+              modelDefinition: OccupationDefinition,
+              args: {
+                filters: [`${OccupationDefinition.getLink("hasRelatedOccupation").getGraphQLPropertyName()} : ${occupationId}`],
+                sortings: [{sortBy: "prefLabel"}]
+              },
+              fragmentDefinitions: [
+                new FragmentDefinition({
+                  modelDefinition: OccupationDefinition,
+                  properties: [
+                    OccupationDefinition.getProperty("prefLabel")
+                  ]
+                }),
+              ]
+            });
+
+            reducedMatchings.push({
+              categoryId: occupationId,
+              categoryName: occupationPrefLabel,
+              score,
+              subOccupations: await Promise.all(subOccupations.map(async (subOccupation) => ({
+                id: subOccupation.id,
+                prefLabel: await synaptixSession.getLocalizedLabelFor({
+                  object: subOccupation,
+                  labelDefinition: OccupationDefinition.getLabel("prefLabel"),
+                  lang: synaptixSession.getContext().getLang(),
+                  returnFirstOneIfNotExistForLang: true,
+                }),
+                score
+              })))
+            });
+          }
+          return JSON.stringify(reducedMatchings);
         },
       },
     };
