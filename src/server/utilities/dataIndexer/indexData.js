@@ -39,6 +39,7 @@ import { Client } from "@elastic/elasticsearch";
 import path from "path";
 import { generateDataModel } from "../../datamodel/generateDataModel";
 import fs from "fs";
+import SkillDefinition from "../../datamodel/mm/SkillDefinition";
 
 dotenv.config();
 
@@ -418,6 +419,7 @@ INSERT DATA {
           index: name,
           body: {
             settings: {
+              "index.max_result_window": 100000,
               analysis: {
                 filter: {
                   autocomplete_filter: {
@@ -477,95 +479,76 @@ INSERT DATA {
   }
 
   if (createPercolators) {
-    const sourceIndex = `${indexPrefix}${MnxOntologies.mnxSkos.ModelDefinitions.ConceptDefinition.getIndexType()}`;
-    const index = `${sourceIndex}-perco`;
-    spinner.start(`Creating percolators on ${index}`);
-
-    try {
-      await esClient.indices.delete({
-        index,
-      });
-    } catch (e) {}
-
-    try {
-      await esClient.indices.create({
-        index,
-        body: {
-          settings: {
-            analysis: {
-              analyzer: {
-                stemmer_analyzer: {
-                  tokenizer: "whitespace",
-                  filter: ["lowercase", "french_stemmer", "french_stop"],
-                },
-              },
-              filter: {
-                french_stemmer: {
-                  type: "stemmer",
-                  language: "light_french",
-                },
-                french_stop: {
-                  type: "stop",
-                  stopwords: "_french_",
-                },
-              },
-            },
-          },
-          mappings: {
-            properties: {
-              query: {
-                type: "percolator",
-              },
-              concept_id: {
-                type: "text",
-              },
-              concept_prefLabel: {
-                type: "text",
-              },
-              document: {
-                type: "text",
-                analyzer: "stemmer_analyzer",
-                term_vector: "with_positions_offsets",
-              },
-            },
-          },
-        },
-      });
-    } catch (e) {
-      spinner.fail(e.message);
-    }
+    const sourceIndex = `${indexPrefix}${SkillDefinition.getIndexType()}`;
+    spinner.info(`Creating percolators on ${sourceIndex}`);
 
     let {
       body: { count },
     } = await esClient.count({
       index: sourceIndex,
-      body: { query: { exists: { field: "hasVocabulary" } } },
+      body: { query: {  match_all : {}} },
     });
+    spinner.info(`Found ${count} concepts`);
+    spinner.start(`Processing concepts...`);
 
-    for (let i = 1; i <= count; i++) {
-      spinner.text = `Process concept ${i}/${count}`;
+    for (let i = 11000; i <= count; i++) {
       const response = await esClient.search({
         index: sourceIndex,
         from: i - 1,
         size: 1,
-        body: { query: { exists: { field: "hasVocabulary" } } },
+        body: {
+          query: {  match_all : {}}
+        },
+        _source: {includes: ["prefLabel"]}
       });
       const { _id: id, _source: concept } = response.body.hits.hits[0];
       try {
-        await esClient.index({
-          index,
-          id: `${id}/percolator`,
-          body: {
-            concept_id: id,
-            concept_prefLabel: concept.prefLabel,
-            query: {
-              query_string: {
-                query: concept.prefLabel,
-              },
-            },
-          },
-        });
+        let prefLabels = concept.prefLabel
+
+        if(!!prefLabels || prefLabels?.length > 0){
+          if(!Array.isArray(prefLabels)){
+            prefLabels = [prefLabels]
+          }
+
+          let percoLabels = [];
+
+          for(const prefLabel of prefLabels){
+            const {body: {tokens}} = await esClient.indices.analyze({
+              index: sourceIndex,
+              body: {
+                "tokenizer": "standard",
+                "filter": [ "lowercase","asciifolding", {"type": "stop", "stopwords": ["_french_", "_english_"]}],
+                "text": prefLabel
+              }
+            });
+
+            if(tokens.length < 5){
+              percoLabels.push(tokens.map(({token}) => token).join(" "))
+            }
+          }
+
+          if(percoLabels.length > 0){
+            const percoLabel = percoLabels.length === 1 ? percoLabels[0] : percoLabels.map(percoLabel => `( ${percoLabel} )`).join(" OR ");
+
+            spinner.text = `${Math.floor(i/count*100)}% - Processing concept percolation ${i}/${count} - ${percoLabel}`;
+
+            await esClient.update({
+              id: id,
+              index: sourceIndex,
+              body: {
+                doc: {
+                  query: {
+                    match: {
+                      percoLabel
+                    }
+                  }
+                }
+              }
+            });
+          }
+        }
       } catch (e) {
+        console.log(e)
         spinner.fail(e?.meta?.body?.error || e.message);
       }
     }
