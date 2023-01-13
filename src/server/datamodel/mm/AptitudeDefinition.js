@@ -174,7 +174,8 @@ export default class AptitudeDefinition extends ModelDefinitionAbstract {
             propertyDefinition: AptitudeRatingDefinition.getLiteral("value"),
             rdfDataPropertyAlias: "mm:ratingValue"
           }),
-        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer"
+        rdfDataType: "http://www.w3.org/2001/XMLSchema#integer",
+        defaultValue: 0
       })
     ];
   }
