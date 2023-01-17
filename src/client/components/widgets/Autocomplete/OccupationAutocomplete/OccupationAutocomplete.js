@@ -56,6 +56,7 @@ export function OccupationAutocomplete({
 
         return variables;
       }}
+      getOptionLabel={getOptionLabel}
       onSelectConcepts={onSelectConcepts}
       selectedConcepts={selectedConcepts}
       disabledConcepts={disabledConcepts}
@@ -63,4 +64,16 @@ export function OccupationAutocomplete({
       TextFieldProps={TextFieldProps}
     />
   );
+
+  function getOptionLabel(occupation, {qs}){
+    let subOccupations;
+
+    if(!Array.isArray(occupation.relatedOccupationName)){
+      subOccupations = [occupation.relatedOccupationName];
+    } else {
+      subOccupations = occupation.relatedOccupationName;
+    }
+
+    return occupation.prefLabel || "";
+  }
 }

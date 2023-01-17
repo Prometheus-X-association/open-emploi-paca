@@ -43,7 +43,8 @@ export function GenericAutocomplete({
   disableEntities = [],
   creatable,
   strictMode = false,
-  required = false
+  required = false,
+  getOptionLabel
 } = {}) {
   invariant(gqlEntitiesQuery, "gqlEntitiesQuery must be passed");
   invariant(gqlEntitiesConnectionPath, "gqlEntitiesConnectionPath must be passed");
@@ -81,14 +82,17 @@ export function GenericAutocomplete({
 
   const options = get(data, `${gqlEntitiesConnectionPath}.edges`, []).map(({node: entity}) => entity);
 
+  if(!getOptionLabel){
+    getOptionLabel = (entity) => {
+      return entity?.[gqlEntityLabelPath] || "";
+    }
+  }
   return (
     <Autocomplete
       className={className}
       noOptionsText={t("AUTOCOMPLETE.NO_RESULT")}
       options={options}
-      getOptionLabel={(entity) => {
-        return entity?.[gqlEntityLabelPath] || "";
-      }}
+      getOptionLabel={(entity) => getOptionLabel(entity, {qs})}
       getOptionSelected={(option, value) => option?.id === value?.id}
       getOptionDisabled={(option) => !!disableEntities.find(({id}) => id === option.id)}
       loading={loading}

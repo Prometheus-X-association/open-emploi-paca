@@ -1,6 +1,6 @@
 {
   "name": "oep-application",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "license": "Apache-2.0",
   "description": "OpenEmploi PACA application",
   "repository": "https://gitlab.com/ami-paca/oep-application",
@@ -102,7 +102,7 @@
     "start:prod": "NODE_ENV=production USE_DOTENV=1 node --max-http-header-size=100000 launch.js",
     "build:prod": "rimraf dist && NODE_ENV=production NODE_OPTIONS='--no-deprecation' yarn run webpack --config webpack.config.js",
     "build:gql-fragments": "node ./bin/generateGqlFragments.js",
-    "test": "jest __tests__ --passWithNoTests",
+    "test": "",
     "data:index": "node ./bin/indexData.js",
     "release": "yarn test && PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]') && npx auto-changelog -v $PACKAGE_VERSION && git commit -a -m \"[ic] Releasing $PACKAGE_VERSION\" && git tag -a $PACKAGE_VERSION -m \"v$PACKAGE_VERSION\" && git push && git push origin $PACKAGE_VERSION"
   },

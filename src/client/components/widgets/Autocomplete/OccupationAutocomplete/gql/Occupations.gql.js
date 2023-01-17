@@ -7,6 +7,7 @@ export const gqlOccupations = gql`
       edges {
         node {
           ...OccupationFragment
+          relatedOccupationName
         }
       }
     }

@@ -48,7 +48,8 @@ export function ConceptAutocomplete({
   multiple,
   AutocompleteProps,
   TextFieldProps,
-  className
+  className,
+  getOptionLabel
 } = {}) {
   const {t} = useTranslation();
 
@@ -60,6 +61,7 @@ export function ConceptAutocomplete({
       gqlEntitiesQuery={gqlQuery}
       gqlEntitiesConnectionPath={gqlEntitiesConnectionPath}
       gqlEntityLabelPath={"prefLabel"}
+      getOptionLabel={getOptionLabel}
       gqlVariables={getGqlVariables || (({qs}) => getGqlFiltersForQs({qs, excludeTopConcepts, vocabularyId}))}
       onSelect={onSelectConcepts}
       entities={selectedConcepts}
