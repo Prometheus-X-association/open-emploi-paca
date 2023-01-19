@@ -1,5 +1,6 @@
 import http from 'k6/http';
 import { sleep, check } from 'k6';
+import exec from 'k6/execution';
 
 // TODO : Set jwt token here before launching tests
 const jwt = __ENV.JWT;
@@ -8,6 +9,13 @@ if(!jwt){
   throw new Error("You must define a JWT env variable to start that test.");
 }
 
+/**
+ * Launch a stress test.
+ *
+ * Use: k6 run --vus 50 --duration 60s loadTest.js
+ * To simulate 50 active users requesting their synthesis, while randomly one of them mutate the graph.
+ *
+ */
 export default function () {
   const opts = {
     headers: {
@@ -25,22 +33,22 @@ export default function () {
     variables: {}
   };
 
-  const responses = http.batch([
-    ['POST', `https://preprod.aksis.dashemploi.eu/graphql?jwt=${jwt}`, JSON.stringify(updateProfileGqlPayload), opts],
-    ['POST', `https://preprod.aksis.dashemploi.eu/graphql?jwt=${jwt}`, JSON.stringify(getSynthesisGqlPayload), opts]
-  ]);
 
-  check(responses[0], {
-    'is Command OK': (r) => {
-      return r.status === 200 && JSON.parse(r.body).data.updateMe.success === true;
-    },
-  });
-
-  check(responses[1], {
-    'is Query OK': (r) => {
-      return r.status === 200 && JSON.parse(r.body).data.me.firstName === "Olivier"
-    },
-  });
+  if(exec.vu.idInInstance === 2){
+    const res =  http.post(`https://preprod.aksis.dashemploi.eu/graphql?jwt=${jwt}`, JSON.stringify(updateProfileGqlPayload), Object.assign({tags: {name:  "Command" }}, opts));
+    check(res, {
+      'is Command OK': (r) => {
+        return r.status === 200 && JSON.parse(r.body).data.updateMe.success === true;
+      },
+    });
+  } else {
+    const res = http.post(`https://preprod.aksis.dashemploi.eu/graphql?jwt=${jwt}`, JSON.stringify(getSynthesisGqlPayload), Object.assign({tags: {name:  "Query" }}, opts));
+    check(res, {
+      'is Query OK': (r) => {
+        return r.status === 200 && JSON.parse(r.body).data.me.firstName === "Olivier"
+      },
+    });
+  }
 
   sleep(1);
 }
