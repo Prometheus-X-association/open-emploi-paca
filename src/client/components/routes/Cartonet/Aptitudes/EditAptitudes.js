@@ -269,7 +269,7 @@ export default function EditAptitudes({
     }
 
     if (!value) {
-      value = aptitude.rating?.value || 0;
+      value = aptitude.ratingValue || 0;
     }
 
     await updateAptitude({
