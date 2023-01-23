@@ -1,18 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Button,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Checkbox,
   Grid,
 } from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
-import { useMutation } from "@apollo/client";
+import {useMutation, useQuery} from "@apollo/client";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslation } from "react-i18next";
 
-import { gqlExhautiveAptitudes as gqlAptitudesDefault } from "./gql/Aptitudes.gql";
+import {gqlExhautiveAptitudes as gqlAptitudesDefault, gqlTop5AptitudesCount} from "./gql/Aptitudes.gql";
 import { useHistory } from "react-router-dom";
 import { CollectionView } from "../../../widgets/CollectionView/CollectionView";
 import { useSnackbar } from "notistack";
@@ -22,7 +19,6 @@ import { Link } from "react-router-dom";
 import { generateCartonetPath } from "../generateCartonetPath";
 import { ROUTES } from "../../../../routes";
 import { useLoggedUser } from "../../../../utilities/auth/useLoggedUser";
-import { gqlExperienceFragment } from "../Experience/gql/Experience.gql";
 
 const useStyles = makeStyles((theme) => ({
   levelDescription: {
@@ -45,13 +41,21 @@ export default function EditAptitudes({
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const [modifiedAptitudesCount, setModifiedAptitudesCount] = useState(0);
+  const [top5AptitudesCount, setTop5AptitudesCount] = useState(5)
   const { user } = useLoggedUser();
 
+  const {data: {me} = {}} = useQuery(gqlTop5AptitudesCount);
   const [updateAptitude, { loading: saving }] = useMutation(gqlUpdateAptitude, {
     onCompleted: () => {
       setModifiedAptitudesCount(modifiedAptitudesCount + 1);
     },
   });
+
+  useEffect(() => {
+    if(me){
+      setTop5AptitudesCount(me.top5AptitudesCount || 0)
+    }
+  }, [me?.top5AptitudesCount])
 
   const columns = [
     {
@@ -133,7 +137,7 @@ export default function EditAptitudes({
               onChange={(e) =>
                 handleUpdateAptitudeRating({
                   aptitude,
-                  value: aptitude.rating?.value || 0,
+                  value: aptitude.ratingValue || 0,
                   isTop5: e.target.checked,
                 })
               }
@@ -245,9 +249,9 @@ export default function EditAptitudes({
           availableDisplayMode={["table"]}
           searchEnabled={true}
           removalEnabled={true}
-          getRowsSharedState={({ rows }) => {
+          getRowsSharedState={() => {
             return {
-              top5Count: rows.filter(({ isTop5 }) => isTop5 === true).length,
+              top5Count: top5AptitudesCount || 0,
             };
           }}
           getRemoveConfirmText={({ count }) =>
@@ -270,6 +274,10 @@ export default function EditAptitudes({
 
     if (!value) {
       value = aptitude.ratingValue || 0;
+    }
+
+    if(aptitude.isTop5 !== isTop5){
+      setTop5AptitudesCount(isTop5 ? top5AptitudesCount + 1 : top5AptitudesCount - 1)
     }
 
     await updateAptitude({
@@ -296,6 +304,7 @@ export default function EditAptitudes({
           },
         },
       },
+
       update: (cache) => {
         cache.modify({
           id: aptitude.id,

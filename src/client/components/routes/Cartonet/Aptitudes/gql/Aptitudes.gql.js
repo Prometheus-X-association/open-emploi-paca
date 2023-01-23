@@ -1,6 +1,14 @@
 import {gql} from "@apollo/client";
 import {gqlAptitudeFragment, gqlExhautiveAptitudeFragment} from "./Aptitude.gql";
 
+export const gqlTop5AptitudesCount = gql`
+  query MyTop5AptitudesCount{
+    me{
+      top5AptitudesCount:  aptitudesCount(filters: ["isTop5:true"])
+    }  
+  }
+`;
+
 export const gqlAptitudes = gql`
   query Aptitudes($qs: String, $sortings: [SortingInput], $first: Int, $after: String, $filters: [String]) {
     aptitudesCount(qs: $qs, filters: $filters)
