@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Button,
   Checkbox,
@@ -44,12 +44,10 @@ export default function EditAptitudes({
   const [top5AptitudesCount, setTop5AptitudesCount] = useState(5)
   const { user } = useLoggedUser();
 
-  const {data: {me} = {}} = useQuery(gqlTop5AptitudesCount);
-  const [updateAptitude, { loading: saving }] = useMutation(gqlUpdateAptitude, {
-    onCompleted: () => {
-      setModifiedAptitudesCount(modifiedAptitudesCount + 1);
-    },
+  const {data: {me} = {}} = useQuery(gqlTop5AptitudesCount, {
+    fetchPolicy: "cache-and-network"
   });
+  const [updateAptitude] = useMutation(gqlUpdateAptitude);
 
   useEffect(() => {
     if(me){
@@ -57,96 +55,11 @@ export default function EditAptitudes({
     }
   }, [me?.top5AptitudesCount])
 
-  const columns = [
-    {
-      name: "skillLabel",
-      label: t("CARTONET.APTITUDES.SKILL"),
-      options: {
-        sort: true,
-        width: 500,
-      },
-    },
-    {
-      name: "experiencesCount",
-      label: t("CARTONET.APTITUDES.EXPERIENCE_COUNT"),
-      options: {
-        sort: true,
-        width: 200,
-        align: "center",
-      },
-    },
-    {
-      name: "isInCV",
-      label: t("CARTONET.APTITUDES.IS_IN_CV"),
-      options: {
-        sort: true,
-        width: 100,
-        align: "center",
-        customBodyRender: (_, { row: aptitude }) => {
-          return (
-            <If condition={aptitude.isInCV}>
-              <Checkbox
-                name={`${aptitude.id}_isInCV`}
-                checked={true}
-                disabled={true}
-              />
-            </If>
-          );
-        },
-      },
-    },
-    {
-      name: "ratingValue",
-      label: t("CARTONET.APTITUDES.RATING"),
-      options: {
-        sort: true,
-        width: 200,
-        align: "center",
-        customBodyRender: (_, { row: aptitude }) => {
-          return (
-            <Rating
-              value={aptitude.ratingValue || 0}
-              name={`${aptitude.id}_rating`}
-              onClick={(e) => e.stopPropagation()}
-              onChange={(_, value) =>
-                handleUpdateAptitudeRating({
-                  aptitude,
-                  isTop5: aptitude.isTop5,
-                  value,
-                })
-              }
-            />
-          );
-        },
-      },
-    },
-    {
-      name: "isTop5",
-      label: t("CARTONET.APTITUDES.TOP_5"),
-      options: {
-        sort: true,
-        width: 200,
-        align: "center",
-        customBodyRender: (_, { row: aptitude, rowsSharedState }) => {
-          return (
-            <Checkbox
-              name={`${aptitude.id}_isTop5`}
-              checked={!!aptitude.isTop5}
-              disabled={!aptitude.isTop5 && rowsSharedState?.top5Count === 5}
-              onClick={(e) => e.stopPropagation()}
-              onChange={(e) =>
-                handleUpdateAptitudeRating({
-                  aptitude,
-                  value: aptitude.ratingValue || 0,
-                  isTop5: e.target.checked,
-                })
-              }
-            />
-          );
-        },
-      },
-    },
-  ];
+  const getAptitudesSharedState = useCallback(() => {
+    return {
+      top5Count: top5AptitudesCount || 0,
+    };
+  }, [top5AptitudesCount]);
 
   return (
     <CartonetEditLayout
@@ -235,7 +148,7 @@ export default function EditAptitudes({
     >
       <If condition={user}>
         <CollectionView
-          columns={columns}
+          columns={getColumns()}
           gqlConnectionPath={gqlConnectionPath}
           gqlCountPath={gqlCountPath}
           gqlQuery={gqlAptitudes}
@@ -249,11 +162,7 @@ export default function EditAptitudes({
           availableDisplayMode={["table"]}
           searchEnabled={true}
           removalEnabled={true}
-          getRowsSharedState={() => {
-            return {
-              top5Count: top5AptitudesCount || 0,
-            };
-          }}
+          getRowsSharedState={getAptitudesSharedState}
           getRemoveConfirmText={({ count }) =>
             t("CARTONET.APTITUDES.REMOVE_TEXT", { count })
           }
@@ -279,6 +188,8 @@ export default function EditAptitudes({
     if(aptitude.isTop5 !== isTop5){
       setTop5AptitudesCount(isTop5 ? top5AptitudesCount + 1 : top5AptitudesCount - 1)
     }
+
+    setModifiedAptitudesCount(modifiedAptitudesCount + 1);
 
     await updateAptitude({
       variables: {
@@ -315,5 +226,98 @@ export default function EditAptitudes({
         });
       },
     });
+  }
+
+  function getColumns(){
+    return [
+      {
+        name: "skillLabel",
+        label: t("CARTONET.APTITUDES.SKILL"),
+        options: {
+          sort: true,
+          width: 500,
+        },
+      },
+      {
+        name: "experiencesCount",
+        label: t("CARTONET.APTITUDES.EXPERIENCE_COUNT"),
+        options: {
+          sort: true,
+          width: 200,
+          align: "center",
+        },
+      },
+      {
+        name: "isInCV",
+        label: t("CARTONET.APTITUDES.IS_IN_CV"),
+        options: {
+          sort: true,
+          width: 100,
+          align: "center",
+          customBodyRender: (_, { row: aptitude }) => {
+            return (
+              <If condition={aptitude.isInCV}>
+                <Checkbox
+                  name={`${aptitude.id}_isInCV`}
+                  checked={true}
+                  disabled={true}
+                />
+              </If>
+            );
+          },
+        },
+      },
+      {
+        name: "ratingValue",
+        label: t("CARTONET.APTITUDES.RATING"),
+        options: {
+          sort: true,
+          width: 200,
+          align: "center",
+          customBodyRender: (_, { row: aptitude }) => {
+            return (
+              <Rating
+                value={aptitude.ratingValue || 0}
+                name={`${aptitude.id}_rating`}
+                onClick={(e) => e.stopPropagation()}
+                onChange={(_, value) =>
+                  handleUpdateAptitudeRating({
+                    aptitude,
+                    isTop5: aptitude.isTop5,
+                    value,
+                  })
+                }
+              />
+            );
+          },
+        },
+      },
+      {
+        name: "isTop5",
+        label: t("CARTONET.APTITUDES.TOP_5"),
+        options: {
+          sort: true,
+          width: 200,
+          align: "center",
+          customBodyRender: (_, { row: aptitude, rowsSharedState }) => {
+            return (
+              <Checkbox
+                name={`${aptitude.id}_isTop5`}
+                checked={!!aptitude.isTop5}
+                disabled={!aptitude.isTop5 && rowsSharedState?.top5Count >= 5}
+                onClick={(e) => e.stopPropagation()}
+                onChange={(e) =>
+                  handleUpdateAptitudeRating({
+                    aptitude,
+                    value: aptitude.ratingValue || 0,
+                    isTop5: e.target.checked,
+                  })
+                }
+              />
+            );
+          },
+        },
+      },
+    ];
   }
 }

@@ -57,7 +57,7 @@ function EnhancedTableCode({className, dense, columns, rows, onColumnSortChange,
   useEffect(() => {
     setSelectedRowsIndexes([]);
     setRowsSharedState(getRowsSharedState({rows}))
-  }, [JSON.stringify(rows)]);
+  }, [JSON.stringify(rows), getRowsSharedState]);
 
   return (
     <TableContainer className={clsx(classes.root, className)}>
