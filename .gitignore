@@ -19,9 +19,11 @@
 ddf-application.iml
 /_data/
 /.rancher/
-/.pnp.js
-/.yarnrc.yml
-/.yarn/
 /data/
-/.pnp.cjs
-/.pnp.loader.mjs
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
