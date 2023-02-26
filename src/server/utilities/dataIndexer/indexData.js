@@ -480,6 +480,22 @@ INSERT DATA {
 
   if (createPercolators) {
     const sourceIndex = `${indexPrefix}${SkillDefinition.getIndexType()}`;
+
+    try {
+      spinner.info(`Ensuring skills connectors is disabled.`);
+      await synaptixSession
+        .getGraphControllerService()
+        .getGraphControllerPublisher()
+        .insertTriples({
+          query: `PREFIX :<http://www.ontotext.com/connectors/elasticsearch#>
+PREFIX inst:<http://www.ontotext.com/connectors/elasticsearch/instance#>
+INSERT DATA {
+  inst:${sourceIndex} :dropConnector "" .
+}
+`,
+        });
+    } catch (e) {}
+
     spinner.info(`Creating percolators on ${sourceIndex}`);
 
     let {
@@ -491,7 +507,7 @@ INSERT DATA {
     spinner.info(`Found ${count} concepts`);
     spinner.start(`Processing concepts...`);
 
-    for (let i = 11000; i <= count; i++) {
+    for (let i = 0; i <= count; i++) {
       const response = await esClient.search({
         index: sourceIndex,
         from: i - 1,
