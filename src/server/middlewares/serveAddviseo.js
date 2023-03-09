@@ -5,7 +5,7 @@ import {
   sendValidationErrorsJSONExpressMiddleware,
   I18nError,
   logError,
-  logInfo,
+  logInfo, logDebug,
 } from "@mnemotix/synaptix.js";
 import { generatePath } from "react-router-dom";
 
@@ -78,7 +78,7 @@ export async function serveAddviseo({ app, attachDatastoreSession }) {
         const username = req.body?.email;
         const customerToken = req.body?.customer_token;
         const resourceType = req.body?.resource_type;
-        const password = `${customerToken}${addviseoPasswordSault}`;
+        const password = `${username}${addviseoPasswordSault}`;
         let httpStatus;
 
         try {
@@ -102,11 +102,35 @@ export async function serveAddviseo({ app, attachDatastoreSession }) {
           }
         }
 
-        let user = await datastoreSession.getSSOControllerService().login({
-          username,
-          password,
-          skipCookie: true,
-        });
+
+        let user;
+
+        try{
+          user = await datastoreSession.getSSOControllerService().login({
+            username,
+            password,
+            skipCookie: true,
+          });
+        } catch (e){
+          if (e instanceof I18nError && e.i18nKey === "INVALID_CREDENTIALS") {
+            const {id: userId} = await datastoreSession.getSSOControllerService().getApiClient().getUserByUsername(username);
+
+            logDebug(`Wrong credential for user ${username} (${userId}). Might use old password generation method. Resetting it with new one...`);
+
+            await datastoreSession.getSSOControllerService().getApiClient().resetUserPassword({
+              isTemporaryPassword: false,
+              password,
+              userId
+            });
+
+            user = await datastoreSession.getSSOControllerService().login({
+              username,
+              password,
+              skipCookie: true,
+            });
+          }
+        }
+
 
         let token = Buffer.from(JSON.stringify(user.toJWTSession())).toString(
           "base64"
