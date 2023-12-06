@@ -1,0 +1,112 @@
+{
+  "EntityInterface": [
+    "Tagging",
+    "UserAccount",
+    "AccessPolicy",
+    "Person",
+    "EmailAccount",
+    "Phone",
+    "Address",
+    "Geometry",
+    "JobArea",
+    "Affiliation",
+    "Organization",
+    "Occupation",
+    "Vocabulary",
+    "Concept",
+    "Scheme",
+    "Collection",
+    "Award",
+    "Qualification",
+    "Skill",
+    "Prerequisite",
+    "Aptitude",
+    "AptitudeRating",
+    "Expectation",
+    "Offer",
+    "Apply",
+    "Experience",
+    "SkillGroup",
+    "UserGroup",
+    "Comment",
+    "Location",
+    "Point",
+    "GroupMembership",
+    "Partnership",
+    "Certifinfo",
+    "FormaCode",
+    "Nsf",
+    "Rncp",
+    "Training"
+  ],
+  "OnlineContributionInterface": [
+    "Tagging",
+    "Comment"
+  ],
+  "ActionInterface": [
+    "Creation",
+    "Update",
+    "Deletion"
+  ],
+  "AccessPolicyTargetInterface": [
+    "UserAccount",
+    "UserGroup"
+  ],
+  "PersonInterface": [
+    "Person"
+  ],
+  "AgentInterface": [
+    "Person",
+    "Organization"
+  ],
+  "SpatialEntityInterface": [
+    "Address",
+    "Location"
+  ],
+  "DurationInterface": [
+    "Affiliation",
+    "Offer",
+    "Experience",
+    "Training"
+  ],
+  "TemporalEntityInterface": [
+    "Tagging",
+    "Affiliation",
+    "Offer",
+    "Experience",
+    "Comment",
+    "Training"
+  ],
+  "OrganizationInterface": [
+    "Organization"
+  ],
+  "ConceptInterface": [
+    "Occupation",
+    "Concept",
+    "Qualification",
+    "Skill",
+    "SkillGroup",
+    "Certifinfo",
+    "FormaCode",
+    "Nsf",
+    "Rncp"
+  ],
+  "SkosElementInterface": [
+    "Vocabulary",
+    "Scheme",
+    "Collection"
+  ],
+  "KnowledgeInterface": [
+    "Skill",
+    "SkillGroup"
+  ],
+  "AccessPriviledgeInterface": [
+    "ReadPriviledge",
+    "WritePriviledge"
+  ],
+  "InstantInterface": [
+    "Tagging",
+    "Comment"
+  ],
+  "GroupInterface": []
+}
