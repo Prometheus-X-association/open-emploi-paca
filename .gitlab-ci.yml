@@ -1,0 +1,32 @@
+stages:
+  #- test
+  - release
+
+#unit-tests:
+#  stage: test
+#  image: node:10.15.3-stretch
+#  cache:
+#    key: ${CI_COMMIT_REF_SLUG}
+#    paths:
+#      - node_modules/
+#  script:
+#    - yarn install
+#    - yarn build
+#    - yarn test
+
+release-image:
+  image: docker:stable
+  stage: release
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build --pull --build-arg CI -t $CONTAINER_RELEASE_IMAGE .
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - tags
+

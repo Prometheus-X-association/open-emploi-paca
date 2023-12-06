@@ -1,0 +1,39 @@
+services:
+  api:
+    image: registry.gitlab.com/ami-paca/oep-application:1.4.3
+    container_name: oep-api
+    ports:
+      - "8080:8080"
+    environment:
+      APP_PORT: "8080"
+      APP_URL: "https://dev-openemploi-application.mnemotix.com"
+      RDFSTORE_ROOT_URI: "https://dev-graphdb.mnemotix.com"
+      RDFSTORE_REPOSITORY_NAME: "dev-openemploi"
+      RDFSTORE_USER: "..."
+      RDFSTORE_PWD: "..."
+      INDEX_PREFIX_TYPES_WITH: "dev-openemploi-"
+      INDEX_MASTER_URI: "https://mnemotix.es.prod.kube.mnemotix.com"
+      INDEX_CLUSTER_USER: "..."
+      INDEX_CLUSTER_PWD: "..."
+      NODE_ENV: "production"
+      OAUTH_DISABLED: 1
+      FRONTEND_DISABLED: 1
+    networks:
+      - bridge_network
+
+  connectors:
+    image: "registry.gitlab.com/ami-paca/ami-backend/ami-connectors:0.1"
+    container_name: oep-connectors
+    environment:
+      ES_MASTER_URI: "https://dev-graphdb.mnemotix.com"
+      ES_CLUSTER_PWD: "..."
+      ES_CLUSTER_USER: "..."
+      RDFSTORE_ROOT_URI: "https://dev-graphdb.mnemotix.com"
+      RDFSTORE_USER: "..."
+      RDFSTORE_PWD: "..."
+    networks:
+      - bridge_network
+
+networks:
+  bridge_network:
+    driver: bridge
